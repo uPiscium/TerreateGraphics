@@ -18,5 +18,8 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="resources\glad.c">
+      <Filter>リソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
