@@ -157,9 +157,339 @@ namespace GeoFrame {
 		}
 	}
 
+	unsigned Program::GetLocation(std::string name) const { return glGetUniformLocation(mID, name.c_str()); }
+
 	unsigned Program::GetID() const { return mID; }
 
 	std::string Program::GetLog() const { return mLog; }
+
+	void Program::SetBoolean(std::string name, bool value) {
+		int location = this->GetLocation(name);
+		glUniform1i(location, value);
+	}
+
+	void Program::SetBoolean(std::string name, bool v1, bool v2) {
+		int location = this->GetLocation(name);
+		glUniform2i(location, v1, v2);
+	}
+
+	void Program::SetBoolean(std::string name, bool v1, bool v2, bool v3) {
+		int location = this->GetLocation(name);
+		glUniform3i(location, v1, v2, v3);
+	}
+
+	void Program::SetBoolean(std::string name, bool v1, bool v2, bool v3, bool v4) {
+		int location = this->GetLocation(name);
+		glUniform4i(location, v1, v2, v3, v4);
+	}
+
+	void Program::SetBooleanArray(std::string name, std::vector<bool> values) {
+		switch (values.size()) {
+		case 1:
+			this->SetBoolean(name, values[0]);
+			break;
+		case 2:
+			this->SetBoolean(name, values[0], values[1]);
+			break;
+		case 3:
+			this->SetBoolean(name, values[0], values[1], values[2]);
+			break;
+		case 4:
+			this->SetBoolean(name, values[0], values[1], values[2], values[3]);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Program::SetBooleanArray(std::string name, size_t size, bool* values) {
+		switch (size) {
+		case 1:
+			this->SetBoolean(name, values[0]);
+			break;
+		case 2:
+			this->SetBoolean(name, values[0], values[1]);
+			break;
+		case 3:
+			this->SetBoolean(name, values[0], values[1], values[2]);
+			break;
+		case 4:
+			this->SetBoolean(name, values[0], values[1], values[2], values[3]);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Program::SetInteger(std::string name, int value) {
+		int location = this->GetLocation(name);
+		glUniform1i(location, value);
+	}
+
+	void Program::SetInteger(std::string name, int v1, int v2) {
+		int location = this->GetLocation(name);
+		glUniform2i(location, v1, v2);
+	}
+
+	void Program::SetInteger(std::string name, int v1, int v2, int v3) {
+		int location = this->GetLocation(name);
+		glUniform3i(location, v1, v2, v3);
+	}
+
+	void Program::SetInteger(std::string name, int v1, int v2, int v3, int v4) {
+		int location = this->GetLocation(name);
+		glUniform4i(location, v1, v2, v3, v4);
+	}
+
+	void Program::SetIntegerArray(std::string name, std::vector<int> values) {
+		int location = this->GetLocation(name);
+		switch (values.size()) {
+		case 1:
+			glUniform1iv(location, 1, &values[0]);
+			break;
+		case 2:
+			glUniform2iv(location, 1, &values[0]);
+			break;
+		case 3:
+			glUniform3iv(location, 1, &values[0]);
+			break;
+		case 4:
+			glUniform4iv(location, 1, &values[0]);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Program::SetIntegerArray(std::string name, size_t size, int* values) {
+		int location = this->GetLocation(name);
+		switch (size) {
+		case 1:
+			glUniform1iv(location, 1, values);
+			break;
+		case 2:
+			glUniform2iv(location, 1, values);
+			break;
+		case 3:
+			glUniform3iv(location, 1, values);
+			break;
+		case 4:
+			glUniform4iv(location, 1, values);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Program::SetUnsigned(std::string name, unsigned value) {
+		int location = this->GetLocation(name);
+		glUniform1ui(location, value);
+	}
+
+	void Program::SetUnsigned(std::string name, unsigned v1, unsigned v2) {
+		int location = this->GetLocation(name);
+		glUniform2ui(location, v1, v2);
+	}
+
+	void Program::SetUnsigned(std::string name, unsigned v1, unsigned v2, unsigned v3) {
+		int location = this->GetLocation(name);
+		glUniform3ui(location, v1, v2, v3);
+	}
+
+	void Program::SetUnsigned(std::string name, unsigned v1, unsigned v2, unsigned v3, unsigned v4) {
+		int location = this->GetLocation(name);
+		glUniform4ui(location, v1, v2, v3, v4);
+	}
+
+	void Program::SetUnsignedArray(std::string name, std::vector<unsigned> values) {
+		int location = this->GetLocation(name);
+		switch (values.size()) {
+		case 1:
+			glUniform1uiv(location, 1, &values[0]);
+			break;
+		case 2:
+			glUniform2uiv(location, 1, &values[0]);
+			break;
+		case 3:
+			glUniform3uiv(location, 1, &values[0]);
+			break;
+		case 4:
+			glUniform4uiv(location, 1, &values[0]);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Program::SetUnsignedArray(std::string name, size_t size, unsigned* values) {
+		int location = this->GetLocation(name);
+		switch (size) {
+		case 1:
+			glUniform1uiv(location, 1, values);
+			break;
+		case 2:
+			glUniform2uiv(location, 1, values);
+			break;
+		case 3:
+			glUniform3uiv(location, 1, values);
+			break;
+		case 4:
+			glUniform4uiv(location, 1, values);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Program::SetFloat(std::string name, float value) {
+		int location = this->GetLocation(name);
+		glUniform1f(location, value);
+	}
+
+	void Program::SetFloat(std::string name, float v1, float v2) {
+		int location = this->GetLocation(name);
+		glUniform2f(location, v1, v2);
+	}
+
+	void Program::SetFloat(std::string name, float v1, float v2, float v3) {
+		int location = this->GetLocation(name);
+		glUniform3f(location, v1, v2, v3);
+	}
+
+	void Program::SetFloat(std::string name, float v1, float v2, float v3, float v4) {
+		int location = this->GetLocation(name);
+		glUniform4f(location, v1, v2, v3, v4);
+	}
+
+	void Program::SetFloatArray(std::string name, std::vector<float> values) {
+		int location = this->GetLocation(name);
+		switch (values.size()) {
+		case 1:
+			glUniform1fv(location, 1, &values[0]);
+			break;
+		case 2:
+			glUniform2fv(location, 1, &values[0]);
+			break;
+		case 3:
+			glUniform3fv(location, 1, &values[0]);
+			break;
+		case 4:
+			glUniform4fv(location, 1, &values[0]);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Program::SetFloatArray(std::string name, size_t size, float* values) {
+		int location = this->GetLocation(name);
+		switch (size) {
+		case 1:
+			glUniform1fv(location, 1, values);
+			break;
+		case 2:
+			glUniform2fv(location, 1, values);
+			break;
+		case 3:
+			glUniform3fv(location, 1, values);
+			break;
+		case 4:
+			glUniform4fv(location, 1, values);
+			break;
+		default:
+			break;
+		}
+	}
+
+	void Program::SetMatrix2x2(std::string name, bool transpose, std::vector<float> value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix2fv(location, 1, transpose, &value[0]);
+	}
+
+	void Program::SetMatrix2x2(std::string name, bool transpose, float* value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix2fv(location, 1, transpose, value);
+	}
+
+	void Program::SetMatrix2x3(std::string name, bool transpose, std::vector<float> value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix2x3fv(location, 1, transpose, &value[0]);
+	}
+
+	void Program::SetMatrix2x3(std::string name, bool transpose, float* value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix2x3fv(location, 1, transpose, value);
+	}
+
+	void Program::SetMatrix2x4(std::string name, bool transpose, std::vector<float> value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix2x4fv(location, 1, transpose, &value[0]);
+	}
+
+	void Program::SetMatrix2x4(std::string name, bool transpose, float* value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix2x4fv(location, 1, transpose, value);
+	}
+
+	void Program::SetMatrix3x2(std::string name, bool transpose, std::vector<float> value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix3x2fv(location, 1, transpose, &value[0]);
+	}
+
+	void Program::SetMatrix3x2(std::string name, bool transpose, float* value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix3x2fv(location, 1, transpose, value);
+	}
+
+	void Program::SetMatrix3x3(std::string name, bool transpose, std::vector<float> value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix3fv(location, 1, transpose, &value[0]);
+	}
+
+	void Program::SetMatrix3x3(std::string name, bool transpose, float* value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix3fv(location, 1, transpose, value);
+	}
+
+	void Program::SetMatrix3x4(std::string name, bool transpose, std::vector<float> value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix3x4fv(location, 1, transpose, &value[0]);
+	}
+
+	void Program::SetMatrix3x4(std::string name, bool transpose, float* value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix3x4fv(location, 1, transpose, value);
+	}
+
+	void Program::SetMatrix4x2(std::string name, bool transpose, std::vector<float> value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix4x2fv(location, 1, transpose, &value[0]);
+	}
+
+	void Program::SetMatrix4x2(std::string name, bool transpose, float* value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix4x2fv(location, 1, transpose, value);
+	}
+
+	void Program::SetMatrix4x3(std::string name, bool transpose, std::vector<float> value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix4x3fv(location, 1, transpose, &value[0]);
+	}
+
+	void Program::SetMatrix4x3(std::string name, bool transpose, float* value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix4x3fv(location, 1, transpose, value);
+	}
+
+	void Program::SetMatrix4x4(std::string name, bool transpose, std::vector<float> value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix4fv(location, 1, transpose, &value[0]);
+	}
+
+	void Program::SetMatrix4x4(std::string name, bool transpose, float* value) {
+		int location = this->GetLocation(name);
+		glUniformMatrix4fv(location, 1, transpose, value);
+	}
 
 	bool Program::IsCompiled() const { return mCompiled; }
 
