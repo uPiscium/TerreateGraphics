@@ -139,12 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="callback.cpp" />
     <ClCompile Include="core.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resources\glad.c" />
     <ClCompile Include="window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="callback.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="exception.h" />
     <ClInclude Include="window.h" />

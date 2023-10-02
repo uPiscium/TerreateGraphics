@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "core.h"
+#include "callback.h"
 
 namespace GeoFrame {
 	struct Icon {
@@ -256,9 +257,9 @@ namespace GeoFrame {
 	public:
 		std::string mTitle;
 		std::pair<int, int> mAspectRatio;
+		std::pair<double, double> mScrollOffset;
 		std::vector<Key> mKeyInputs;
 		std::vector<unsigned int> mCharInputs;
-		std::pair<float, float> mScrollOffset;
 		std::vector<std::string> mDroppedFiles;
 	};
 
@@ -267,6 +268,7 @@ namespace GeoFrame {
 	*/
 	struct PointerWrapper {
 	public:
+		Callbacks* mCallbacks = nullptr;
 		WindowProperty* mProperty = nullptr;
 		void* mUserPointer = nullptr;
 	};
@@ -274,35 +276,13 @@ namespace GeoFrame {
 	struct Window {
 	private:
 		PointerWrapper mWrapper = PointerWrapper();
+		Callbacks mCallbacks = Callbacks();
 		WindowSettings mSettings = WindowSettings();
 		WindowProperty mProperty = WindowProperty();
 		GLFWwindow* mWindow = nullptr;
 
 	private:
 		WindowProperty* GetPropertyPointer() const;
-
-	public:
-		enum class InputType {
-			CURSOR = GLFW_CURSOR,
-			STICKY_KEYS = GLFW_STICKY_KEYS,
-			STICKY_MOUSE_BUTTONS = GLFW_STICKY_MOUSE_BUTTONS,
-			LOCK_KEY_MODS = GLFW_LOCK_KEY_MODS,
-			RAW_MOUSE_MOTION = GLFW_RAW_MOUSE_MOTION
-		};
-
-		enum class MousebuttonInput {
-			BUTTON1 = GLFW_MOUSE_BUTTON_1,
-			LEFT_BUTTON = GLFW_MOUSE_BUTTON_LEFT,
-			BUTTON2 = GLFW_MOUSE_BUTTON_2,
-			RIGHT_BUTTON = GLFW_MOUSE_BUTTON_RIGHT,
-			BUTTON3 = GLFW_MOUSE_BUTTON_3,
-			MIDDLE_BUTTON = GLFW_MOUSE_BUTTON_MIDDLE,
-			BUTTON4 = GLFW_MOUSE_BUTTON_4,
-			BUTTON5 = GLFW_MOUSE_BUTTON_5,
-			BUTTON6 = GLFW_MOUSE_BUTTON_6,
-			BUTTON7 = GLFW_MOUSE_BUTTON_7,
-			BUTTON8 = GLFW_MOUSE_BUTTON_8
-		};
 
 	public:
 		/*
@@ -344,6 +324,102 @@ namespace GeoFrame {
 		* Set window as current context.
 		*/
 		void SetCurrent();
+		/*
+		* Set position callback function.
+		[params]
+		* callback : Position callback. Called when window position is changed.
+		*/
+		WindowPosCallback SetPositionCallback(WindowPosCallback callback);
+		/*
+		* Set size callback function.
+		[params]
+		* callback : Size callback. Called when window size is changed.
+		*/
+		WindowSizeCallback SetSizeCallback(WindowSizeCallback callback);
+		/*
+		* Set close callback function.
+		[params]
+		* callback : Close callback. Called when window is closed.
+		*/
+		WindowCloseCallback SetCloseCallback(WindowCloseCallback callback);
+		/*
+		* Set refresh callback function.
+		[params]
+		* callback : Refresh callback. Called when window is refreshed.
+		*/
+		WindowRefreshCallback SetRefreshCallback(WindowRefreshCallback callback);
+		/*
+		* Set focus callback function.
+		[params]
+		* callback : Focus callback. Called when window is focused.
+		*/
+		WindowFocusCallback SetFocusCallback(WindowFocusCallback callback);
+		/*
+		* Set iconify callback function.
+		[params]
+		* callback : Iconify callback. Called when window is iconified.
+		*/
+		WindowIconifyCallback SetIconifyCallback(WindowIconifyCallback callback);
+		/*
+		* Set maximize callback function.
+		[params]
+		* callback : Maximize callback. Called when window is maximized.
+		*/
+		WindowMaximizeCallback SetMaximizeCallback(WindowMaximizeCallback callback);
+		/*
+		* Set framebuffer size callback function.
+		[params]
+		* callback : Framebuffer size callback. Called when framebuffer size is changed.
+		*/
+		FramebufferSizeCallback SetFramebufferSizeCallback(FramebufferSizeCallback callback);
+		/*
+		* Set content scale callback function.
+		[params]
+		* callback : Content scale callback. Called when content scale is changed.
+		*/
+		ContentScaleCallback SetContentScaleCallback(ContentScaleCallback callback);
+		/*
+		* Set mouse button callback function.
+		[params]
+		* callback : Mouse button callback. Called when mouse button is clicked.
+		*/
+		MousebuttonCallback SetMousebuttonCallback(MousebuttonCallback callback);
+		/*
+		* Set cursor position callback function.
+		[params]
+		* callback : Cursor position callback. Called when cursor position is changed.
+		*/
+		CursorPosCallback SetCursorPositionCallback(CursorPosCallback callback);
+		/*
+		* Set cursor enter callback function.
+		[params]
+		* callback : Cursor enter callback. Called when cursor is entered.
+		*/
+		CursorEnterCallback SetCursorEnterCallback(CursorEnterCallback callback);
+		/*
+		* Set scroll callback function.
+		[params]
+		* callback : Scroll callback. Called when scrolled.
+		*/
+		ScrollCallback SetScrollCallback(ScrollCallback callback);
+		/*
+		* Set key callback function.
+		[params]
+		* callback : Key callback. Called when key is pressed.
+		*/
+		KeyCallback SetKeyCallback(KeyCallback callback);
+		/*
+		* Set char callback function.
+		[params]
+		* callback : Char callback. Called when character is inputed.
+		*/
+		CharCallback SetCharCallback(CharCallback callback);
+		/*
+		* Set file drop callback function.
+		[params]
+		* callback : File drop callback. Called when file is dropped.
+		*/
+		FileDropCallback SetFileDropCallback(FileDropCallback callback);
 
 
 		/*
@@ -577,7 +653,7 @@ namespace GeoFrame {
 		*/
 		void Pixels(int x0, int y0, int width, int height, PixelFormat format, GLType type, void* pixels);
 		/*
-		* Clear all input datas.(char inputs and dropped files)
+		* Clear all input datas.(key inputs, char inputs and dropped files)
 		*/
 		void ClearInputs();
 		/*
@@ -637,4 +713,17 @@ namespace GeoFrame {
 		*/
 		static Window GetCurrentContext();
 	};
+
+	/*
+	* Get user pointer binded to window.
+	* 
+	* void* : Binded user pointer.
+	*/
+	void* GetUserPointer(Window& window);
+	/*
+	* Get user pointer binded to window.
+	*
+	* void* : Binded user pointer.
+	*/
+	void* GetUserPointer(GLFWwindow* window);
 }

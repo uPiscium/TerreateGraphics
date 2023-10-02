@@ -17,24 +17,20 @@ namespace GeoFrame {
 	* Library initializer.
 	*/
 	void Init();
-
 	/*
 	* "glad" initializer.
 	*/
 	void InitGLAD();
-
 	/*
 	* Library terminater.
 	*/
 	void Terminate();
-
 	/*
 	* Get current clipboard string.
 	[returns]
 	@ : Current clipboard string.
 	*/
 	std::string Clipboard();
-
 	/*
 	* Set text to clipboard.
 	[params]
@@ -108,5 +104,27 @@ namespace GeoFrame {
 		QUAD_BYTE = GL_4_BYTES,
 		DOUBLE = GL_DOUBLE,
 		HALF_FLOAT = GL_HALF_FLOAT
+	};
+
+	enum class InputType {
+		CURSOR = GLFW_CURSOR,
+		STICKY_KEYS = GLFW_STICKY_KEYS,
+		STICKY_MOUSE_BUTTONS = GLFW_STICKY_MOUSE_BUTTONS,
+		LOCK_KEY_MODS = GLFW_LOCK_KEY_MODS,
+		RAW_MOUSE_MOTION = GLFW_RAW_MOUSE_MOTION
+	};
+
+	enum class MousebuttonInput {
+		BUTTON1 = GLFW_MOUSE_BUTTON_1,
+		LEFT_BUTTON = GLFW_MOUSE_BUTTON_LEFT,
+		BUTTON2 = GLFW_MOUSE_BUTTON_2,
+		RIGHT_BUTTON = GLFW_MOUSE_BUTTON_RIGHT,
+		BUTTON3 = GLFW_MOUSE_BUTTON_3,
+		MIDDLE_BUTTON = GLFW_MOUSE_BUTTON_MIDDLE,
+		BUTTON4 = GLFW_MOUSE_BUTTON_4,
+		BUTTON5 = GLFW_MOUSE_BUTTON_5,
+		BUTTON6 = GLFW_MOUSE_BUTTON_6,
+		BUTTON7 = GLFW_MOUSE_BUTTON_7,
+		BUTTON8 = GLFW_MOUSE_BUTTON_8
 	};
 }

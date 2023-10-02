@@ -149,8 +149,26 @@ namespace GeoFrame {
 		}
 		else { ; }
 
+		mWrapper.mCallbacks = &mCallbacks;
+		mWrapper.mProperty = &mProperty;
 		glfwSetWindowUserPointer(mWindow, &mWrapper);
-
+		
+		glfwSetWindowPosCallback(mWindow, _WindowPosCallbackWrapper);
+		glfwSetWindowSizeCallback(mWindow, _WindowSizeCallbackWrapper);
+		glfwSetWindowCloseCallback(mWindow, _WindowCloseCallbackWrapper);
+		glfwSetWindowRefreshCallback(mWindow, _WindowRefreshCallbackWrapper);
+		glfwSetWindowFocusCallback(mWindow, _WindowFocusCallbackWrapper);
+		glfwSetWindowIconifyCallback(mWindow, _WindowIconifyCallbackWrapper);
+		glfwSetWindowMaximizeCallback(mWindow, _WindowMaximizeCallbackWrapper);
+		glfwSetFramebufferSizeCallback(mWindow, _FramebufferSizeCallbackWrapper);
+		glfwSetWindowContentScaleCallback(mWindow, _ContentScaleCallbackWrapper);
+		glfwSetMouseButtonCallback(mWindow, _MousebuttonCallbackWrapper);
+		glfwSetCursorPosCallback(mWindow, _CursorPosCallbackWrapper);
+		glfwSetCursorEnterCallback(mWindow, _CursorEnterCallbackWrapper);
+		glfwSetScrollCallback(mWindow, _ScrollCallbackWrapper);
+		glfwSetKeyCallback(mWindow, _KeyCallbackWrapper);
+		glfwSetCharCallback(mWindow, _CharCallbackWrapper);
+		glfwSetDropCallback(mWindow, _FileDropCallbackWrapper);
 	}
 
 	int Window::GetInputMode(InputType inputType) const { return glfwGetInputMode(mWindow, (int)inputType); }
@@ -160,6 +178,102 @@ namespace GeoFrame {
 	void Window::SetCursor(Cursor& cursor) { glfwSetCursor(mWindow, (GLFWcursor*)cursor); }
 
 	void Window::SetCurrent() { glfwMakeContextCurrent(mWindow); }
+
+	WindowPosCallback Window::SetPositionCallback(WindowPosCallback callback) {
+		WindowPosCallback temp = mCallbacks.mWindowPosCallback;
+		mCallbacks.mWindowPosCallback = callback;
+		return temp;
+	}
+
+	WindowSizeCallback Window::SetSizeCallback(WindowSizeCallback callback) {
+		WindowSizeCallback temp = mCallbacks.mWindowSizeCallback;
+		mCallbacks.mWindowSizeCallback = callback;
+		return temp;
+	}
+
+	WindowCloseCallback Window::SetCloseCallback(WindowCloseCallback callback) {
+		WindowCloseCallback temp = mCallbacks.mWindowCloseCallback;
+		mCallbacks.mWindowCloseCallback = callback;
+		return temp;
+	}
+
+	WindowRefreshCallback Window::SetRefreshCallback(WindowRefreshCallback callback) {
+		WindowRefreshCallback temp = mCallbacks.mWindowRefreshCallback;
+		mCallbacks.mWindowRefreshCallback = temp;
+		return temp;
+	}
+
+	WindowFocusCallback Window::SetFocusCallback(WindowFocusCallback callback) {
+		WindowFocusCallback temp = mCallbacks.mWindowFocusCallback;
+		mCallbacks.mWindowFocusCallback = callback;
+		return temp;
+	}
+
+	WindowIconifyCallback Window::SetIconifyCallback(WindowIconifyCallback callback) {
+		WindowIconifyCallback temp = mCallbacks.mWindowIconifyCallback;
+		mCallbacks.mWindowIconifyCallback = callback;
+		return temp;
+	}
+
+	WindowMaximizeCallback Window::SetMaximizeCallback(WindowMaximizeCallback callback) {
+		WindowMaximizeCallback temp = mCallbacks.mWindowMaximizeCallback;
+		mCallbacks.mWindowMaximizeCallback = callback;
+		return temp;
+	}
+
+	FramebufferSizeCallback Window::SetFramebufferSizeCallback(FramebufferSizeCallback callback) {
+		FramebufferSizeCallback temp = mCallbacks.mFramebufferSizeCallback;
+		mCallbacks.mFramebufferSizeCallback = callback;
+		return temp;
+	}
+
+	ContentScaleCallback Window::SetContentScaleCallback(ContentScaleCallback callback) {
+		ContentScaleCallback temp = mCallbacks.mContentScaleCallback;
+		mCallbacks.mContentScaleCallback = callback;
+		return temp;
+	}
+
+	MousebuttonCallback Window::SetMousebuttonCallback(MousebuttonCallback callback) {
+		MousebuttonCallback temp = mCallbacks.mMousebuttonCallback;
+		mCallbacks.mMousebuttonCallback = callback;
+		return temp;
+	}
+
+	CursorPosCallback Window::SetCursorPositionCallback(CursorPosCallback callback) {
+		CursorPosCallback temp = mCallbacks.mCursorPosCallback;
+		mCallbacks.mCursorPosCallback = callback;
+		return temp;
+	}
+
+	CursorEnterCallback Window::SetCursorEnterCallback(CursorEnterCallback callback) {
+		CursorEnterCallback temp = mCallbacks.mCursorEnterCallback;
+		mCallbacks.mCursorEnterCallback = callback;
+		return temp;
+	}
+
+	ScrollCallback Window::SetScrollCallback(ScrollCallback callback) {
+		ScrollCallback temp = mCallbacks.mScrollCallback;
+		mCallbacks.mScrollCallback = callback;
+		return temp;
+	}
+
+	KeyCallback Window::SetKeyCallback(KeyCallback callback) {
+		KeyCallback temp = mCallbacks.mKeyCallback;
+		mCallbacks.mKeyCallback = callback;
+		return temp;
+	}
+
+	CharCallback Window::SetCharCallback(CharCallback callback) {
+		CharCallback temp = mCallbacks.mCharCallback;
+		mCallbacks.mCharCallback = callback;
+		return temp;
+	}
+
+	FileDropCallback Window::SetFileDropCallback(FileDropCallback callback) {
+		FileDropCallback temp = mCallbacks.mFileDropCallback;
+		mCallbacks.mFileDropCallback = callback;
+		return temp;
+	}
 
 	bool Window::IsClosed() const { return bool(glfwWindowShouldClose(mWindow)); }
 
@@ -297,4 +411,14 @@ namespace GeoFrame {
 	void Window::Swap() { glfwSwapBuffers(mWindow); }
 
 	Window Window::GetCurrentContext() { return Window(glfwGetCurrentContext()); }
+
+	void* GetUserPointer(Window& window) {
+		PointerWrapper* ptr = (PointerWrapper*)glfwGetWindowUserPointer((GLFWwindow*)window);
+		return ptr->mUserPointer;
+	}
+
+	void* GetUserPointer(GLFWwindow* window) {
+		PointerWrapper* ptr = (PointerWrapper*)glfwGetWindowUserPointer(window);
+		return ptr->mUserPointer;
+	}
 }
