@@ -10,6 +10,7 @@ namespace GeoFrame {
 			throw FatalError("Dependence library [glfw] was failed to initialize.");
 		}
 		else { ; }
+		stbi_set_flip_vertically_on_load(true);
 	}
 
 	void InitGLAD() {
@@ -18,6 +19,8 @@ namespace GeoFrame {
 		}
 		else { ; }
 	}
+
+	void Terminate() { glfwTerminate(); }
 
 	std::string Clipboard() { return std::string(glfwGetClipboardString(NULL)); }
 
