@@ -11,7 +11,7 @@
 #include "callback.h"
 
 namespace GeoFrame {
-	struct Icon {
+	class Icon {
 	private:
 		std::vector<GLFWimage> mImages = {};
 		std::vector<std::vector<unsigned char>> mImageDatas = {};
@@ -59,7 +59,7 @@ namespace GeoFrame {
 		operator GLFWimage* ();
 	};
 
-	struct Cursor {
+	class Cursor {
 	private:
 		GLFWcursor* mCursor = nullptr;
 		GLFWimage mImage = GLFWimage();
@@ -132,7 +132,7 @@ namespace GeoFrame {
 		operator GLFWcursor* ();
 	};
 
-	struct WindowSettings {
+	class WindowSettings {
 	public:
 		GLint mResizable = GLFW_TRUE;
 		GLint mVisible = GLFW_TRUE;
@@ -185,7 +185,7 @@ namespace GeoFrame {
 		void Apply() const;
 	};
 
-	struct Monitor {
+	class Monitor {
 	private:
 		GLFWmonitor* mMonitor = nullptr;
 		const GLFWvidmode* mVidMode = nullptr;
@@ -253,7 +253,7 @@ namespace GeoFrame {
 	/*
 	* Window property holder class.
 	*/
-	struct WindowProperty {
+	class WindowProperty {
 	public:
 		std::string mTitle;
 		std::pair<int, int> mAspectRatio;
@@ -266,14 +266,14 @@ namespace GeoFrame {
 	/*
 	* Window pointer wrapper.
 	*/
-	struct PointerWrapper {
+	class PointerWrapper {
 	public:
 		Callbacks* mCallbacks = nullptr;
 		WindowProperty* mProperty = nullptr;
 		void* mUserPointer = nullptr;
 	};
 
-	struct Window {
+	class Window {
 	private:
 		PointerWrapper mWrapper = PointerWrapper();
 		Callbacks mCallbacks = Callbacks();

@@ -8,22 +8,23 @@
 #include <string>
 #include <vector>
 
+#include "core.h"
 #include "exception.h"
 
 namespace GeoFrame {
-	struct Source {
+	class Source {
 	private:
-		GLenum mType = 0;
+		SourceType mType = SourceType::VERTEX_SHADER;
 		unsigned mID = 0;
 		std::string mSource = "";
 		std::string mLog = "";
 		bool mCompiled = false;
 
 	public:
-		Source(GLenum sourceType);
-		Source(GLenum sourceType, const std::string& source);
+		Source(SourceType sourceType);
+		Source(SourceType sourceType, const std::string& source);
 
-		GLenum GetType() const;
+		SourceType GetType() const;
 		unsigned GetID() const;
 		std::string GetLog() const;
 
@@ -36,20 +37,20 @@ namespace GeoFrame {
 		void Compile();
 
 	public:
-		static Source FromFile(GLenum sourceType, const std::string& filePath);
-		static Source FromBuffer(GLenum sourceType, const std::string& buffer);
-		static Source FromBuffer(GLenum sourceType, const std::stringstream& buffer);
-		static Source FromBuffer(GLenum sourceType, const char* buffer);
+		static Source FromFile(SourceType sourceType, const std::string& filePath);
+		static Source FromBuffer(SourceType sourceType, const std::string& buffer);
+		static Source FromBuffer(SourceType sourceType, const std::stringstream& buffer);
+		static Source FromBuffer(SourceType sourceType, const char* buffer);
 	};
 
-	struct Program {
+	class Program {
 	private:
 		unsigned mID = 0;
 		bool mVertexAttached = false;
 		bool mGeometryAttached = false;
 		bool mFragmentAttached = false;
 		std::string mLog = "";
-		bool mCompiled = false;
+		bool mLinked = false;
 
 	public:
 		Program();
@@ -103,10 +104,10 @@ namespace GeoFrame {
 		void SetMatrix4x4(std::string name, bool transpose, std::vector<float> value);
 		void SetMatrix4x4(std::string name, bool transpose, float* value);
 
-		bool IsCompiled() const;
+		bool IsLinked() const;
 
 		void AttachSource(Source source);
-		void Compile();
+		void Link();
 		void Use();
 	};
 }

@@ -1,15 +1,15 @@
 #include "shader.h"
 
 namespace GeoFrame {
-	Source::Source(GLenum sourceType) : mType(sourceType) {
-		mID = glCreateShader(sourceType);
+	Source::Source(SourceType sourceType) : mType(sourceType) {
+		mID = glCreateShader((GLenum)sourceType);
 	}
 
-	Source::Source(GLenum sourceType, const std::string& source) : mSource(source), mType(sourceType) {
-		mID = glCreateShader(sourceType);
+	Source::Source(SourceType sourceType, const std::string& source) : mSource(source), mType(sourceType) {
+		mID = glCreateShader((GLenum)sourceType);
 	}
 
-	GLenum Source::GetType() const { return mType; }
+	SourceType Source::GetType() const { return mType; }
 
 	unsigned Source::GetID() const { return mID; }
 
@@ -58,25 +58,25 @@ namespace GeoFrame {
 	}
 
 
-	Source Source::FromFile(GLenum sourceType, const std::string& filePath) {
+	Source Source::FromFile(SourceType sourceType, const std::string& filePath) {
 		Source source(sourceType);
 		source.LoadSourceFile(filePath.c_str());
 		return source;
 	}
 
-	Source Source::FromBuffer(GLenum sourceType, const std::string& buffer) {
+	Source Source::FromBuffer(SourceType sourceType, const std::string& buffer) {
 		Source source(sourceType);
 		source.LoadBuffer(buffer);
 		return source;
 	}
 
-	Source Source::FromBuffer(GLenum sourceType, const std::stringstream& buffer) {
+	Source Source::FromBuffer(SourceType sourceType, const std::stringstream& buffer) {
 		Source source(sourceType);
 		source.LoadBuffer(buffer.str());
 		return source;
 	}
 
-	Source Source::FromBuffer(GLenum sourceType, const char* buffer) {
+	Source Source::FromBuffer(SourceType sourceType, const char* buffer) {
 		std::string buf(buffer);
 		Source source(sourceType);
 		source.LoadBuffer(buf);
@@ -491,17 +491,17 @@ namespace GeoFrame {
 		glUniformMatrix4fv(location, 1, transpose, value);
 	}
 
-	bool Program::IsCompiled() const { return mCompiled; }
+	bool Program::IsLinked() const { return mLinked; }
 
 	void Program::AttachSource(Source source) {
 		switch (source.GetType()) {
-		case GL_VERTEX_SHADER:
+		case SourceType::VERTEX_SHADER:
 			glAttachShader(mID, source.GetID());
 			mVertexAttached = true;
-		case GL_FRAGMENT_SHADER:
+		case SourceType::FRAGMENT_SHADER:
 			glAttachShader(mID, source.GetID());
 			mFragmentAttached = true;
-		case GL_GEOMETRY_SHADER:
+		case SourceType::GEOMETRY_SHADER:
 			glAttachShader(mID, source.GetID());
 			mGeometryAttached = true;
 		default:
@@ -509,7 +509,7 @@ namespace GeoFrame {
 		}
 	}
 
-	void Program::Compile() {
+	void Program::Link() {
 		if (mVertexAttached && mFragmentAttached) {
 			glLinkProgram(mID);
 
@@ -522,14 +522,14 @@ namespace GeoFrame {
 			}
 			else {
 				mLog = "NO ERROR";
-				mCompiled = true;
+				mLinked = true;
 			}
 		}
 	}
 
 	void Program::Use() {
-		if (!mCompiled) {
-			this->Compile();
+		if (!mLinked) {
+			this->Link();
 		}
 		else { ; }
 		glUseProgram(mID);
