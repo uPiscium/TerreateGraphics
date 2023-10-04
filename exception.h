@@ -16,4 +16,9 @@ namespace GeoFrame {
 	public:
 		FatalError(std::string msg) : GeoFrameException(msg) { ; }
 	};
+
+	struct ShaderTypeError : public GeoFrameException {
+	public:
+		ShaderTypeError(std::string msg) : GeoFrameException(msg) { ; }
+	};
 }

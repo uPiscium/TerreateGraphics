@@ -145,6 +145,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resources\glad.c" />
     <ClCompile Include="window.cpp" />
+    <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="callback.h" />
@@ -152,6 +153,7 @@
     <ClInclude Include="core.h" />
     <ClInclude Include="exception.h" />
     <ClInclude Include="window.h" />
+    <ClInclude Include="shader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
