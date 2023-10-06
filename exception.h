@@ -21,4 +21,9 @@ namespace GeoFrame {
 	public:
 		ShaderTypeError(std::string msg) : GeoFrameException(msg) { ; }
 	};
+
+	struct IndexBufferError : public GeoFrameException {
+	public:
+		IndexBufferError(std::string msg) : GeoFrameException(msg) { ; }
+	};
 }
