@@ -69,7 +69,7 @@ namespace GeoFrame {
 		mCursor = glfwCreateCursor(&mImage, mXHot, mYHot);
 	}
 
-	void Cursor::LoadStandard(Type type) { mCursor = glfwCreateStandardCursor((int)type); }
+	void Cursor::LoadStandard(CursorType type) { mCursor = glfwCreateStandardCursor((int)type); }
 
 	Cursor::operator GLFWcursor* () { return mCursor; }
 
@@ -300,6 +300,8 @@ namespace GeoFrame {
 	bool Window::IsAutoIconifying() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_AUTO_ICONIFY)); }
 
 	bool Window::IsFocusOnShowing() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_FOCUS_ON_SHOW)); }
+
+	bool Window::IsPressing(Keyboard key) const { return bool(glfwGetKey(mWindow, (GLenum)key)); }
 
 	std::pair<int, int> Window::Size() const {
 		int width, height;
