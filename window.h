@@ -3,11 +3,10 @@
 #include <GLFW/glfw3.h>
 
 #include <functional>
-//#include <stb/stb_image.h>
 #include <string>
 #include <vector>
 
-#include "core.h"
+#include "core.h" //#include <stb/stb_image.h>
 #include "callback.h"
 
 namespace GeoFrame {
@@ -73,16 +72,6 @@ namespace GeoFrame {
 		unsigned mYHot = 0;
 
 	public:
-		enum class Type {
-			ARROW = GLFW_ARROW_CURSOR,
-			IBEAM = GLFW_IBEAM_CURSOR,
-			COSSHAIR = GLFW_CROSSHAIR_CURSOR,
-			HAND = GLFW_HAND_CURSOR,
-			HRESIZE = GLFW_HRESIZE_CURSOR,
-			VRESIZE = GLFW_VRESIZE_CURSOR
-		};
-
-	public:
 		/*
 		* "GLFWcursor*" wrapper class.
 		*/
@@ -126,7 +115,7 @@ namespace GeoFrame {
 		[params]
 		* type : Cursor type.
 		*/
-		void LoadStandard(Type type);
+		void LoadStandard(CursorType type);
 
 
 		operator GLFWcursor* ();
@@ -150,17 +139,17 @@ namespace GeoFrame {
 		/*
 		* Window hints.
 		[params]
-		* resizable : Whether the windowed mode window will be resizable by the user.
-		* visible : Whether the windowed mode window will be initially visible.
-		* decorated : Whether the windowed mode window will have window decorations.
-		* focused : Whether the windowed mode window will be given input focus when created.
-		* autoIconify : Whether the full screen window will automatically iconify and restore the previous video mode on input focus loss.
-		* floating : Whether the windowed mode window will be floating above other regular windows, also called topmost or always-on-top.
-		* maximized : Whether the windowed mode window will be maximized when created.
-		* centerCursor : Whether the cursor should be centered over newly created full screen windows.
-		* transparentFramebuffer : Whether the window framebuffer will be transparent.
-		* focusOnShow : Whether the window will be given input focus when glfwShowWindow() is called.
-		* scaleToMonitor : Whether the window content area should be resized based on the monitor content scale of any monitor it is placed on.
+		* resizable : Whether the windowed mode window will be resizable by the user. {Default : GLFW_TRUE}
+		* visible : Whether the windowed mode window will be initially visible. {Default : GLFW_TRUE}
+		* decorated : Whether the windowed mode window will have window decorations. {Default : GLFW_TRUE}
+		* focused : Whether the windowed mode window will be given input focus when created. {Default : GLFW_TRUE}
+		* autoIconify : Whether the full screen window will automatically iconify and restore the previous video mode on input focus loss. {Default : GLFW_TRUE}
+		* floating : Whether the windowed mode window will be floating above other regular windows, also called topmost or always-on-top. {Default : GLFW_FALSE}
+		* maximized : Whether the windowed mode window will be maximized when created. {Default : GLFW_FALSE}
+		* centerCursor : Whether the cursor should be centered over newly created full screen windows. {Default : GLFW_TRUE}
+		* transparentFramebuffer : Whether the window framebuffer will be transparent. {Default : GLFW_FALSE}
+		* focusOnShow : Whether the window will be given input focus when glfwShowWindow() is called. {Default : GLFW_TRUE}
+		* scaleToMonitor : Whether the window content area should be resized based on the monitor content scale of any monitor it is placed on. {Default : GLFW_FALSE}
 		*
 		[See also]
 		* https://www.glfw.org/docs/latest/window_guide.html
@@ -193,6 +182,8 @@ namespace GeoFrame {
 	public:
 		/*
 		* "GLFWmonitor*" wrapper constructer.
+		[WARNING]
+		* Do not use this constructer to get monitor object. Use "GetPrimaryMonitor()" or "GetMonitors()" class method instead.
 		*/
 		Monitor(GLFWmonitor* ptr = NULL);
 
@@ -287,6 +278,8 @@ namespace GeoFrame {
 	public:
 		/*
 		* "GLFWwindow*" wrapper constructer.
+		[WARNING]
+		* Do not use this constructer to get monitor object. Use "GetPrimaryMonitor()" or "GetMonitors()" class method instead.
 		*/
 		Window(GLFWwindow* ptr = NULL);
 		/*
@@ -295,9 +288,9 @@ namespace GeoFrame {
 		* width : window width.
 		* heihgt : Window height.
 		* title : Window title.
-		* settings : Window settings.
-		* monitor : Monitor for window.[optional]
-		* share : Window to share the resources.[optional]
+		* settings : Window settings. {Default : WindowSettings()}
+		* monitor : Monitor for window. {Default : NULL}
+		* share : Window to share the resources. {Default : NULL}
 		*/
 		Window(GLsizei width, GLsizei height, std::string title, WindowSettings settings = WindowSettings(), Monitor monitor = NULL, Window share = NULL);
 
@@ -500,6 +493,14 @@ namespace GeoFrame {
 		* bool : Focus-On-Showing[true] / Not[false].
 		*/
 		bool IsFocusOnShowing() const;
+		/*
+		* Get whether the key is pressed or not.
+		[params]
+		* key : Key to get state.
+		[returns]
+		* bool : Pressed[true] / Not[false].
+		*/
+		bool IsPressing(Keyboard key) const;
 
 
 		/*

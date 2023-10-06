@@ -105,47 +105,12 @@ namespace GeoFrame {
 
 	void Attribute::SetDivisor(unsigned divisor) { mDivisor = divisor; }
 
-	Buffer::Buffer(BufferUsage usage) : mUsage(usage) {
-		glGenVertexArrays(1, &mVAO);
-		glBindVertexArray(mVAO);
-		glGenBuffers(1, &mVBO);
-		glGenBuffers(1, &mEBO);
-		glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-
-	Buffer::Buffer(size_t vertexBufferSize, size_t indexBufferSize, BufferUsage usage) : mUsage(usage) {
-		glGenVertexArrays(1, &mVAO);
-		glBindVertexArray(mVAO);
-		glGenBuffers(1, &mVBO);
-		glGenBuffers(1, &mEBO);
-		glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-		
-		glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, NULL, (GLenum)usage);
-		if (indexBufferSize != -1) {
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexBufferSize, NULL, (GLenum)usage);
-		}
-		else { ; }
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	}
-
-	std::vector<Attribute> Buffer::GetAttributes() const { return mAttributes; }
-
-	void Buffer::SetAttribute(Attribute attr) { mAttributes.push_back(attr); }
-
-	void Buffer::Compile() {
+	std::pair<size_t, std::vector<size_t>> VertexArray::GetAttributeDatas(const std::vector<Attribute>& attrs) {
 		std::vector<size_t> offsets = {};
 		size_t currentOffset = 0, totalComps = 0;
-		if (mAttributes[0].mStride == -1 || mAttributes[0].mOffset == -1) {
-			for (unsigned i = 0; i < mAttributes.size(); i++) {
-				Attribute& attr = mAttributes[i];
+		if (attrs[0].mStride == -1 || attrs[0].mOffset == -1) {
+			for (unsigned i = 0; i < attrs.size(); i++) {
+				const Attribute& attr = attrs[i];
 				offsets.push_back(currentOffset);
 				currentOffset += GetSize(attr.mType) * attr.mComponents;
 				totalComps += attr.mComponents;
@@ -153,55 +118,31 @@ namespace GeoFrame {
 		}
 		else { ; }
 
-		glBindVertexArray(mVAO);
-		glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-		for (unsigned i = 0; i < mAttributes.size(); i++) {
-			Attribute& attr = mAttributes[i];
-			size_t stride, offset;
-			if (attr.mStride == -1) {
-				stride = totalComps;
-			}
-			else {
-				stride = attr.mStride;
-			}
-
-			if (attr.mOffset == -1) {
-				offset = offsets[i];
-			}
-			else {
-				offset = attr.mOffset;
-			}
-
-			if (attr.mDivisor != -1) {
-				glVertexAttribDivisor(i, attr.mDivisor);
-			}
-			else { ; }
-
-			glEnableVertexAttribArray(i);
-			glVertexAttribPointer(
-				i, attr.mComponents,
-				(GLenum)attr.mType, GL_FALSE, stride, (void*)offset
-			);
-		}
-
-		glBindVertexArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		mCompiled = true;
+		return std::pair<size_t, std::vector<size_t>>(totalComps, offsets);
 	}
 
-	void Buffer::Bind() const { glBindVertexArray(mVAO); }
+	VertexArray::VertexArray() { glGenVertexArrays(1, &mID); }
 
-	void Buffer::Unbind() const { glBindVertexArray(0); }
-
-	void Buffer::Draw(DrawMode drawMode) {
-		if (!mCompiled) {
-			this->Compile();
+	void VertexArray::Draw(DrawMode mode) {
+		glBindVertexArray(mID);
+		if (mIndices != 0) {
+			glDrawElements((GLenum)mode, mIndices, (GLenum)mIndexType, NULL);
 		}
-		else { ; }
+		else {
+			throw IndexBufferError("No index buffer is binded.");
+		}
+		glBindVertexArray(0);
+	}
 
-		this->Bind();
-		glDrawElements((GLenum)drawMode, mIndices, (GLenum)mIndexType, NULL);
-		this->Unbind();
+	void VertexArray::DrawInstances(size_t numOfInstances, DrawMode mode) {
+		glBindVertexArray(mID);
+		if (mIndices != 0) {
+			glDrawElementsInstanced((GLenum)mode, mIndices, (GLenum)mIndexType, NULL, numOfInstances);
+		}
+		else {
+			throw IndexBufferError("No index buffer is binded.");
+		}
+		glBindVertexArray(0);
 	}
 }
 
@@ -211,15 +152,6 @@ std::ostream& operator<<(std::ostream& stream, const GeoFrame::Attribute& attrib
 	stream << "components : " << attribute.mComponents << ", ";
 	stream << "stride : " << attribute.mStride << ", ";
 	stream << "offset : " << attribute.mOffset;
-	stream << ")";
-	return stream;
-}
-
-std::ostream& operator<<(std::ostream& stream, const GeoFrame::Buffer& buffer) {
-	stream << "Buffer(" << std::endl;
-	for (const auto& attr : buffer.GetAttributes()) {
-		stream << "    " << attr << ", " << std::endl;
-	}
 	stream << ")";
 	return stream;
 }

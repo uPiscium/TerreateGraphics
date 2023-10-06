@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "core.h"
+#include "exception.h"
 
 namespace GeoFrame {
 	GLType TYPE2GL(const type_info& type);
@@ -47,179 +48,209 @@ namespace GeoFrame {
 		void SetDivisor(unsigned divisor);
 	};
 
-	class Buffer {
+	template<typename T>
+	class VertexBuffer {
 	private:
+		unsigned mID = 0;
+		BufferType mBufferType = BufferType::ARRAY_BUFFER;
 		BufferUsage mUsage = BufferUsage::STATIC_DRAW;
-		unsigned mVAO = 0;
-		unsigned mVBO = 0;
-		unsigned mEBO = 0;
+		size_t mBufferComponents = 0;
+		size_t mComponentSize = sizeof(T);
+		GLType mDataType = TYPE2GL(typeid(T));
 		std::vector<Attribute> mAttributes = {};
-		bool mCompiled = false;
-		size_t mIndices = 0;
-		GLType mIndexType = GLType::UNSIGNED_INT;
 
 	public:
 		/*
-		* Vertex buffer creation class.
+		* Vertex buffer or index buffer creation class.
 		[params]
-		* usage : Usage of this buffer.
+		* type : Type of this buffer.
+		* usage : Usage of this buffer. {Default : BufferUsage::STATIC_DRAW}
+		[notes]
+		* STATIC_~~~ is used for static data. It shouldn't be changed frequentry.
+		* DYNAMIC_~~~ is used for dynamic data. It can be changed frequentry.
+		* ARRAY_BUFFER can be used as position, color, tex pos, or etc... buffer.
+		* ELEMENT_BUFFER can be used as index buffer.
 		*/
-		Buffer(BufferUsage usage = BufferUsage::STATIC_DRAW);
+		VertexBuffer(BufferType type, BufferUsage usage = BufferUsage::STATIC_DRAW)
+			: mBufferType(type), mUsage(usage)
+		{
+			glGenBuffers(1, &mID);
+		}
 		/*
 		* Vertex buffer creation class.
 		[params]
-		* vertexBufferSize : The whole size of vertex buffer data.
-		* indexBufferSize : The whole size of index buffer data. If "-1", buffer will allocate in SetIndexData() or SetBufferDatas().
-		* usage : Usage of this buffer.
+		* type : Type of this buffer.
+		* data : Buffer data.
+		* usage : Usage of this buffer. {Default : BufferUsage::STATIC_DRAW}
+		[notes]
+		* STATIC_~~~ is used for static data. It shouldn't be changed frequentry.
+		* DYNAMIC_~~~ is used for dynamic data. It can be changed frequentry.
+		* ARRAY_BUFFER can be used as position, color, tex pos, or etc... buffer.
+		* ELEMENT_BUFFER can be used as index buffer.
 		*/
-		Buffer(size_t vertexBufferSize, size_t indexBufferSize = -1, BufferUsage usage = BufferUsage::STATIC_DRAW);
+		VertexBuffer(BufferType type, const std::vector<T>& data, BufferUsage usage = BufferUsage::STATIC_DRAW)
+			: mBufferType(type), mUsage(usage)
+		{
+			glGenBuffers(1, &mID);
+			this->SetBufferData(data);
+		}
 
 		/*
-		* Vertex attribute list getter.
+		* Get vertex attribute list.
 		[returns]
-		* @ : Vertex attribute list.
+		* std::vector<Attribute> : Vertex attribute list.
 		*/
-		std::vector<Attribute> GetAttributes() const;
+		std::vector<Attribute> GetAttributes() const { return mAttributes; }
+		/*
+		* Get the size of buffer count in bytes.
+		[returns]
+		* size_t : Buffer size.(bytes)
+		*/
+		size_t GetSize() const { return mBufferComponents * mComponentSize; }
+		/*
+		* Get the number of components of buffer.
+		[returns]
+		* size_t : Number of components of buffer.
+		*/
+		size_t GetNumComponents() const { return mBufferComponents; }
+		/*
+		* Get buffer component type.
+		[returns]
+		* GLType: Buffer component type.
+		*/
+		GLType GetComponentType() const { return mDataType; }
+		/*
+		* Get buffer type.
+		[returns]
+		* BufferType : Buffer type.
+		*/
+		BufferType GetBufferType() const { return mBufferType; }
 
 		/*
 		* Add new attribute.
 		[params]
 		* attr : Attribute to add.
 		*/
-		void SetAttribute(Attribute attr);
+		void SetAttribute(Attribute attr) { mAttributes.push_back(attr); }
 		/*
-		* Set vertex buffer data.
+		* Set buffer data.
 		[params]
-		* data : Vertex buffer data.
+		* data : Buffer data.
 		*/
-		template<typename T>
-		void SetVertexBufferData(std::vector<T> data) {
-			glBindVertexArray(mVAO);
-			glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(T) * data.size(), &data[0], (GLenum)mUsage);
-			glBindVertexArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		void SetBufferData(const std::vector<T>& data) {
+			mBufferComponents = data.size();
+			glBindBuffer((GLenum)mBufferType, mID);
+			glBufferData((GLenum)mBufferType, this->GetSize(), &data[0], (GLenum)mUsage);
+			glBindBuffer((GLenum)mBufferType, 0);
 		}
+		
 		/*
-		* Rewrite vertex buffer data.
+		* Update vertex buffer data.
 		[params]
 		* data : New buffer data.
-		* offset : Offset of new data.
+		* offset : Offset of new data. {Default : 0}
 		[WARNING]
 		* Call non offset version before calling this.
 		* The template type <T> must be the same as written data type.
 		* Data size must be less than written data size.
 		*/
-		template<typename T>
-		void SetVertexBufferData(std::vector<T> data, size_t offset) {
-			glBindVertexArray(mVAO);
-			glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-			glBufferSubData(GL_ARRAY_BUFFER, offset, sizeof(T) * data.size(), &data[0]);
-			glBindVertexArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		void UpdateBufferData(const std::vector<T>& data, size_t offset = 0) {
+			glBindBuffer((GLenum)mBufferType, mID);
+			glBufferSubData((GLenum)mBufferType, offset * mComponentSize, data.size() * mComponentSize, &data[0]);
+			glBindBuffer((GLenum)mBufferType, 0);
 		}
-		/*
-		* Set index buffer data.
-		[params]
-		* data : Index buffer data.
-		*/
-		template<typename T>
-		void SetIndexBufferData(std::vector<T> data) {
-			glBindVertexArray(mVAO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-			mIndexType = TYPE2GL(typeid(T));
-			mIndices = data.size();
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(T) * data.size(), &data[0], (GLenum)mUsage);
-			glBindVertexArray(0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		}
-		/*
-		* Rewrite index buffer data.
-		[params]
-		* data :  New index buffer data.
-		* offset : Offset of new data.
-		[WARNING]
-		* Call non offset version before calling this.
-		* The template type <T> must be the same as written data type.
-		* Data size must be less than written data size.
-		*/
-		template<typename T>
-		void SetIndexBufferData(std::vector<T> data, size_t offset) {
-			glBindVertexArray(mVAO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-			
-			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, offset, sizeof(T) * data.size(), &data[0]);
-			
-			glBindVertexArray(0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		}
-		/*
-		* Set vertex and index buffer data.
-		[params]
-		* vertexBufferData : Vertex buffer data.
-		* indexBufferData : Index buffer data.
-		*/
-		template<typename S, typename T>
-		void SetBufferDatas(std::vector<S> vertexBufferData, std::vector<T> indexBufferData) {
-			glBindVertexArray(mVAO);
-			glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-
-			mIndexType = TYPE2GL(typeid(T));
-			mIndices = indexBufferData.size();
-			
-			glBufferData(GL_ARRAY_BUFFER, sizeof(S) * vertexBufferData.size(), &vertexBufferData[0], (GLenum)mUsage);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(T) * indexBufferData.size(), &indexBufferData[0], (GLenum)mUsage);
-			
-			glBindVertexArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		}
-		/*
-		* Rewrite vertex and index buffer data.
-		[params]
-		* vertexBufferData : New vertex buffer data.
-		* indexBufferData : New index buffer data.
-		* vertexDataOffset : Offset of new vertex data.
-		* indexDataOffset : Offset of new index data.
-		[WARNING]
-		* Call non offset version before calling this.
-		* The template type <T> must be the same as written data type.
-		* Data size must be less than written data size.
-		*/
-		template<typename S, typename T>
-		void SetBufferDatas(std::vector<S> vertexBufferData, std::vector<T> indexBufferData, size_t vertexDataOffset, size_t indexDataOffset) {
-			glBindVertexArray(mVAO);
-			glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-
-			glBufferSubData(GL_ARRAY_BUFFER, vertexDataOffset, sizeof(S) * vertexBufferData.size(), &vertexBufferData[0]);
-			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, indexDataOffset, sizeof(T) * indexBufferData.size(), &indexBufferData[0]);
-			
-			glBindVertexArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		}
-		/*
-		* Compile buffer. Call before drawing.
-		*/
-		void Compile();
 		/*
 		* Bind all buffers.
 		*/
-		void Bind() const;
+		void Bind() const { glBindBuffer((GLenum)mBufferType, mID); }
 		/*
 		* Unbind all buffers.
 		*/
-		void Unbind() const;
-		/*
-		* Draw buffer.
-		*/
-		void Draw(DrawMode drawMode = DrawMode::TRIANGLES);
+		void Unbind() const { glBindBuffer((GLenum)mBufferType, 0); }
+	};
 
-		operator std::vector<Attribute>() const { return mAttributes; }
+	class VertexArray {
+	private:
+		unsigned mID;
+		size_t mIndices = 0;
+		GLType mIndexType = GLType::UNSIGNED_INT;
+
+	private:
+		std::pair<size_t, std::vector<size_t>> GetAttributeDatas(const std::vector<Attribute>& attrs);
+
+	public:
+		/*
+		* Vertex array creation class.
+		*/
+		VertexArray();
+
+		/*
+		* Register vertex buffer to vertex array.
+		[params]
+		* buffer : Buffer to register.
+		*/
+		template<typename T>
+		void Register(const VertexBuffer<T>& buffer) {
+			const std::vector<Attribute>& attrs = buffer.GetAttributes();
+
+			if (buffer.GetBufferType() == BufferType::ELEMENT_BUFFER) {
+				mIndices = buffer.GetNumComponents();
+				mIndexType = buffer.GetComponentType();
+			}
+			else { ; }
+
+			if (attrs.size() != 0) {
+				auto data = this->GetAttributeDatas(attrs);
+				const size_t& totalComps = data.first;
+				const std::vector<size_t>& offsets = data.second;
+
+				glBindVertexArray(mID);
+				buffer.Bind();
+				for (unsigned i = 0; i < attrs.size(); i++) {
+					const Attribute& attr = attrs[i];
+					size_t stride, offset;
+					stride = attr.mStride == -1 ? totalComps : attr.mStride;
+					offset = attr.mOffset == -1 ? offsets[i] : attr.mOffset;
+
+					if (attr.mDivisor != -1) {
+						glVertexAttribDivisor(i, attr.mDivisor);
+					}
+					else { ; }
+
+					glEnableVertexAttribArray(i);
+					glVertexAttribPointer(
+						i, attr.mComponents,
+						(GLenum)attr.mType, GL_FALSE, stride, (void*)offset
+					);
+				}
+
+				glBindVertexArray(0);
+				buffer.Unbind();
+			}
+			else {
+				glBindVertexArray(mID);
+				buffer.Bind();
+				glBindVertexArray(0);
+				buffer.Unbind();
+			}
+		}
+
+		/*
+		* Draw registered buffers.
+		[params]
+		* mode : Draw mode of OpenGL. {Default : DrawMode::TRIANGLES}
+		[notes]
+		* If you want to draw the same object many times, "DrawInstances()" method is more suited.
+		*/
+		void Draw(DrawMode mode = DrawMode::TRIANGLES);
+		/*
+		* Draw registered buffers.
+		[params]
+		* numOfInstances : Number of instances you want to draw.
+		* mode : Draw mode of OpenGL. {Default : DrawMode::TRIANGLES}
+		*/
+		void DrawInstances(size_t numOfInstances, DrawMode mode = DrawMode::TRIANGLES);
 	};
 }
 
 std::ostream& operator<<(std::ostream& stream, const GeoFrame::Attribute& attribute);
-std::ostream& operator<<(std::ostream& stream, const GeoFrame::Buffer& buffer);
