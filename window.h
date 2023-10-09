@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "core.h" //#include <stb/stb_image.h>
+#include "core.h" //<stb/stb_image.h> is included in "core.h"
 #include "callback.h"
 
 namespace GeoFrame {
@@ -688,9 +688,9 @@ namespace GeoFrame {
 		/*
 		* Fill window with 'color'.
 		[params]
-		* color : Filling color.({R, G, B} or {R, G, B, A})
+		* color : Filling color.({R, G, B} or {R, G, B, A} / 0 ~ 255)
 		*/
-		void Fill(const std::vector<float>& color);
+		void Fill(const std::vector<unsigned char>& color);
 		/*
 		* Clear all buffer.(color, depth and stencil buffer)
 		*/
