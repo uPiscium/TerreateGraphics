@@ -107,18 +107,18 @@ namespace GeoFrame {
 
 	std::pair<size_t, std::vector<size_t>> VertexArray::GetAttributeDatas(const std::vector<Attribute>& attrs) {
 		std::vector<size_t> offsets = {};
-		size_t currentOffset = 0, totalComps = 0;
+		size_t currentOffset = 0, strideSize = 0;
 		if (attrs[0].mStride == -1 || attrs[0].mOffset == -1) {
 			for (unsigned i = 0; i < attrs.size(); i++) {
 				const Attribute& attr = attrs[i];
 				offsets.push_back(currentOffset);
 				currentOffset += GetSize(attr.mType) * attr.mComponents;
-				totalComps += attr.mComponents;
+				strideSize += attr.mComponents * GetSize(attr.mType);
 			}
 		}
 		else { ; }
 
-		return std::pair<size_t, std::vector<size_t>>(totalComps, offsets);
+		return std::pair<size_t, std::vector<size_t>>(strideSize, offsets);
 	}
 
 	VertexArray::VertexArray() { glGenVertexArrays(1, &mID); }
