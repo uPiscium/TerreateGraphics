@@ -1,3 +1,4 @@
+#include "texture.h"
 #include "window.h"
 
 namespace GeoFrame {
@@ -394,12 +395,12 @@ namespace GeoFrame {
 
 	void Window::Attension() { glfwRequestWindowAttention(mWindow); }
 
-	void Window::Fill(const std::vector<float>& color) {
+	void Window::Fill(const std::vector<unsigned char>& color) {
 		if (color.size() == 4) {
-			glClearColor(color[0], color[1], color[2], color[3]);
+			glClearColor(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, color[3] / 255.0f);
 		}
 		else if (color.size() == 3) {
-			glClearColor(color[0], color[1], color[2], 0);
+			glClearColor(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, 0);
 		}
 		else {
 			glClearColor(0, 0, 0, 0);

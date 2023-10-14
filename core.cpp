@@ -10,7 +10,11 @@ namespace GeoFrame {
 			throw FatalError("Dependence library [glfw] was failed to initialize.");
 		}
 		else { ; }
-		stbi_set_flip_vertically_on_load(true);
+
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+		glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
 	}
 
 	void InitGLAD() {

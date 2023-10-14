@@ -201,7 +201,7 @@ namespace GeoFrame {
 
 			if (attrs.size() != 0) {
 				auto data = this->GetAttributeDatas(attrs);
-				const size_t& totalComps = data.first;
+				const size_t& strideSize = data.first;
 				const std::vector<size_t>& offsets = data.second;
 
 				glBindVertexArray(mID);
@@ -209,7 +209,7 @@ namespace GeoFrame {
 				for (unsigned i = 0; i < attrs.size(); i++) {
 					const Attribute& attr = attrs[i];
 					size_t stride, offset;
-					stride = attr.mStride == -1 ? totalComps : attr.mStride;
+					stride = attr.mStride == -1 ? strideSize : attr.mStride;
 					offset = attr.mOffset == -1 ? offsets[i] : attr.mOffset;
 
 					if (attr.mDivisor != -1) {
@@ -219,8 +219,8 @@ namespace GeoFrame {
 
 					glEnableVertexAttribArray(i);
 					glVertexAttribPointer(
-						i, attr.mComponents,
-						(GLenum)attr.mType, GL_FALSE, stride, (void*)offset
+						i, attr.mComponents, (GLenum)attr.mType, GL_FALSE,
+						stride, (void*)offset
 					);
 				}
 
