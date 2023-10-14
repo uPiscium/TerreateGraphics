@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "core.h" //<stb/stb_image.h> is included in "core.h"
+#include "core.h"
 #include "callback.h"
 
 namespace GeoFrame {

@@ -1,3 +1,4 @@
+#include "texture.h"
 #include "window.h"
 
 namespace GeoFrame {
