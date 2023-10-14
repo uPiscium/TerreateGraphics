@@ -2,16 +2,21 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#define STB_IMAGE_STATIC
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
 #include <string>
 #include <vector>
 
-#include "core.h" //<stb/stb_image.h> is included in "core.h"
+#include "core.h"
 #include "exception.h"
 
 namespace GeoFrame {
 	struct TextureSettings {
 	public:
 		bool mSRGBLoading = true;
+		bool mFilppedLoading = false;
 		FilterType mMinFilter = FilterType::NEAREST_MIPMAP_LINEAR;
 		FilterType mMagFilter = FilterType::LINEAR;
 		WrappingType mWrapS = WrappingType::REPEAT;
@@ -21,6 +26,7 @@ namespace GeoFrame {
 	public:
 		TextureSettings(
 			bool sRGBLoading = true,
+			bool filppedLoading = false,
 			FilterType minFilter = FilterType::NEAREST_MIPMAP_LINEAR,
 			FilterType magFilter = FilterType::LINEAR,
 			WrappingType wrapS = WrappingType::REPEAT,
@@ -38,7 +44,8 @@ namespace GeoFrame {
 
 	public:
 		Texture(
-			unsigned width, unsigned height, AttachmentType type = AttachmentType::COLOR,
+			unsigned width, unsigned height,
+			AttachmentType attachmentType = AttachmentType::COLOR,
 			TextureSettings settings = TextureSettings()
 		);
 		Texture(std::string path,TextureSettings settings = TextureSettings());
@@ -68,16 +75,32 @@ namespace GeoFrame {
 
 	public:
 		CubeTexture(
-			unsigned width, unsigned height, AttachmentType type = AttachmentType::COLOR,
+			const std::vector<unsigned>& widths,
+			const std::vector<unsigned>& heights,
+			AttachmentType attachmentType = AttachmentType::COLOR,
+			TextureSettings settings = TextureSettings()
+		);
+		CubeTexture(
+			unsigned widths,
+			unsigned heights,
+			AttachmentType attachmentType = AttachmentType::COLOR,
 			TextureSettings settings = TextureSettings()
 		);
 		CubeTexture(const std::vector<std::string>& paths, TextureSettings settings = TextureSettings());
 		CubeTexture(const std::vector<std::vector<float>>& colors, TextureSettings settings = TextureSettings());
+		CubeTexture(const std::vector<float>& color, TextureSettings settings = TextureSettings());
 		CubeTexture(
 			const std::vector<std::vector<unsigned char>>& bitmaps,
 			const std::vector<unsigned>& widths,
 			const std::vector<unsigned>& heights,
 			const std::vector<unsigned>& channels,
+			TextureSettings settings = TextureSettings()
+		);
+		CubeTexture(
+			const std::vector<std::vector<unsigned char>>& bitmaps,
+			unsigned width,
+			unsigned height,
+			unsigned channel,
 			TextureSettings settings = TextureSettings()
 		);
 
