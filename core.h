@@ -21,19 +21,19 @@ namespace GeoFrame {
 	/*
 	* Library terminater.
 	*/
-	void Terminate();
+	inline void Terminate() { glfwTerminate(); }
 	/*
 	* Get current clipboard string.
 	[returns]
 	@ : Current clipboard string.
 	*/
-	std::string Clipboard();
+	inline std::string Clipboard() { return std::string(glfwGetClipboardString(NULL)); }
 	/*
 	* Set text to clipboard.
 	[params]
 	* text : Text to set to clipboard.
 	*/
-	void Clipboard(std::string text);
+	inline void Clipboard(std::string text) { glfwSetClipboardString(NULL, text.c_str()); }
 
 	/*
 	* Modifier key state holder class.
@@ -61,7 +61,11 @@ namespace GeoFrame {
 		Mods mMods;
 
 	public:
-		Key(int key, int scancode, int action, int mods);
+		Key(int key, int scancode, int action, int mods)
+			: mKey(key), mScancode(scancode), mAction(action), mMods(mods)
+		{
+			;
+		}
 	};
 
 	enum class BufferBit {
@@ -165,32 +169,6 @@ namespace GeoFrame {
 		FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
 		VERTEX_SHADER = GL_VERTEX_SHADER,
 		GEOMETRY_SHADER = GL_GEOMETRY_SHADER
-	};
-
-	enum class AttachmentType {
-		COLOR = 0,
-		DEPTH = GL_DEPTH_ATTACHMENT,
-		STENCIL = GL_STENCIL_ATTACHMENT,
-		DEPTH24_STENCIL8 = GL_DEPTH24_STENCIL8,
-		DEPTH32F_STENCIL8 = GL_DEPTH32F_STENCIL8
-	};
-
-	enum class PixelFormat {
-		RED = GL_RED,
-		RG = GL_RG,
-		RGB = GL_RGB,
-		BGR = GL_BGR,
-		RGBA = GL_RGBA,
-		BGRA = GL_BGRA,
-		RED_INT = GL_RED_INTEGER,
-		RG_INT = GL_RG_INTEGER,
-		RGB_INT = GL_RGB_INTEGER,
-		BGR_INT = GL_BGR_INTEGER,
-		RGBA_INT = GL_RGBA_INTEGER,
-		BGRA_INT = GL_BGRA_INTEGER,
-		STENCIL_INDEX = GL_STENCIL_INDEX,
-		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
-		DEPTH_STENCIL = GL_DEPTH_STENCIL
 	};
 
 	enum class MousebuttonInput {

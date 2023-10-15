@@ -23,14 +23,21 @@ namespace GeoFrame {
 		int mDivisor = -1;
 
 	public:
-		Attribute();
+		Attribute() : mType(GLType::FLOAT), mComponents(-1), mStride(-1), mOffset(-1)
+		{
+			;
+		}
 		/*
 		* Attribute definition class.
 		[params]
 		* type : Component type of the attribute.
 		* components : Number of components of the attribute.
 		*/
-		Attribute(GLType type, GLsizei components);
+		Attribute(GLType type, GLsizei components)
+			: mType(type), mComponents(components), mStride(-1), mOffset(-1)
+		{
+			;
+		}
 		/*
 		* Attribute definition class.
 		[params]
@@ -39,13 +46,17 @@ namespace GeoFrame {
 		* stride : Stride of this attribute.
 		* offset : Offset of this attribute.
 		*/
-		Attribute(GLType type, GLsizei components, GLsizei stride, GLsizei offset);
+		Attribute(GLType type, GLsizei components, GLsizei stride, GLsizei offset)
+			: mType(type), mComponents(components), mStride(stride), mOffset(offset)
+		{
+			;
+		}
 		/*
 		* Set attribute divisor.
 		[params]
 		* divisor : Specify how many vertices to divide the data into.
 		*/
-		void SetDivisor(unsigned divisor);
+		void SetDivisor(unsigned divisor) { mDivisor = divisor; }
 	};
 
 	template<typename T>
@@ -182,7 +193,7 @@ namespace GeoFrame {
 		/*
 		* Vertex array creation class.
 		*/
-		VertexArray();
+		VertexArray() { glGenVertexArrays(1, &mID); }
 
 		/*
 		* Register vertex buffer to vertex array.
@@ -197,8 +208,7 @@ namespace GeoFrame {
 				mIndices = buffer.GetNumComponents();
 				mIndexType = buffer.GetComponentType();
 			}
-			else { ; }
-
+			
 			if (attrs.size() != 0) {
 				auto data = this->GetAttributeDatas(attrs);
 				const size_t& strideSize = data.first;
@@ -215,7 +225,6 @@ namespace GeoFrame {
 					if (attr.mDivisor != -1) {
 						glVertexAttribDivisor(i, attr.mDivisor);
 					}
-					else { ; }
 
 					glEnableVertexAttribArray(i);
 					glVertexAttribPointer(

@@ -8,59 +8,6 @@ namespace GeoFrame {
 		mWrapS(wrapS), mWrapT(wrapT), mWrapR(wrapR)
 	{ ; }
 
-	Texture::Texture(
-		unsigned width, unsigned height, AttachmentType attachmentType, TextureSettings settings
-	) : mWidth(width), mHeight(height) {
-		glGenTextures(1, &mID);
-		glBindTexture(GL_TEXTURE_2D, mID);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (GLint)settings.mWrapS);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLint)settings.mWrapT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLint)settings.mMinFilter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLint)settings.mMagFilter);
-
-		switch (attachmentType)
-		{
-		case GeoFrame::AttachmentType::COLOR:
-			glTexImage2D(
-				GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight,
-				0, GL_RGBA, GL_UNSIGNED_BYTE, NULL
-			);
-			mChannel = 4;
-			break;
-		case GeoFrame::AttachmentType::DEPTH:
-			glTexImage2D(
-				GL_TEXTURE_2D, 0, GL_DEPTH_ATTACHMENT, mWidth, mHeight,
-				0, GL_DEPTH_ATTACHMENT, GL_FLOAT, NULL
-			);
-			mChannel = 1;
-			break;
-		case GeoFrame::AttachmentType::STENCIL:
-			glTexImage2D(
-				GL_TEXTURE_2D, 0, GL_STENCIL_ATTACHMENT, mWidth, mHeight,
-				0, GL_STENCIL_ATTACHMENT, GL_FLOAT, NULL
-			);
-			mChannel = 1;
-			break;
-		case GeoFrame::AttachmentType::DEPTH24_STENCIL8:
-			glTexImage2D(
-				GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, mWidth, mHeight,
-				0, GL_DEPTH24_STENCIL8, GL_FLOAT, NULL
-			);
-			mChannel = 1;
-			break;
-		case GeoFrame::AttachmentType::DEPTH32F_STENCIL8:
-			glTexImage2D(
-				GL_TEXTURE_2D, 0, GL_DEPTH32F_STENCIL8, mWidth, mHeight,
-				0, GL_DEPTH32F_STENCIL8, GL_FLOAT, NULL
-			);
-			mChannel = 1;
-			break;
-		default:
-			break;
-		}
-	}
-
 	Texture::Texture(std::string path, TextureSettings settings) {
 		if (settings.mFilppedLoading) {
 			stbi_set_flip_vertically_on_load(false);
@@ -234,130 +181,6 @@ namespace GeoFrame {
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 	}
 
-	unsigned Texture::GetWidth() const { return mWidth; }
-
-	unsigned Texture::GetHeight() const { return mHeight; }
-
-	unsigned Texture::GetChannel() const { return mChannel; }
-
-	Texture::operator unsigned() const { return mID; }
-
-	void Texture::Bind() const { glBindTexture(GL_TEXTURE_2D, mID); }
-
-	void Texture::Unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
-
-
-	CubeTexture::CubeTexture(
-		const std::vector<unsigned>& widths,
-		const std::vector<unsigned>& heights,
-		AttachmentType attachmentType,
-		TextureSettings settings
-	) {
-		glGenTextures(1, &mID);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, mID);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, (GLint)settings.mWrapS);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, (GLint)settings.mWrapT);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, (GLint)settings.mWrapR);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, (GLint)settings.mMinFilter);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, (GLint)settings.mMagFilter);
-
-		mChannels = std::vector<unsigned>(6, attachmentType == AttachmentType::COLOR ? 4 : 1);
-
-		for (int i = 0; i < 6; i++) {
-			switch (attachmentType)
-			{
-			case GeoFrame::AttachmentType::COLOR:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, mWidths[i], mHeights[i],
-					0, GL_RGBA, GL_UNSIGNED_BYTE, NULL
-				);
-				break;
-			case GeoFrame::AttachmentType::DEPTH:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_ATTACHMENT, mWidths[i], mHeights[i],
-					0, GL_DEPTH_ATTACHMENT, GL_FLOAT, NULL
-				);
-				break;
-			case GeoFrame::AttachmentType::STENCIL:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_STENCIL_ATTACHMENT, mWidths[i], mHeights[i],
-					0, GL_STENCIL_ATTACHMENT, GL_FLOAT, NULL
-				);
-				break;
-			case GeoFrame::AttachmentType::DEPTH24_STENCIL8:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH24_STENCIL8, mWidths[i], mHeights[i],
-					0, GL_DEPTH24_STENCIL8, GL_FLOAT, NULL
-				);
-				break;
-			case GeoFrame::AttachmentType::DEPTH32F_STENCIL8:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH32F_STENCIL8, mWidths[i], mHeights[i],
-					0, GL_DEPTH32F_STENCIL8, GL_FLOAT, NULL
-				);
-				break;
-			default:
-				break;
-			}
-		}
-	}
-
-	CubeTexture::CubeTexture(
-		unsigned width,
-		unsigned height,
-		AttachmentType attachmentType,
-		TextureSettings settings
-	) {
-		glGenTextures(1, &mID);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, mID);
-
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, (GLint)settings.mWrapS);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, (GLint)settings.mWrapT);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, (GLint)settings.mMinFilter);
-		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, (GLint)settings.mMagFilter);
-
-		mWidths = std::vector<unsigned>(6, width);
-		mHeights = std::vector<unsigned>(6, height);
-		mChannels = std::vector<unsigned>(6, attachmentType == AttachmentType::COLOR ? 4 : 1);
-
-		for (int i = 0; i < 6; i++) {
-			switch (attachmentType)
-			{
-			case GeoFrame::AttachmentType::COLOR:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, mWidths[0], mHeights[0],
-					0, GL_RGBA, GL_UNSIGNED_BYTE, NULL
-				);
-				break;
-			case GeoFrame::AttachmentType::DEPTH:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_ATTACHMENT, mWidths[0], mHeights[0],
-					0, GL_DEPTH_ATTACHMENT, GL_FLOAT, NULL
-				);
-				break;
-			case GeoFrame::AttachmentType::STENCIL:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_STENCIL_ATTACHMENT, mWidths[0], mHeights[0],
-					0, GL_STENCIL_ATTACHMENT, GL_FLOAT, NULL
-				);
-				break;
-			case GeoFrame::AttachmentType::DEPTH24_STENCIL8:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH24_STENCIL8, mWidths[0], mHeights[0],
-					0, GL_DEPTH24_STENCIL8, GL_FLOAT, NULL
-				);
-				break;
-			case GeoFrame::AttachmentType::DEPTH32F_STENCIL8:
-				glTexImage2D(
-					GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH32F_STENCIL8, mWidths[0], mHeights[0],
-					0, GL_DEPTH32F_STENCIL8, GL_FLOAT, NULL
-				);
-				break;
-			default:
-				break;
-			}
-		}
-	}
 
 	CubeTexture::CubeTexture(const std::vector<std::string>& paths, TextureSettings settings) {
 		glGenTextures(1, &mID);
@@ -695,19 +518,7 @@ namespace GeoFrame {
 		}
 	}
 
-	std::vector<unsigned> CubeTexture::GetWidths() const { return mWidths; }
 	
-	std::vector<unsigned> CubeTexture::GetHeights() const { return mHeights; }
-	
-	std::vector<unsigned> CubeTexture::GetChannels() const { return mChannels; }
-
-	CubeTexture::operator unsigned() const { return mID; }
-
-	void CubeTexture::Bind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, mID); }
-
-	void CubeTexture::Unbind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
-
-
 	Texture3D::Texture3D(const std::vector<float>& color, TextureSettings settings)
 		: mWidth(1), mHeight(1), mDepth(1), mChannel(color.size())
 	{
@@ -826,14 +637,4 @@ namespace GeoFrame {
 		}
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 	}
-
-	unsigned Texture3D::GetWidth() const { return mWidth; }
-	unsigned Texture3D::GetHeight() const { return mHeight; }
-	unsigned Texture3D::GetDepth() const { return mDepth; }
-	unsigned Texture3D::GetChannel() const { return mChannel; }
-
-	Texture3D::operator unsigned() const { return mID; }
-
-	void Texture3D::Bind() const { glBindTexture(GL_TEXTURE_3D, mID); }
-	void Texture3D::Unbind() const { glBindTexture(GL_TEXTURE_3D, 0); }
 }
