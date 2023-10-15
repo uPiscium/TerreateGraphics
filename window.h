@@ -684,7 +684,7 @@ namespace GeoFrame {
 		/*
 		* Fill window with 'color'.
 		[params]
-		* color : Filling color.({R, G, B} or {R, G, B, A} / 0 ~ 255)
+		* color : Filling color.({R, G, B} / 0 ~ 255)
 		*/
 		void Fill(const std::vector<unsigned char>& color);
 		/*

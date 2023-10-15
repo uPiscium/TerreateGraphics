@@ -284,10 +284,7 @@ namespace GeoFrame {
 	}
 
 	void Window::Fill(const std::vector<unsigned char>& color) {
-		if (color.size() == 4) {
-			glClearColor(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, color[3] / 255.0f);
-		}
-		else if (color.size() == 3) {
+		if (color.size() >= 3) {
 			glClearColor(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, 0);
 		}
 		else {
