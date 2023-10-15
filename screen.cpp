@@ -33,9 +33,18 @@ namespace GeoFrame {
 		return statusLog;
 	}
 
-	Screen::Screen(unsigned width, unsigned height) : mWidth(width), mHeight(height) {
+	Screen::Screen(unsigned width, unsigned height, unsigned numOfBuffers) : mWidth(width), mHeight(height) {
 		glGenFramebuffers(1, &mFBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
+
+		unsigned* textures = new unsigned[numOfBuffers];
+		glGenTextures(numOfBuffers, textures);
+		for (int i = 0; i < numOfBuffers; i++) {
+			glBindTexture(GL_TEXTURE_2D, textures[i]);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+			;
+		}
 	}
 
-
+	;
 }
