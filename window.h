@@ -19,7 +19,7 @@ namespace GeoFrame {
 		/*
 		* Icon wrapper class.
 		*/
-		Icon();
+		Icon() { ; }
 		/*
 		* Icon wrapper class.
 		[params]
@@ -37,7 +37,7 @@ namespace GeoFrame {
 		[returns]
 		* int : Number of the loaded images.
 		*/
-		int GetNumImages() const;
+		int GetNumImages() const { return mImages.size(); }
 
 		/*
 		* Load image data from file.
@@ -55,7 +55,7 @@ namespace GeoFrame {
 		void LoadPixels(unsigned width, unsigned height, std::vector<unsigned char> bitmap);
 
 		
-		operator GLFWimage* ();
+		operator GLFWimage* () { return &mImages[0]; }
 	};
 
 	class Cursor {
@@ -75,14 +75,14 @@ namespace GeoFrame {
 		/*
 		* "GLFWcursor*" wrapper class.
 		*/
-		Cursor();
+		Cursor() : mXHot(0), mYHot(0) { ; }
 		/*
 		* "GLFWcursor*" wrapper class.
 		[params]
 		* xHot : X-position of the cursor hot spot.
 		* yHot : Y-position of the cursor hot spot.
 		*/
-		Cursor(unsigned xHot, unsigned yHot);
+		Cursor(unsigned xHot, unsigned yHot) : mXHot(xHot), mYHot(yHot) { ; }
 		/*
 		* "GLFWcursor*" wrapper class.
 		* xHot : X-position of the cursor hot spot.
@@ -115,10 +115,10 @@ namespace GeoFrame {
 		[params]
 		* type : Cursor type.
 		*/
-		void LoadStandard(CursorType type);
+		void LoadStandard(CursorType type) { mCursor = glfwCreateStandardCursor((int)type); }
 
 
-		operator GLFWcursor* ();
+		operator GLFWcursor* () { return mCursor; }
 	};
 
 	class WindowSettings {
@@ -192,37 +192,37 @@ namespace GeoFrame {
 		[returns]
 		* int : Width of the window.
 		*/
-		int Width() const;
+		int Width() const { return mVidMode->width; }
 		/*
 		* This function returns the height of window.
 		[returns]
 		* int : Height of the window.
 		*/
-		int Height() const;
+		int Height() const { return mVidMode->height; }
 		/*
 		* This function returns number of the red bits of window.
 		[returns]
 		* int : Number of the red bits of the window.
 		*/
-		int RedBits() const;
+		int RedBits() const { return mVidMode->redBits; }
 		/*
 		* This function returns number of the green bits of window.
 		[returns]
 		* int : Number of the green bits of the window.
 		*/
-		int GreenBits() const;
+		int GreenBits() const { return mVidMode->greenBits; }
 		/*
 		* This function returns number of the blue bits of window.
 		[returns]
 		* int : Number of the blue bits of the window.
 		*/
-		int BlueBits() const;
+		int BlueBits() const { return mVidMode->blueBits; }
 		/*
 		* This function returns the refresh rate of window.
 		[returns]
 		* int : Refresh rate of the window.
 		*/
-		int RefreshRate() const;
+		int RefreshRate() const { return mVidMode->refreshRate; }
 
 		operator GLFWmonitor* () const { return mMonitor; }
 
@@ -299,24 +299,172 @@ namespace GeoFrame {
 		[returns]
 		* int : Current mode.
 		*/
-		int GetInputMode(InputType inputType) const;
+		int GetInputMode(InputType inputType) const { return glfwGetInputMode(mWindow, (int)inputType); }
+		/*
+		* Get window size.
+		[returns]
+		* std::pair<int, int> : Current window size.
+		*/
+		std::pair<int, int> GetSize() const;
+		/*
+		* Get framebuffer size.
+		[returns]
+		* std::pair<int, int> : Current framebuffer size.
+		*/
+		std::pair<int, int> GetFramebufferSize() const;
+		/*
+		* Get content scale.
+		[returns]
+		* std::pair<float, float> : Current content scale.
+		*/
+		std::pair<float, float> GetContentScale() const;
+		/*
+		* Get window position.
+		[returns]
+		* std::pair<int, int> : Current window position.
+		*/
+		std::pair<int, int> GetPosition() const;
+		/*
+		* Get window aspect ratio.
+		[returns]
+		* std::pair<int, int> : Current window aspect ratio.
+		*/
+		std::pair<int, int> GetAspectRatio() const { return this->GetPropertyPointer()->mAspectRatio; }
+		/*
+		* Get specified mouse button state.
+		[returns]
+		* bool : Whether the mouse button is pressed or not.
+		*/
+		bool GetMousebutton(MousebuttonInput button) const { return (bool)glfwGetMouseButton(mWindow, (int)button); }
+		/*
+		* Get cursor position.
+		[returns]
+		* std::pair<double, double> : Current cursor position.
+		*/
+		std::pair<double, double> GetCursorPosition() const;
+		/*
+		* Get cursor is entered.
+		[returns]
+		* bool : Whether the cursor is entered or not.
+		*/
+		bool GetCursorEntered() const { return glfwGetWindowAttrib(mWindow, GLFW_HOVERED); }
+		/*
+		* Get scroll offset.
+		[returns]
+		* std::pair<float, float> : Current scroll offset.
+		*/
+		std::pair<float, float> GetScrollOffset() const { return this->GetPropertyPointer()->mScrollOffset; }
+		/*
+		* Get clipboard text of the window.
+		[returns]
+		* std::string : Clipboard text.
+		*/
+		std::string GetClipboard() const { return glfwGetClipboardString(mWindow); }
+		/*
+		* Get the list of dropped files.
+		[returns]
+		* std::vector<std::string> : Dropped files.
+		*/
+		std::vector<std::string> GetDroppedFiles() const { return this->GetPropertyPointer()->mDroppedFiles; }
+		/*
+		* Get window title.
+		[returns]
+		* std::string : Current window title.
+		*/
+		std::string GetTitle() const { return this->GetPropertyPointer()->mTitle; }
+		/*
+		* Get the list of inputed keys.
+		[returns]
+		* std::vector<Key> : Inputed keys.
+		*/
+		std::vector<Key> GetKeys() const { return this->GetPropertyPointer()->mKeyInputs; }
+		/*
+		* Get list of inputed characters.
+		[returns]
+		* std::vector<unsigned> : Inputed chracter unicode code points.
+		*/
+		std::vector<unsigned> GetChars() const { return this->GetPropertyPointer()->mCharInputs; }
+		/*
+		* Get window opacity.
+		[returns]
+		* float : Current window opacity.
+		*/
+		float GetOpacity() const { return glfwGetWindowOpacity(mWindow); }
+		/*
+		* Get window pixel data array.
+		[params]
+		* x0 : Left-lower corner x-position.
+		* y0 : Left-lower corner y-position.
+		* width : Cut out width.
+		* height : Cut out height.
+		* format : Data color format.(ex: GL_RGB)
+		* type : Type of the array.(ex: GL_UNSIGNED_BYTE)
+		* pixels : Pixel data storing target.
+		*/
+		void GetPixels(int x0, int y0, int width, int height, PixelFormat format, GLType type, void* pixels) { glReadPixels(x0, y0, width, height, (int)format, (int)type, pixels); }
 
 		/*
 		* Set window icon.
 		[params]
 		* icon : Icon to set.
 		*/
-		void SetIcon(Icon& icon);
+		void SetIcon(Icon& icon) { glfwSetWindowIcon(mWindow, icon.GetNumImages(), (GLFWimage*)icon); }
 		/*
 		* Set cursor appearance.
 		[params]
 		* cursor : Cursor to set.
 		*/
-		void SetCursor(Cursor& cursor);
+		void SetCursor(Cursor& cursor) { glfwSetCursor(mWindow, (GLFWcursor*)cursor); }
 		/*
 		* Set window as current context.
 		*/
-		void SetCurrent();
+		void SetCurrent() { glfwMakeContextCurrent(mWindow); }
+		/*
+		* Set window size.
+		[params]
+		* width : Window width.
+		* height : Window height.
+		*/
+		void SetSize(int width, int height) { glfwSetWindowSize(mWindow, width, height); }
+		/*
+		* Set window aspect ratio.
+		[params]
+		* numer : Aspect numerator.
+		* denom : Aspect denominator.
+		*/
+		void SetAspectRatio(int numer, int denom);
+		/*
+		* Set window position.
+		[params]
+		* xpos : Window x-position.
+		* ypos : Window y-position.
+		*/
+		void SetPosition(int xpos, int ypos) { glfwSetWindowPos(mWindow, xpos, ypos); }
+		/*
+		* Set cursor position.
+		[params]
+		* xpos : Cursor x-position.
+		* ypos : Cursor y-position.
+		*/
+		void SetCursorPosition(double xpos, double ypos) { glfwSetCursorPos(mWindow, xpos, ypos); }
+		/*
+		* Set window clipboard text.
+		[params]
+		* text : New clipboard text.
+		*/
+		void SetClipboard(std::string text) { glfwSetClipboardString(mWindow, text.c_str()); }
+		/*
+		* Set window title.
+		[params]
+		* title : New window title.
+		*/
+		void SetTitle(std::string title) { glfwSetWindowTitle(mWindow, title.c_str()); }
+		/*
+		* Set window opacity.
+		[params]
+		* opacity : New window opacity.
+		*/
+		void SetOpacity(float opacity) { glfwSetWindowOpacity(mWindow, opacity); }
 		/*
 		* Set position callback function.
 		[params]
@@ -414,85 +562,84 @@ namespace GeoFrame {
 		*/
 		FileDropCallback SetFileDropCallback(FileDropCallback callback);
 
-
 		/*
 		* Get whether the window is closed or not.
 		[returns]
 		* bool : Closed[true] / Not[false].
 		*/
-		bool IsClosed() const;
+		bool IsClosed() const { return bool(glfwWindowShouldClose(mWindow)); }
 		/*
 		* Get whether the window is full-screened or not.
 		[returns]
 		* bool : Fullscreen[true] / Not[false].
 		*/
-		bool IsFullScreened() const;
+		bool IsFullScreened() const { return bool(glfwGetWindowMonitor(mWindow) != NULL); }
 		/*
 		* Get whether the window is windowed or not.
 		[returns]
 		* bool : Windowed[true] / Not[false].
 		*/
-		bool IsWindowed() const;
+		bool IsWindowed() const { return bool(glfwGetWindowMonitor(mWindow) == NULL); }
 		/*
 		* Get whether the window is iconified or not.
 		[returns]
 		* bool : Iconified[true] / Not[false].
 		*/
-		bool IsIconified() const;
+		bool IsIconified() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_ICONIFIED)); }
 		/*
 		* Get whether the window is maximizedor not.
 		[returns]
 		* bool : Maximized[true] / Not[false].
 		*/
-		bool IsMaximized() const;
+		bool IsMaximized() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_MAXIMIZED)); }
 		/*
 		* Get whether the window is visible or not.
 		[returns]
 		* bool : Visible[true] / Not[false].
 		*/
-		bool IsVisible() const;
+		bool IsVisible() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_VISIBLE)); }
 		/*
 		* Get whether the window is focused or not.
 		[returns]
 		* bool : Focused[true] / Not[false].
 		*/
-		bool IsFocused() const;
+		bool IsFocused() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_FOCUSED)); }
 		/*
 		* Get whether the window is transparent or not.
 		[returns]
 		* bool : Transparent[true] / Not[false].
 		*/
-		bool IsTransparent() const;
+		bool IsTransparent() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_TRANSPARENT_FRAMEBUFFER)); }
 		/*
 		* Get whether the window is decorated or not.
 		[returns]
 		* bool : Decorated[true] / Not[false].
 		*/
-		bool IsDecorated() const;
+		bool IsDecorated() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_DECORATED)); }
 		/*
 		* Get whether the window is resizable or not.
 		[returns]
 		* bool : Resizable[true] / Not[false].
 		*/
-		bool IsResizable() const;
+		bool IsResizable() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_RESIZABLE)); }
 		/*
 		* Get whether the window is floating or not.
 		[returns]
 		* bool : Floating[true] / Not[false].
 		*/
-		bool IsFloating() const;
+		bool IsFloating() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_FLOATING)); }
 		/*
 		* Get whether the window is auto iconifying or not.
 		[returns]
 		* bool : Auto-Iconifying[true] / Not[false].
 		*/
-		bool IsAutoIconifying() const;
+		bool IsAutoIconifying() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_AUTO_ICONIFY)); }
 		/*
 		* Get whether the window is focus on showing or not.
 		[returns]
 		* bool : Focus-On-Showing[true] / Not[false].
 		*/
-		bool IsFocusOnShowing() const;
+		bool IsFocusOnShowing() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_FOCUS_ON_SHOW)); }
 		/*
 		* Get whether the key is pressed or not.
 		[params]
@@ -500,159 +647,8 @@ namespace GeoFrame {
 		[returns]
 		* bool : Pressed[true] / Not[false].
 		*/
-		bool IsPressing(Keyboard key) const;
+		bool IsPressing(Keyboard key) const { return bool(glfwGetKey(mWindow, (GLenum)key)); }
 
-
-		/*
-		* Get window size.
-		[returns]
-		* std::pair<int, int> : Current window size.
-		*/
-		std::pair<int, int> Size() const;
-		/*
-		* Set window size.
-		[params]
-		* width : Window width.
-		* height : Window height.
-		*/
-		void Size(int width, int height);
-		/*
-		* Get framebuffer size.
-		[returns]
-		* std::pair<int, int> : Current framebuffer size.
-		*/
-		std::pair<int, int> FramebufferSize() const;
-		/*
-		* Get content scale.
-		[returns]
-		* std::pair<float, float> : Current content scale.
-		*/
-		std::pair<float, float> ContentScale() const;
-		/*
-		* Get window aspect ratio.
-		[returns]
-		* std::pair<int, int> : Current window aspect ratio.
-		*/
-		std::pair<int, int> AspectRatio() const;
-		/*
-		* Set window aspect ratio.
-		[params]
-		* numer : Aspect numerator.
-		* denom : Aspect denominator.
-		*/
-		void AspectRatio(int numer, int denom);
-		/*
-		* Get window position.
-		[returns]
-		* std::pair<int, int> : Current window position.
-		*/
-		std::pair<int, int> Position() const;
-		/*
-		* Set window position.
-		[params]
-		* xpos : Window x-position.
-		* ypos : Window y-position.
-		*/
-		void Position(int xpos, int ypos);
-		/*
-		* Get cursor position.
-		[returns]
-		* std::pair<double, double> : Current cursor position.
-		*/
-		std::pair<double, double> CursorPosition() const;
-		/*
-		* Set cursor position.
-		[params]
-		* xpos : Cursor x-position.
-		* ypos : Cursor y-position.
-		*/
-		void CursorPosition(double xpos, double ypos);
-		/*
-		* Get scroll offset.
-		[returns]
-		* std::pair<float, float> : Current scroll offset.
-		*/
-		std::pair<float, float> ScrollOffset() const;
-		/*
-		* Get cursor is entered.
-		[returns]
-		* bool : Whether the cursor is entered or not.
-		*/
-		bool CursorEntered() const;
-		/*
-		* Get specified mouse button state.
-		[returns]
-		* bool : Whether the mouse button is pressed or not.
-		*/
-		bool Mousebutton(MousebuttonInput button) const;
-		/*
-		* Get clipboard text of the window.
-		[returns]
-		* std::string : Clipboard text.
-		*/
-		std::string Clipboard() const;
-		/*
-		* Set window clipboard text.
-		[params]
-		* text : New clipboard text.
-		*/
-		void Clipboard(std::string text);
-		/*
-		* Get the list of dropped files.
-		[returns]
-		* std::vector<std::string> : Dropped files.
-		*/
-		std::vector<std::string> DroppedFiles() const;
-		/*
-		* Get window title.
-		[returns]
-		* std::string : Current window title.
-		*/
-		std::string Title() const;
-		/*
-		* Set window title.
-		[params]
-		* title : New window title.
-		*/
-		void Title(std::string title);
-		/*
-		* Get the list of inputed keys.
-		[returns]
-		* std::vector<Key> : Inputed keys.
-		*/
-		std::vector<Key> Keys() const;
-		/*
-		* Get list of inputed characters.
-		[returns]
-		* std::vector<unsigned> : Inputed chracter unicode code points.
-		*/
-		std::vector<unsigned> Chars() const;
-		/*
-		* Get window opacity.
-		[returns]
-		* float : Current window opacity.
-		*/
-		float Opacity() const;
-		/*
-		* Set window opacity.
-		[params]
-		* opacity : New window opacity.
-		*/
-		void Opacity(float opacity);
-
-
-		/*
-		* Get window pixel data array.
-		[params]
-		* x0 : Left-lower corner x-position.
-		* y0 : Left-lower corner y-position.
-		* width : Cut out width.
-		* height : Cut out height.
-		* format : Data color format.(ex: GL_RGB)
-		* type : Type of the array.(ex: GL_UNSIGNED_BYTE)
-		* pixels : Pixel data storing target.
-		*/
-		void Pixels(int x0, int y0, int width, int height, PixelFormat format, GLType type, void* pixels);
 		/*
 		* Clear all input datas.(key inputs, char inputs and dropped files)
 		*/
@@ -660,31 +656,31 @@ namespace GeoFrame {
 		/*
 		* Iconify window.
 		*/
-		void Iconify();
+		void Iconify() { glfwIconifyWindow(mWindow); }
 		/*
 		* Maximize window.
 		*/
-		void Maximize();
+		void Maximize() { glfwMaximizeWindow(mWindow); }
 		/*
 		* Show window.
 		*/
-		void Show();
+		void Show() { glfwShowWindow(mWindow); }
 		/*
 		* Hide window.
 		*/
-		void Hide();
+		void Hide() { glfwHideWindow(mWindow); }
 		/*
 		* Focus window.
 		*/
-		void Focus();
+		void Focus() { glfwFocusWindow(mWindow); }
 		/*
 		* Restore window.
 		*/
-		void Restore();
+		void Restore() { glfwRestoreWindow(mWindow); }
 		/*
 		* Request window attension to system.
 		*/
-		void Attension();
+		void Attension() { glfwRequestWindowAttention(mWindow); }
 		/*
 		* Fill window with 'color'.
 		[params]
@@ -694,15 +690,15 @@ namespace GeoFrame {
 		/*
 		* Clear all buffer.(color, depth and stencil buffer)
 		*/
-		void Clear();
+		void Clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); }
 		/*
 		* Clear specified buffer.
 		*/
-		void Clear(int mask);
+		void Clear(int mask) { glClear(mask); }
 		/*
 		* Swap buffers.
 		*/
-		void Swap();
+		void Swap() { glfwSwapBuffers(mWindow); }
 
 		operator GLFWwindow* () const { return mWindow; }
 
@@ -712,7 +708,7 @@ namespace GeoFrame {
 		[returns]
 		* Window : Current context.
 		*/
-		static Window GetCurrentContext();
+		static Window GetCurrentContext() { return Window(glfwGetCurrentContext()); }
 	};
 
 	/*

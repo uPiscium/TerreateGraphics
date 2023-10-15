@@ -38,6 +38,4 @@ namespace GeoFrame {
 		mCapsLock = mods & GLFW_MOD_CAPS_LOCK;
 		mNumLock = mods & GLFW_MOD_NUM_LOCK;
 	}
-
-	Key::Key(int key, int scancode, int action, int mods) : mKey(key), mScancode(scancode), mAction(action), mMods(mods) { ; }
 }

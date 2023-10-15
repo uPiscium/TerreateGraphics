@@ -93,18 +93,6 @@ namespace GeoFrame {
 		}
 	}
 
-
-	Attribute::Attribute() : mType(GLType::FLOAT), mComponents(-1), mStride(-1), mOffset(-1) { ; }
-
-	Attribute::Attribute(GLType type, GLsizei components) : mType(type), mComponents(components), mStride(-1), mOffset(-1) { ; }
-
-	Attribute::Attribute(GLType type, GLsizei components, GLsizei stride, GLsizei offset)
-		: mType(type), mComponents(components), mStride(stride), mOffset(offset) {
-		;
-	}
-
-	void Attribute::SetDivisor(unsigned divisor) { mDivisor = divisor; }
-
 	std::pair<size_t, std::vector<size_t>> VertexArray::GetAttributeDatas(const std::vector<Attribute>& attrs) {
 		std::vector<size_t> offsets = {};
 		size_t currentOffset = 0, strideSize = 0;
@@ -116,12 +104,9 @@ namespace GeoFrame {
 				strideSize += attr.mComponents * GetSize(attr.mType);
 			}
 		}
-		else { ; }
-
+		
 		return std::pair<size_t, std::vector<size_t>>(strideSize, offsets);
 	}
-
-	VertexArray::VertexArray() { glGenVertexArrays(1, &mID); }
 
 	void VertexArray::Draw(DrawMode mode) {
 		glBindVertexArray(mID);

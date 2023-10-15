@@ -2,8 +2,6 @@
 #include "window.h"
 
 namespace GeoFrame {
-	Icon::Icon() { ; }
-
 	Icon::Icon(std::vector<std::string> imagePaths) {
 		for (std::string& path : imagePaths) {
 			this->LoadImage(path);
@@ -15,8 +13,6 @@ namespace GeoFrame {
 			stbi_image_free(ptr);
 		}
 	}
-
-	int Icon::GetNumImages() const { return mImages.size(); }
 
 	void Icon::LoadImage(std::string imagePath) {
 		GLFWimage image;
@@ -34,12 +30,6 @@ namespace GeoFrame {
 		mImages.push_back(image);
 	}
 
-	Icon::operator GLFWimage* () { return &mImages[0]; }
-
-
-	Cursor::Cursor() : mXHot(0), mYHot(0) { ; }
-
-	Cursor::Cursor(unsigned xHot, unsigned yHot) : mXHot(xHot), mYHot(yHot) { ; }
 	
 	Cursor::Cursor(unsigned xHot, unsigned yHot, std::string imagePath) : mXHot(xHot), mYHot(yHot){
 		mImagePointer = stbi_load(imagePath.c_str(), &mImage.width, &mImage.height, NULL, 4);
@@ -69,10 +59,6 @@ namespace GeoFrame {
 		mImage.pixels = &mImageData[0];
 		mCursor = glfwCreateCursor(&mImage, mXHot, mYHot);
 	}
-
-	void Cursor::LoadStandard(CursorType type) { mCursor = glfwCreateStandardCursor((int)type); }
-
-	Cursor::operator GLFWcursor* () { return mCursor; }
 
 
 	WindowSettings::WindowSettings(
@@ -106,18 +92,6 @@ namespace GeoFrame {
 		}
 		else { ; }
 	}
-
-	int Monitor::Width() const { return mVidMode->width; }
-
-	int Monitor::Height() const { return mVidMode->height; }
-
-	int Monitor::RedBits() const { return mVidMode->redBits; }
-
-	int Monitor::GreenBits() const { return mVidMode->greenBits; }
-
-	int Monitor::BlueBits() const { return mVidMode->blueBits; }
-
-	int Monitor::RefreshRate() const { return mVidMode->refreshRate; }
 
 	Monitor Monitor::GetPrimaryMonitor() { return Monitor(glfwGetPrimaryMonitor()); }
 
@@ -153,7 +127,7 @@ namespace GeoFrame {
 		mWrapper.mCallbacks = &mCallbacks;
 		mWrapper.mProperty = &mProperty;
 		glfwSetWindowUserPointer(mWindow, &mWrapper);
-		
+
 		glfwSetWindowPosCallback(mWindow, _WindowPosCallbackWrapper);
 		glfwSetWindowSizeCallback(mWindow, _WindowSizeCallbackWrapper);
 		glfwSetWindowCloseCallback(mWindow, _WindowCloseCallbackWrapper);
@@ -172,13 +146,41 @@ namespace GeoFrame {
 		glfwSetDropCallback(mWindow, _FileDropCallbackWrapper);
 	}
 
-	int Window::GetInputMode(InputType inputType) const { return glfwGetInputMode(mWindow, (int)inputType); }
+	std::pair<int, int> Window::GetSize() const {
+		int width, height;
+		glfwGetWindowSize(mWindow, &width, &height);
+		return std::pair<int, int>(width, height);
+	}
 
-	void Window::SetIcon(Icon& icon) { glfwSetWindowIcon(mWindow, icon.GetNumImages(), (GLFWimage*)icon); }
+	std::pair<int, int> Window::GetFramebufferSize() const {
+		int width, height;
+		glfwGetFramebufferSize(mWindow, &width, &height);
+		return std::pair<int, int>(width, height);
+	}
 
-	void Window::SetCursor(Cursor& cursor) { glfwSetCursor(mWindow, (GLFWcursor*)cursor); }
+	std::pair<float, float> Window::GetContentScale() const {
+		float xscale, yscale;
+		glfwGetWindowContentScale(mWindow, &xscale, &yscale);
+		return std::pair<float, float>(xscale, yscale);
+	}
 
-	void Window::SetCurrent() { glfwMakeContextCurrent(mWindow); }
+	std::pair<int, int> Window::GetPosition() const {
+		int xpos, ypos;
+		glfwGetWindowPos(mWindow, &xpos, &ypos);
+		return std::pair<int, int>(xpos, ypos);
+	}
+
+	std::pair<double, double> Window::GetCursorPosition() const {
+		double xpos, ypos;
+		glfwGetCursorPos(mWindow, &xpos, &ypos);
+		return std::pair<double, double>(xpos, ypos);
+	}
+
+	void Window::SetAspectRatio(int numer, int denom) {
+		WindowProperty* ptr = this->GetPropertyPointer();
+		ptr->mAspectRatio = std::pair<int, int>(numer, denom);
+		glfwSetWindowAspectRatio(mWindow, numer, denom);
+	}
 
 	WindowPosCallback Window::SetPositionCallback(WindowPosCallback callback) {
 		WindowPosCallback temp = mCallbacks.mWindowPosCallback;
@@ -276,124 +278,12 @@ namespace GeoFrame {
 		return temp;
 	}
 
-	bool Window::IsClosed() const { return bool(glfwWindowShouldClose(mWindow)); }
-
-	bool Window::IsFullScreened() const { return bool(glfwGetWindowMonitor(mWindow) != NULL); }
-
-	bool Window::IsWindowed() const { return bool(glfwGetWindowMonitor(mWindow) == NULL); }
-
-	bool Window::IsIconified() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_ICONIFIED)); }
-
-	bool Window::IsMaximized() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_MAXIMIZED)); }
-
-	bool Window::IsVisible() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_VISIBLE)); }
-
-	bool Window::IsFocused() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_FOCUSED)); }
-
-	bool Window::IsTransparent() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_TRANSPARENT_FRAMEBUFFER)); }
-
-	bool Window::IsDecorated() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_DECORATED)); }
-
-	bool Window::IsResizable() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_RESIZABLE)); }
-
-	bool Window::IsFloating() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_FLOATING)); }
-
-	bool Window::IsAutoIconifying() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_AUTO_ICONIFY)); }
-
-	bool Window::IsFocusOnShowing() const { return bool(glfwGetWindowAttrib(mWindow, GLFW_FOCUS_ON_SHOW)); }
-
-	bool Window::IsPressing(Keyboard key) const { return bool(glfwGetKey(mWindow, (GLenum)key)); }
-
-	std::pair<int, int> Window::Size() const {
-		int width, height;
-		glfwGetWindowSize(mWindow, &width, &height);
-		return std::pair<int, int>(width, height);
-	}
-
-	void Window::Size(int width, int height) { glfwSetWindowSize(mWindow, width, height); }
-
-	std::pair<int, int> Window::FramebufferSize() const {
-		int width, height;
-		glfwGetFramebufferSize(mWindow, &width, &height);
-		return std::pair<int, int>(width, height);
-	}
-
-	std::pair<float, float> Window::ContentScale() const {
-		float xscale, yscale;
-		glfwGetWindowContentScale(mWindow, &xscale, &yscale);
-		return std::pair<float, float>(xscale, yscale);
-	}
-
-	std::pair<int, int> Window::AspectRatio() const { return this->GetPropertyPointer()->mAspectRatio; }
-
-	void Window::AspectRatio(int numer, int denom) {
-		WindowProperty* ptr = this->GetPropertyPointer();
-		ptr->mAspectRatio = std::pair<int, int>(numer, denom);
-		glfwSetWindowAspectRatio(mWindow, numer, denom);
-	}
-
-	std::pair<int, int> Window::Position() const {
-		int xpos, ypos;
-		glfwGetWindowPos(mWindow, &xpos, &ypos);
-		return std::pair<int, int>(xpos, ypos);
-	}
-
-	void Window::Position(int xpos, int ypos) { glfwSetWindowPos(mWindow, xpos, ypos); }
-
-	std::pair<double, double> Window::CursorPosition() const {
-		double xpos, ypos;
-		glfwGetCursorPos(mWindow, &xpos, &ypos);
-		return std::pair<double, double>(xpos, ypos);
-	}
-
-	void Window::CursorPosition(double xpos, double ypos) { glfwSetCursorPos(mWindow, xpos, ypos); }
-
-	std::pair<float, float> Window::ScrollOffset() const { return this->GetPropertyPointer()->mScrollOffset; }
-
-	bool Window::CursorEntered() const { return glfwGetWindowAttrib(mWindow, GLFW_HOVERED); }
-
-	bool Window::Mousebutton(MousebuttonInput button) const { return (bool)glfwGetMouseButton(mWindow, (int)button); }
-
-	std::string Window::Clipboard() const { return glfwGetClipboardString(mWindow); }
-
-	void Window::Clipboard(std::string text) { glfwSetClipboardString(mWindow, text.c_str()); }
-
-	std::vector<std::string> Window::DroppedFiles() const { return this->GetPropertyPointer()->mDroppedFiles; }
-
-	std::string Window::Title() const { return this->GetPropertyPointer()->mTitle; }
-
-	void Window::Title(std::string title) { glfwSetWindowTitle(mWindow, title.c_str()); }
-
-	std::vector<Key> Window::Keys() const { return this->GetPropertyPointer()->mKeyInputs; }
-
-	std::vector<unsigned> Window::Chars() const { return this->GetPropertyPointer()->mCharInputs; }
-
-	float Window::Opacity() const { return glfwGetWindowOpacity(mWindow); }
-
-	void Window::Opacity(float opacity) { glfwSetWindowOpacity(mWindow, opacity); }
-
-	void Window::Pixels(int x0, int y0, int width, int height, PixelFormat format, GLType type, void* pixels) { glReadPixels(x0, y0, width, height, (int)format, (int)type, pixels); }
-
 	void Window::ClearInputs() {
 		WindowProperty* ptr = this->GetPropertyPointer();
 		ptr->mCharInputs = {};
 		ptr->mDroppedFiles = {};
 		ptr->mKeyInputs = {};
 	}
-
-	void Window::Iconify() { glfwIconifyWindow(mWindow); }
-
-	void Window::Maximize() { glfwMaximizeWindow(mWindow); }
-
-	void Window::Show() { glfwShowWindow(mWindow); }
-
-	void Window::Hide() { glfwHideWindow(mWindow); }
-
-	void Window::Focus() { glfwFocusWindow(mWindow); }
-
-	void Window::Restore() { glfwRestoreWindow(mWindow); }
-
-	void Window::Attension() { glfwRequestWindowAttention(mWindow); }
 
 	void Window::Fill(const std::vector<unsigned char>& color) {
 		if (color.size() == 4) {
@@ -406,14 +296,6 @@ namespace GeoFrame {
 			glClearColor(0, 0, 0, 0);
 		}
 	}
-
-	void Window::Clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); }
-
-	void Window::Clear(int mask) { glClear(mask); }
-
-	void Window::Swap() { glfwSwapBuffers(mWindow); }
-
-	Window Window::GetCurrentContext() { return Window(glfwGetCurrentContext()); }
 
 	void* GetUserPointer(Window& window) {
 		PointerWrapper* ptr = (PointerWrapper*)glfwGetWindowUserPointer((GLFWwindow*)window);

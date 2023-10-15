@@ -21,19 +21,23 @@ namespace GeoFrame {
 		bool mCompiled = false;
 
 	public:
-		Source(SourceType sourceType);
-		Source(SourceType sourceType, const std::string& source);
+		Source(SourceType sourceType) : mType(sourceType) { mID = glCreateShader((GLenum)sourceType); }
+		Source(SourceType sourceType, const std::string& source)
+			: mSource(source), mType(sourceType)
+		{
+			mID = glCreateShader((GLenum)sourceType);
+		}
 
-		SourceType GetType() const;
-		unsigned GetID() const;
-		std::string GetLog() const;
+		SourceType GetType() const { return mType; }
+		unsigned GetID() const { return mID; }
+		std::string GetLog() const { return mLog; }
 
-		bool IsComplied() const;
+		bool IsComplied() const { return mCompiled; }
 
 		void LoadSourceFile(const std::string& filePath);
-		void LoadBuffer(const std::string& buffer);
-		void LoadBuffer(const std::stringstream& buffer);
-		void LoadBuffer(const char* buffer);
+		void LoadBuffer(const std::string& buffer) { mSource = buffer; }
+		void LoadBuffer(const std::stringstream& buffer) { mSource = buffer.str(); }
+		void LoadBuffer(const char* buffer) { mSource = std::string(buffer); }
 		void Compile();
 
 	public:
@@ -53,13 +57,13 @@ namespace GeoFrame {
 		bool mLinked = false;
 
 	public:
-		Program();
+		Program() { mID = glCreateProgram(); }
 		Program(Source vertexSource, Source fragmentSource);
 		Program(Source vertexSource, Source geometrySource, Source fragmentSource);
 
-		unsigned GetLocation(std::string name) const;
-		unsigned GetID() const;
-		std::string GetLog() const;
+		unsigned GetLocation(std::string name) const { return glGetUniformLocation(mID, name.c_str()); }
+		unsigned GetID() const { return mID; }
+		std::string GetLog() const { return mLog; }
 
 		void SetBoolean(std::string name, bool value);
 		void SetBoolean(std::string name, bool v1, bool v2);
@@ -104,7 +108,7 @@ namespace GeoFrame {
 		void SetMatrix4x4(std::string name, bool transpose, std::vector<float> value);
 		void SetMatrix4x4(std::string name, bool transpose, float* value);
 
-		bool IsLinked() const;
+		bool IsLinked() const { return mLinked; }
 
 		void AttachSource(Source source);
 		void Link();
