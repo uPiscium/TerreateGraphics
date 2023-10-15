@@ -46,31 +46,69 @@ namespace GeoFrame {
 		glBindRenderbuffer(GL_RENDERBUFFER, 0);
 	}
 
-	bool Screen::IsValidBuffer() const {
+	bool Screen::IsCompleted() const {
 		std::string status = this->GetStatus();
 		return bool(status == "COMPLETE");
 	}
 
-	void Screen::AttachBuffer(
-		AttachmentType type, GLType componentType, FilterType minFilter, FilterType magFilter
-	) {
+	void Screen::AttachBuffer(GLType componentType) {
 		glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
 
-		unsigned id = 0;
-		glGenTextures(1, &id);
-		glBindTexture(GL_TEXTURE_2D, id);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA, (GLenum)componentType, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLint)minFilter);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLint)magFilter);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + mColorBuffers.size(), GL_TEXTURE_2D, id, 0);
-		mColorBuffers.push_back(id);
+		glGenTextures(1, &mColorBuffers[mNumColorBuffers]);
+		glBindTexture(GL_TEXTURE_2D, mColorBuffers[mNumColorBuffers]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, mWidth, mHeight, 0, GL_RGBA, (GLenum)componentType, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glFramebufferTexture2D(
+			GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + mNumColorBuffers,
+			GL_TEXTURE_2D, mColorBuffers[mNumColorBuffers], 0
+		);
 
+		++mNumColorBuffers;
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
+	void Screen::BlitClipped(
+		Screen& dst,
+		unsigned dstX0, unsigned dstY0, unsigned dstWidth, unsigned dstHeight,
+		unsigned srcX0, unsigned srcY0, unsigned srcWidth, unsigned srcHeight,
+		FilterType filter
+	) const {
+		dst.DrawOnlyBind();
+		this->ReadOnlyBind();
+		glBlitFramebuffer(
+			srcX0, srcY0, srcX0 + srcWidth, srcY0 + srcHeight,
+			dstX0, dstY0, dstX0 + dstWidth, dstY0 + dstHeight,
+			GL_COLOR_BUFFER_BIT, (GLenum)filter
+		);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	}
+
+	void Screen::Blit(Screen& dst, FilterType filter) const {
+		dst.DrawOnlyBind();
+		this->ReadOnlyBind();
+		glBlitFramebuffer(
+			0, 0, this->GetWidth(), this->GetHeight(),
+			0, 0, dst.GetWidth(), dst.GetHeight(),
+			GL_COLOR_BUFFER_BIT, (GLenum)filter
+		);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	}
+
+	void Screen::Fill(const std::vector<unsigned char>& color) {
+		if (color.size() >= 3) {
+			glClearColor(color[0] / 255.0f, color[1] / 255.0f, color[2] / 255.0f, 0);
+		}
+		else {
+			glClearColor(0, 0, 0, 0);
+		}
+	}
+
 	const Texture Screen::operator[](unsigned index) const {
-		if (0 <= index && index < mColorBuffers.size()) {
+		if (0 <= index && index < mNumColorBuffers) {
 			return Texture(mColorBuffers[index], mWidth, mHeight, 4);
 		}
 		else {
