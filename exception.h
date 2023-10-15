@@ -17,10 +17,17 @@ namespace GeoFrame {
 		FatalError(std::string msg) : GeoFrameException(msg) { ; }
 	};
 
+
 	struct ShaderTypeError : public GeoFrameException {
 	public:
 		ShaderTypeError(std::string msg) : GeoFrameException(msg) { ; }
 	};
+
+	struct ShaderNotCompletedError : public GeoFrameException {
+	public:
+		ShaderNotCompletedError(std::string msg) : GeoFrameException(msg) { ; }
+	};
+
 
 	struct IndexBufferError : public GeoFrameException {
 	public:
@@ -32,6 +39,7 @@ namespace GeoFrame {
 		InvalidFormatError(std::string msg) : GeoFrameException(msg) { ; }
 	};
 	
+
 	struct FramebufferError : public GeoFrameException {
 	public:
 		FramebufferError(std::string msg) : GeoFrameException(msg) { ; }

@@ -68,7 +68,6 @@ namespace GeoFrame {
 		if (!vertexSource.IsComplied()) {
 			vertexSource.Compile();
 		}
-		else { ; }
 
 		if (vertexSource.IsComplied()) {
 			glAttachShader(mID, vertexSource.GetID());
@@ -81,7 +80,6 @@ namespace GeoFrame {
 		if (!fragmentSource.IsComplied()) {
 			fragmentSource.Compile();
 		}
-		else { ; }
 
 		if (fragmentSource.IsComplied()) {
 			glAttachShader(mID, fragmentSource.GetID());
@@ -98,8 +96,7 @@ namespace GeoFrame {
 		if (!vertexSource.IsComplied()) {
 			vertexSource.Compile();
 		}
-		else { ; }
-
+		
 		if (vertexSource.IsComplied()) {
 			glAttachShader(mID, vertexSource.GetID());
 			mVertexAttached = true;
@@ -111,18 +108,15 @@ namespace GeoFrame {
 		if (!geometrySource.IsComplied()) {
 			geometrySource.Compile();
 		}
-		else { ; }
 
 		if (geometrySource.IsComplied()) {
 			glAttachShader(mID, geometrySource.GetID());
 			mGeometryAttached = true;
 		}
-		else { ; }
 
 		if (!fragmentSource.IsComplied()) {
 			fragmentSource.Compile();
 		}
-		else { ; }
 
 		if (fragmentSource.IsComplied()) {
 			glAttachShader(mID, fragmentSource.GetID());
@@ -495,11 +489,10 @@ namespace GeoFrame {
 		}
 	}
 
-	void Program::Use() {
+	void Program::Use() const {
 		if (!mLinked) {
-			this->Link();
+			throw ShaderNotCompletedError("Shader program is not linked.");
 		}
-		else { ; }
 		glUseProgram(mID);
 	}
 }

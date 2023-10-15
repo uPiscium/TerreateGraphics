@@ -28,11 +28,11 @@ namespace GeoFrame {
 			mID = glCreateShader((GLenum)sourceType);
 		}
 
-		SourceType GetType() const { return mType; }
-		unsigned GetID() const { return mID; }
-		std::string GetLog() const { return mLog; }
+		const SourceType& GetType() const { return mType; }
+		const unsigned& GetID() const { return mID; }
+		const std::string& GetLog() const { return mLog; }
 
-		bool IsComplied() const { return mCompiled; }
+		const bool& IsComplied() const { return mCompiled; }
 
 		void LoadSourceFile(const std::string& filePath);
 		void LoadBuffer(const std::string& buffer) { mSource = buffer; }
@@ -62,8 +62,8 @@ namespace GeoFrame {
 		Program(Source vertexSource, Source geometrySource, Source fragmentSource);
 
 		unsigned GetLocation(std::string name) const { return glGetUniformLocation(mID, name.c_str()); }
-		unsigned GetID() const { return mID; }
-		std::string GetLog() const { return mLog; }
+		const unsigned& GetID() const { return mID; }
+		const std::string& GetLog() const { return mLog; }
 
 		void SetBoolean(std::string name, bool value);
 		void SetBoolean(std::string name, bool v1, bool v2);
@@ -108,10 +108,10 @@ namespace GeoFrame {
 		void SetMatrix4x4(std::string name, bool transpose, std::vector<float> value);
 		void SetMatrix4x4(std::string name, bool transpose, float* value);
 
-		bool IsLinked() const { return mLinked; }
+		const bool& IsLinked() const { return mLinked; }
 
 		void AttachSource(Source source);
 		void Link();
-		void Use();
+		void Use() const;
 	};
 }

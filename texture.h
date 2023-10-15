@@ -43,7 +43,9 @@ namespace GeoFrame {
 		unsigned mChannel = 0;
 
 	public:
-		Texture(std::string path,TextureSettings settings = TextureSettings());
+		Texture(unsigned id, unsigned width, unsigned height, unsigned channel)
+			: mID(id), mWidth(width), mHeight(height), mChannel(channel) { ; }
+		Texture(std::string path, TextureSettings settings = TextureSettings());
 		Texture(const std::vector<unsigned char>& color, TextureSettings settings = TextureSettings());
 		Texture(
 			const std::vector<unsigned char>& bitmap,
@@ -51,9 +53,9 @@ namespace GeoFrame {
 			TextureSettings settings = TextureSettings()
 		);
 
-		unsigned GetWidth() const { return mWidth; }
-		unsigned GetHeight() const { return mHeight; }
-		unsigned GetChannel() const { return mChannel; }
+		const unsigned& GetWidth() const { return mWidth; }
+		const unsigned& GetHeight() const { return mHeight; }
+		const unsigned& GetChannel() const { return mChannel; }
 
 		operator unsigned() const { return mID; }
 
@@ -87,9 +89,9 @@ namespace GeoFrame {
 			TextureSettings settings = TextureSettings()
 		);
 
-		std::vector<unsigned> GetWidths() const { return mWidths; }
-		std::vector<unsigned> GetHeights() const { return mHeights; }
-		std::vector<unsigned> GetChannels() const { return mChannels; }
+		const std::vector<unsigned>& GetWidths() const { return mWidths; }
+		const std::vector<unsigned>& GetHeights() const { return mHeights; }
+		const std::vector<unsigned>& GetChannels() const { return mChannels; }
 
 		operator unsigned() const { return mID; }
 
@@ -113,10 +115,10 @@ namespace GeoFrame {
 			TextureSettings settings = TextureSettings()
 		);
 
-		unsigned GetWidth() const { return mWidth; }
-		unsigned GetHeight() const { return mHeight; }
-		unsigned GetDepth() const { return mDepth; }
-		unsigned GetChannel() const { return mChannel; }
+		const unsigned& GetWidth() const { return mWidth; }
+		const unsigned& GetHeight() const { return mHeight; }
+		const unsigned& GetDepth() const { return mDepth; }
+		const unsigned& GetChannel() const { return mChannel; }
 
 		operator unsigned() const { return mID; }
 

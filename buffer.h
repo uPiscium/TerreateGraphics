@@ -123,19 +123,19 @@ namespace GeoFrame {
 		[returns]
 		* size_t : Number of components of buffer.
 		*/
-		size_t GetNumComponents() const { return mBufferComponents; }
+		const size_t& GetNumComponents() const { return mBufferComponents; }
 		/*
 		* Get buffer component type.
 		[returns]
 		* GLType: Buffer component type.
 		*/
-		GLType GetComponentType() const { return mDataType; }
+		const GLType& GetComponentType() const { return mDataType; }
 		/*
 		* Get buffer type.
 		[returns]
 		* BufferType : Buffer type.
 		*/
-		BufferType GetBufferType() const { return mBufferType; }
+		const BufferType& GetBufferType() const { return mBufferType; }
 
 		/*
 		* Add new attribute.
