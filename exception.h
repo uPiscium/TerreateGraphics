@@ -18,6 +18,12 @@ namespace GeoFrame {
 	};
 
 
+	struct IndexOutOfRangeError : public GeoFrameException {
+	public:
+		IndexOutOfRangeError(std::string msg) : GeoFrameException(msg) { ; }
+	};
+
+
 	struct ShaderTypeError : public GeoFrameException {
 	public:
 		ShaderTypeError(std::string msg) : GeoFrameException(msg) { ; }
