@@ -200,6 +200,26 @@ namespace GeoFrame {
 			FilterType filter = FilterType::LINEAR
 		) const;
 		/*
+		* Transcript clipped framebuffer data to other framebuffer clipped area.
+		[params]
+		* dst : Transcription target.
+		* dstX0 : Target buffer upper-left corner x-position.
+		* dstY0 : Target buffer upper-left corner y-position.
+		* dstWidth : Target buffer width.
+		* dstHeight : Target buffer height.
+		* srcX0 : Source buffer upper-left corner x-position.
+		* srcY0 : Source buffer upper-left corner y-position.
+		* srcWidth : Source buffer width.
+		* srcHeight : Source buffer height.
+		* filter : Transcription filter.
+		*/
+		void BlitClipped(
+			MultisampleScreen& dst,
+			unsigned dstX0, unsigned dstY0, unsigned dstWidth, unsigned dstHeight,
+			unsigned srcX0, unsigned srcY0, unsigned srcWidth, unsigned srcHeight,
+			FilterType filter = FilterType::LINEAR
+		) const;
+		/*
 		* Transcript framebuffer data to other framebuffer.
 		[params]
 		* dst : Transcription target.

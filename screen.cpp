@@ -198,6 +198,23 @@ namespace GeoFrame {
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
 
+	void MultisampleScreen::BlitClipped(
+		MultisampleScreen& dst,
+		unsigned dstX0, unsigned dstY0, unsigned dstWidth, unsigned dstHeight,
+		unsigned srcX0, unsigned srcY0, unsigned srcWidth, unsigned srcHeight,
+		FilterType filter
+	) const {
+		dst.DrawOnlyBind();
+		this->ReadOnlyBind();
+		glBlitFramebuffer(
+			srcX0, srcY0, srcX0 + srcWidth, srcY0 + srcHeight,
+			dstX0, dstY0, dstX0 + dstWidth, dstY0 + dstHeight,
+			GL_COLOR_BUFFER_BIT, (GLenum)filter
+		);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	}
+
 	void MultisampleScreen::Blit(Screen& dst, FilterType filter) const {
 		dst.DrawOnlyBind();
 		this->ReadOnlyBind();
