@@ -1,5 +1,6 @@
 #include "buffer.h"
 #include "core.h"
+#include "font.h"
 #include "screen.h"
 #include "shader.h"
 #include "texture.h"
@@ -81,6 +82,10 @@ void main() {\n\
 	MultisampleScreen screen(3000, 1500, 4);
 	screen.AttachBuffer();
 
+	Font font("C:/Windows/Fonts/yumin.ttf", 250);
+	font.RegisterChar(L'A');
+	Character c = font.GetCharData(L'A');
+
 	while (true) {
 		glfwPollEvents();
 
@@ -94,9 +99,11 @@ void main() {\n\
 		program.Use();
 		program.SetInteger("tex", 0);
 		glActiveTexture((GLenum)TextureTargets::TEX_1);
-		tex.Bind();
+		//tex.Bind();
+		c.charTex.Bind();
 		vao.Draw();
-		tex.Unbind();
+		c.charTex.Unbind();
+		//tex.Unbind();
 		screen.Unbind();
 
 		screen.Blit(target);
@@ -113,7 +120,8 @@ void main() {\n\
 		window.Swap();
 	}
 
-	Terminate();
+
+	GeoFrame::Terminate();
 
 	return 0;
 }

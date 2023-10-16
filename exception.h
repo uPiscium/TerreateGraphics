@@ -35,6 +35,17 @@ namespace GeoFrame {
 	};
 
 
+	struct FontInitializationError : public GeoFrameException {
+	public:
+		FontInitializationError(std::string msg) : GeoFrameException(msg) { ; }
+	};
+
+	struct FontLoadingError : public GeoFrameException {
+	public:
+		FontLoadingError(std::string msg) : GeoFrameException(msg) { ; }
+	};
+
+
 	struct IndexBufferError : public GeoFrameException {
 	public:
 		IndexBufferError(std::string msg) : GeoFrameException(msg) { ; }
