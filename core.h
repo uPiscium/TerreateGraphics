@@ -21,19 +21,19 @@ namespace GeoFrame {
 	/*
 	* Library terminater.
 	*/
-	void Terminate();
+	inline void Terminate() { glfwTerminate(); }
 	/*
 	* Get current clipboard string.
 	[returns]
 	@ : Current clipboard string.
 	*/
-	std::string Clipboard();
+	inline std::string Clipboard() { return std::string(glfwGetClipboardString(NULL)); }
 	/*
 	* Set text to clipboard.
 	[params]
 	* text : Text to set to clipboard.
 	*/
-	void Clipboard(std::string text);
+	inline void Clipboard(std::string text) { glfwSetClipboardString(NULL, text.c_str()); }
 
 	/*
 	* Modifier key state holder class.
@@ -61,7 +61,11 @@ namespace GeoFrame {
 		Mods mMods;
 
 	public:
-		Key(int key, int scancode, int action, int mods);
+		Key(int key, int scancode, int action, int mods)
+			: mKey(key), mScancode(scancode), mAction(action), mMods(mods)
+		{
+			;
+		}
 	};
 
 	enum class BufferBit {
@@ -111,7 +115,7 @@ namespace GeoFrame {
 		MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
 		REPEAT = GL_REPEAT
 	};
-
+	
 	enum class GLType {
 		BYTE = GL_BYTE,
 		UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
@@ -127,26 +131,12 @@ namespace GeoFrame {
 		HALF_FLOAT = GL_HALF_FLOAT
 	};
 
-	enum class InputType {
-		CURSOR = GLFW_CURSOR,
-		STICKY_KEYS = GLFW_STICKY_KEYS,
-		STICKY_MOUSE_BUTTONS = GLFW_STICKY_MOUSE_BUTTONS,
-		LOCK_KEY_MODS = GLFW_LOCK_KEY_MODS,
-		RAW_MOUSE_MOTION = GLFW_RAW_MOUSE_MOTION
-	};
-
-	enum class SourceType {
-		FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
-		VERTEX_SHADER = GL_VERTEX_SHADER,
-		GEOMETRY_SHADER = GL_GEOMETRY_SHADER
-	};
-
 	enum class AttachmentType {
 		COLOR = 0,
 		DEPTH = GL_DEPTH_ATTACHMENT,
 		STENCIL = GL_STENCIL_ATTACHMENT,
 		DEPTH24_STENCIL8 = GL_DEPTH24_STENCIL8,
-		DEPTH32F_STENCIL8 = GL_DEPTH32F_STENCIL8
+		DEPTH32_STENCIL8 = GL_DEPTH32F_STENCIL8
 	};
 
 	enum class PixelFormat {
@@ -165,6 +155,20 @@ namespace GeoFrame {
 		STENCIL_INDEX = GL_STENCIL_INDEX,
 		DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
 		DEPTH_STENCIL = GL_DEPTH_STENCIL
+	};
+
+	enum class InputType {
+		CURSOR = GLFW_CURSOR,
+		STICKY_KEYS = GLFW_STICKY_KEYS,
+		STICKY_MOUSE_BUTTONS = GLFW_STICKY_MOUSE_BUTTONS,
+		LOCK_KEY_MODS = GLFW_LOCK_KEY_MODS,
+		RAW_MOUSE_MOTION = GLFW_RAW_MOUSE_MOTION
+	};
+
+	enum class SourceType {
+		FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
+		VERTEX_SHADER = GL_VERTEX_SHADER,
+		GEOMETRY_SHADER = GL_GEOMETRY_SHADER
 	};
 
 	enum class MousebuttonInput {

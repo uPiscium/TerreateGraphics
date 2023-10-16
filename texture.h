@@ -43,12 +43,9 @@ namespace GeoFrame {
 		unsigned mChannel = 0;
 
 	public:
-		Texture(
-			unsigned width, unsigned height,
-			AttachmentType attachmentType = AttachmentType::COLOR,
-			TextureSettings settings = TextureSettings()
-		);
-		Texture(std::string path,TextureSettings settings = TextureSettings());
+		Texture(unsigned id, unsigned width, unsigned height, unsigned channel)
+			: mID(id), mWidth(width), mHeight(height), mChannel(channel) { ; }
+		Texture(std::string path, TextureSettings settings = TextureSettings());
 		Texture(const std::vector<unsigned char>& color, TextureSettings settings = TextureSettings());
 		Texture(
 			const std::vector<unsigned char>& bitmap,
@@ -56,14 +53,14 @@ namespace GeoFrame {
 			TextureSettings settings = TextureSettings()
 		);
 
-		unsigned GetWidth() const;
-		unsigned GetHeight() const;
-		unsigned GetChannel() const;
+		const unsigned& GetWidth() const { return mWidth; }
+		const unsigned& GetHeight() const { return mHeight; }
+		const unsigned& GetChannel() const { return mChannel; }
 
-		operator unsigned() const;
+		operator unsigned() const { return mID; }
 
-		void Bind() const;
-		void Unbind() const;
+		void Bind() const { glBindTexture(GL_TEXTURE_2D, mID); }
+		void Unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
 	};
 
 	class CubeTexture {
@@ -74,18 +71,6 @@ namespace GeoFrame {
 		std::vector<unsigned> mChannels = {};
 
 	public:
-		CubeTexture(
-			const std::vector<unsigned>& widths,
-			const std::vector<unsigned>& heights,
-			AttachmentType attachmentType = AttachmentType::COLOR,
-			TextureSettings settings = TextureSettings()
-		);
-		CubeTexture(
-			unsigned widths,
-			unsigned heights,
-			AttachmentType attachmentType = AttachmentType::COLOR,
-			TextureSettings settings = TextureSettings()
-		);
 		CubeTexture(const std::vector<std::string>& paths, TextureSettings settings = TextureSettings());
 		CubeTexture(const std::vector<std::vector<float>>& colors, TextureSettings settings = TextureSettings());
 		CubeTexture(const std::vector<float>& color, TextureSettings settings = TextureSettings());
@@ -104,14 +89,14 @@ namespace GeoFrame {
 			TextureSettings settings = TextureSettings()
 		);
 
-		std::vector<unsigned> GetWidths() const;
-		std::vector<unsigned> GetHeights() const;
-		std::vector<unsigned> GetChannels() const;
+		const std::vector<unsigned>& GetWidths() const { return mWidths; }
+		const std::vector<unsigned>& GetHeights() const { return mHeights; }
+		const std::vector<unsigned>& GetChannels() const { return mChannels; }
 
-		operator unsigned() const;
+		operator unsigned() const { return mID; }
 
-		void Bind() const;
-		void Unbind() const;
+		void Bind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, mID); }
+		void Unbind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
 	};
 
 	class Texture3D {
@@ -130,14 +115,14 @@ namespace GeoFrame {
 			TextureSettings settings = TextureSettings()
 		);
 
-		unsigned GetWidth() const;
-		unsigned GetHeight() const;
-		unsigned GetDepth() const;
-		unsigned GetChannel() const;
+		const unsigned& GetWidth() const { return mWidth; }
+		const unsigned& GetHeight() const { return mHeight; }
+		const unsigned& GetDepth() const { return mDepth; }
+		const unsigned& GetChannel() const { return mChannel; }
 
-		operator unsigned() const;
+		operator unsigned() const { return mID; }
 
-		void Bind() const;
-		void Unbind() const;
+		void Bind() const { glBindTexture(GL_TEXTURE_3D, mID); }
+		void Unbind() const { glBindTexture(GL_TEXTURE_3D, 0); }
 	};
 }

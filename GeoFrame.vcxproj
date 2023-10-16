@@ -145,6 +145,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="resources\glad.c" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="screen.cpp" />
     <ClCompile Include="window.cpp" />
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
@@ -154,6 +155,7 @@
     <ClInclude Include="core.h" />
     <ClInclude Include="exception.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="screen.h" />
     <ClInclude Include="window.h" />
     <ClInclude Include="shader.h" />
   </ItemGroup>

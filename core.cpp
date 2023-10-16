@@ -24,12 +24,6 @@ namespace GeoFrame {
 		else { ; }
 	}
 
-	void Terminate() { glfwTerminate(); }
-
-	std::string Clipboard() { return std::string(glfwGetClipboardString(NULL)); }
-
-	void Clipboard(std::string text) { glfwSetClipboardString(NULL, text.c_str()); }
-
 
 	Mods::Mods(int mods) {
 		mShift = mods & GLFW_MOD_SHIFT;
@@ -38,6 +32,4 @@ namespace GeoFrame {
 		mCapsLock = mods & GLFW_MOD_CAPS_LOCK;
 		mNumLock = mods & GLFW_MOD_NUM_LOCK;
 	}
-
-	Key::Key(int key, int scancode, int action, int mods) : mKey(key), mScancode(scancode), mAction(action), mMods(mods) { ; }
 }

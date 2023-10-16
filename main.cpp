@@ -1,5 +1,6 @@
 #include "buffer.h"
 #include "core.h"
+#include "screen.h"
 #include "shader.h"
 #include "texture.h"
 #include "window.h"
@@ -74,6 +75,11 @@ void main() {\n\
 	vao.Register(vert);
 	vao.Register(indx);
 
+	Screen target(3000, 1500);
+	target.AttachBuffer();
+
+	MultisampleScreen screen(3000, 1500, 4);
+	screen.AttachBuffer();
 
 	while (true) {
 		glfwPollEvents();
@@ -84,12 +90,25 @@ void main() {\n\
 		if (window.IsClosed()) { break; }
 		else { ; }
 
+		screen.Bind();
 		program.Use();
 		program.SetInteger("tex", 0);
 		glActiveTexture((GLenum)TextureTargets::TEX_1);
 		tex.Bind();
 		vao.Draw();
 		tex.Unbind();
+		screen.Unbind();
+
+		screen.Blit(target);
+		window.SetCurrent();
+		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		//scr.ReadOnlyBind();
+		//glBlitFramebuffer(0, 0, 3000, 1500, 0, 0, 3000, 1500, GL_COLOR_BUFFER_BIT, GL_LINEAR);
+		Texture fbo = target[0];
+		program.Use();
+		fbo.Bind();
+		vao.Draw();
+		fbo.Unbind();
 
 		window.Swap();
 	}

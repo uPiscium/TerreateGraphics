@@ -1,22 +1,6 @@
 #include "shader.h"
 
 namespace GeoFrame {
-	Source::Source(SourceType sourceType) : mType(sourceType) {
-		mID = glCreateShader((GLenum)sourceType);
-	}
-
-	Source::Source(SourceType sourceType, const std::string& source) : mSource(source), mType(sourceType) {
-		mID = glCreateShader((GLenum)sourceType);
-	}
-
-	SourceType Source::GetType() const { return mType; }
-
-	unsigned Source::GetID() const { return mID; }
-
-	std::string Source::GetLog() const { return mLog; }
-
-	bool Source::IsComplied() const { return mCompiled; }
-
 	void Source::LoadSourceFile(const std::string& filePath) {
 		std::ifstream file;
 		file.exceptions(std::ifstream::badbit | std::ifstream::failbit);
@@ -32,12 +16,6 @@ namespace GeoFrame {
 			mSource = "";
 		}
 	}
-
-	void Source::LoadBuffer(const std::string& buffer) { mSource = buffer; }
-
-	void Source::LoadBuffer(const std::stringstream& buffer) { mSource = buffer.str(); }
-
-	void Source::LoadBuffer(const char* buffer) { mSource = std::string(buffer); }
 
 	void Source::Compile() {
 		const char* ptr = mSource.c_str();
@@ -84,15 +62,12 @@ namespace GeoFrame {
 	}
 
 
-	Program::Program() { mID = glCreateProgram(); }
-
 	Program::Program(Source vertexSource, Source fragmentSource) {
 		mID = glCreateProgram();
 
 		if (!vertexSource.IsComplied()) {
 			vertexSource.Compile();
 		}
-		else { ; }
 
 		if (vertexSource.IsComplied()) {
 			glAttachShader(mID, vertexSource.GetID());
@@ -105,7 +80,6 @@ namespace GeoFrame {
 		if (!fragmentSource.IsComplied()) {
 			fragmentSource.Compile();
 		}
-		else { ; }
 
 		if (fragmentSource.IsComplied()) {
 			glAttachShader(mID, fragmentSource.GetID());
@@ -122,8 +96,7 @@ namespace GeoFrame {
 		if (!vertexSource.IsComplied()) {
 			vertexSource.Compile();
 		}
-		else { ; }
-
+		
 		if (vertexSource.IsComplied()) {
 			glAttachShader(mID, vertexSource.GetID());
 			mVertexAttached = true;
@@ -135,18 +108,15 @@ namespace GeoFrame {
 		if (!geometrySource.IsComplied()) {
 			geometrySource.Compile();
 		}
-		else { ; }
 
 		if (geometrySource.IsComplied()) {
 			glAttachShader(mID, geometrySource.GetID());
 			mGeometryAttached = true;
 		}
-		else { ; }
 
 		if (!fragmentSource.IsComplied()) {
 			fragmentSource.Compile();
 		}
-		else { ; }
 
 		if (fragmentSource.IsComplied()) {
 			glAttachShader(mID, fragmentSource.GetID());
@@ -156,12 +126,6 @@ namespace GeoFrame {
 			mFragmentAttached = false;
 		}
 	}
-
-	unsigned Program::GetLocation(std::string name) const { return glGetUniformLocation(mID, name.c_str()); }
-
-	unsigned Program::GetID() const { return mID; }
-
-	std::string Program::GetLog() const { return mLog; }
 
 	void Program::SetBoolean(std::string name, bool value) {
 		int location = this->GetLocation(name);
@@ -491,8 +455,6 @@ namespace GeoFrame {
 		glUniformMatrix4fv(location, 1, transpose, value);
 	}
 
-	bool Program::IsLinked() const { return mLinked; }
-
 	void Program::AttachSource(Source source) {
 		switch (source.GetType()) {
 		case SourceType::VERTEX_SHADER:
@@ -527,11 +489,10 @@ namespace GeoFrame {
 		}
 	}
 
-	void Program::Use() {
+	void Program::Use() const {
 		if (!mLinked) {
-			this->Link();
+			throw ShaderNotCompletedError("Shader program is not linked.");
 		}
-		else { ; }
 		glUseProgram(mID);
 	}
 }
