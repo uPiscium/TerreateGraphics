@@ -33,23 +33,67 @@ namespace GeoFrame {
 		std::unordered_map<wchar_t, Character> mCharMap = {};
 		std::string mLog = "";
 	public:
+		/*
+		* Font managing class.
+		[params]
+		* path : Font file path.
+		* size : Font size.
+		*/
 		Font(const std::string& path, unsigned size);
 		~Font();
 
 		Font(const Font& font) = delete;
 		Font operator=(const Font& font) = delete;
 		
+		/*
+		* Get the length of text.
+		[params]
+		* text : Text to get length.
+		[returns]
+		* std::pair<unsigned, unsigned> : first/width, second/height.
+		*/
 		std::vector<unsigned> GetLength(const std::wstring& text);
+		/*
+		* Get character datas of the text.
+		[params]
+		* text : Text to get datas.
+		[returns]
+		* std::vector<Character> : Character datas.
+		*/
 		std::vector<Character> GetTextData(const std::wstring& text);
+		/*
+		* Get character data.
+		[params]
+		* chr : Character to get character data.
+		[returns]
+		* const Character& : Character data.
+		*/
 		const Character& GetCharData(wchar_t chr) { return mCharMap[chr]; }
-		const unsigned& GetStandard() const { return mStandard; }
+		/*
+		* Get font loading log.
+		[returns]
+		* const std::string& : Font status log.
+		*/
 		const std::string& GetLog() const { return mLog; }
+		/*
+		* Get font size.
+		[returns]
+		* const unsigned& : Font size.
+		*/
 		const unsigned& GetSize() const { return mSize; }
-		const std::unordered_map<wchar_t, Character>& GetCharMap() const { return mCharMap; }
-
 		const Character& operator[](wchar_t chr) { return mCharMap[chr]; }
 		
+		/*
+		* Load and register character data.
+		[params]
+		* chr : Character to register.
+		*/
 		void RegisterChar(wchar_t chr);
+		/*
+		* Load and register each character of the text.
+		[params]
+		* text : Text to register.
+		*/
 		void RegisterText(const std::wstring& text);
 	};
 }
