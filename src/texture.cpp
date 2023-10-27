@@ -1,4 +1,4 @@
-#include "texture.h"
+#include "../includes/texture.h"
 
 namespace GeoFrame {
 	TextureSettings::TextureSettings(
