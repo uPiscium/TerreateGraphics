@@ -8,7 +8,7 @@ Select release build which is compatible to your OS.
 - [Linux](#install-to-linux-wip)
 
 ## Install to Windows
-There is three ways to install
+There are three ways to install
 1. [from ZIP](#zip-install)
 2. [with CMake](#cmake-install)
 3. [with Visual Studio](#visual-studio-install)
