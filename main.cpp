@@ -1,10 +1,10 @@
-#include "buffer.h"
-#include "core.h"
-#include "font.h"
-#include "screen.h"
-#include "shader.h"
-#include "texture.h"
-#include "window.h"
+#include "includes/buffer.h"
+#include "includes/core.h"
+#include "includes/font.h"
+#include "includes/screen.h"
+#include "includes/shader.h"
+#include "includes/texture.h"
+#include "includes/window.h"
 
 using namespace GeoFrame;
 
@@ -83,8 +83,8 @@ void main() {\n\
 	screen.AttachBuffer();
 
 	Font font("C:/Windows/Fonts/yumin.ttf", 250);
-	font.RegisterChar(L'A');
-	Character c = font.GetCharData(L'A');
+	font.RegisterChar(L'‚ ');
+	Character c = font.GetCharData(L'‚ ');
 
 	while (true) {
 		glfwPollEvents();

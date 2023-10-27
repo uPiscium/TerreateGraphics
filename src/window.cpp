@@ -1,5 +1,5 @@
-#include "texture.h"
-#include "window.h"
+#include "../includes/texture.h"
+#include "../includes/window.h"
 
 namespace GeoFrame {
 	Icon::Icon(std::vector<std::string> imagePaths) {
