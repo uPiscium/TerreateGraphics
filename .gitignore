@@ -17,9 +17,7 @@
 mono_crash.*
 
 # Build results
-[Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
 [Rr]eleases/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
@@ -74,17 +72,21 @@ StyleCopReport.xml
 *.ilk
 *.meta
 *.obj
+*.idb
 *.iobj
 *.pch
 *.pdb
 *.ipdb
 *.pgc
 *.pgd
+*.recipe
+*.vcxproj.FileListAbsolute.txt
 *.rsp
 *.sbr
 *.tlb
 *.tli
 *.tlh
+*.tlog
 *.tmp
 *.tmp_proj
 *_wpftmp.csproj
