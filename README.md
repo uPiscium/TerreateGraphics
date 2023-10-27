@@ -3,19 +3,30 @@
 
 # How to Install
 Select release build which is compatible to your OS.
-- [Windows](#windows)
-- [MacOS](#macos)
-- [Linux](#linux)
+- [Windows](#install-to-windows)
+- [MacOS](#install-to-macos-wip)
+- [Linux](#install-to-linux-wip)
 
-## Windows
+## Install to Windows
 There is two ways to install
 1. [ZIP install](#zip-install)
+2. [CMake install](#cmake-install)
 
     ### ZIP install
     1. Download ZIP file.
     2. Unzip downloaded ZIP file.
-    3. Move `GeoFrame-1.0.0/`
-## MacOS
-- WIP
-## Linux
-- WIP
+    3. Move `GeoFrame-1.0.0/includes` holder to your working `include` holder.
+    4. Move `GeoFrame-1.0.0/x64/GeoFrame.lib` file to your `lib` holder.
+
+    ### CMake install (WIP)
+    #TODO
+    - Learn how to use `cmake`
+    - Create CMakeLists.txt
+
+## Install to MacOS (WIP)
+ #TODO
+- Buy `MacBook` (It may not be supported.)
+
+## Install to Linux (WIP)
+ #TODO
+- Test in Linux environment
