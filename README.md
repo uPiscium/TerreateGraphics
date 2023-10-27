@@ -9,8 +9,9 @@ Select release build which is compatible to your OS.
 
 ## Install to Windows
 There is two ways to install
-1. [ZIP install](#zip-install)
-2. [CMake install](#cmake-install)
+1. [from ZIP](#zip-install)
+2. [with CMake](#cmake-install)
+3. [with Visual Studio](#visual-studio-install)
 
     ### ZIP install
     1. Download ZIP file.
@@ -22,6 +23,14 @@ There is two ways to install
     #TODO
     - Learn how to use `cmake`
     - Create CMakeLists.txt
+
+    ### Visual Studio install
+    1. Download ZIP file.
+    2. Unzip downloaded ZIP file.
+    3. Open `GeoFrame-1.0.0/GeoFrame.sln`.
+    4. Select `Release` and build project.
+    5. Move `GeoFrame-1.0.0/includes` holder to your working `include` holder.
+    6. Move `GeoFrame-1.0.0/x64/GeoFrame.lib` file to your `lib` holder.
 
 ## Install to MacOS (WIP)
  #TODO
