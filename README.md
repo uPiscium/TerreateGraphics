@@ -8,29 +8,15 @@ Select release build which is compatible to your OS.
 - [Linux](#install-to-linux-wip)
 
 ## Install to Windows
-There are three ways to install
-1. [from ZIP](#zip-install)
-2. [with CMake](#cmake-install)
-3. [with Visual Studio](#visual-studio-install)
-
-    ### ZIP install
-    1. Download ZIP file.
-    2. Unzip downloaded ZIP file.
-    3. Move `GeoFrame-1.0.0/includes` holder to your working `include` holder.
-    4. Move `GeoFrame-1.0.0/x64/GeoFrame.lib` file to your `lib` holder.
-
-    ### CMake install (WIP)
-    #TODO
-    - Learn how to use `cmake`
-    - Create CMakeLists.txt
-
-    ### Visual Studio install
-    1. Download ZIP file.
-    2. Unzip downloaded ZIP file.
-    3. Open `GeoFrame-1.0.0/GeoFrame.sln`.
-    4. Select `Release` and build project.
-    5. Move `GeoFrame-1.0.0/includes` holder to your working `include` holder.
-    6. Move `GeoFrame-1.0.0/x64/GeoFrame.lib` file to your `lib` holder.
+1. Download ZIP file and unzip downloaded file.
+2. Run following command.
+```
+mkdir build
+cd build
+cmake ../
+cmake --build .
+```
+3. GeoFrame.lib file is generated at `build/Debug/GeoFrame.lib`.
 
 ## Install to MacOS (WIP)
  #TODO
