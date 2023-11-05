@@ -16,7 +16,7 @@ cd build
 cmake ../
 cmake --build .
 ```
-3. GeoFrame.lib file is generated at `build/Debug/GeoFrame.lib`.
+3. `GeoFrame.lib` file is generated at `build/Debug/GeoFrame.lib`.
 
 ## Install to MacOS (WIP)
  #TODO
