@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.10)
 project(
   GeoFrame
   VERSION 1.0.0
@@ -6,20 +6,21 @@ project(
   LANGUAGES CXX
 )
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+file(GLOB_RECURSE source RELATIVE ${PROJECT_SOURCE_DIR} "src/*.cpp"})
+
 add_library(
-  GeoFrame STATIC
-  ./src/buffer.cpp
-  ./src/callback.cpp
-  ./src/core.cpp
-  ./src/font.cpp
-  ./src/screen.cpp
-  ./src/shader.cpp
-  ./src/texture.cpp
-  ./src/window.cpp
+  GeoFrame STATIC ${source}
 ) 
 
-target_include_directories(GeoFrame INTERFACE ./includes)
-target_include_directories(GeoFrame PRIVATE ./resources/includes)
+target_include_directories(GeoFrame INTERFACE "./includes")
+target_include_directories(GeoFrame PRIVATE "./resources/includes")
+
+target_link_libraries(GeoFrame PRIVATE "./resources/libs/glfw3")
+target_link_libraries(GeoFrame PRIVATE "./resources/libs/freetype")
+
 set_target_properties(
   GeoFrame
   PROPERTIES

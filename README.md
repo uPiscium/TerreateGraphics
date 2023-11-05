@@ -4,8 +4,7 @@
 # How to Install
 Select release build which is compatible to your OS.
 - [Windows](#install-to-windows)
-- [MacOS](#install-to-macos-wip)
-- [Linux](#install-to-linux-wip)
+- [Linux](#install-to-linux)
 
 ## Install to Windows
 1. Download ZIP file and unzip downloaded file.
@@ -18,10 +17,18 @@ cmake --build .
 ```
 3. GeoFrame.lib file is generated at `build/Debug/GeoFrame.lib`.
 
-## Install to MacOS (WIP)
- #TODO
-- Buy `MacBook` (It may not be supported.)
+## Install to Linux
+Install `FreeType` and `glfw` before install `GeoFrame`.
+You can download `FreeType` source code from [here](https://www.freetype.org/download.html) and you can install `glfw` by using package manager.
 
-## Install to Linux (WIP)
- #TODO
-- Test in Linux environment
+1. Download ZIP file and unzip downloaded file.
+2. Copy `freetype.a` to `GeoFrame/libs/` directory.
+3. Copy `glfw3.a` to `GeoFrame/libs/` directory.
+4. Run following command.
+```
+mkdir build
+cd build
+cmake ../
+cmake --build .
+```
+5. GeoFrame.a file is generated at `build/Debug/GeoFrame.a`.
