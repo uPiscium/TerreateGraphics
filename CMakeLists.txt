@@ -15,11 +15,11 @@ add_library(
   GeoFrame STATIC ${source}
 ) 
 
-target_include_directories(GeoFrame INTERFACE "./includes")
-target_include_directories(GeoFrame PRIVATE "./resources/includes")
+target_include_directories(GeoFrame INTERFACE "../includes")
+target_include_directories(GeoFrame PRIVATE "../resources/includes")
 
-target_link_libraries(GeoFrame PRIVATE "./resources/libs/glfw3")
-target_link_libraries(GeoFrame PRIVATE "./resources/libs/freetype")
+target_link_libraries(GeoFrame PRIVATE "../resources/libs/glfw3")
+target_link_libraries(GeoFrame PRIVATE "../resources/libs/freetype")
 
 set_target_properties(
   GeoFrame
