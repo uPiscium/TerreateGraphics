@@ -9,17 +9,24 @@ project(
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-file(GLOB_RECURSE source RELATIVE ${PROJECT_SOURCE_DIR} "src/*.cpp")
+file(
+  GLOB_RECURSE
+  source
+  RELATIVE
+  ${PROJECT_SOURCE_DIR}
+  "src/*.cpp"
+)
 
 add_library(
-  GeoFrame STATIC ${source}
-) 
+  GeoFrame
+  SHARED
+  ${source}
+)
 
-target_include_directories(GeoFrame INTERFACE "../includes")
-target_include_directories(GeoFrame PRIVATE "../resources/includes")
+target_include_directories(GeoFrame PUBLIC "includes")
 
-target_link_libraries(GeoFrame PRIVATE "../resources/libs/glfw3")
-target_link_libraries(GeoFrame PRIVATE "../resources/libs/freetype")
+target_link_libraries(GeoFrame PRIVATE "../libs/glfw3")
+target_link_libraries(GeoFrame PRIVATE "../libs/freetyped")
 
 set_target_properties(
   GeoFrame

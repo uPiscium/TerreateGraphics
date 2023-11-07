@@ -15,21 +15,19 @@
  *
  */
 
-
-  /**************************************************************************
-   *
-   * This is the 'entry point' for FreeType header file inclusions, to be
-   * loaded before all other header files.
-   *
-   * A typical example is
-   *
-   * ```
-   *   #include <ft2build.h>
-   *   #include <freetype/freetype.h>
-   * ```
-   *
-   */
-
+/**************************************************************************
+ *
+ * This is the 'entry point' for FreeType header file inclusions, to be
+ * loaded before all other header files.
+ *
+ * A typical example is
+ *
+ * ```
+ *   #include <ft2build.h>
+ *   #include <freetype/freetype.h>
+ * ```
+ *
+ */
 
 #ifndef FT2BUILD_H_
 #define FT2BUILD_H_
@@ -37,6 +35,5 @@
 #include <freetype/config/ftheader.h>
 
 #endif /* FT2BUILD_H_ */
-
 
 /* END */
