@@ -15,6 +15,10 @@ extern bool GLAD_INITIALIZED;
  */
 void Init();
 /*
+ * Event handler.
+ */
+inline void PollEvents() { glfwPollEvents(); }
+/*
  * "glad" initializer.
  */
 void InitGLAD();
