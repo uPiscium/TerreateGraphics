@@ -1,0 +1,236 @@
+﻿  buffer.cpp
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\buffer.cpp(114,33): warning C4267: '引数': 'size_t' から 'GLsizei' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\buffer.cpp(125,78): warning C4267: '引数': 'size_t' から 'GLsizei' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\buffer.cpp(125,42): warning C4267: '引数': 'size_t' から 'GLsizei' に変換しました。データが失われているかもしれません。
+  callback.cpp
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(40,51): warning C4267: 'return': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,16): warning C4244: '初期化中': 'const _Ty1' から '_Ty1' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty1=double
+          ]
+          and
+          [
+              _Ty1=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : コンパイル対象の関数 テンプレート インスタンス化 'std::pair<float,float>::pair<double,double,0>(const std::pair<double,double> &) noexcept' のリファレンスを確認してください
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : 'GeoFrame::Window::GetScrollOffset' の 'std::pair<float,float>::pair' への最初の参照を参照してください
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,38): warning C4244: '初期化中': 'const _Ty2' から '_Ty2' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty2=double
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+  core.cpp
+  font.cpp
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\font.cpp(100,18): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+  screen.cpp
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.h(55,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.h(170,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\screen.cpp(72,63): warning C4267: '引数': 'size_t' から 'GLenum' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\screen.cpp(176,63): warning C4267: '引数': 'size_t' から 'GLenum' に変換しました。データが失われているかもしれません。
+  shader.cpp
+  texture.cpp
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(68,36): warning C4267: '初期化中': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(277,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(282,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(283,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(288,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(289,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(290,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(294,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(295,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(296,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(297,20): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(351,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(356,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(357,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(362,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(363,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(364,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(368,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(369,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(370,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(371,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(523,47): warning C4267: '初期化中': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(535,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(540,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(541,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(546,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(547,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(548,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(552,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(553,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(554,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(555,15): warning C4244: '=': 'const _Ty' から 'unsigned int' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty=float
+          ]
+  window.cpp
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(40,51): warning C4267: 'return': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,16): warning C4244: '初期化中': 'const _Ty1' から '_Ty1' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty1=double
+          ]
+          and
+          [
+              _Ty1=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : コンパイル対象の関数 テンプレート インスタンス化 'std::pair<float,float>::pair<double,double,0>(const std::pair<double,double> &) noexcept' のリファレンスを確認してください
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : 'GeoFrame::Window::GetScrollOffset' の 'std::pair<float,float>::pair' への最初の参照を参照してください
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,38): warning C4244: '初期化中': 'const _Ty2' から '_Ty2' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty2=double
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+  main.cpp
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.h(55,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.h(170,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(40,51): warning C4267: 'return': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,16): warning C4244: '初期化中': 'const _Ty1' から '_Ty1' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty1=double
+          ]
+          and
+          [
+              _Ty1=float
+          ]
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : コンパイル対象の関数 テンプレート インスタンス化 'std::pair<float,float>::pair<double,double,0>(const std::pair<double,double> &) noexcept' のリファレンスを確認してください
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : 'GeoFrame::Window::GetScrollOffset' の 'std::pair<float,float>::pair' への最初の参照を参照してください
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,38): warning C4244: '初期化中': 'const _Ty2' から '_Ty2' への変換です。データが失われる可能性があります。
+          with
+          [
+              _Ty2=double
+          ]
+          and
+          [
+              _Ty2=float
+          ]
+  コードを生成中...
+  GeoFrame.vcxproj -> C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\x64\Debug\GeoFrame.exe

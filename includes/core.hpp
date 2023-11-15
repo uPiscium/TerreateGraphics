@@ -1,0 +1,364 @@
+#pragma once
+#include <glad/glad.h>
+#include <glfw/glfw3.h>
+
+#include <string>
+
+#include "exception.h"
+
+namespace GeoFrame {
+extern bool GLFW_INITIALIZED;
+extern bool GLAD_INITIALIZED;
+
+/*
+ * Library initializer.
+ */
+void Init();
+/*
+ * Event handler.
+ */
+inline void PollEvents() { glfwPollEvents(); }
+/*
+ * "glad" initializer.
+ */
+void InitGLAD();
+/*
+ * Library terminater.
+ */
+inline void Terminate() { glfwTerminate(); }
+/*
+* Get current clipboard string.
+[returns]
+@ : Current clipboard string.
+*/
+inline std::string Clipboard() {
+    return std::string(glfwGetClipboardString(NULL));
+}
+/*
+* Set text to clipboard.
+[params]
+* text : Text to set to clipboard.
+*/
+inline void Clipboard(std::string text) {
+    glfwSetClipboardString(NULL, text.c_str());
+}
+
+/*
+ * Modifier key state holder class.
+ */
+struct Mods {
+  public:
+    bool mShift;
+    bool mControl;
+    bool mAlt;
+    bool mCapsLock;
+    bool mNumLock;
+
+  public:
+    Mods(int mods);
+};
+
+/*
+ * Key state class.
+ */
+struct Key {
+  public:
+    int mKey;
+    int mScancode;
+    int mAction;
+    Mods mMods;
+
+  public:
+    Key(int key, int scancode, int action, int mods)
+        : mKey(key), mScancode(scancode), mAction(action), mMods(mods) {
+        ;
+    }
+};
+
+enum class BufferBit {
+    DEPTH_BUFFER = GL_DEPTH_BUFFER_BIT,
+    STENCIL_BUFFER = GL_STENCIL_BUFFER_BIT,
+    COLOR_BUFFER = GL_COLOR_BUFFER_BIT
+};
+
+enum class BufferUsage {
+    STREAM_DRAW = GL_STREAM_DRAW,
+    STREAM_READ = GL_STREAM_READ,
+    STREAM_COPY = GL_STREAM_COPY,
+    STATIC_DRAW = GL_STATIC_DRAW,
+    STATIC_READ = GL_STATIC_READ,
+    STATIC_COPY = GL_STATIC_COPY,
+    DYNAMIC_DRAW = GL_DYNAMIC_DRAW,
+    DYNAMIC_READ = GL_DYNAMIC_READ,
+    DYNAMIC_COPY = GL_DYNAMIC_COPY
+};
+
+enum class BufferType {
+    ARRAY_BUFFER = GL_ARRAY_BUFFER,
+    ELEMENT_BUFFER = GL_ELEMENT_ARRAY_BUFFER
+};
+
+enum class CursorType {
+    ARROW = GLFW_ARROW_CURSOR,
+    IBEAM = GLFW_IBEAM_CURSOR,
+    COSSHAIR = GLFW_CROSSHAIR_CURSOR,
+    HAND = GLFW_HAND_CURSOR,
+    HRESIZE = GLFW_HRESIZE_CURSOR,
+    VRESIZE = GLFW_VRESIZE_CURSOR
+};
+
+enum class FilterType {
+    NEAREST = GL_NEAREST,
+    LINEAR = GL_LINEAR,
+    NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST, // MIN_FILTER only
+    LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,   // MIN_FILTER only
+    NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,   // MIN_FILTER only
+    LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR      // MIN_FILTER only
+};
+
+enum class WrappingType {
+    CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+    CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
+    MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
+    REPEAT = GL_REPEAT
+};
+
+enum class GLType {
+    BYTE = GL_BYTE,
+    UNSIGNED_BYTE = GL_UNSIGNED_BYTE,
+    SHORT = GL_SHORT,
+    UNSIGNED_SHORT = GL_UNSIGNED_SHORT,
+    INT = GL_INT,
+    UNSIGNED_INT = GL_UNSIGNED_INT,
+    FLOAT = GL_FLOAT,
+    DOUBLE_BYTE = GL_2_BYTES,
+    TRIPLE_BYTE = GL_3_BYTES,
+    QUAD_BYTE = GL_4_BYTES,
+    DOUBLE = GL_DOUBLE,
+    HALF_FLOAT = GL_HALF_FLOAT
+};
+
+enum class AttachmentType {
+    COLOR = 0,
+    DEPTH = GL_DEPTH_ATTACHMENT,
+    STENCIL = GL_STENCIL_ATTACHMENT,
+    DEPTH24_STENCIL8 = GL_DEPTH24_STENCIL8,
+    DEPTH32_STENCIL8 = GL_DEPTH32F_STENCIL8
+};
+
+enum class PixelFormat {
+    RED = GL_RED,
+    RG = GL_RG,
+    RGB = GL_RGB,
+    BGR = GL_BGR,
+    RGBA = GL_RGBA,
+    BGRA = GL_BGRA,
+    RED_INT = GL_RED_INTEGER,
+    RG_INT = GL_RG_INTEGER,
+    RGB_INT = GL_RGB_INTEGER,
+    BGR_INT = GL_BGR_INTEGER,
+    RGBA_INT = GL_RGBA_INTEGER,
+    BGRA_INT = GL_BGRA_INTEGER,
+    STENCIL_INDEX = GL_STENCIL_INDEX,
+    DEPTH_COMPONENT = GL_DEPTH_COMPONENT,
+    DEPTH_STENCIL = GL_DEPTH_STENCIL
+};
+
+enum class InputType {
+    CURSOR = GLFW_CURSOR,
+    STICKY_KEYS = GLFW_STICKY_KEYS,
+    STICKY_MOUSE_BUTTONS = GLFW_STICKY_MOUSE_BUTTONS,
+    LOCK_KEY_MODS = GLFW_LOCK_KEY_MODS,
+    RAW_MOUSE_MOTION = GLFW_RAW_MOUSE_MOTION
+};
+
+enum class SourceType {
+    FRAGMENT_SHADER = GL_FRAGMENT_SHADER,
+    VERTEX_SHADER = GL_VERTEX_SHADER,
+    GEOMETRY_SHADER = GL_GEOMETRY_SHADER
+};
+
+enum class MousebuttonInput {
+    BUTTON1 = GLFW_MOUSE_BUTTON_1,
+    LEFT_BUTTON = GLFW_MOUSE_BUTTON_LEFT,
+    BUTTON2 = GLFW_MOUSE_BUTTON_2,
+    RIGHT_BUTTON = GLFW_MOUSE_BUTTON_RIGHT,
+    BUTTON3 = GLFW_MOUSE_BUTTON_3,
+    MIDDLE_BUTTON = GLFW_MOUSE_BUTTON_MIDDLE,
+    BUTTON4 = GLFW_MOUSE_BUTTON_4,
+    BUTTON5 = GLFW_MOUSE_BUTTON_5,
+    BUTTON6 = GLFW_MOUSE_BUTTON_6,
+    BUTTON7 = GLFW_MOUSE_BUTTON_7,
+    BUTTON8 = GLFW_MOUSE_BUTTON_8
+};
+
+enum class DrawMode {
+    POINTS = GL_POINTS,
+    LINES = GL_LINES,
+    LINE_LOOP = GL_LINE_LOOP,
+    LINE_STRIP = GL_LINE_STRIP,
+    TRIANGLES = GL_TRIANGLES,
+    TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
+    TRIANGLE_FAN = GL_TRIANGLE_FAN,
+    QUADS = GL_QUADS
+};
+
+enum class Keyboard {
+    K_SPACE = GLFW_KEY_SPACE,
+    K_APOSTROPHE = GLFW_KEY_APOSTROPHE,
+    K_COMMA = GLFW_KEY_COMMA,
+    K_MINUS = GLFW_KEY_MINUS,
+    K_PERIOD = GLFW_KEY_PERIOD,
+    K_SLASH = GLFW_KEY_SLASH,
+    K_0 = GLFW_KEY_0,
+    K_1 = GLFW_KEY_1,
+    K_2 = GLFW_KEY_2,
+    K_3 = GLFW_KEY_3,
+    K_4 = GLFW_KEY_4,
+    K_5 = GLFW_KEY_5,
+    K_6 = GLFW_KEY_6,
+    K_7 = GLFW_KEY_7,
+    K_8 = GLFW_KEY_8,
+    K_9 = GLFW_KEY_9,
+    K_SEMICOLON = GLFW_KEY_SEMICOLON,
+    K_EQUAL = GLFW_KEY_EQUAL,
+    K_A = GLFW_KEY_A,
+    K_B = GLFW_KEY_B,
+    K_C = GLFW_KEY_C,
+    K_D = GLFW_KEY_D,
+    K_E = GLFW_KEY_E,
+    K_F = GLFW_KEY_F,
+    K_G = GLFW_KEY_G,
+    K_H = GLFW_KEY_H,
+    K_I = GLFW_KEY_I,
+    K_J = GLFW_KEY_J,
+    K_K = GLFW_KEY_K,
+    K_L = GLFW_KEY_L,
+    K_M = GLFW_KEY_M,
+    K_N = GLFW_KEY_N,
+    K_O = GLFW_KEY_O,
+    K_P = GLFW_KEY_P,
+    K_Q = GLFW_KEY_Q,
+    K_R = GLFW_KEY_R,
+    K_S = GLFW_KEY_S,
+    K_T = GLFW_KEY_T,
+    K_U = GLFW_KEY_U,
+    K_V = GLFW_KEY_V,
+    K_W = GLFW_KEY_W,
+    K_X = GLFW_KEY_X,
+    K_Y = GLFW_KEY_Y,
+    K_Z = GLFW_KEY_Z,
+    K_LEFT_BRACKET = GLFW_KEY_LEFT_BRACKET,
+    K_BACKSLASH = GLFW_KEY_BACKSLASH,
+    K_RIGHT_BRACKET = GLFW_KEY_RIGHT_BRACKET,
+    K_GRAVE_ACCENT = GLFW_KEY_GRAVE_ACCENT,
+    K_WORLD_1 = GLFW_KEY_WORLD_1,
+    K_WORLD_2 = GLFW_KEY_WORLD_2,
+    K_ESCAPE = GLFW_KEY_ESCAPE,
+    K_ENTER = GLFW_KEY_ENTER,
+    K_TAB = GLFW_KEY_TAB,
+    K_BACKSPACE = GLFW_KEY_BACKSPACE,
+    K_INSERT = GLFW_KEY_INSERT,
+    K_DELETE = GLFW_KEY_DELETE,
+    K_RIGHT = GLFW_KEY_RIGHT,
+    K_LEFT = GLFW_KEY_LEFT,
+    K_DOWN = GLFW_KEY_DOWN,
+    K_UP = GLFW_KEY_UP,
+    K_PAGE_UP = GLFW_KEY_PAGE_UP,
+    K_PAGE_DOWN = GLFW_KEY_PAGE_DOWN,
+    K_HOME = GLFW_KEY_HOME,
+    K_END = GLFW_KEY_END,
+    K_CAPS_LOCK = GLFW_KEY_CAPS_LOCK,
+    K_SCROLL_LOCK = GLFW_KEY_SCROLL_LOCK,
+    K_NUM_LOCK = GLFW_KEY_NUM_LOCK,
+    K_PRINT_SCREEN = GLFW_KEY_PRINT_SCREEN,
+    K_PAUSE = GLFW_KEY_PAUSE,
+    K_F1 = GLFW_KEY_F1,
+    K_F2 = GLFW_KEY_F2,
+    K_F3 = GLFW_KEY_F3,
+    K_F4 = GLFW_KEY_F4,
+    K_F5 = GLFW_KEY_F5,
+    K_F6 = GLFW_KEY_F6,
+    K_F7 = GLFW_KEY_F7,
+    K_F8 = GLFW_KEY_F8,
+    K_F9 = GLFW_KEY_F9,
+    K_F10 = GLFW_KEY_F10,
+    K_F11 = GLFW_KEY_F11,
+    K_F12 = GLFW_KEY_F12,
+    K_F13 = GLFW_KEY_F13,
+    K_F14 = GLFW_KEY_F14,
+    K_F15 = GLFW_KEY_F15,
+    K_F16 = GLFW_KEY_F16,
+    K_F17 = GLFW_KEY_F17,
+    K_F18 = GLFW_KEY_F18,
+    K_F19 = GLFW_KEY_F19,
+    K_F20 = GLFW_KEY_F20,
+    K_F21 = GLFW_KEY_F21,
+    K_F22 = GLFW_KEY_F22,
+    K_F23 = GLFW_KEY_F23,
+    K_F24 = GLFW_KEY_F24,
+    K_F25 = GLFW_KEY_F25,
+    K_KP_0 = GLFW_KEY_KP_0,
+    K_KP_1 = GLFW_KEY_KP_1,
+    K_KP_2 = GLFW_KEY_KP_2,
+    K_KP_3 = GLFW_KEY_KP_3,
+    K_KP_4 = GLFW_KEY_KP_4,
+    K_KP_5 = GLFW_KEY_KP_5,
+    K_KP_6 = GLFW_KEY_KP_6,
+    K_KP_7 = GLFW_KEY_KP_7,
+    K_KP_8 = GLFW_KEY_KP_8,
+    K_KP_9 = GLFW_KEY_KP_9,
+    K_KP_DECIMAL = GLFW_KEY_KP_DECIMAL,
+    K_KP_DIVIDE = GLFW_KEY_KP_DIVIDE,
+    K_KP_MULTIPLY = GLFW_KEY_KP_MULTIPLY,
+    K_KP_SUBTRACT = GLFW_KEY_KP_SUBTRACT,
+    K_KP_ADD = GLFW_KEY_KP_ADD,
+    K_KP_ENTER = GLFW_KEY_KP_ENTER,
+    K_KP_EQUAL = GLFW_KEY_KP_EQUAL,
+    K_LEFT_SHIFT = GLFW_KEY_LEFT_SHIFT,
+    K_LEFT_CONTROL = GLFW_KEY_LEFT_CONTROL,
+    K_LEFT_ALT = GLFW_KEY_LEFT_ALT,
+    K_LEFT_SUPER = GLFW_KEY_LEFT_SUPER,
+    K_RIGHT_SHIFT = GLFW_KEY_RIGHT_SHIFT,
+    K_RIGHT_CONTROL = GLFW_KEY_RIGHT_CONTROL,
+    K_RIGHT_ALT = GLFW_KEY_RIGHT_ALT,
+    K_RIGHT_SUPER = GLFW_KEY_RIGHT_SUPER,
+    K_MENU = GLFW_KEY_MENU,
+    K_LAST = GLFW_KEY_LAST
+};
+
+enum class TextureTargets {
+    TEX_1 = GL_TEXTURE0,
+    TEX_2 = GL_TEXTURE1,
+    TEX_3 = GL_TEXTURE2,
+    TEX_4 = GL_TEXTURE3,
+    TEX_5 = GL_TEXTURE4,
+    TEX_6 = GL_TEXTURE5,
+    TEX_7 = GL_TEXTURE6,
+    TEX_8 = GL_TEXTURE7,
+    TEX_9 = GL_TEXTURE8,
+    TEX_10 = GL_TEXTURE9,
+    TEX_11 = GL_TEXTURE10,
+    TEX_12 = GL_TEXTURE11,
+    TEX_13 = GL_TEXTURE12,
+    TEX_14 = GL_TEXTURE13,
+    TEX_15 = GL_TEXTURE14,
+    TEX_16 = GL_TEXTURE15,
+    TEX_17 = GL_TEXTURE16,
+    TEX_18 = GL_TEXTURE17,
+    TEX_19 = GL_TEXTURE18,
+    TEX_20 = GL_TEXTURE19,
+    TEX_21 = GL_TEXTURE20,
+    TEX_22 = GL_TEXTURE21,
+    TEX_23 = GL_TEXTURE22,
+    TEX_24 = GL_TEXTURE23,
+    TEX_25 = GL_TEXTURE24,
+    TEX_26 = GL_TEXTURE25,
+    TEX_27 = GL_TEXTURE26,
+    TEX_28 = GL_TEXTURE27,
+    TEX_29 = GL_TEXTURE28,
+    TEX_30 = GL_TEXTURE29,
+    TEX_31 = GL_TEXTURE30,
+    TEX_32 = GL_TEXTURE31
+};
+} // namespace GeoFrame
