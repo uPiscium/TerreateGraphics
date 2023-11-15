@@ -136,19 +136,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\includes\buffer.h" />
-    <ClInclude Include="..\includes\callback.h" />
-    <ClInclude Include="..\includes\core.h" />
-    <ClInclude Include="..\includes\exception.h" />
-    <ClInclude Include="..\includes\font.h" />
-    <ClInclude Include="..\includes\ft2build.h" />
-    <ClInclude Include="..\includes\GeoFrame.h" />
-    <ClInclude Include="..\includes\screen.h" />
-    <ClInclude Include="..\includes\shader.h" />
-    <ClInclude Include="..\includes\texture.h" />
-    <ClInclude Include="..\includes\window.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\src\buffer.cpp" />
     <ClCompile Include="..\src\callback.cpp" />
     <ClCompile Include="..\src\core.cpp" />
@@ -159,6 +146,18 @@
     <ClCompile Include="..\src\texture.cpp" />
     <ClCompile Include="..\src\window.cpp" />
     <ClCompile Include="..\test\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\includes\buffer.hpp" />
+    <ClInclude Include="..\includes\callback.hpp" />
+    <ClInclude Include="..\includes\core.hpp" />
+    <ClInclude Include="..\includes\exception.hpp" />
+    <ClInclude Include="..\includes\font.hpp" />
+    <ClInclude Include="..\includes\GeoFrame.hpp" />
+    <ClInclude Include="..\includes\screen.hpp" />
+    <ClInclude Include="..\includes\shader.hpp" />
+    <ClInclude Include="..\includes\texture.hpp" />
+    <ClInclude Include="..\includes\window.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,7 +4,7 @@
 
 #include <string>
 
-#include "exception.h"
+#include "exception.hpp"
 
 namespace GeoFrame {
 extern bool GLFW_INITIALIZED;

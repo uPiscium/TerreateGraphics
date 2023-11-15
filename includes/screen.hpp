@@ -4,9 +4,9 @@
 
 #include <vector>
 
-#include "core.h"
-#include "exception.h"
-#include "texture.h"
+#include "core.hpp"
+#include "exception.hpp"
+#include "texture.hpp"
 
 namespace GeoFrame {
 std::string GetStatus();

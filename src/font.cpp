@@ -1,4 +1,4 @@
-#include "../includes/font.h"
+#include "../includes/font.hpp"
 
 namespace GeoFrame {
 	Font::Font(const std::string& path, unsigned size) : mSize(size) {

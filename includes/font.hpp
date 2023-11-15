@@ -7,9 +7,9 @@
 #include <string>
 #include <unordered_map>
 
-#include "core.h"
-#include "exception.h"
-#include "texture.h"
+#include "core.hpp"
+#include "exception.hpp"
+#include "texture.hpp"
 
 namespace GeoFrame {
 struct Character {

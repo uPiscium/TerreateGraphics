@@ -8,8 +8,8 @@
 #include <string>
 #include <vector>
 
-#include "core.h"
-#include "exception.h"
+#include "core.hpp"
+#include "exception.hpp"
 
 namespace GeoFrame {
 class Source {

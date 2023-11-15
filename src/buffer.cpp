@@ -1,4 +1,4 @@
-#include "../includes/buffer.h"
+#include "../includes/buffer.hpp"
 
 namespace GeoFrame {
 	GLType TYPE2GL(const type_info& type) {

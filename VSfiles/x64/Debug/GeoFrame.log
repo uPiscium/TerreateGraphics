@@ -3,7 +3,7 @@ C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\buffer.cpp(114,33): warning C4267
 C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\buffer.cpp(125,78): warning C4267: '引数': 'size_t' から 'GLsizei' に変換しました。データが失われているかもしれません。
 C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\buffer.cpp(125,42): warning C4267: '引数': 'size_t' から 'GLsizei' に変換しました。データが失われているかもしれません。
   callback.cpp
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(40,51): warning C4267: 'return': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.hpp(40,51): warning C4267: 'return': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,16): warning C4244: '初期化中': 'const _Ty1' から '_Ty1' への変換です。データが失われる可能性があります。
           with
           [
@@ -13,8 +13,8 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.3282
           [
               _Ty1=float
           ]
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : コンパイル対象の関数 テンプレート インスタンス化 'std::pair<float,float>::pair<double,double,0>(const std::pair<double,double> &) noexcept' のリファレンスを確認してください
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : 'GeoFrame::Window::GetScrollOffset' の 'std::pair<float,float>::pair' への最初の参照を参照してください
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.hpp(380,9): message : コンパイル対象の関数 テンプレート インスタンス化 'std::pair<float,float>::pair<double,double,0>(const std::pair<double,double> &) noexcept' のリファレンスを確認してください
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.hpp(380,9): message : 'GeoFrame::Window::GetScrollOffset' の 'std::pair<float,float>::pair' への最初の参照を参照してください
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,38): warning C4244: '初期化中': 'const _Ty2' から '_Ty2' への変換です。データが失われる可能性があります。
           with
           [
@@ -28,8 +28,8 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.3282
   font.cpp
 C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\font.cpp(100,18): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
   screen.cpp
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.h(55,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.h(170,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.hpp(55,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.hpp(170,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
 C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\screen.cpp(72,63): warning C4267: '引数': 'size_t' から 'GLenum' に変換しました。データが失われているかもしれません。
 C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\screen.cpp(176,63): warning C4267: '引数': 'size_t' から 'GLenum' に変換しました。データが失われているかもしれません。
   shader.cpp
@@ -187,7 +187,7 @@ C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\src\texture.cpp(555,15): warning C424
               _Ty=float
           ]
   window.cpp
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(40,51): warning C4267: 'return': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.hpp(40,51): warning C4267: 'return': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,16): warning C4244: '初期化中': 'const _Ty1' から '_Ty1' への変換です。データが失われる可能性があります。
           with
           [
@@ -197,32 +197,8 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.3282
           [
               _Ty1=float
           ]
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : コンパイル対象の関数 テンプレート インスタンス化 'std::pair<float,float>::pair<double,double,0>(const std::pair<double,double> &) noexcept' のリファレンスを確認してください
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : 'GeoFrame::Window::GetScrollOffset' の 'std::pair<float,float>::pair' への最初の参照を参照してください
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,38): warning C4244: '初期化中': 'const _Ty2' から '_Ty2' への変換です。データが失われる可能性があります。
-          with
-          [
-              _Ty2=double
-          ]
-          and
-          [
-              _Ty2=float
-          ]
-  main.cpp
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.h(55,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\screen.h(170,60): warning C4267: 'return': 'size_t' から 'unsigned int' に変換しました。データが失われているかもしれません。
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(40,51): warning C4267: 'return': 'size_t' から 'int' に変換しました。データが失われているかもしれません。
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,16): warning C4244: '初期化中': 'const _Ty1' から '_Ty1' への変換です。データが失われる可能性があります。
-          with
-          [
-              _Ty1=double
-          ]
-          and
-          [
-              _Ty1=float
-          ]
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : コンパイル対象の関数 テンプレート インスタンス化 'std::pair<float,float>::pair<double,double,0>(const std::pair<double,double> &) noexcept' のリファレンスを確認してください
-C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.h(380,9): message : 'GeoFrame::Window::GetScrollOffset' の 'std::pair<float,float>::pair' への最初の参照を参照してください
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.hpp(380,9): message : コンパイル対象の関数 テンプレート インスタンス化 'std::pair<float,float>::pair<double,double,0>(const std::pair<double,double> &) noexcept' のリファレンスを確認してください
+C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\includes\window.hpp(380,9): message : 'GeoFrame::Window::GetScrollOffset' の 'std::pair<float,float>::pair' への最初の参照を参照してください
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\include\utility(263,38): warning C4244: '初期化中': 'const _Ty2' から '_Ty2' への変換です。データが失われる可能性があります。
           with
           [
@@ -233,4 +209,5 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.3282
               _Ty2=float
           ]
   コードを生成中...
+LINK : warning LNK4098: defaultlib 'MSVCRT' は他のライブラリの使用と競合しています。/NODEFAULTLIB:library を使用してください。
   GeoFrame.vcxproj -> C:\Users\Mr.W\Documents\GeoSeries\GeoFrame\x64\Debug\GeoFrame.exe

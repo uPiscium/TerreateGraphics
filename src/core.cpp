@@ -1,4 +1,4 @@
-#include "../includes/core.h"
+#include "../includes/core.hpp"
 
 namespace GeoFrame {
 	bool GLFW_INITIALIZED = false;

@@ -1,4 +1,4 @@
-#include "../includes/shader.h"
+#include "../includes/shader.hpp"
 
 namespace GeoFrame {
 	void Source::LoadSourceFile(const std::string& filePath) {

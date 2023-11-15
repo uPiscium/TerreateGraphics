@@ -1,5 +1,5 @@
-#include "../includes/callback.h"
-#include "../includes/window.h"
+#include "../includes/callback.hpp"
+#include "../includes/window.hpp"
 
 namespace GeoFrame {
 	void _WindowPosCallbackWrapper(GLFWwindow* window, int xpos, int ypos) {

@@ -6,8 +6,8 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
-#include "core.h"
-#include "exception.h"
+#include "core.hpp"
+#include "exception.hpp"
 
 namespace GeoFrame {
 GLType TYPE2GL(const type_info &type);

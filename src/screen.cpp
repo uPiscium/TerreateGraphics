@@ -1,4 +1,4 @@
-#include "../includes/screen.h"
+#include "../includes/screen.hpp"
 
 namespace GeoFrame {
 	std::string GetStatus() {

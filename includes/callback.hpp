@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "core.h"
+#include "core.hpp"
 
 namespace GeoFrame {
 typedef std::function<void(int errCode, std::string msg)> ErrorCallback;

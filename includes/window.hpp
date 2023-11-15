@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "callback.h"
-#include "core.h"
+#include "callback.hpp"
+#include "core.hpp"
 
 namespace GeoFrame {
 class Icon {
