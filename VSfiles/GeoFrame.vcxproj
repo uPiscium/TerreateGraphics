@@ -134,6 +134,15 @@
       <AdditionalLibraryDirectories>../libs/</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;freetyped.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
+    <Lib>
+      <AdditionalDependencies>freetyped.lib;glfw3.lib</AdditionalDependencies>
+    </Lib>
+    <Lib>
+      <AdditionalLibraryDirectories>../libs/</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\buffer.cpp" />
@@ -145,7 +154,9 @@
     <ClCompile Include="..\src\shader.cpp" />
     <ClCompile Include="..\src\texture.cpp" />
     <ClCompile Include="..\src\window.cpp" />
-    <ClCompile Include="..\test\main.cpp" />
+    <ClCompile Include="..\test\main.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\includes\buffer.hpp" />
