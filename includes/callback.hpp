@@ -2,33 +2,32 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
-#include <functional>
 #include <string>
 #include <vector>
 
 #include "core.hpp"
 
 namespace GeoFrame {
-typedef std::function<void(int errCode, std::string msg)> ErrorCallback;
-typedef std::function<void(int xpos, int ypos)> WindowPosCallback;
-typedef std::function<void(int width, int height)> WindowSizeCallback;
-typedef std::function<void()> WindowCloseCallback;
-typedef std::function<void()> WindowRefreshCallback;
-typedef std::function<void(bool focused)> WindowFocusCallback;
-typedef std::function<void(bool iconified)> WindowIconifyCallback;
-typedef std::function<void(bool maximized)> WindowMaximizeCallback;
-typedef std::function<void(int width, int height)> FramebufferSizeCallback;
-typedef std::function<void(float xscale, float yscale)> ContentScaleCallback;
-typedef std::function<void(MousebuttonInput button, int action, Mods mods)>
-    MousebuttonCallback;
-typedef std::function<void(double xpos, double ypos)> CursorPosCallback;
-typedef std::function<void(bool entered)> CursorEnterCallback;
-typedef std::function<void(double xoffset, double yoffset)> ScrollCallback;
-typedef std::function<void(Key key)> KeyCallback;
-typedef std::function<void(unsigned codepoint)> CharCallback;
-typedef std::function<void(std::vector<std::string> files)> FileDropCallback;
-typedef std::function<void(GLFWmonitor *monitor, int event)> MonitorCallback;
-typedef std::function<void(int joystickID, int event)> JoystickCallback;
+typedef void (*ErrorCallback)(int errCode, std::string msg);
+typedef void (*WindowPosCallback)(int xpos, int ypos);
+typedef void (*WindowSizeCallback)(int width, int height);
+typedef void (*WindowCloseCallback)();
+typedef void (*WindowRefreshCallback)();
+typedef void (*WindowFocusCallback)(bool focused);
+typedef void (*WindowIconifyCallback)(bool iconified);
+typedef void (*WindowMaximizeCallback)(bool maximized);
+typedef void (*FramebufferSizeCallback)(int width, int height);
+typedef void (*ContentScaleCallback)(float xscale, float yscale);
+typedef void (*MousebuttonCallback)(MousebuttonInput button, int action,
+                                    Mods mods);
+typedef void (*CursorPosCallback)(double xpos, double ypos);
+typedef void (*CursorEnterCallback)(bool entered);
+typedef void (*ScrollCallback)(double xoffset, double yoffset);
+typedef void (*KeyCallback)(Key key);
+typedef void (*CharCallback)(unsigned codepoint);
+typedef void (*FileDropCallback)(std::vector<std::string> files);
+typedef void (*MonitorCallback)(GLFWmonitor *monitor, int event);
+typedef void (*JoystickCallback)(int joystickID, int event);
 
 struct Callbacks {
   public:

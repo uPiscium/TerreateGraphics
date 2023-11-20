@@ -2,7 +2,6 @@
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
 
-#include <functional>
 #include <string>
 #include <vector>
 
@@ -289,13 +288,6 @@ class Window {
 
   public:
     /*
-    * "GLFWwindow*" wrapper constructer.
-    [WARNING]
-    * Do not use this constructer to get monitor object. Use
-    "GetPrimaryMonitor()" or "GetMonitors()" class method instead.
-    */
-    Window(GLFWwindow *ptr = NULL);
-    /*
     * Create a new window object.
     [params]
     * width : window width.
@@ -303,11 +295,9 @@ class Window {
     * title : Window title.
     * settings : Window settings. {Default : WindowSettings()}
     * monitor : Monitor for window. {Default : NULL}
-    * share : Window to share the resources. {Default : NULL}
     */
     Window(GLsizei width, GLsizei height, std::string title,
-           WindowSettings settings = WindowSettings(), Monitor monitor = NULL,
-           Window share = NULL);
+           WindowSettings settings = WindowSettings(), Monitor monitor = NULL);
 
     /*
     * Get current mode of the specified input type.
@@ -781,16 +771,6 @@ class Window {
     void Swap() { glfwSwapBuffers(mWindow); }
 
     operator GLFWwindow *() const { return mWindow; }
-
-  public:
-    /*
-    * Get current context.
-    [returns]
-    * Window : Current context.
-    */
-    static Window GetCurrentContext() {
-        return Window(glfwGetCurrentContext());
-    }
 };
 
 /*
