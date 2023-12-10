@@ -1,37 +1,25 @@
-cmake_minimum_required(VERSION 3.10)
-project(
-  GeoFrame
-  VERSION 1.0.0
-  DESCRIPTION "Basic OpenGL handler."
-  LANGUAGES CXX
-)
+cmake_minimum_required(VERSION 3.20)
+project(GeoFrame)
+message(STATUS "Project name : " ${PROJECT_NAME})
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
-file(
-  GLOB_RECURSE
-  source
-  RELATIVE
-  ${PROJECT_SOURCE_DIR}
-  "src/*.cpp"
-)
+add_library(${PROJECT_NAME} SHARED impls/buffer.cpp, impls/font.cpp)
 
-add_library(
-  GeoFrame
-  SHARED
-  ${source}
-)
+target_include_directories(${PROJECT_NAME}
+                           PUBLIC ${PROJECT_SOURCE_DIR}/includes)
 
-target_include_directories(GeoFrame PUBLIC "includes")
+if(WIN32)
+  target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/libs)
+  target_link_libraries(${PROJECT_NAME} PUBLIC glfw3)
+  target_link_libraries(${PROJECT_NAME} PUBLIC freetyped)
+elseif(UNIX)
+    #target_link_directories(${PROJECT_NAME} PUBLIC /usr/local/lib) # path is not
+                                                                 # correct
+  target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
+endif()
 
-target_link_libraries(GeoFrame PRIVATE "../libs/glfw3")
-target_link_libraries(GeoFrame PRIVATE "../libs/freetyped")
-
-set_target_properties(
-  GeoFrame
-  PROPERTIES
-  VERSION ${PROJECT_VERSION}
-)
-
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION 1.0.0)
