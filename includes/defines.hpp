@@ -22,6 +22,7 @@
 
 #include D_GLAD
 #include D_GLFW
+#include "exceptions.hpp"
 
 namespace GeoFrame {
 // Typedefs
@@ -58,5 +59,17 @@ enum class BufferUsage {
 enum class BufferType {
     ARRAY_BUFFER = GL_ARRAY_BUFFER,
     ELEMENT_BUFFER = GL_ELEMENT_ARRAY_BUFFER
+};
+
+// Use to select opengl drawing mode.
+enum class DrawMode {
+    POINTS = GL_POINTS,
+    LINES = GL_LINES,
+    LINE_LOOP = GL_LINE_LOOP,
+    LINE_STRIP = GL_LINE_STRIP,
+    TRIANGLES = GL_TRIANGLES,
+    TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
+    TRIANGLE_FAN = GL_TRIANGLE_FAN,
+    QUADS = GL_QUADS
 };
 } // namespace GeoFrame
