@@ -2,13 +2,13 @@
 
 // Defines
 #ifdef GEOFRAME_EXPORT
-#define GEOFRAME_API __declspec(dllexport)
+#define D_GEOFRAME_API __declspec(dllexport)
 #else
-#define GEOFRAME_API __declspec(dllimport)
+#define D_GEOFRAME_API __declspec(dllimport)
 #endif // GEOFRAME_EXPORT
 
-#define GLAD_H <glad/gl.h>
-#define GLFW_H <GLFW/glfw3.h>
+#define D_GLAD <glad/gl.h>
+#define D_GLFW <GLFW/glfw3.h>
 
 #include <memory>
 #include <string>
@@ -16,8 +16,8 @@
 #include <unordered_set>
 #include <vector>
 
-#include GLAD_H
-#include GLFW_H
+#include D_GLAD
+#include D_GLFW
 
 namespace GeoFrame {
 // Typedefs
