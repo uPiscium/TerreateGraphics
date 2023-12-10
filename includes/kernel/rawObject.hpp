@@ -1,11 +1,12 @@
+#pragma once
 #include "../defines.hpp"
 
 namespace GeoFrame {
 namespace Kernel {
-class RawObject {
+class D_GEOFRAME_API RawObject {
   public:
     RawObject();
-    ~RawObject();
+    virtual ~RawObject();
 };
 } // namespace Kernel
 } // namespace GeoFrame
