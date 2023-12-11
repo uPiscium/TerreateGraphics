@@ -7,5 +7,5 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(${PROJECT_NAME} main.cpp)
 
-target_include_directories(${PROJECT_NAME} PRIVATE ../include)
-target_include_directories(${PROJECT_NAME} PRIVATE ../GeoFrame)
+target_include_directories(${PROJECT_NAME} PUBLIC ../include)
+target_include_directories(${PROJECT_NAME} PUBLIC ../GeoFrame)
