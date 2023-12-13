@@ -2,28 +2,38 @@
 #include "defines.hpp"
 
 #include "kernel/rawBuffer.hpp"
+#include "kernel/rawWindow.hpp"
 
 namespace GeoFrame {
 namespace Kernel {
 class ResourceManager {
   public:
-    ResourceManager();
-    ~ResourceManager();
-
     virtual void ReleaseObjects() = 0;
 };
 } // namespace Kernel
 
 class BufferManager : public Kernel::ResourceManager {
   private:
-    Vec<Unique<Kernel::RawBuffer>> mObjects;
+    Vec<Unique<Kernel::RawBuffer>> mBuffers;
 
   public:
-    BufferManager();
+    BufferManager() {}
     ~BufferManager();
 
     void ReleaseObjects() override;
     void Create();
+};
+
+class WindowManager : public Kernel::ResourceManager {
+  private:
+    Vec<Unique<Kernel::RawWindow>> mWindows;
+
+  public:
+    WindowManager() {}
+    ~WindowManager();
+
+    void ReleaseObjects() override;
+    void Create(unsigned width, unsigned height, Str const &title);
 };
 
 template <typename T>
