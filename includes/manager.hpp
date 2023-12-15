@@ -8,6 +8,8 @@ namespace GeoFrame {
 namespace Kernel {
 class ResourceManager {
   public:
+    virtual ~ResourceManager() {}
+
     virtual void ReleaseObjects() = 0;
 };
 } // namespace Kernel

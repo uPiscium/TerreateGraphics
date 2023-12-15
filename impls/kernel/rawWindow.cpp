@@ -173,6 +173,8 @@ RawWindow::RawWindow(unsigned const &width, unsigned const &height,
     mWindow = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
     glfwSetWindowUserPointer(mWindow, this);
 
+    glfwMakeContextCurrent(mWindow);
+
     if (!S_GLAD_INITIALIZED) {
         if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress)) {
             M_GEO_THROW(APIError, "Failed to initialize GLAD");

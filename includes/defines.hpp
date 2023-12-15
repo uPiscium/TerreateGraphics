@@ -8,12 +8,6 @@
 #include <vector>
 
 // Defines
-#ifdef GEOFRAME_EXPORT
-#define D_GEOFRAME_API __declspec(dllexport)
-#else
-#define D_GEOFRAME_API __declspec(dllimport)
-#endif // GEOFRAME_EXPORT
-
 #ifdef GEOFRAME_IGNORE_EXCEPTIONS
 #define M_GEO_THROW(exception, message)                                        \
     std::cerr << __FILE__ << ":" << __LINE__ << " " << message << std::endl;

@@ -3,10 +3,10 @@
 
 namespace GeoFrame {
 namespace Kernel {
-class D_GEOFRAME_API RawObject {
+class RawObject {
   public:
-    RawObject();
-    virtual ~RawObject();
+    RawObject() {}
+    virtual ~RawObject() {}
 };
 } // namespace Kernel
 } // namespace GeoFrame
