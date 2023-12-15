@@ -7,19 +7,27 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
-set(SOURCE_FILES
-    impls/kernel/rawBuffer.cpp;
-    impls/kernel/rawFont.cpp;
-    impls/kernel/rawObject.cpp;
-    impls/kernel/rawScreen.cpp;
-    impls/kernel/rawShader.cpp;
-    impls/kernel/rawTexture.cpp;
-    impls/kernel/rawWindow.cpp)
+add_library(
+  ${PROJECT_NAME} STATIC
+  impls/kernel/rawBuffer.cpp
+  impls/kernel/rawFont.cpp
+  impls/kernel/rawScreen.cpp
+  impls/kernel/rawShader.cpp
+  impls/kernel/rawTexture.cpp
+  impls/kernel/rawWindow.cpp
+  impls/buffer.cpp
+  impls/core.cpp
+  impls/font.cpp
+  impls/gl.cpp
+  impls/manager.cpp
+  impls/screen.cpp
+  impls/shader.cpp
+  impls/texture.cpp
+  impls/window.cpp)
 
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-
-target_include_directories(${PROJECT_NAME}
-                           PUBLIC ${PROJECT_SOURCE_DIR}/includes)
+target_include_directories(${PROJECT_NAME} PUBLIC ./includes)
+target_include_directories(${PROJECT_NAME} PUBLIC ./includes/kernel)
+target_include_directories(${PROJECT_NAME} PUBLIC ./includes/headers)
 
 if(WIN32)
   target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/libs)
