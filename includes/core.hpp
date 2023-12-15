@@ -1,14 +1,16 @@
+#pragma once
 #include "defines.hpp"
+#include "exceptions.hpp"
 #include "manager.hpp"
 
 namespace GeoFrame {
-class GeoFrame {
+class GeoFrameContext {
   private:
-    Map<Str, Unique<Kernel::ResourceManager *>> mResourceManagers;
+    Map<Str, Unique<Kernel::ResourceManager>> mResourceManagers;
 
   public:
-    GeoFrame();
-    ~GeoFrame();
+    GeoFrameContext();
+    ~GeoFrameContext();
 
     template <typename T>
         requires Manager<T>
@@ -17,5 +19,7 @@ class GeoFrame {
         mResourceManagers.insert(name, std::move(manager));
         return manager;
     }
+
+    void PollEvents() { glfwPollEvents(); }
 };
 } // namespace GeoFrame
