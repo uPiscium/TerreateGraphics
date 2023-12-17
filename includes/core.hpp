@@ -20,6 +20,9 @@ class GeoFrameContext {
         return manager;
     }
 
+    void ActiveTexture(TextureTargets const &target) {
+        glActiveTexture((unsigned)target);
+    }
     void PollEvents() { glfwPollEvents(); }
 };
 } // namespace GeoFrame

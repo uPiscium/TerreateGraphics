@@ -127,6 +127,16 @@ enum class DrawMode {
     QUADS = GL_QUADS
 };
 
+// Use to select opengl texture filtering type.
+enum class FilterType {
+    NEAREST = GL_NEAREST,
+    LINEAR = GL_LINEAR,
+    NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST, // MIN_FILTER only
+    LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,   // MIN_FILTER only
+    NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,   // MIN_FILTER only
+    LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR      // MIN_FILTER only
+};
+
 // Use to select input mode.
 enum class InputType {
     CURSOR = GLFW_CURSOR,
@@ -274,5 +284,49 @@ enum class MousebuttonInput {
     BUTTON6 = GLFW_MOUSE_BUTTON_6,
     BUTTON7 = GLFW_MOUSE_BUTTON_7,
     BUTTON8 = GLFW_MOUSE_BUTTON_8
+};
+
+// Use to select opengl texture target to activate.
+enum class TextureTargets {
+    TEX_1 = GL_TEXTURE0,
+    TEX_2 = GL_TEXTURE1,
+    TEX_3 = GL_TEXTURE2,
+    TEX_4 = GL_TEXTURE3,
+    TEX_5 = GL_TEXTURE4,
+    TEX_6 = GL_TEXTURE5,
+    TEX_7 = GL_TEXTURE6,
+    TEX_8 = GL_TEXTURE7,
+    TEX_9 = GL_TEXTURE8,
+    TEX_10 = GL_TEXTURE9,
+    TEX_11 = GL_TEXTURE10,
+    TEX_12 = GL_TEXTURE11,
+    TEX_13 = GL_TEXTURE12,
+    TEX_14 = GL_TEXTURE13,
+    TEX_15 = GL_TEXTURE14,
+    TEX_16 = GL_TEXTURE15,
+    TEX_17 = GL_TEXTURE16,
+    TEX_18 = GL_TEXTURE17,
+    TEX_19 = GL_TEXTURE18,
+    TEX_20 = GL_TEXTURE19,
+    TEX_21 = GL_TEXTURE20,
+    TEX_22 = GL_TEXTURE21,
+    TEX_23 = GL_TEXTURE22,
+    TEX_24 = GL_TEXTURE23,
+    TEX_25 = GL_TEXTURE24,
+    TEX_26 = GL_TEXTURE25,
+    TEX_27 = GL_TEXTURE26,
+    TEX_28 = GL_TEXTURE27,
+    TEX_29 = GL_TEXTURE28,
+    TEX_30 = GL_TEXTURE29,
+    TEX_31 = GL_TEXTURE30,
+    TEX_32 = GL_TEXTURE31
+};
+
+// Use to select opengl texture wrapping type.
+enum class WrappingType {
+    CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+    CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
+    MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
+    REPEAT = GL_REPEAT
 };
 } // namespace GeoFrame
