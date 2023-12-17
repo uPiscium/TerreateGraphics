@@ -7,7 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_subdirectory(../../GeoFrame GeoFrame)
 add_executable(${PROJECT_NAME} main.cpp impls/drawingTest.cpp
-                               impls/windowTest.cpp)
+                               impls/textureTest.cpp impls/windowTest.cpp)
 target_link_libraries(${PROJECT_NAME} GeoFrame)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
