@@ -229,7 +229,7 @@ class RawShader : public RawObject {
      * @sa: Compile
      * @detail: This function should be called after shader is compiled.
      */
-    void Use() const;
+    void Use() const { glUseProgram(mShaderID); }
 
   public:
     /*

@@ -16,8 +16,8 @@ Str GetShaderLog(unsigned const &id) {
 
 void CheckCompileStatus(unsigned const &id, Str const &name) {
     Str log = GetShaderLog(id);
-    log = name + " shader log: " + log;
     if (log != "") {
+        log = name + " shader log: " + log;
         M_GEO_THROW(KernelError, log.c_str());
     }
 }
@@ -36,8 +36,8 @@ Str GetProgramLog(unsigned const &id) {
 
 void CheckLinkStatus(unsigned const &id) {
     Str log = GetProgramLog(id);
-    log = "Shader program log: " + log;
     if (log != "") {
+        log = "Shader program log: " + log;
         M_GEO_THROW(KernelError, log.c_str());
     }
 }
