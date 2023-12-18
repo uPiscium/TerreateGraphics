@@ -6,7 +6,6 @@ WindowManager::~WindowManager() { this->ReleaseObjects(); }
 void WindowManager::ReleaseObjects() {
     for (auto &window : mWindows) {
         window->Close();
-        delete window.release();
     }
 }
 
