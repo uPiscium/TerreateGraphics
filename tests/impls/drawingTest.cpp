@@ -8,7 +8,7 @@ void buffer_drawing_test() {
     Kernel::RawWindow window(800, 600, "Buffer Drawing Test",
                              Kernel::WindowSettings());
     window.Bind();
-    Kernel::RawBuffer buffer(BufferUsage::STATIC_DRAW);
+    Kernel::RawBuffer buffer(BufferUsage::DYNAMIC_DRAW);
 
     auto attrs = Attribute::GenerateAttributes({2});
     buffer.LoadVertices({-0.5f, -0.5f, 0.0f, 0.5f, 0.5f, -0.5f});
@@ -32,6 +32,15 @@ void buffer_drawing_test() {
         context.PollEvents();
         window.Fill({0, 0, 1});
         window.Clear((int)BufferBit::COLOR_BUFFER);
+
+        if (window.IsEntering()) {
+            auto pos = window.GetCursorPosition();
+            float x = (float)pos.first / (float)window.GetSize().first;
+            float y = (float)pos.second / (float)window.GetSize().second;
+            buffer.LoadVertices(
+                {-0.5f, -0.5f, 2 * x - 1.0f, -2 * y + 1.0f, 0.5f, -0.5f});
+        }
+
         shader.Use();
         buffer.Draw(DrawMode::TRIANGLES);
         window.Swap();
