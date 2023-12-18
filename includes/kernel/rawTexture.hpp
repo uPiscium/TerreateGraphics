@@ -44,7 +44,8 @@ class RawTexture : public RawObject {
     void LoadData(unsigned width, unsigned height, unsigned channels,
                   unsigned char const *data);
     void LoadData(TextureData const &data) {
-        LoadData(data.width, data.height, data.channels, data.pixels.data());
+        this->LoadData(data.width, data.height, data.channels,
+                       data.pixels.data());
     }
 
     void Bind() const { glBindTexture(GL_TEXTURE_2D, mTexture); }
@@ -52,6 +53,44 @@ class RawTexture : public RawObject {
 
   public:
     static TextureData LoadTexture(Str const &path);
+};
+
+class RawCubeTexture : public RawObject {
+  private:
+    unsigned mTexture = 0;
+    unsigned mWidth = 0;
+    unsigned mHeight = 0;
+    unsigned mChannels = 0;
+    FilterType mFilter = FilterType::LINEAR;
+    WrappingType mWrap = WrappingType::REPEAT;
+
+  private:
+    M_DISABLE_COPY_AND_ASSIGN(RawCubeTexture);
+
+  private:
+    RawCubeTexture(unsigned const &texture, unsigned const &width,
+                   unsigned const &height, unsigned const &channels)
+        : mTexture(texture), mWidth(width), mHeight(height),
+          mChannels(channels) {}
+    friend class RawScreen;
+
+  public:
+    RawCubeTexture() { glGenTextures(1, &mTexture); }
+    ~RawCubeTexture() override { glDeleteTextures(1, &mTexture); }
+
+    void SetFilter(FilterType const &filter);
+    void SetWrapping(WrappingType const &wrap);
+
+    void LoadData(CubeFace face, unsigned width, unsigned height,
+                  unsigned channels, unsigned char const *data);
+    void LoadData(CubeFace face, TextureData const &data) {
+        this->LoadData(face, data.width, data.height, data.channels,
+                       data.pixels.data());
+    }
+    void LoadDatas(Vec<TextureData> const &datas);
+
+    void Bind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, mTexture); }
+    void Unbind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
 };
 } // namespace Kernel
 } // namespace GeoFrame

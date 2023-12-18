@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include <memory>
 #include <string>
@@ -113,6 +112,16 @@ enum class BufferUsage {
 enum class BufferType {
     ARRAY_BUFFER = GL_ARRAY_BUFFER,
     ELEMENT_BUFFER = GL_ELEMENT_ARRAY_BUFFER
+};
+
+// Use to select opengl cube map face direction.
+enum class CubeFace {
+    RIGHT = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+    LEFT = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+    TOP = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+    BOTTOM = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+    FRONT = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+    BACK = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
 };
 
 // Use to select opengl drawing mode.
