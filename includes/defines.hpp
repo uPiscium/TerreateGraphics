@@ -23,6 +23,13 @@
 #define D_GLAD <glad/gl.h>
 #define D_GLFW <GLFW/glfw3.h>
 
+#ifndef D_HALF_WIDTH_SPACE
+#define D_HALF_WIDTH_SPACE 32
+#endif // D_HALF_WIDTH_SPACE
+#ifndef D_FULL_WIDTH_SPACE
+#define D_FULL_WIDTH_SPACE 32306
+#endif // D_FULL_WIDTH_SPACE
+
 #include D_GLAD
 #include D_GLFW
 #include "exceptions.hpp"
@@ -37,6 +44,7 @@ template <typename T> using Vec = std::vector<T>;
 using ID = unsigned;
 using Index = unsigned long long;
 using Str = std::string;
+using WStr = std::wstring;
 
 using ErrorCallback = void (*)(int errorCode, char const *description);
 using MonitorCallback = void (*)(GLFWmonitor *monitor, int event);
