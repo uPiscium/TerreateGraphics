@@ -485,6 +485,13 @@ class RawWindow : public RawObject {
     bool IsPressing(Keyboard const &key) const {
         return bool(glfwGetKey(mWindow, (unsigned)key) == GLFW_PRESS);
     }
+    /*
+     * @brief: This function returns whether cursor is entering or not.
+     * @return: Whether cursor is entering or not.
+     */
+    bool IsEntering() const {
+        return bool(glfwGetWindowAttrib(mWindow, GLFW_HOVERED));
+    }
 
     /*
      * @brief: This function closes window.
