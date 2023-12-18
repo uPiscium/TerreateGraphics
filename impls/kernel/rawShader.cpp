@@ -25,6 +25,7 @@ void CheckCompileStatus(unsigned const &id, Str const &name) {
 Str GetProgramLog(unsigned const &id) {
     int status;
     glGetProgramiv(id, GL_LINK_STATUS, &status);
+
     if (status) {
         return "";
     }
@@ -36,6 +37,7 @@ Str GetProgramLog(unsigned const &id) {
 
 void CheckLinkStatus(unsigned const &id) {
     Str log = GetProgramLog(id);
+
     if (log != "") {
         log = "Shader program log: " + log;
         M_GEO_THROW(KernelError, log.c_str());
@@ -45,10 +47,12 @@ void CheckLinkStatus(unsigned const &id) {
 void RawShader::Compile() {
     if (mVertexShaderSource == "") {
         M_GEO_THROW(KernelError, "Vertex shader source is empty");
+        return;
     }
 
     if (mFragmentShaderSource == "") {
         M_GEO_THROW(KernelError, "Fragment shader source is empty");
+        return;
     }
 
     unsigned vertID = 0;
@@ -89,6 +93,7 @@ Str RawShader::LoadShaderSource(const Str &path) {
 
     if (!file.is_open()) {
         M_GEO_THROW(KernelError, "Failed to open shader source file");
+        return "";
     }
 
     std::stringstream stream;

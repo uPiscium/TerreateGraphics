@@ -48,6 +48,7 @@ void RawTexture::LoadData(unsigned width, unsigned height, unsigned channels,
 
     if (format == NULL) {
         M_GEO_THROW(KernelError, "Invalid number of channels.");
+        return;
     }
 
     Bind();
@@ -69,6 +70,7 @@ TextureData RawTexture::LoadTexture(Str const &path) {
 
     if (pixelData == nullptr) {
         M_GEO_THROW(KernelError, "Failed to load texture.");
+        return texData;
     }
 
     texData.pixels = Vec<unsigned char>(
@@ -126,6 +128,7 @@ void RawCubeTexture::LoadData(CubeFace face, unsigned width, unsigned height,
 
     if (format == NULL) {
         M_GEO_THROW(KernelError, "Invalid number of channels.");
+        return;
     }
 
     Bind();

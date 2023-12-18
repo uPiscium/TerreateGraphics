@@ -94,9 +94,12 @@ void RawBuffer::Draw(DrawMode const &drawMode) {
 void RawBuffer::DrawInstances(size_t const &numInstances,
                               DrawMode const &drawMode) {
     glBindVertexArray(mVAO);
+
     if (mNumIndices == 0) {
         M_GEO_THROW(KernelError, "No indices loaded.");
+        return;
     }
+
     glDrawElementsInstanced((unsigned)drawMode, mNumIndices, GL_UNSIGNED_INT, 0,
                             numInstances);
     glBindVertexArray(0);

@@ -17,7 +17,7 @@ struct TextureData {
 
 class RawTexture : public RawObject {
   private:
-    unsigned mTexture = 0;
+    ID mTexture = 0;
     unsigned mWidth = 0;
     unsigned mHeight = 0;
     unsigned mChannels = 0;
