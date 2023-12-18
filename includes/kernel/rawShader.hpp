@@ -2,8 +2,8 @@
 #include <fstream>
 #include <sstream>
 
-#include "../headers/GeoMath/matrix.hpp"
-#include "../headers/GeoMath/vector.hpp"
+#include <GeoMath/matrix.hpp>
+#include <GeoMath/vector.hpp>
 
 #include "../core.hpp"
 #include "../defines.hpp"
