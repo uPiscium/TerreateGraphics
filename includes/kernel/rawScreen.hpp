@@ -10,7 +10,7 @@ class RawScreen : public RawObject {
     ID mFrameBuffer;
     unsigned mWidth;
     unsigned mHeight;
-    Unique<RawTexture> mTexture;
+    Vec<Unique<RawTexture>> mTextures;
 
   public:
     /*
@@ -19,7 +19,7 @@ class RawScreen : public RawObject {
      * @param: height: height of screen
      */
     RawScreen(unsigned const &width, unsigned const &height);
-    ~RawScreen() override;
+    ~RawScreen() override { glDeleteFramebuffers(1, &mFrameBuffer); }
 
     /*
      * @brief: Getter for width.
@@ -31,6 +31,11 @@ class RawScreen : public RawObject {
      * @return: height
      */
     unsigned GetHeight() const { return mHeight; }
+
+    /*
+     * @brief: Add new buffer to screen. (Max 32)
+     */
+    void AddBuffer();
 
     /*
      * @brief: Transcript to other screen.
@@ -46,17 +51,19 @@ class RawScreen : public RawObject {
     /*
      * @brief: Binds the screen for drawing.
      */
-    void DrawOnlyBind() const {
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFrameBuffer);
-    }
+    void DrawOnlyBind() const;
     /*
      * @brief: Binds the screen.
      */
-    void Bind() const { glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer); }
+    void Bind() const;
     /*
      * @brief: Unbinds the screen.
      */
-    void Unbind() const { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+    void Unbind() const;
+
+    Unique<RawTexture> const &operator[](Index const &index) const {
+        return mTextures[index];
+    }
 };
 } // namespace Kernel
 } // namespace GeoFrame

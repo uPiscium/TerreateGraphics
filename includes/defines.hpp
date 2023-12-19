@@ -29,6 +29,7 @@
 #ifndef D_FULL_WIDTH_SPACE
 #define D_FULL_WIDTH_SPACE 32306
 #endif // D_FULL_WIDTH_SPACE
+#define D_MAX_COLOR_ATTACHMENT 32
 
 #include D_GLAD
 #include D_GLFW
@@ -95,6 +96,42 @@ using ScrollCallback = void (*)(void *userPtr, double xoffset, double yoffset);
 using KeyCallback = void (*)(void *userPtr, Key key);
 using CharCallback = void (*)(void *userPtr, unsigned codepoint);
 using DropCallback = void (*)(void *userPtr, Vec<Str> paths);
+
+// Use to select opengl color frame buffer attachement.
+enum class Attachment {
+    COLOR0 = GL_COLOR_ATTACHMENT0,
+    COLOR1 = GL_COLOR_ATTACHMENT1,
+    COLOR2 = GL_COLOR_ATTACHMENT2,
+    COLOR3 = GL_COLOR_ATTACHMENT3,
+    COLOR4 = GL_COLOR_ATTACHMENT4,
+    COLOR5 = GL_COLOR_ATTACHMENT5,
+    COLOR6 = GL_COLOR_ATTACHMENT6,
+    COLOR7 = GL_COLOR_ATTACHMENT7,
+    COLOR8 = GL_COLOR_ATTACHMENT8,
+    COLOR9 = GL_COLOR_ATTACHMENT9,
+    COLOR10 = GL_COLOR_ATTACHMENT10,
+    COLOR11 = GL_COLOR_ATTACHMENT11,
+    COLOR12 = GL_COLOR_ATTACHMENT12,
+    COLOR13 = GL_COLOR_ATTACHMENT13,
+    COLOR14 = GL_COLOR_ATTACHMENT14,
+    COLOR15 = GL_COLOR_ATTACHMENT15,
+    COLOR16 = GL_COLOR_ATTACHMENT16,
+    COLOR17 = GL_COLOR_ATTACHMENT17,
+    COLOR18 = GL_COLOR_ATTACHMENT18,
+    COLOR19 = GL_COLOR_ATTACHMENT19,
+    COLOR20 = GL_COLOR_ATTACHMENT20,
+    COLOR21 = GL_COLOR_ATTACHMENT21,
+    COLOR22 = GL_COLOR_ATTACHMENT22,
+    COLOR23 = GL_COLOR_ATTACHMENT23,
+    COLOR24 = GL_COLOR_ATTACHMENT24,
+    COLOR25 = GL_COLOR_ATTACHMENT25,
+    COLOR26 = GL_COLOR_ATTACHMENT26,
+    COLOR27 = GL_COLOR_ATTACHMENT27,
+    COLOR28 = GL_COLOR_ATTACHMENT28,
+    COLOR29 = GL_COLOR_ATTACHMENT29,
+    COLOR30 = GL_COLOR_ATTACHMENT30,
+    COLOR31 = GL_COLOR_ATTACHMENT31
+};
 
 // Use to select buffer to clear.
 enum class BufferBit {
@@ -346,4 +383,22 @@ enum class WrappingType {
     MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
     REPEAT = GL_REPEAT
 };
+
+static unsigned COLOR_BUFFERS[] = {
+    (unsigned)Attachment::COLOR0,  (unsigned)Attachment::COLOR1,
+    (unsigned)Attachment::COLOR2,  (unsigned)Attachment::COLOR3,
+    (unsigned)Attachment::COLOR4,  (unsigned)Attachment::COLOR5,
+    (unsigned)Attachment::COLOR6,  (unsigned)Attachment::COLOR7,
+    (unsigned)Attachment::COLOR8,  (unsigned)Attachment::COLOR9,
+    (unsigned)Attachment::COLOR10, (unsigned)Attachment::COLOR11,
+    (unsigned)Attachment::COLOR12, (unsigned)Attachment::COLOR13,
+    (unsigned)Attachment::COLOR14, (unsigned)Attachment::COLOR15,
+    (unsigned)Attachment::COLOR16, (unsigned)Attachment::COLOR17,
+    (unsigned)Attachment::COLOR18, (unsigned)Attachment::COLOR19,
+    (unsigned)Attachment::COLOR20, (unsigned)Attachment::COLOR21,
+    (unsigned)Attachment::COLOR22, (unsigned)Attachment::COLOR23,
+    (unsigned)Attachment::COLOR24, (unsigned)Attachment::COLOR25,
+    (unsigned)Attachment::COLOR26, (unsigned)Attachment::COLOR27,
+    (unsigned)Attachment::COLOR28, (unsigned)Attachment::COLOR29,
+    (unsigned)Attachment::COLOR30, (unsigned)Attachment::COLOR31};
 } // namespace GeoFrame
