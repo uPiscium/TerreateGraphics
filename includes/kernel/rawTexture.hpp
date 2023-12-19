@@ -27,9 +27,9 @@ class RawTexture : public RawObject {
   private:
     M_DISABLE_COPY_AND_ASSIGN(RawTexture);
 
-  private:
+  public:
     /*
-     * @brief: Constructor for RawTexture. This constructor is private because
+     * @brief: DO NOT USE THIS CONSTRUCTOR.
      * RawTexture should only be created by RawScreen.
      * @param: texture: OpenGL texture ID
      * @param: width: width of texture
@@ -40,9 +40,6 @@ class RawTexture : public RawObject {
                unsigned const &height, unsigned const &channels)
         : mTexture(texture), mWidth(width), mHeight(height),
           mChannels(channels) {}
-    friend class RawScreen;
-
-  public:
     /*
      * @brief: This function creates a opengl texture.
      */
