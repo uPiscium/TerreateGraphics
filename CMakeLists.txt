@@ -34,9 +34,7 @@ if(WIN32)
   target_link_libraries(${PROJECT_NAME} PUBLIC glfw3)
   target_link_libraries(${PROJECT_NAME} PUBLIC freetyped)
 elseif(UNIX)
-  # target_link_directories(${PROJECT_NAME} PUBLIC /usr/local/lib) # path is not
-  # correct
-  target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
+  add_compile_options(-lglfw)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION 1.0.0)

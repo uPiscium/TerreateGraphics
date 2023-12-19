@@ -331,6 +331,56 @@ class RawWindow : public RawObject {
         glfwSetInputMode(mWindow, (unsigned)type, value);
     }
 
+    void SetSizeCallback(WindowSizeCallback const &callback) {
+        mCallbacks.windowSizeCallback = callback;
+    }
+    void SetPositionCallback(WindowPositionCallback const &callback) {
+        mCallbacks.windowPositionCallback = callback;
+    }
+    void SetCloseCallback(WindowCloseCallback const &callback) {
+        mCallbacks.windowCloseCallback = callback;
+    }
+    void SetRefreshCallback(WindowRefreshCallback const &callback) {
+        mCallbacks.windowRefreshCallback = callback;
+    }
+    void SetFocusCallback(WindowFocusCallback const &callback) {
+        mCallbacks.windowFocusCallback = callback;
+    }
+    void SetIconifyCallback(WindowIconifyCallback const &callback) {
+        mCallbacks.windowIconifyCallback = callback;
+    }
+    void SetMaximizeCallback(WindowMaximizeCallback const &callback) {
+        mCallbacks.windowMaximizeCallback = callback;
+    }
+    void
+    SetFramebufferSizeCallback(WindowFramebufferSizeCallback const &callback) {
+        mCallbacks.windowFramebufferSizeCallback = callback;
+    }
+    void SetContentScaleCallback(WindowContentScaleCallback const &callback) {
+        mCallbacks.windowContentScaleCallback = callback;
+    }
+    void SetKeyCallback(KeyCallback const &callback) {
+        mCallbacks.keyCallback = callback;
+    }
+    void SetCharCallback(CharCallback const &callback) {
+        mCallbacks.charCallback = callback;
+    }
+    void SetMouseButtonCallback(MousebuttonCallback const &callback) {
+        mCallbacks.mousebuttonCallback = callback;
+    }
+    void SetCursorPosCallback(CursorPositionCallback const &callback) {
+        mCallbacks.cursorPositionCallback = callback;
+    }
+    void SetCursorEnterCallback(CursorEnterCallback const &callback) {
+        mCallbacks.cursorEnterCallback = callback;
+    }
+    void SetScrollCallback(ScrollCallback const &callback) {
+        mCallbacks.scrollCallback = callback;
+    }
+    void SetDropCallback(DropCallback const &callback) {
+        mCallbacks.dropCallback = callback;
+    }
+
     /*
      * @brief: This function returns whether window is closed or not.
      * @return: Whether window is closed or not.
@@ -435,6 +485,13 @@ class RawWindow : public RawObject {
     bool IsPressing(Keyboard const &key) const {
         return bool(glfwGetKey(mWindow, (unsigned)key) == GLFW_PRESS);
     }
+    /*
+     * @brief: This function returns whether cursor is entering or not.
+     * @return: Whether cursor is entering or not.
+     */
+    bool IsEntering() const {
+        return bool(glfwGetWindowAttrib(mWindow, GLFW_HOVERED));
+    }
 
     /*
      * @brief: This function closes window.
@@ -476,25 +533,23 @@ class RawWindow : public RawObject {
     /*
      * @brief: This function fills window with specified color.
      * @param color: Fill color.
-     * @detail: Color format is (red, green, blue). Each color is unsigned char
-     * (0 ~ 255).
-     */
-    void Fill(Vec<unsigned char> const &color);
-    /*
-     * @brief: This function fills window with specified color.
-     * @param color: Fill color.
      * @detail: Color format is (red, green, blue). Each color is float (0
      * ~ 1.0).
      */
     void Fill(Vec<float> const &color);
     /*
      * @brief: This function clears specified buffers.
+     * @param buffer: Buffer to clear.
      */
     void Clear(int const &buffer) const { glClear(buffer); }
     /*
      * @brief: This function swaps front and back buffers.
      */
     void Swap() const { glfwSwapBuffers(mWindow); }
+    /*
+     * @brief: This function binds window to current context.
+     */
+    void Bind() const { glfwMakeContextCurrent(mWindow); }
 };
 } // namespace Kernel
 } // namespace GeoFrame

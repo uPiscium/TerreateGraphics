@@ -1,5 +1,4 @@
 #pragma once
-
 #include <iostream>
 #include <memory>
 #include <string>
@@ -24,6 +23,14 @@
 #define D_GLAD <glad/gl.h>
 #define D_GLFW <GLFW/glfw3.h>
 
+#ifndef D_HALF_WIDTH_SPACE
+#define D_HALF_WIDTH_SPACE 32
+#endif // D_HALF_WIDTH_SPACE
+#ifndef D_FULL_WIDTH_SPACE
+#define D_FULL_WIDTH_SPACE 32306
+#endif // D_FULL_WIDTH_SPACE
+#define D_MAX_COLOR_ATTACHMENT 32
+
 #include D_GLAD
 #include D_GLFW
 #include "exceptions.hpp"
@@ -38,6 +45,7 @@ template <typename T> using Vec = std::vector<T>;
 using ID = unsigned;
 using Index = unsigned long long;
 using Str = std::string;
+using WStr = std::wstring;
 
 using ErrorCallback = void (*)(int errorCode, char const *description);
 using MonitorCallback = void (*)(GLFWmonitor *monitor, int event);
@@ -89,6 +97,42 @@ using KeyCallback = void (*)(void *userPtr, Key key);
 using CharCallback = void (*)(void *userPtr, unsigned codepoint);
 using DropCallback = void (*)(void *userPtr, Vec<Str> paths);
 
+// Use to select opengl color frame buffer attachement.
+enum class Attachment {
+    COLOR0 = GL_COLOR_ATTACHMENT0,
+    COLOR1 = GL_COLOR_ATTACHMENT1,
+    COLOR2 = GL_COLOR_ATTACHMENT2,
+    COLOR3 = GL_COLOR_ATTACHMENT3,
+    COLOR4 = GL_COLOR_ATTACHMENT4,
+    COLOR5 = GL_COLOR_ATTACHMENT5,
+    COLOR6 = GL_COLOR_ATTACHMENT6,
+    COLOR7 = GL_COLOR_ATTACHMENT7,
+    COLOR8 = GL_COLOR_ATTACHMENT8,
+    COLOR9 = GL_COLOR_ATTACHMENT9,
+    COLOR10 = GL_COLOR_ATTACHMENT10,
+    COLOR11 = GL_COLOR_ATTACHMENT11,
+    COLOR12 = GL_COLOR_ATTACHMENT12,
+    COLOR13 = GL_COLOR_ATTACHMENT13,
+    COLOR14 = GL_COLOR_ATTACHMENT14,
+    COLOR15 = GL_COLOR_ATTACHMENT15,
+    COLOR16 = GL_COLOR_ATTACHMENT16,
+    COLOR17 = GL_COLOR_ATTACHMENT17,
+    COLOR18 = GL_COLOR_ATTACHMENT18,
+    COLOR19 = GL_COLOR_ATTACHMENT19,
+    COLOR20 = GL_COLOR_ATTACHMENT20,
+    COLOR21 = GL_COLOR_ATTACHMENT21,
+    COLOR22 = GL_COLOR_ATTACHMENT22,
+    COLOR23 = GL_COLOR_ATTACHMENT23,
+    COLOR24 = GL_COLOR_ATTACHMENT24,
+    COLOR25 = GL_COLOR_ATTACHMENT25,
+    COLOR26 = GL_COLOR_ATTACHMENT26,
+    COLOR27 = GL_COLOR_ATTACHMENT27,
+    COLOR28 = GL_COLOR_ATTACHMENT28,
+    COLOR29 = GL_COLOR_ATTACHMENT29,
+    COLOR30 = GL_COLOR_ATTACHMENT30,
+    COLOR31 = GL_COLOR_ATTACHMENT31
+};
+
 // Use to select buffer to clear.
 enum class BufferBit {
     DEPTH_BUFFER = GL_DEPTH_BUFFER_BIT,
@@ -115,6 +159,16 @@ enum class BufferType {
     ELEMENT_BUFFER = GL_ELEMENT_ARRAY_BUFFER
 };
 
+// Use to select opengl cube map face direction.
+enum class CubeFace {
+    RIGHT = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
+    LEFT = GL_TEXTURE_CUBE_MAP_NEGATIVE_X,
+    TOP = GL_TEXTURE_CUBE_MAP_POSITIVE_Y,
+    BOTTOM = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
+    FRONT = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
+    BACK = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+};
+
 // Use to select opengl drawing mode.
 enum class DrawMode {
     POINTS = GL_POINTS,
@@ -125,6 +179,16 @@ enum class DrawMode {
     TRIANGLE_STRIP = GL_TRIANGLE_STRIP,
     TRIANGLE_FAN = GL_TRIANGLE_FAN,
     QUADS = GL_QUADS
+};
+
+// Use to select opengl texture filtering type.
+enum class FilterType {
+    NEAREST = GL_NEAREST,
+    LINEAR = GL_LINEAR,
+    NEAREST_MIPMAP_NEAREST = GL_NEAREST_MIPMAP_NEAREST, // MIN_FILTER only
+    LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,   // MIN_FILTER only
+    NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,   // MIN_FILTER only
+    LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR      // MIN_FILTER only
 };
 
 // Use to select input mode.
@@ -275,4 +339,66 @@ enum class MousebuttonInput {
     BUTTON7 = GLFW_MOUSE_BUTTON_7,
     BUTTON8 = GLFW_MOUSE_BUTTON_8
 };
+
+// Use to select opengl texture target to activate.
+enum class TextureTargets {
+    TEX_1 = GL_TEXTURE0,
+    TEX_2 = GL_TEXTURE1,
+    TEX_3 = GL_TEXTURE2,
+    TEX_4 = GL_TEXTURE3,
+    TEX_5 = GL_TEXTURE4,
+    TEX_6 = GL_TEXTURE5,
+    TEX_7 = GL_TEXTURE6,
+    TEX_8 = GL_TEXTURE7,
+    TEX_9 = GL_TEXTURE8,
+    TEX_10 = GL_TEXTURE9,
+    TEX_11 = GL_TEXTURE10,
+    TEX_12 = GL_TEXTURE11,
+    TEX_13 = GL_TEXTURE12,
+    TEX_14 = GL_TEXTURE13,
+    TEX_15 = GL_TEXTURE14,
+    TEX_16 = GL_TEXTURE15,
+    TEX_17 = GL_TEXTURE16,
+    TEX_18 = GL_TEXTURE17,
+    TEX_19 = GL_TEXTURE18,
+    TEX_20 = GL_TEXTURE19,
+    TEX_21 = GL_TEXTURE20,
+    TEX_22 = GL_TEXTURE21,
+    TEX_23 = GL_TEXTURE22,
+    TEX_24 = GL_TEXTURE23,
+    TEX_25 = GL_TEXTURE24,
+    TEX_26 = GL_TEXTURE25,
+    TEX_27 = GL_TEXTURE26,
+    TEX_28 = GL_TEXTURE27,
+    TEX_29 = GL_TEXTURE28,
+    TEX_30 = GL_TEXTURE29,
+    TEX_31 = GL_TEXTURE30,
+    TEX_32 = GL_TEXTURE31
+};
+
+// Use to select opengl texture wrapping type.
+enum class WrappingType {
+    CLAMP_TO_EDGE = GL_CLAMP_TO_EDGE,
+    CLAMP_TO_BORDER = GL_CLAMP_TO_BORDER,
+    MIRRORED_REPEAT = GL_MIRRORED_REPEAT,
+    REPEAT = GL_REPEAT
+};
+
+static unsigned COLOR_BUFFERS[] = {
+    (unsigned)Attachment::COLOR0,  (unsigned)Attachment::COLOR1,
+    (unsigned)Attachment::COLOR2,  (unsigned)Attachment::COLOR3,
+    (unsigned)Attachment::COLOR4,  (unsigned)Attachment::COLOR5,
+    (unsigned)Attachment::COLOR6,  (unsigned)Attachment::COLOR7,
+    (unsigned)Attachment::COLOR8,  (unsigned)Attachment::COLOR9,
+    (unsigned)Attachment::COLOR10, (unsigned)Attachment::COLOR11,
+    (unsigned)Attachment::COLOR12, (unsigned)Attachment::COLOR13,
+    (unsigned)Attachment::COLOR14, (unsigned)Attachment::COLOR15,
+    (unsigned)Attachment::COLOR16, (unsigned)Attachment::COLOR17,
+    (unsigned)Attachment::COLOR18, (unsigned)Attachment::COLOR19,
+    (unsigned)Attachment::COLOR20, (unsigned)Attachment::COLOR21,
+    (unsigned)Attachment::COLOR22, (unsigned)Attachment::COLOR23,
+    (unsigned)Attachment::COLOR24, (unsigned)Attachment::COLOR25,
+    (unsigned)Attachment::COLOR26, (unsigned)Attachment::COLOR27,
+    (unsigned)Attachment::COLOR28, (unsigned)Attachment::COLOR29,
+    (unsigned)Attachment::COLOR30, (unsigned)Attachment::COLOR31};
 } // namespace GeoFrame

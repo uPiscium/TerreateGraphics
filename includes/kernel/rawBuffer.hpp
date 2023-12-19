@@ -63,7 +63,6 @@ class RawBuffer : public RawObject {
     ID mVBO = 0;
     ID mIBO = 0;
     BufferUsage mUsage = BufferUsage::STATIC_DRAW;
-    BufferType mType = BufferType::ARRAY_BUFFER;
 
     size_t mNumIndices = 0;
 
@@ -77,10 +76,9 @@ class RawBuffer : public RawObject {
     /*
      * OpenGL buffer wrapper class. This class handles vertex array, vertex
      * buffer, and element array.
-     * @param type: Type of this buffer on OpenGL.
      * @param usage: Usage of this buffer on OpenGL.
      */
-    RawBuffer(BufferType type, BufferUsage usage);
+    RawBuffer(BufferUsage usage);
     ~RawBuffer();
 
     /*
@@ -99,10 +97,6 @@ class RawBuffer : public RawObject {
      * @return: Buffer usage
      */
     BufferUsage const &GetUsage() const { return mUsage; }
-    /*
-     * @return: Buffer type
-     */
-    BufferType const &GetType() const { return mType; }
 
     /*
      * Load vertex buffer data.
@@ -115,20 +109,20 @@ class RawBuffer : public RawObject {
      * @param data: Vector of vertex buffer data to be loaded.
      */
     void LoadVertices(Vec<float> const &data) {
-        this->LoadVertices(data.data(), data.size());
+        this->LoadVertices(data.data(), data.size() * sizeof(float));
     }
     /*
      * Load index buffer data.
      * @param data: Pointer to index buffer data to be loaded.
      * @param size: Size of data to be loaded.
      */
-    void LoadIndices(Index const *data, size_t const &size);
+    void LoadIndices(unsigned const *data, size_t const &size);
     /*
      * Load index buffer data.
      * @param data: Vector of index buffer data to be loaded.
      */
-    void LoadIndices(Vec<Index> const &data) {
-        this->LoadIndices(data.data(), data.size());
+    void LoadIndices(Vec<unsigned> const &data) {
+        this->LoadIndices(data.data(), data.size() * sizeof(Index));
     }
     /*
      * Load vertex attributes.

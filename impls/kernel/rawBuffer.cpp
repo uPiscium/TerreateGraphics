@@ -26,8 +26,7 @@ Vec<Attribute> Attribute::GenerateAttributes(Vec<size_t> const &comps,
 }
 
 namespace Kernel {
-RawBuffer::RawBuffer(BufferType type, BufferUsage usage)
-    : mType(type), mUsage(usage) {
+RawBuffer::RawBuffer(BufferUsage usage) : mUsage(usage) {
     glGenVertexArrays(1, &mVAO);
     glGenBuffers(1, &mVBO);
     glGenBuffers(1, &mIBO);
@@ -40,31 +39,30 @@ RawBuffer::~RawBuffer() {
 }
 
 void RawBuffer::LoadVertices(float const *data, size_t const &size) {
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     if (mSetVBO) {
-        glBindVertexArray(mVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
     } else {
-        glBindVertexArray(mVAO);
-        glBindBuffer(GL_ARRAY_BUFFER, mVBO);
         glBufferData(GL_ARRAY_BUFFER, size, data, (unsigned)mUsage);
         mSetVBO = true;
     }
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void RawBuffer::LoadIndices(Index const *data, size_t const &size) {
+void RawBuffer::LoadIndices(unsigned const *data, size_t const &size) {
+    mNumIndices = size / sizeof(Index);
+    glBindVertexArray(mVAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
     if (mSetIBO) {
-        glBindVertexArray(mVAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
         glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data);
-        mNumIndices = size / sizeof(Index);
     } else {
-        glBindVertexArray(mVAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, (unsigned)mUsage);
         mSetIBO = true;
-        mNumIndices = size / sizeof(Index);
     }
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void RawBuffer::LoadAttributes(Attribute const *attributes,
@@ -73,18 +71,21 @@ void RawBuffer::LoadAttributes(Attribute const *attributes,
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 
     for (size_t i = 0; i < size; ++i) {
-        const Attribute &attr = attributes[i];
+        Attribute const &attr = attributes[i];
         glEnableVertexAttribArray(attr.GetIndex());
         glVertexAttribPointer(attr.GetIndex(), attr.GetComps(), GL_FLOAT,
                               GL_FALSE, attr.GetStride(),
                               (void *)(attr.GetOffset()));
     }
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void RawBuffer::Draw(DrawMode const &drawMode) {
     glBindVertexArray(mVAO);
     if (mNumIndices == 0) {
-        throw KernelError("No indices loaded.");
+        M_GEO_THROW(KernelError, "No indices loaded.");
     }
     glDrawElements((unsigned)drawMode, mNumIndices, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
@@ -93,9 +94,12 @@ void RawBuffer::Draw(DrawMode const &drawMode) {
 void RawBuffer::DrawInstances(size_t const &numInstances,
                               DrawMode const &drawMode) {
     glBindVertexArray(mVAO);
+
     if (mNumIndices == 0) {
-        throw KernelError("No indices loaded.");
+        M_GEO_THROW(KernelError, "No indices loaded.");
+        return;
     }
+
     glDrawElementsInstanced((unsigned)drawMode, mNumIndices, GL_UNSIGNED_INT, 0,
                             numInstances);
     glBindVertexArray(0);

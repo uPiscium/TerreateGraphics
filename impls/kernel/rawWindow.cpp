@@ -235,14 +235,8 @@ void RawWindow::ClearInputs() {
     mKeys.clear();
 }
 
-void RawWindow::Fill(Vec<unsigned char> const &color) {
-    glClearColor(color[0] / 255.0, color[1] / 255.0, color[2] / 255.0,
-                 color[3] / 255.0);
-    glClear(GL_COLOR_BUFFER_BIT);
-}
-
 void RawWindow::Fill(Vec<float> const &color) {
-    glClearColor(color[0], color[1], color[2], color[3]);
+    glClearColor(color[0], color[1], color[2], 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 } // namespace Kernel
