@@ -3,11 +3,10 @@
 void screen_drawing_test() {
     GeoFrameContext context;
 
-    Kernel::RawWindow window(800, 600, "Buffer Drawing Test",
-                             Kernel::WindowSettings());
+    Window window(800, 600, "Buffer Drawing Test", WindowSettings());
     window.Bind();
 
-    Kernel::RawBuffer screenRect(BufferUsage::STATIC_DRAW);
+    Buffer screenRect(BufferUsage::STATIC_DRAW);
     auto screenRectAttrs = Attribute::GenerateAttributes({2, 2});
     screenRect.LoadVertices({-0.5f, -0.5f, 0.0f, 0.0f, 0.5f, -0.5f, 1.0f, 0.0f,
                              0.5f, 0.5f, 1.0f, 1.0f, -0.5f, 0.5f, 0.0f, 1.0f});
@@ -16,7 +15,7 @@ void screen_drawing_test() {
 
     auto Post = Attribute::GenerateAttributes({2, 2});
 
-    Kernel::RawShader shader;
+    Shader shader;
     shader.AddVertexShaderSource("#version 330 core\n"
                                  "layout (location = 0) in vec2 pos;\n"
                                  "layout (location = 1) in vec2 tex;\n"
@@ -37,7 +36,7 @@ void screen_drawing_test() {
     context.ActiveTexture(TextureTargets::TEX_1);
     shader.SetInt("tex", 0);
 
-    Kernel::RawShader shader2;
+    Shader shader2;
     shader2.AddVertexShaderSource("#version 330 core\n"
                                   "layout (location = 0) in vec2 pos;\n"
                                   "layout (location = 1) in vec2 tex;\n"
@@ -55,7 +54,7 @@ void screen_drawing_test() {
     shader2.Compile();
     shader2.Use();
 
-    Kernel::RawScreen screen(800, 600);
+    Screen screen(800, 600);
     screen.AddBuffer();
     screen.AddBuffer();
 

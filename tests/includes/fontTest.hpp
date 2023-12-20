@@ -1,10 +1,10 @@
 #pragma once
+#include "../../includes/buffer.hpp"
 #include "../../includes/core.hpp"
-#include "../../includes/kernel/rawBuffer.hpp"
-#include "../../includes/kernel/rawFont.hpp"
-#include "../../includes/kernel/rawShader.hpp"
-#include "../../includes/kernel/rawTexture.hpp"
-#include "../../includes/kernel/rawWindow.hpp"
+#include "../../includes/font.hpp"
+#include "../../includes/shader.hpp"
+#include "../../includes/texture.hpp"
+#include "../../includes/window.hpp"
 
 using namespace GeoFrame;
 

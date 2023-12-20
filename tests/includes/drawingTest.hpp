@@ -1,8 +1,8 @@
 #pragma once
+#include "../../includes/buffer.hpp"
 #include "../../includes/core.hpp"
-#include "../../includes/kernel/rawBuffer.hpp"
-#include "../../includes/kernel/rawShader.hpp"
-#include "../../includes/kernel/rawWindow.hpp"
+#include "../../includes/shader.hpp"
+#include "../../includes/window.hpp"
 
 using namespace GeoFrame;
 

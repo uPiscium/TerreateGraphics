@@ -3,10 +3,9 @@
 void font_drawing_test() {
     GeoFrameContext context;
 
-    Kernel::RawWindow window(800, 600, "Buffer Drawing Test",
-                             Kernel::WindowSettings());
+    Window window(800, 600, "Buffer Drawing Test", WindowSettings());
     window.Bind();
-    Kernel::RawBuffer buffer(BufferUsage::STATIC_DRAW);
+    Buffer buffer(BufferUsage::STATIC_DRAW);
 
     auto attrs = Attribute::GenerateAttributes({2, 2});
     buffer.LoadVertices({-0.5f, -0.5f, 0.0f, 0.0f, 0.5f, -0.5f, 1.0f, 0.0f,
@@ -14,7 +13,7 @@ void font_drawing_test() {
     buffer.LoadAttributes(attrs);
     buffer.LoadIndices({0, 1, 2, 2, 3, 0});
 
-    Kernel::RawShader shader;
+    Shader shader;
     shader.AddVertexShaderSource("#version 330 core\n"
                                  "layout (location = 0) in vec2 pos;\n"
                                  "layout (location = 1) in vec2 tex;\n"
@@ -35,7 +34,7 @@ void font_drawing_test() {
     context.ActiveTexture(TextureTargets::TEX_1);
     shader.SetInt("tex", 0);
 
-    Kernel::RawFont font("C:/Windows/Fonts/arial.ttf", 48);
+    Font font("C:/Windows/Fonts/arial.ttf", 48);
     font.LoadCharacter(L'A');
     auto charData = font.GetCharacter(L'A');
 
