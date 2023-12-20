@@ -52,8 +52,8 @@ void RawTexture::LoadData(unsigned width, unsigned height, unsigned channels,
     }
 
     Bind();
-    glTexImage2D(GL_TEXTURE_2D, 0, (unsigned)GL_RGBA, mWidth, mHeight, 0,
-                 format, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, mWidth, mHeight, 0, format,
+                 GL_UNSIGNED_BYTE, data);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
     SetFilter(mFilter);
     SetWrapping(mWrap);
