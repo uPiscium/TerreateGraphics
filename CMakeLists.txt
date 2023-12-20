@@ -9,24 +9,17 @@ message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
 add_library(
   ${PROJECT_NAME} STATIC
-  impls/kernel/rawBuffer.cpp
-  impls/kernel/rawFont.cpp
-  impls/kernel/rawScreen.cpp
-  impls/kernel/rawShader.cpp
-  impls/kernel/rawTexture.cpp
-  impls/kernel/rawWindow.cpp
   impls/buffer.cpp
   impls/core.cpp
   impls/font.cpp
   impls/gl.cpp
-  impls/manager.cpp
+  impls/object.cpp
   impls/screen.cpp
   impls/shader.cpp
   impls/texture.cpp
   impls/window.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ./includes)
-target_include_directories(${PROJECT_NAME} PUBLIC ./includes/kernel)
 target_include_directories(${PROJECT_NAME} PUBLIC ./includes/headers)
 
 if(WIN32)
