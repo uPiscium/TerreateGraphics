@@ -1,43 +1,49 @@
 #pragma once
+#include <limits>
+
 #include "defines.hpp"
 
-#include "kernel/rawBuffer.hpp"
-#include "kernel/rawWindow.hpp"
-
 namespace GeoFrame {
-namespace Kernel {
-class ResourceManager {
+class IManageable {
   public:
-    virtual ~ResourceManager() {}
-
-    virtual void ReleaseObjects() = 0;
+    virtual ~IManageable() = 0;
+    virtual void Release() = 0;
 };
-} // namespace Kernel
 
-class BufferManager : public Kernel::ResourceManager {
+template <typename T> class ResourceManager : IManageable {
+  public:
+    using Type = T;
+    using Ptr = Shared<T>;
+    using CPtr = Ptr const;
+
   private:
-    Vec<Unique<Kernel::RawBuffer>> mBuffers;
+    Map<unsigned, Ptr> mResources;
+    size_t mLimit = 0;
 
   public:
-    BufferManager() {}
-    ~BufferManager();
+    ResourceManager(size_t const &limit = std::numeric_limits<unsigned>().max())
+        : mLimit(limit) {}
+    ~ResourceManager() override { this->Release(); }
 
-    void ReleaseObjects() override;
-    void Create();
+    template <typename... Args> Shared<T> Create(Args &&...args) {
+        if (mResources.size() >= mLimit) {
+            throw InterfaceError("Manageable limit reached");
+        }
+
+        Ptr resource = std::make_shared<T>(std::forward<Args>(args)...);
+        mResources[(unsigned)(resource.get())] = resource;
+        return resource;
+    }
+
+    bool IsRegistered(Ptr const &resource) const {
+        return mResources.find((unsigned)(resource.get())) != mResources.end();
+    }
+
+    void Release() override {
+        for (auto &resource : mResources) {
+            resource.second.reset();
+        }
+        mResources.clear();
+    }
 };
-
-class WindowManager : public Kernel::ResourceManager {
-  private:
-    Vec<Unique<Kernel::RawWindow>> mWindows;
-
-  public:
-    WindowManager() {}
-    ~WindowManager();
-
-    void ReleaseObjects() override;
-    void Create(unsigned width, unsigned height, Str const &title);
-};
-
-template <typename T>
-concept Manager = std::is_base_of<Kernel::ResourceManager, T>::value;
 } // namespace GeoFrame

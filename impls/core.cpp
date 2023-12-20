@@ -13,9 +13,9 @@ GeoFrameContext::GeoFrameContext() {
 }
 
 GeoFrameContext::~GeoFrameContext() {
-    for (auto &manager : mResourceManagers) {
-        manager.second->ReleaseObjects();
-        delete manager.second.release();
+    for (auto &manager : mManagers) {
+        manager.second->Release();
+        manager.second.reset();
     }
     glfwTerminate();
 }
