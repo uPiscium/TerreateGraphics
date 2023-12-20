@@ -20,6 +20,8 @@
     Type(const Type &) = delete;                                               \
     Type &operator=(const Type &) = delete
 
+#define M_EXTENDS(sub, super) requires std::is_base_of<super, sub>::value
+
 #define D_GLAD <glad/gl.h>
 #define D_GLFW <GLFW/glfw3.h>
 
@@ -40,7 +42,8 @@ namespace GeoFrame {
 template <typename S, typename T> using Map = std::unordered_map<S, T>;
 template <typename T> using Pair = std::pair<T, T>;
 template <typename T> using Set = std::unordered_set<T>;
-template <typename T> using Unique = std::unique_ptr<T>;
+template <typename T> using Shared = std::shared_ptr<T>;
+template <typename T> using Ref = std::weak_ptr<T>;
 template <typename T> using Vec = std::vector<T>;
 using ID = unsigned;
 using Index = unsigned long long;
