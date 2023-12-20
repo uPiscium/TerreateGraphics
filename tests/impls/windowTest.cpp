@@ -5,8 +5,7 @@ using namespace GeoFrame;
 void window_generation_test(unsigned const &width, unsigned const &height,
                             Str const &title) {
     GeoFrameContext context = GeoFrameContext();
-    Kernel::RawWindow window =
-        Kernel::RawWindow(width, height, title, Kernel::WindowSettings());
+    Window window = Window(width, height, title, WindowSettings());
 
     auto sizeCallback = [](void *, int w, int h) {
         std::cout << w << " " << h << std::endl;

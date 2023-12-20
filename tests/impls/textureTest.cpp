@@ -3,10 +3,9 @@
 void texture_drawing_test() {
     GeoFrameContext context;
 
-    Kernel::RawWindow window(800, 600, "Buffer Drawing Test",
-                             Kernel::WindowSettings());
+    Window window(800, 600, "Buffer Drawing Test", WindowSettings());
     window.Bind();
-    Kernel::RawBuffer buffer(BufferUsage::STATIC_DRAW);
+    Buffer buffer(BufferUsage::STATIC_DRAW);
 
     auto attrs = Attribute::GenerateAttributes({2, 2});
     buffer.LoadVertices({-0.5f, -0.5f, 0.0f, 0.0f, 0.5f, -0.5f, 1.0f, 0.0f,
@@ -14,7 +13,7 @@ void texture_drawing_test() {
     buffer.LoadAttributes(attrs);
     buffer.LoadIndices({0, 1, 2, 2, 3, 0});
 
-    Kernel::RawShader shader;
+    Shader shader;
     shader.AddVertexShaderSource("#version 330 core\n"
                                  "layout (location = 0) in vec2 pos;\n"
                                  "layout (location = 1) in vec2 tex;\n"
@@ -35,9 +34,8 @@ void texture_drawing_test() {
     context.ActiveTexture(TextureTargets::TEX_1);
     shader.SetInt("tex", 0);
 
-    Kernel::RawTexture texture;
-    auto texData =
-        Kernel::RawTexture::LoadTexture("../../resources/testImage.png");
+    Texture texture;
+    auto texData = Texture::LoadTexture("../../resources/testImage.png");
     texture.LoadData(texData);
 
     while (!window.IsClosed()) {

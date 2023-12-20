@@ -5,17 +5,16 @@ using namespace GeoFrame;
 void buffer_drawing_test() {
     GeoFrameContext context;
 
-    Kernel::RawWindow window(800, 600, "Buffer Drawing Test",
-                             Kernel::WindowSettings());
+    Window window(800, 600, "Buffer Drawing Test", WindowSettings());
     window.Bind();
-    Kernel::RawBuffer buffer(BufferUsage::DYNAMIC_DRAW);
+    Buffer buffer(BufferUsage::DYNAMIC_DRAW);
 
     auto attrs = Attribute::GenerateAttributes({2});
     buffer.LoadVertices({-0.5f, -0.5f, 0.0f, 0.5f, 0.5f, -0.5f});
     buffer.LoadAttributes(attrs);
     buffer.LoadIndices({0, 1, 2});
 
-    Kernel::RawShader shader;
+    Shader shader;
     shader.AddVertexShaderSource("#version 330 core\n"
                                  "layout (location = 0) in vec2 pos;\n"
                                  "void main() {\n"
