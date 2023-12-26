@@ -1,9 +1,16 @@
 #pragma once
 #include <cmath>
+#include <cstring>
 #include <iostream>
 #include <vector>
 
 #include "exceptions.hpp"
+
+#ifdef __linux__
+#define M_GM_MEMCPY(dest, src, size) memcpy(dest, src, size)
+#else
+#define M_GM_MEMCPY(dest, src, size) std::memcpy(dest, src, size)
+#endif // __linux__
 
 namespace GeoMath {
 namespace Vector {
@@ -39,17 +46,17 @@ template <typename T, size_t Comp> class VectorBase {
         this->Allocate();
         size_t copysize =
             sizeof(T) * (mSize <= data.size() ? mSize : data.size());
-        std::memcpy(mArray, &data[0], copysize);
+        M_GM_MEMCPY(mArray, &data[0], copysize);
     }
     VectorBase(const T *data, const size_t &comps) {
         this->Allocate();
         size_t copysize = sizeof(T) * (mSize < comps ? mSize : comps);
-        std::memcpy(mArray, data, copysize);
+        M_GM_MEMCPY(mArray, data, copysize);
     }
     VectorBase(const VectorBase &data) {
         if (data.mSelfAlloc) {
             this->Allocate();
-            std::memcpy(mArray, (const T *)data, sizeof(T) * mSize);
+            M_GM_MEMCPY(mArray, (const T *)data, sizeof(T) * mSize);
         } else {
             mSelfAlloc = false;
             mArray = data.mArray;
@@ -71,7 +78,7 @@ template <typename T, size_t Comp> class VectorBase {
     }
 
     VectorBase<T, Comp> &operator=(const VectorBase<T, Comp> &vec) {
-        std::memcpy(mArray, (const T *)vec, sizeof(T) * Comp);
+        M_GM_MEMCPY(mArray, (const T *)vec, sizeof(T) * Comp);
         return *this;
     }
 

@@ -1,4 +1,5 @@
 #pragma once
+#include <cstring>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -21,6 +22,12 @@
     Type &operator=(const Type &) = delete
 
 #define M_EXTENDS(sub, super) requires std::is_base_of<super, sub>::value
+
+#ifdef __linux__
+#define M_MEMCPY(dest, src, size) memcpy(dest, src, size)
+#else
+#define M_MEMCPY(dest, src, size) std::memcpy(dest, size, src, size)
+#endif // __linux__
 
 #define D_GLAD <glad/gl.h>
 #define D_GLFW <GLFW/glfw3.h>

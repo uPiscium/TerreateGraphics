@@ -15,7 +15,7 @@ class MathException : std::exception {
 
   public:
     MathException(const std::string &msg) { mMessage = msg; }
-    const char *what() const { return mMessage.c_str(); }
+    const char *what() const noexcept { return mMessage.c_str(); }
 };
 
 struct IndexOutOfRange : MathException {

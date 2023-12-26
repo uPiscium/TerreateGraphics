@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 
+#include "defines.hpp"
+
 namespace GeoFrame {
 class UUID {
   private:
@@ -13,15 +15,15 @@ class UUID {
 
   private:
     void GenerateUUID();
-    UUID(const char *uuid) { std::memcpy(mUUID, uuid, sizeof(char) * 16); }
+    UUID(const char *uuid) { M_MEMCPY(mUUID, uuid, sizeof(char) * 16); }
     UUID(const std::string &uuid) {
-        std::memcpy(mUUID, uuid.c_str(), sizeof(char) * 16);
+        M_MEMCPY(mUUID, uuid.c_str(), sizeof(char) * 16);
     }
 
   public:
     UUID() { GenerateUUID(); }
     UUID(const UUID &other) {
-        std::memcpy(mUUID, other.mUUID, sizeof(char) * 16);
+        M_MEMCPY(mUUID, other.mUUID, sizeof(char) * 16);
     }
 
     UUID &operator=(const UUID &other) = delete;
