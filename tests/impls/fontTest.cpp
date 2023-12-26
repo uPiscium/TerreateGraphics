@@ -34,7 +34,7 @@ void font_drawing_test() {
     context.ActiveTexture(TextureTargets::TEX_1);
     shader.SetInt("tex", 0);
 
-    Font font("C:/Windows/Fonts/arial.ttf", 48);
+    Font font("../../../resources/AsebiMin-Light.otf", 48);
     font.LoadCharacter(L'A');
     auto charData = font.GetCharacter(L'A');
 

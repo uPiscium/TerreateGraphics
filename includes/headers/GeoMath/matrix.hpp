@@ -40,7 +40,7 @@ template <typename T, size_t Row, size_t Column> class MatrixBase {
     void Flatten(const std::vector<std::vector<T>> &data) {
         for (int i = 0; i < (Row < data.size() ? Row : data.size()); i++) {
             T *ptr = &mArray[i * Column];
-            std::memcpy(ptr, &data[i][0],
+            M_GM_MEMCPY(ptr, &data[i][0],
                         sizeof(T) * (Column < data[i].size() ? Column
                                                              : data[i].size()));
         }
@@ -54,13 +54,13 @@ template <typename T, size_t Row, size_t Column> class MatrixBase {
     }
     MatrixBase(const std::vector<T> &data) {
         this->Allocate();
-        std::memcpy(mArray, &data[0],
+        M_GM_MEMCPY(mArray, &data[0],
                     sizeof(T) * (mSize < data.size() ? mSize : data.size()));
     }
     MatrixBase(const std::vector<Vector::VectorBase<T, Column>> &data) {
         this->Allocate();
         for (int i = 0; i < (Row < data.size() ? Row : data.size()); i++) {
-            std::memcpy(&mArray[i * Column], (const T *)data[i],
+            M_GM_MEMCPY(&mArray[i * Column], (const T *)data[i],
                         sizeof(T) * (Column < data[i].GetSize()
                                          ? Column
                                          : data[i].GetSize()));
@@ -68,11 +68,11 @@ template <typename T, size_t Row, size_t Column> class MatrixBase {
     };
     MatrixBase(const T *data, const size_t &comps) {
         this->Allocate();
-        std::memcpy(mArray, data, sizeof(T) * (mSize < comps ? mSize : comps));
+        M_GM_MEMCPY(mArray, data, sizeof(T) * (mSize < comps ? mSize : comps));
     }
     MatrixBase(const MatrixBase &data) {
         this->Allocate();
-        std::memcpy(mArray, (const T *)data, sizeof(T) * mSize);
+        M_GM_MEMCPY(mArray, (const T *)data, sizeof(T) * mSize);
     }
     ~MatrixBase() { this->Free(); }
 
@@ -90,7 +90,7 @@ template <typename T, size_t Row, size_t Column> class MatrixBase {
     }
 
     MatrixBase &operator=(const MatrixBase &other) {
-        std::memcpy(mArray, (const T *)other, sizeof(T) * mSize);
+        M_GM_MEMCPY(mArray, (const T *)other, sizeof(T) * mSize);
         return *this;
     }
 
