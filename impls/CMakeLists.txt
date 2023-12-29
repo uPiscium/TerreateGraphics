@@ -11,8 +11,10 @@ add_library(
   ${PROJECT_NAME} STATIC
   buffer.cpp
   core.cpp
+  defines.cpp
   font.cpp
   gl.cpp
+  job.cpp
   object.cpp
   screen.cpp
   shader.cpp

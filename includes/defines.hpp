@@ -21,12 +21,12 @@
   Type(const Type &) = delete;                                                 \
   Type &operator=(const Type &) = delete
 
-#define M_EXTENDS(sub, super) requires std::is_base_of<super, sub>::value
-
 #ifdef __linux__
 #define M_MEMCPY(dest, src, size) memcpy(dest, src, size)
+#define M_MEMCMP(dest, src, size) memcmp(dest, src, size)
 #else
-#define M_MEMCPY(dest, src, size) std::memcpy(dest, size, src, size)
+#define M_MEMCPY(dest, src, size) std::memcpy(dest, src, size)
+#define M_MEMCMP(dest, src, size) std::memcmp(dest, src, size)
 #endif // __linux__
 
 #define D_GLAD <glad/gl.h>
@@ -49,7 +49,6 @@ namespace GeoFrame {
 template <typename S, typename T> using Map = std::unordered_map<S, T>;
 template <typename T> using Pair = std::pair<T, T>;
 template <typename T> using Set = std::unordered_set<T>;
-template <typename T> using Shared = std::shared_ptr<T>;
 template <typename T> using Vec = std::vector<T>;
 using ID = unsigned;
 using Index = unsigned long long;
@@ -59,6 +58,9 @@ using WStr = std::wstring;
 using ErrorCallback = void (*)(int errorCode, char const *description);
 using MonitorCallback = void (*)(GLFWmonitor *monitor, int event);
 using JoystickCallback = void (*)(int joystickID, int event);
+
+template <typename Derived, typename Base>
+concept extends = std::derived_from<Derived, Base>;
 
 struct Modifier {
 public:

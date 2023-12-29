@@ -5,32 +5,16 @@
 #include "object.hpp"
 
 namespace GeoFrame {
-class GeoFrameContext {
+class GeoFrameContext : public Singleton {
 private:
-  Map<Str, Shared<IManageable>> mManagers;
+  M_DISABLE_COPY_AND_ASSIGN(GeoFrameContext);
+  static GeoFrameContext *sInstance;
 
-public:
+private:
   GeoFrameContext();
   ~GeoFrameContext();
 
-  template <typename T>
-  M_EXTENDS(T, IManageable)
-  Shared<T> GetManager(Str const &name) {
-    if (mManagers.find(name) == mManagers.end()) {
-      M_GEO_THROW(KernelError, name.c_str());
-    }
-    return mManagers[name];
-  }
-
-  template <typename T> M_EXTENDS(T, IManageable) void RegisterManager() {
-    Shared<T> manager = std::make_shared<T>();
-    mManagers[manager->GetName()] = manager;
-  }
-  void ActiveTexture(TextureTargets const &target) {
-    glActiveTexture((unsigned)target);
-  }
-  void PollEvents() { glfwPollEvents(); }
+public:
+  static GeoFrameContext *AquireInstance();
 };
-
-extern GeoFrameContext CONTEXT;
 } // namespace GeoFrame

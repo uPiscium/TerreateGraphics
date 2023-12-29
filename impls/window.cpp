@@ -1,6 +1,7 @@
 #include "../includes/window.hpp"
 
 namespace GeoFrame {
+namespace Kernel {
 bool S_GLAD_INITIALIZED = false;
 
 void _WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos) {
@@ -228,5 +229,30 @@ void Window::Fill(Vec<float> const &color) {
   glClearColor(color[0], color[1], color[2], 0.0);
   glClear(GL_COLOR_BUFFER_BIT);
 }
+} // namespace Kernel
 
+WindowManager *WindowManager::sInstance = nullptr;
+
+void WindowManager::Register(Key const &key, Value const &value) {
+  if (mWindows.find(key) != mWindows.end()) {
+    return;
+  }
+  mWindows.insert({key, value});
+}
+WindowManager *WindowManager::AquireInstance() {
+  if (!sInstance) {
+    sInstance = new WindowManager();
+  }
+  return sInstance;
+}
+
+WindowWrapper &WindowWrapper::operator=(WindowWrapper const &window) {
+  mWindow = window.mWindow;
+  return *this;
+}
+
+WindowWrapper &WindowWrapper::operator=(WindowWrapper &&window) {
+  mWindow = window.mWindow;
+  return *this;
+}
 } // namespace GeoFrame

@@ -1,9 +1,11 @@
 #pragma once
 #include "core.hpp"
 #include "defines.hpp"
+#include "manager.hpp"
 #include "object.hpp"
 
 namespace GeoFrame {
+namespace Kernel {
 extern bool S_GLAD_INITIALIZED;
 
 class Icon {
@@ -69,7 +71,6 @@ public:
   operator GLFWcursor *() const { return mCursor; }
 };
 
-namespace Kernel {
 void _WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos);
 void _WindowSizeCallbackWrapper(GLFWwindow *window, int width, int height);
 void _WindowCloseCallbackWrapper(GLFWwindow *window);
@@ -91,7 +92,6 @@ void _KeyCallbackWrapper(GLFWwindow *window, int key, int scancode, int action,
                          int mods);
 void _CharCallbackWrapper(GLFWwindow *window, unsigned codepoint);
 void _DropCallbackWrapper(GLFWwindow *window, int count, const char **paths);
-} // namespace Kernel
 
 struct Callback {
 public:
@@ -332,6 +332,13 @@ public:
   void SetInputMode(InputType const &type, int const &value) {
     glfwSetInputMode(mWindow, (unsigned)type, value);
   }
+  /*
+   * This function sets user pointer binded to window.
+   * @param: pointer: User pointer.
+   */
+  template <typename T> void SetUserPointer(T *pointer) {
+    mUserPointer = static_cast<void *>(pointer);
+  }
 
   void SetSizeCallback(WindowSizeCallback const &callback) {
     mCallbacks.windowSizeCallback = callback;
@@ -549,8 +556,73 @@ public:
    */
   void Swap() const { glfwSwapBuffers(mWindow); }
   /*
+   * @brief: This function poll events.
+   */
+  void PollEvents() const { glfwPollEvents(); }
+  /*
    * @brief: This function binds window to current context.
    */
   void Bind() const { glfwMakeContextCurrent(mWindow); }
 };
+} // namespace Kernel
+
+using WindowSettings = Kernel::WindowSettings;
+
+class WindowManager final
+    : public IManagerable<UUID, RawPointer<Kernel::Window>> {
+private:
+  M_DISABLE_COPY_AND_ASSIGN(WindowManager);
+  static WindowManager *sInstance;
+
+private:
+  size_t mNumWindows = 0;
+  size_t mWindowLimit = 0;
+  Map<UUID, RawPointer<Kernel::Window>> mWindows;
+
+  WindowManager(size_t const &windowLimit = 32) : mWindowLimit(windowLimit) {
+    std::cout << "WindowManager::WindowManager()" << std::endl;
+  }
+
+public:
+  ~WindowManager() {
+    std::cout << "WindowManager::~WindowManager()" << std::endl;
+    for (auto &window : mWindows) {
+      window.second.Delete();
+    }
+    mWindows.clear();
+    delete sInstance;
+  }
+  Value &GetValue(Key const &key) { return mWindows[key]; }
+  bool IsRegistered(Key const &key) const {
+    return mWindows.find(key) != mWindows.end();
+  }
+  void Register(Key const &key, Value const &value);
+
+public:
+  static WindowManager *AquireInstance();
+};
+
+class WindowWrapper {
+private:
+  RawPointer<Kernel::Window> mWindow;
+  WindowManager *mWindowManager = WindowManager::AquireInstance();
+
+public:
+  WindowWrapper(unsigned const &width, unsigned const &height, Str const &title,
+                WindowSettings const &settings)
+      : mWindow(width, height, title, settings) {
+    mWindowManager->Register(mWindow->GetUUID(), mWindow);
+  }
+  WindowWrapper(WindowWrapper const &window) : mWindow(window.mWindow) {}
+  WindowWrapper(WindowWrapper &&window) : mWindow(std::move(window.mWindow)) {}
+  ~WindowWrapper() { mWindow.Delete(); }
+
+  WindowWrapper &operator=(WindowWrapper const &window);
+  WindowWrapper &operator=(WindowWrapper &&window);
+  RawPointer<Kernel::Window> operator->() const { return mWindow; }
+  operator RawPointer<Kernel::Window>() const { return mWindow; }
+  operator bool() const { return bool(mWindow); }
+};
+
+using Window = WindowWrapper;
 } // namespace GeoFrame
