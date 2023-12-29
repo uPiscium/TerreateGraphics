@@ -75,6 +75,19 @@ public:
 class ResourceBase : public Geobject {
 private:
   Str mName;
+  Tag mTag;
+
+public:
+  ResourceBase() : mName("NONE"), mTag("NONE") {}
+  virtual ~ResourceBase() {}
+
+  virtual Str GetName() const override { return mName; }
+  virtual Tag GetTag() const { return mTag; }
+
+  virtual void SetName(Str const &name) { mName = name; }
+  virtual void SetTag(Tag const &tag) { mTag = tag; }
+
+  virtual void Delete() override {}
 };
 } // namespace GeoFrame
 
