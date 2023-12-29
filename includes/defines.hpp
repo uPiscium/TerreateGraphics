@@ -2,6 +2,7 @@
 #include <cstring>
 #include <iostream>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -86,6 +87,59 @@ public:
   Key(int key_, int scancode_, int action_, int mods_)
       : key(key_), scancode(scancode_), action(action_), mods(mods_) {}
 };
+
+class SingletonFinalizer {
+public:
+  using Finalizer = void (*)();
+
+public:
+  static void AddFinalizer(Finalizer finalizer);
+  static void Finalize();
+};
+
+/*
+ * @brief: This class is used to create a singleton.
+ * @param: T: class to be created as a singleton
+ */
+template <typename T> class Singleton final {
+private:
+  static T *sInstance;
+  static std::once_flag sCallFlag;
+
+private:
+  /*
+   * @brief: Constructor function for Singleton. This function is private
+   * because Singleton should only be created by Singleton::AquireInstance().
+   */
+  static void CreateInstance() {
+    sInstance = new T();
+    SingletonFinalizer::AddFinalizer(&Delete);
+  }
+  /*
+   * @brief: Destructor function for Singleton. This function is private because
+   * Singleton should only be destroyed by SingletonFinalizer::Finalize().
+   */
+  static void Delete() {
+    delete sInstance;
+    sInstance = nullptr;
+  }
+
+public:
+  /*
+   * @brief: Aquires the singleton instance.
+   * @return: singleton instance
+   */
+  static T &AquireInstance() {
+    std::call_once(sCallFlag, &CreateInstance);
+    if (sInstance == nullptr) {
+      M_GEO_THROW(KernelError, "Failed to create singleton instance.");
+    }
+    return *sInstance;
+  }
+};
+
+template <typename T> T *Singleton<T>::sInstance = nullptr;
+template <typename T> std::once_flag Singleton<T>::sCallFlag;
 
 using WindowPositionCallback = void (*)(void *userPtr, int xpos, int ypos);
 using WindowSizeCallback = void (*)(void *userPtr, int width, int height);
