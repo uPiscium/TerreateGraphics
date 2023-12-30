@@ -7,9 +7,10 @@
 
 #include "core.hpp"
 #include "defines.hpp"
+#include "object.hpp"
 
 namespace GeoFrame {
-class Shader : public Object {
+class Shader : public ResourceBase {
 private:
   ID mShaderID = 0;
   Str mVertexShaderSource = "";
@@ -17,12 +18,17 @@ private:
   Str mGeometryShaderSource = "";
 
 public:
+  static Tag sTag;
+
+public:
   /*
    * @brief: OpenGL shader wrapper class. This class handles vertex, fragment,
    * and geometry shaders.
    */
-  Shader() { mShaderID = glCreateProgram(); }
-  ~Shader() { glDeleteProgram(mShaderID); }
+  Shader(Str const &name) : ResourceBase(name, sTag) {
+    mShaderID = glCreateProgram();
+  }
+  ~Shader() { this->Delete(); }
 
   /*
    * @brief: Setter for shader bool uniform.
@@ -194,6 +200,10 @@ public:
     return glGetUniformLocation(mShaderID, name.c_str());
   }
 
+  /*
+   * @brief: Delete shader resource.
+   */
+  void Delete() override { glDeleteProgram(mShaderID); }
   /*
    * @brief: Add vertex shader source to current source.
    * @param: source: source code to add

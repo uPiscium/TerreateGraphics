@@ -2,6 +2,7 @@
 
 namespace GeoFrame {
 std::mt19937 UUID::sRandomEngine = std::mt19937(std::random_device()());
+Tag ResourceBase::sTag = Tag("Resource");
 
 void UUID::GenerateUUID() {
   auto time = std::chrono::system_clock::now();
@@ -25,6 +26,45 @@ std::string UUID::ToString() const {
       ss << "-";
   }
   return ss.str();
+}
+
+Tag Tag::operator+=(Str const &other) {
+  mTag += ".";
+  mTag += other;
+  return *this;
+}
+
+Tag Tag::operator+=(Tag const &other) {
+  mTag += ".";
+  mTag += other.mTag;
+  return *this;
+}
+
+Tag &Tag::operator=(Str const &other) {
+  mTag = other;
+  return *this;
+}
+
+Tag &Tag::operator=(Tag const &other) {
+  mTag = other.mTag;
+  return *this;
+}
+
+Tag const &TagSet::AquireTag(Str const &name) {
+  if (this->IsRegistered(name)) {
+    return mTags[name];
+  } else {
+    Tag tag(name);
+    this->Register(tag);
+    return mTags[name];
+  }
+}
+
+void TagSet::Register(Tag const &tag) {
+  if (this->IsRegistered(tag.GetName())) {
+    return;
+  }
+  mTags.insert(std::make_pair(tag.GetName(), tag));
 }
 } // namespace GeoFrame
 

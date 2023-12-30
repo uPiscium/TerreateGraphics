@@ -1,8 +1,6 @@
 #include "../includes/core.hpp"
 
 namespace GeoFrame {
-GeoFrameContext *GeoFrameContext::sInstance = nullptr;
-
 GeoFrameContext::GeoFrameContext() {
   if (!glfwInit()) {
     M_GEO_THROW(APIError, "Failed to initialize GLFW");
@@ -14,15 +12,5 @@ GeoFrameContext::GeoFrameContext() {
   glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
 }
 
-GeoFrameContext::~GeoFrameContext() {
-  delete sInstance;
-  glfwTerminate();
-}
-
-GeoFrameContext *GeoFrameContext::AquireInstance() {
-  if (sInstance == nullptr) {
-    sInstance = new GeoFrameContext();
-  }
-  return sInstance;
-}
+GeoFrameContext::~GeoFrameContext() { glfwTerminate(); }
 } // namespace GeoFrame

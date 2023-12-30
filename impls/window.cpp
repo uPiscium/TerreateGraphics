@@ -3,6 +3,8 @@
 namespace GeoFrame {
 namespace Kernel {
 bool S_GLAD_INITIALIZED = false;
+Tag Monitor::sTag = ResourceBase::sTag + Tag("Monitor");
+Tag Window::sTag = ResourceBase::sTag + Tag("Window");
 
 void _WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
@@ -148,7 +150,8 @@ void _DropCallbackWrapper(GLFWwindow *window, int count, const char **paths) {
 }
 
 Window::Window(unsigned const &width, unsigned const &height, Str const &title,
-               WindowSettings const &settings) {
+               WindowSettings const &settings)
+    : ResourceBase(mUUID.ToString(), sTag) {
   glfwWindowHint(GLFW_RESIZABLE, settings.resizable);
   glfwWindowHint(GLFW_VISIBLE, settings.visible);
   glfwWindowHint(GLFW_DECORATED, settings.decorated);
@@ -231,28 +234,4 @@ void Window::Fill(Vec<float> const &color) {
 }
 } // namespace Kernel
 
-WindowManager *WindowManager::sInstance = nullptr;
-
-void WindowManager::Register(Key const &key, Value const &value) {
-  if (mWindows.find(key) != mWindows.end()) {
-    return;
-  }
-  mWindows.insert({key, value});
-}
-WindowManager *WindowManager::AquireInstance() {
-  if (!sInstance) {
-    sInstance = new WindowManager();
-  }
-  return sInstance;
-}
-
-WindowWrapper &WindowWrapper::operator=(WindowWrapper const &window) {
-  mWindow = window.mWindow;
-  return *this;
-}
-
-WindowWrapper &WindowWrapper::operator=(WindowWrapper &&window) {
-  mWindow = window.mWindow;
-  return *this;
-}
 } // namespace GeoFrame

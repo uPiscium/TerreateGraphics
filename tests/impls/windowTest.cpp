@@ -4,7 +4,7 @@ using namespace GeoFrame;
 
 void window_generation_test(unsigned const &width, unsigned const &height,
                             Str const &title) {
-  GeoFrameContext *context = GeoFrameContext::AquireInstance();
+  GeoFrameContext context = Context::AquireInstance();
   Window window = Window(width, height, title, WindowSettings());
 
   auto sizeCallback = [](void *, int w, int h) {

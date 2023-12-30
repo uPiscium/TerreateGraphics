@@ -1,6 +1,8 @@
 #include "../includes/texture.hpp"
 
 namespace GeoFrame {
+Tag Texture::sTag = ResourceBase::sTag + Tag("Texture");
+
 void Texture::SetFilter(FilterType const &filter) {
   mFilter = filter;
   Bind();

@@ -1,6 +1,8 @@
 #include "../includes/shader.hpp"
 
 namespace GeoFrame {
+Tag Shader::sTag = ResourceBase::sTag + Tag("Shader");
+
 Str GetShaderLog(unsigned const &id) {
   int status;
   glGetShaderiv(id, GL_COMPILE_STATUS, &status);

@@ -14,7 +14,7 @@ struct TextureData {
   unsigned channels = 0;
 };
 
-class Texture : public Geobject {
+class Texture : public ResourceBase {
 private:
   ID mTexture = 0;
   unsigned mWidth = 0;
@@ -27,6 +27,9 @@ private:
   M_DISABLE_COPY_AND_ASSIGN(Texture);
 
 public:
+  static Tag sTag;
+
+public:
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be created by Screen.
@@ -37,13 +40,15 @@ public:
    */
   Texture(unsigned const &texture, unsigned const &width,
           unsigned const &height, unsigned const &channels)
-      : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
-  }
+      : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels),
+        ResourceBase(mUUID.ToString(), sTag) {}
   /*
    * @brief: This function creates a opengl texture.
    */
-  Texture() { glGenTextures(1, &mTexture); }
-  ~Texture() override { glDeleteTextures(1, &mTexture); }
+  Texture(Str const &name) : ResourceBase(name, sTag) {
+    glGenTextures(1, &mTexture);
+  }
+  ~Texture() override { this->Delete(); }
 
   /*
    * @brief: Setter for texture filter.
@@ -56,6 +61,10 @@ public:
    */
   void SetWrapping(WrappingType const &wrap);
 
+  /*
+   * @brief: Delete texture resource.
+   */
+  void Delete() override { glDeleteTextures(1, &mTexture); }
   /*
    * @brief: Loads texture data into OpenGL texture.
    * @param: width: width of texture
