@@ -35,25 +35,25 @@ using Quaternion = QuaternionT<float>;
 mat4 GetIdentity();
 
 class Transformer {
-  private:
-    mat4 mTransform;
-    mat4 mScale;
-    mat4 mRotate;
-    mat4 mTranslate;
+private:
+  mat4 mTransform;
+  mat4 mScale;
+  mat4 mRotate;
+  mat4 mTranslate;
 
-  public:
-    Transformer() { mTransform = GetIdentity(); }
-    ~Transformer() {}
+public:
+  Transformer() { mTransform = GetIdentity(); }
+  ~Transformer() {}
 
-    mat4 const &GetMatrix() const { return mTransform; }
+  mat4 const &GetMatrix() const { return mTransform; }
 
-    void Scale(vec3 const &scale);
-    void Scale(float const &scale);
-    void Scale(float const &x, float const &y, float const &z);
-    void Rotate(Quaternion const &rotation);
-    void Rotate(float const &angle, vec3 const &axis);
-    void Rotate(float const &x, float const &y, float const &z);
-    void Translate(vec3 const &translation);
-    void Translate(float const &x, float const &y, float const &z);
+  void Scale(vec3 const &scale);
+  void Scale(float const &scale);
+  void Scale(float const &x, float const &y, float const &z);
+  void Rotate(Quaternion const &rotation);
+  void Rotate(float const &angle, vec3 const &axis);
+  void Rotate(float const &x, float const &y, float const &z);
+  void Translate(vec3 const &translation);
+  void Translate(float const &x, float const &y, float const &z);
 };
 } // End namespace GeoFrame

@@ -1,7 +1,10 @@
 #include "../includes/window.hpp"
 
 namespace GeoFrame {
+namespace Kernel {
 bool S_GLAD_INITIALIZED = false;
+Tag Monitor::sTag = ResourceBase::sTag + Tag("Monitor");
+Tag Window::sTag = ResourceBase::sTag + Tag("Window");
 
 void _WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
@@ -147,7 +150,8 @@ void _DropCallbackWrapper(GLFWwindow *window, int count, const char **paths) {
 }
 
 Window::Window(unsigned const &width, unsigned const &height, Str const &title,
-               WindowSettings const &settings) {
+               WindowSettings const &settings)
+    : ResourceBase(mUUID.ToString(), sTag) {
   glfwWindowHint(GLFW_RESIZABLE, settings.resizable);
   glfwWindowHint(GLFW_VISIBLE, settings.visible);
   glfwWindowHint(GLFW_DECORATED, settings.decorated);
@@ -228,5 +232,6 @@ void Window::Fill(Vec<float> const &color) {
   glClearColor(color[0], color[1], color[2], 0.0);
   glClear(GL_COLOR_BUFFER_BIT);
 }
+} // namespace Kernel
 
 } // namespace GeoFrame

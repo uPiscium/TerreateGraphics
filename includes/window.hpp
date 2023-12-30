@@ -4,9 +4,10 @@
 #include "object.hpp"
 
 namespace GeoFrame {
+namespace Kernel {
 extern bool S_GLAD_INITIALIZED;
 
-class Icon {
+class Icon : public ResourceBase {
 private:
   Vec<GLFWimage> mImages;
   Vec<void *> mPointers;
@@ -19,10 +20,14 @@ public:
    * @brief: This function creates a glfw icon.
    */
   Icon();
-  ~Icon();
+  ~Icon() override { this->Delete(); }
 
   size_t GetSize() const { return mImages.size(); }
 
+  /*
+   * @brief: Delete icon resource.
+   */
+  void Delete() override;
   /*
    * @brief: This function adds an image to the icon.
    * @param: width: Image width.
@@ -38,7 +43,7 @@ public:
   operator GLFWimage const *() const { return mImages.data(); }
 };
 
-class Cursor {
+class Cursor : public ResourceBase {
 private:
   GLFWcursor *mCursor = nullptr;
   GLFWimage mImage = GLFWimage();
@@ -53,7 +58,7 @@ public:
    * @param: yHot: The y-coordinate of the cursor's hot spot.
    */
   Cursor(unsigned const &xHot, unsigned const &yHot);
-  ~Cursor();
+  ~Cursor() override { this->Delete(); }
 
   /*
    * @brief: This function sets the image of the cursor.
@@ -66,10 +71,14 @@ public:
   void SetImage(unsigned const &width, unsigned const &height,
                 unsigned char const *pixels);
 
+  /*
+   * @brief: Delete cursor resource.
+   */
+  void Delete() override;
+
   operator GLFWcursor *() const { return mCursor; }
 };
 
-namespace Kernel {
 void _WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos);
 void _WindowSizeCallbackWrapper(GLFWwindow *window, int width, int height);
 void _WindowCloseCallbackWrapper(GLFWwindow *window);
@@ -91,7 +100,6 @@ void _KeyCallbackWrapper(GLFWwindow *window, int key, int scancode, int action,
                          int mods);
 void _CharCallbackWrapper(GLFWwindow *window, unsigned codepoint);
 void _DropCallbackWrapper(GLFWwindow *window, int count, const char **paths);
-} // namespace Kernel
 
 struct Callback {
 public:
@@ -128,13 +136,20 @@ public:
   unsigned scaleToMonitor = GLFW_FALSE;
 };
 
-class Monitor : public Object {
+class Monitor : public ResourceBase {
 private:
   GLFWmonitor *mMonitor = nullptr;
   GLFWvidmode const *mVideoMode = nullptr;
+
+private:
+  Monitor(GLFWmonitor *monitor);
+  ~Monitor() override { this->Delete(); }
+
+public:
+  static Tag sTag;
 };
 
-class Window : public Object {
+class Window : public ResourceBase {
 private:
   GLFWwindow *mWindow = nullptr;
   void *mUserPointer = nullptr;
@@ -158,6 +173,9 @@ private:
   M_DISABLE_COPY_AND_ASSIGN(Window);
 
 public:
+  static Tag sTag;
+
+public:
   /*
    * @brief: This function creates a glfw window and sets the callbacks.
    * @param: width: Window width.
@@ -167,7 +185,7 @@ public:
    */
   Window(unsigned const &width, unsigned const &height, Str const &title,
          WindowSettings const &settings);
-  ~Window() { this->Close(); }
+  ~Window() { this->Delete(); }
 
   /*
    * @brief: This function returns window size.
@@ -331,6 +349,13 @@ public:
    */
   void SetInputMode(InputType const &type, int const &value) {
     glfwSetInputMode(mWindow, (unsigned)type, value);
+  }
+  /*
+   * This function sets user pointer binded to window.
+   * @param: pointer: User pointer.
+   */
+  template <typename T> void SetUserPointer(T *pointer) {
+    mUserPointer = static_cast<void *>(pointer);
   }
 
   void SetSizeCallback(WindowSizeCallback const &callback) {
@@ -496,6 +521,10 @@ public:
   }
 
   /*
+   * @brief: Delete window resource.
+   */
+  void Delete() override { this->Close(); }
+  /*
    * @brief: This function closes window.
    */
   void Close();
@@ -549,8 +578,16 @@ public:
    */
   void Swap() const { glfwSwapBuffers(mWindow); }
   /*
+   * @brief: This function poll events.
+   */
+  void PollEvents() const { glfwPollEvents(); }
+  /*
    * @brief: This function binds window to current context.
    */
   void Bind() const { glfwMakeContextCurrent(mWindow); }
 };
+} // namespace Kernel
+
+using WindowSettings = Kernel::WindowSettings;
+using Window = Shared<Kernel::Window>;
 } // namespace GeoFrame
