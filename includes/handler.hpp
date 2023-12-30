@@ -4,6 +4,4 @@
 #include "interface.hpp"
 #include "object.hpp"
 
-namespace GeoFrame {
-;
-} // namespace GeoFrame
+namespace GeoFrame {} // namespace GeoFrame
