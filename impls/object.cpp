@@ -49,23 +49,6 @@ Tag &Tag::operator=(Tag const &other) {
   mTag = other.mTag;
   return *this;
 }
-
-Tag const &TagSet::AquireTag(Str const &name) {
-  if (this->IsRegistered(name)) {
-    return mTags[name];
-  } else {
-    Tag tag(name);
-    this->Register(tag);
-    return mTags[name];
-  }
-}
-
-void TagSet::Register(Tag const &tag) {
-  if (this->IsRegistered(tag.GetName())) {
-    return;
-  }
-  mTags.insert(std::make_pair(tag.GetName(), tag));
-}
 } // namespace GeoFrame
 
 std::ostream &operator<<(std::ostream &stream, const GeoFrame::UUID &uuid) {

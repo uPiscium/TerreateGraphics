@@ -51,6 +51,9 @@ public:
   virtual void Delete() {}
 };
 
+template <typename T>
+concept GeoFamily = std::derived_from<T, Geobject>;
+
 class Tag final : public Geobject {
 private:
   Str mTag = "NONE";
@@ -112,6 +115,9 @@ public:
   virtual void Delete() override {}
 };
 
+template <typename T>
+concept ResourceFamily = std::derived_from<T, ResourceBase>;
+
 /*
  * @brief: "Shared" is a wrapper class for pointer.
  * @tparam: T: Type of pointer.
@@ -156,18 +162,9 @@ public:
   /*
    * @brief: Destructor. Nothing to do.
    */
-  ~Shared() {}
+  ~Shared() { this->Delete(); }
 
   T *GetPointer() const { return mPointer; }
-
-  /*
-   * @brief: Set deletability of pointer.
-   * @sa: Delete()
-   * @param: deletable: Deletability of pointer.
-   * @note: If deletability is set to true, pointer resource will be deleted
-   * by calling Delete().
-   */
-  void SetDeletable(bool deletable) { mDeletable = deletable; }
 
   /*
    * @brief: Get deletability of pointer.
@@ -184,6 +181,19 @@ public:
       mPointer = nullptr;
       mDeletable = false;
     }
+  }
+  /*
+   * @brief: Cast to Shared<S> from Shared<T>.
+   * @return: Shared<S> that has same pointer with Shared<T>.
+   */
+  template <typename S> Shared<S> Cast() {
+    Shared<S> ptr = Shared<S>();
+    try {
+      ptr = dynamic_cast<S *>(mPointer);
+    } catch (std::bad_cast) {
+      M_GEO_THROW(KernelError, "Pointer cast failed.");
+    }
+    return std::move(ptr);
   }
 
   Shared &operator=(Shared const &other) {
@@ -231,25 +241,3 @@ template <> struct std::hash<GeoFrame::Tag> {
     return std::hash<std::string>()(std::string(tag));
   }
 };
-
-namespace GeoFrame {
-class TagSet final : public Geobject {
-private:
-  Str mName;
-  Map<Str, Tag> mTags;
-
-public:
-  TagSet(Str const &name) : mName(name) {}
-  ~TagSet() { this->Delete(); }
-
-  Tag const &GetTag(Str const &name) { return mTags[name]; }
-  Tag const &AquireTag(Str const &name);
-
-  bool IsRegistered(Str const &name) const {
-    return mTags.find(name) != mTags.end();
-  }
-
-  void Register(Tag const &tag);
-  void Delete() override {}
-};
-} // namespace GeoFrame

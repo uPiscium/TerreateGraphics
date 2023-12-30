@@ -7,6 +7,7 @@ namespace GeoFrame {
 template <typename T> class IHandlable : public Geobject {
 public:
   virtual Shared<T> Get(Str const &name) = 0;
+  virtual Shared<T> Aquire(Str const &name) = 0;
   virtual bool IsRegistered(Str const &name) = 0;
   virtual void Delete() override = 0;
   virtual void Register(Shared<T> const &target) = 0;
