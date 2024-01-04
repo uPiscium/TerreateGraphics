@@ -1,12 +1,19 @@
 #pragma once
+#include <condition_variable>
 #include <cstring>
+#include <deque>
 #include <iostream>
 #include <memory>
 #include <mutex>
+#include <queue>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+
+#include <GeoMath/matrix.hpp>
+#include <GeoMath/transformer.hpp>
 
 // Defines
 #ifdef GEOFRAME_IGNORE_EXCEPTIONS
@@ -50,7 +57,40 @@ namespace GeoFrame {
 template <typename S, typename T> using Map = std::unordered_map<S, T>;
 template <typename T> using Pair = std::pair<T, T>;
 template <typename T> using Set = std::unordered_set<T>;
+template <typename T> using Shared = std::shared_ptr<T>;
+template <typename T, typename Container = std::deque<T>>
+using Queue = std::queue<T, Container>;
 template <typename T> using Vec = std::vector<T>;
+template <typename T> using vec2T = GeoMath::vec2<T>;
+template <typename T> using vec3T = GeoMath::vec3<T>;
+template <typename T> using vec4T = GeoMath::vec4<T>;
+template <typename T> using mat2T = GeoMath::mat2<T>;
+template <typename T> using mat2x3T = GeoMath::mat2x3<T>;
+template <typename T> using mat2x4T = GeoMath::mat2x4<T>;
+template <typename T> using mat3x2T = GeoMath::mat3x2<T>;
+template <typename T> using mat3T = GeoMath::mat3<T>;
+template <typename T> using mat3x4T = GeoMath::mat3x4<T>;
+template <typename T> using mat4x2T = GeoMath::mat4x2<T>;
+template <typename T> using mat4x3T = GeoMath::mat4x3<T>;
+template <typename T> using mat4T = GeoMath::mat4<T>;
+template <typename T> using QuaternionT = GeoMath::Quaternion<T>;
+using vec2 = vec2T<float>;
+using vec3 = vec3T<float>;
+using vec4 = vec4T<float>;
+using mat2 = mat2T<float>;
+using mat2x3 = mat2x3T<float>;
+using mat2x4 = mat2x4T<float>;
+using mat3x2 = mat3x2T<float>;
+using mat3 = mat3T<float>;
+using mat3x4 = mat3x4T<float>;
+using mat4x2 = mat4x2T<float>;
+using mat4x3 = mat4x3T<float>;
+using mat4 = mat4T<float>;
+using Quaternion = QuaternionT<float>;
+
+using Mutex = std::mutex;
+using Thread = std::thread;
+using CondVar = std::condition_variable;
 using ID = unsigned;
 using Index = unsigned long long;
 using Str = std::string;
@@ -126,10 +166,10 @@ private:
 
 public:
   /*
-   * @brief: Aquires the singleton instance.
+   * @brief: Acquires the singleton instance.
    * @return: singleton instance
    */
-  static T &AquireInstance() {
+  static T &AcquireInstance() {
     std::call_once(sCallFlag, &CreateInstance);
     if (sInstance == nullptr) {
       M_GEO_THROW(KernelError, "Failed to create singleton instance.");
@@ -140,27 +180,6 @@ public:
 
 template <typename T> T *Singleton<T>::sInstance = nullptr;
 template <typename T> std::once_flag Singleton<T>::sCallFlag;
-
-using WindowPositionCallback = void (*)(void *userPtr, int xpos, int ypos);
-using WindowSizeCallback = void (*)(void *userPtr, int width, int height);
-using WindowCloseCallback = void (*)(void *userPtr);
-using WindowRefreshCallback = void (*)(void *userPtr);
-using WindowFocusCallback = void (*)(void *userPtr, int focused);
-using WindowIconifyCallback = void (*)(void *userPtr, int iconified);
-using WindowMaximizeCallback = void (*)(void *userPtr, int maximized);
-using WindowFramebufferSizeCallback = void (*)(void *userPtr, int width,
-                                               int height);
-using WindowContentScaleCallback = void (*)(void *userPtr, float xscale,
-                                            float yscale);
-using MousebuttonCallback = void (*)(void *userPtr, int button, int action,
-                                     Modifier mods);
-using CursorPositionCallback = void (*)(void *userPtr, double xpos,
-                                        double ypos);
-using CursorEnterCallback = void (*)(void *userPtr, int entered);
-using ScrollCallback = void (*)(void *userPtr, double xoffset, double yoffset);
-using KeyCallback = void (*)(void *userPtr, Key key);
-using CharCallback = void (*)(void *userPtr, unsigned codepoint);
-using DropCallback = void (*)(void *userPtr, Vec<Str> paths);
 
 // Use to select opengl color frame buffer attachement.
 enum class Attachment {

@@ -38,28 +38,37 @@ public:
   ~Font() override { this->Delete(); }
 
   /*
-   * @brief: Getter for character.
-   * @param: character: character to get
-   * @return: character
-   */
-  Shared<Character> const &GetCharacter(wchar_t const &character) const;
-  /*
-   * @brief: Getter for text size in pixels.
-   * @param: text: text to get size of
-   * @return: text size in pixels {width, height}
-   */
-  Pair<unsigned> GetTextSize(WStr const &text) const;
-  /*
-   * @brief: Getter for characters of the text.
-   * @param: text: text to get characters of
-   * @return: characters of text
-   */
-  Vec<Shared<Character>> GetCharacters(WStr const &text) const;
-  /*
    * @brief: Getter for font size.
    * @return: font size
    */
   unsigned GetFontSize() const { return mSize; }
+  /*
+   * @brief: Getter for character.
+   * @param: character: character to get
+   * @return: character
+   */
+  Shared<Character> const &GetCharacter(wchar_t const &character) {
+    return mCharacters[character];
+  }
+
+  /*
+   * @brief: Acquirer for character.
+   * @param: character: character to acquire
+   * @return: character
+   */
+  Shared<Character> const &AcquireCharacter(wchar_t const &character) const;
+  /*
+   * @brief: Acquirer for text size in pixels.
+   * @param: text: text to acquire size of
+   * @return: text size in pixels {width, height}
+   */
+  Pair<unsigned> AcquireTextSize(WStr const &text) const;
+  /*
+   * @brief: Acquirer for characters of the text.
+   * @param: text: text to acquire characters of
+   * @return: characters of text
+   */
+  Vec<Shared<Character>> AcquireCharacters(WStr const &text) const;
 
   /*
    * @brief: Delete font resource.

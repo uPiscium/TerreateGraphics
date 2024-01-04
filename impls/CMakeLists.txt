@@ -12,6 +12,7 @@ add_library(
   buffer.cpp
   core.cpp
   defines.cpp
+  event.cpp
   font.cpp
   gl.cpp
   job.cpp

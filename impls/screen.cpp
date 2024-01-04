@@ -1,4 +1,5 @@
 #include "../includes/screen.hpp"
+#include <memory>
 
 namespace GeoFrame {
 Tag Screen::sTag = ResourceBase::sTag + Tag("Screen");
@@ -18,9 +19,6 @@ Screen::Screen(Str const &name, unsigned const &width, unsigned const &height)
 }
 
 void Screen::Delete() {
-  for (auto &buffer : mTextures) {
-    buffer.Delete();
-  }
   mTextures.clear();
   glDeleteFramebuffers(1, &mFrameBuffer);
 }
@@ -43,7 +41,8 @@ void Screen::AddBuffer() {
                          buffer, 0);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  Shared<Texture> texture = Shared<Texture>(buffer, mWidth, mHeight, 4);
+  Shared<Texture> texture =
+      std::make_shared<Texture>(buffer, mWidth, mHeight, 4);
   mTextures.push_back(texture);
   glBindTexture(GL_TEXTURE_2D, 0);
 }
