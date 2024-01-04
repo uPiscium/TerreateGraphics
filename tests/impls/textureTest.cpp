@@ -1,10 +1,10 @@
 #include "../includes/textureTest.hpp"
 
 void texture_drawing_test() {
-  GeoFrameContext context = Context::AquireInstance();
+  GeoFrameContext context = Context::AcquireInstance();
 
   Window window(800, 600, "Buffer Drawing Test", WindowSettings());
-  window->Bind();
+  window.Bind();
   Buffer buffer("Rect", BufferUsage::STATIC_DRAW);
 
   auto attrs = Attribute::GenerateAttributes({2, 2});
@@ -37,14 +37,14 @@ void texture_drawing_test() {
   auto texData = Texture::LoadTexture("../../../resources/testImage.png");
   texture.LoadData(texData);
 
-  while (!window->IsClosed()) {
-    window->PollEvents();
-    window->Fill({0, 0, 1});
-    window->Clear((int)BufferBit::COLOR_BUFFER);
+  while (!window.IsClosed()) {
+    window.PollEvents();
+    window.Fill({0, 0, 1});
+    window.Clear((int)BufferBit::COLOR_BUFFER);
     shader.Use();
     texture.Bind();
     buffer.Draw(DrawMode::TRIANGLES);
     texture.Unbind();
-    window->Swap();
+    window.Swap();
   }
 }

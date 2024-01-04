@@ -1,10 +1,10 @@
 #include "../includes/screenTest.hpp"
 
 void screen_drawing_test() {
-  GeoFrameContext context = Context::AquireInstance();
+  GeoFrameContext context = Context::AcquireInstance();
 
   Window window(800, 600, "Buffer Drawing Test", WindowSettings());
-  window->Bind();
+  window.Bind();
 
   Buffer screenRect("Rect", BufferUsage::STATIC_DRAW);
   auto screenRectAttrs = Attribute::GenerateAttributes({2, 2});
@@ -57,10 +57,10 @@ void screen_drawing_test() {
   screen.AddBuffer();
   screen.AddBuffer();
 
-  while (!window->IsClosed()) {
-    window->PollEvents();
-    window->Fill({0, 0, 1});
-    window->Clear((int)BufferBit::COLOR_BUFFER);
+  while (!window.IsClosed()) {
+    window.PollEvents();
+    window.Fill({0, 0, 1});
+    window.Clear((int)BufferBit::COLOR_BUFFER);
     screen.Bind();
     shader2.Use();
     screenRect.Draw(DrawMode::TRIANGLES);
@@ -70,6 +70,6 @@ void screen_drawing_test() {
     shader.Use();
     screenRect.Draw(DrawMode::TRIANGLES);
     texture->Unbind();
-    window->Swap();
+    window.Swap();
   }
 }

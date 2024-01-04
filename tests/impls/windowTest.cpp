@@ -2,20 +2,21 @@
 
 using namespace GeoFrame;
 
-void window_generation_test(unsigned const &width, unsigned const &height,
-                            Str const &title) {
-  GeoFrameContext context = Context::AquireInstance();
-  Window window = Window(width, height, title, WindowSettings());
-
-  auto sizeCallback = [](void *, int w, int h) {
-    std::cout << w << " " << h << std::endl;
-  };
-  window->SetSizeCallback(sizeCallback);
-
+class CallbackSet : public WindowCallbackBase {
+private:
   float s = 0.0f;
   float f = 0.001f;
 
-  while (!window->IsClosed()) {
+public:
+  void PositionCallback(int const &xpos, int const &ypos) override {
+    std::cout << "PositionCallback: " << xpos << ", " << ypos << std::endl;
+  }
+
+  void SizeCallback(int const &width, int const &height) override {
+    std::cout << "SizeCallback: " << width << ", " << height << std::endl;
+  }
+
+  void operator()(Window const *window) override {
     window->PollEvents();
     window->Fill({s, s, s});
     window->Clear((int)BufferBit::COLOR_BUFFER);
@@ -26,4 +27,15 @@ void window_generation_test(unsigned const &width, unsigned const &height,
       f = -f;
     }
   }
+};
+
+void window_generation_test(unsigned const &width, unsigned const &height,
+                            Str const &title) {
+  GeoFrameContext context = Context::AcquireInstance();
+  Window window = Window(width, height, title, WindowSettings());
+
+  CallbackSet callbackSet;
+  window.SetWindowCallback(&callbackSet);
+
+  window.Launch();
 }
