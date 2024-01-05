@@ -6,7 +6,7 @@
 namespace GeoFrame {
 class IRunnable : public Geobject {
 public:
-  virtual void operator()() {}
+  virtual void Run() {}
 };
 
 class IPostable : public Geobject {

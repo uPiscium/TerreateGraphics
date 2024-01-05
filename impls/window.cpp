@@ -167,7 +167,7 @@ void Window::Fill(Vec<float> const &color) const {
 
 void Window::Launch() const {
   while (!this->IsClosed()) {
-    (*mCallbacks)(this);
+    mCallbacks->Run(this);
   }
 }
 } // namespace GeoFrame

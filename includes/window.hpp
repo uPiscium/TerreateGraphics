@@ -228,7 +228,7 @@ public:
   virtual void CharCallback(unsigned const &codepoint) {}
   virtual void DropCallback(Vec<Str> const &paths) {}
 
-  virtual void operator()(Window const *window) = 0;
+  virtual void Run(Window const *window) = 0;
 };
 
 class Monitor : public ResourceBase {

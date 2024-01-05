@@ -16,7 +16,7 @@ public:
     std::cout << "SizeCallback: " << width << ", " << height << std::endl;
   }
 
-  void operator()(Window const *window) override {
+  void Run(Window const *window) override {
     window->PollEvents();
     window->Fill({s, s, s});
     window->Clear((int)BufferBit::COLOR_BUFFER);

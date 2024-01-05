@@ -5,36 +5,56 @@
 #include "object.hpp"
 
 namespace GeoFrame {
-class Job : public IRunnable {
+class JobBase : public IRunnable {
+private:
+  bool mComplete = false;
+
 public:
-  Job() {}
-  virtual ~Job() override {}
+  virtual ~JobBase() override {}
+
+  bool IsComplete() const { return mComplete; }
 
   virtual void Preprocess() {}
   virtual void Postprocess() {}
-  virtual void operator()() override {}
+  virtual void Run() override {}
+
+  void operator()();
 };
 
 class Worker : public Geobject {
 private:
   M_DISABLE_COPY_AND_ASSIGN(Worker);
-};
-
-class JobHandler : public Geobject {
-private:
-  M_DISABLE_COPY_AND_ASSIGN(JobHandler);
 
 private:
-  Queue<Shared<Job>> mJobQueue;
-  Mutex mPopMutex;
-  Vec<Thread> mThreads;
-  CondVar mCondition;
+  Shared<Queue<Shared<JobBase>>> mJobQueue;
+  Shared<CondVar> mCondVar;
+  Shared<Mutex> mQueueMutex;
+  Thread mThread;
 
 public:
-  JobHandler();
-  explicit JobHandler(size_t const &numFreeThreads = 32);
-  ~JobHandler() override { this->Delete(); }
+  Worker(Shared<Queue<Shared<JobBase>>> jobQueue, Shared<CondVar> condVar,
+         Shared<Mutex> queueMutex)
+      : mJobQueue(jobQueue), mCondVar(condVar),
+        mThread([this]() { this->WorkerThread(); }) {}
+  ~Worker() override { this->Delete(); }
 
   void Delete() override;
+  void WorkerThread();
+};
+
+class JobSystem : public Geobject {
+private:
+  Queue<Shared<JobBase>> mJobQueue;
+  CondVar mCondVar;
+  Mutex mQueueMutex;
+  Vec<Worker> mWorkers;
+
+public:
+  JobSystem(unsigned const &numWorkers);
+  ~JobSystem() override { this->Delete(); }
+
+  void Delete() override;
+  void Schedule(JobBase *job);
+  void Wait();
 };
 } // namespace GeoFrame
