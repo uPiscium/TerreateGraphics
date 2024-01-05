@@ -1,10 +1,10 @@
 #include "../includes/fontTest.hpp"
 
 void font_drawing_test() {
-  GeoFrameContext context = Context::AquireInstance();
+  GeoFrameContext context = Context::AcquireInstance();
 
   Window window(800, 600, "Buffer Drawing Test", WindowSettings());
-  window->Bind();
+  window.Bind();
   Buffer buffer("Rect", BufferUsage::STATIC_DRAW);
 
   auto attrs = Attribute::GenerateAttributes({2, 2});
@@ -35,16 +35,16 @@ void font_drawing_test() {
 
   Font font("../../../resources/AsebiMin-Light.otf", 48);
   font.LoadCharacter(L'A');
-  auto charData = font.GetCharacter(L'A');
+  auto charData = font.AcquireCharacter(L'A');
 
-  while (!window->IsClosed()) {
-    window->PollEvents();
-    window->Fill({0, 0, 1});
-    window->Clear((int)BufferBit::COLOR_BUFFER);
+  while (!window.IsClosed()) {
+    window.PollEvents();
+    window.Fill({0, 0, 1});
+    window.Clear((int)BufferBit::COLOR_BUFFER);
     shader.Use();
     charData->texture->Bind();
     buffer.Draw(DrawMode::TRIANGLES);
     charData->texture->Unbind();
-    window->Swap();
+    window.Swap();
   }
 }

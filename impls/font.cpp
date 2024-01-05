@@ -16,7 +16,8 @@ Font::Font(Str const &path, unsigned const &size)
   FT_Set_Pixel_Sizes(mFace, 0, size);
 }
 
-Shared<Character> const &Font::GetCharacter(wchar_t const &character) const {
+Shared<Character> const &
+Font::AcquireCharacter(wchar_t const &character) const {
   auto it = mCharacters.find(character);
   if (it == mCharacters.end()) {
     M_GEO_THROW(KernelError, "Character not found.");
@@ -24,11 +25,11 @@ Shared<Character> const &Font::GetCharacter(wchar_t const &character) const {
   return it->second;
 }
 
-Pair<unsigned> Font::GetTextSize(WStr const &text) const {
+Pair<unsigned> Font::AcquireTextSize(WStr const &text) const {
   unsigned width = 0;
   unsigned height = 0;
   for (wchar_t const &character : text) {
-    Shared<Character> const &c = GetCharacter(character);
+    Shared<Character> const &c = AcquireCharacter(character);
     width += c->advance >> 6;
     if (c->size.second > height) {
       height = c->size.second;
@@ -37,10 +38,10 @@ Pair<unsigned> Font::GetTextSize(WStr const &text) const {
   return {width, height};
 }
 
-Vec<Shared<Character>> Font::GetCharacters(WStr const &text) const {
+Vec<Shared<Character>> Font::AcquireCharacters(WStr const &text) const {
   Vec<Shared<Character>> characters;
   for (wchar_t const &character : text) {
-    Shared<Character> const &c = GetCharacter(character);
+    Shared<Character> const &c = AcquireCharacter(character);
     characters.push_back(c);
   }
   return characters;
@@ -49,11 +50,6 @@ Vec<Shared<Character>> Font::GetCharacters(WStr const &text) const {
 void Font::Delete() {
   FT_Done_Face(mFace);
   FT_Done_FreeType(mLibrary);
-
-  for (auto &chr : mCharacters) {
-    chr.second.Delete();
-  }
-
   mCharacters.clear();
 }
 
@@ -64,8 +60,7 @@ void Font::LoadCharacter(wchar_t const &character) {
 
   if ((unsigned)character == D_HALF_WIDTH_SPACE ||
       (unsigned)character == D_FULL_WIDTH_SPACE) {
-    Shared<Character> c;
-    c = new Character();
+    Shared<Character> c = std::make_shared<Character>();
     unsigned width =
         ((unsigned)character == D_HALF_WIDTH_SPACE) ? mSize / 2 : mSize;
     c->codepoint = (unsigned)character;
@@ -74,7 +69,7 @@ void Font::LoadCharacter(wchar_t const &character) {
     c->bearing = {0, 0};
     c->advance = width;
 
-    mCharacters.insert({character, std::move(c)});
+    mCharacters.insert({character, c});
     return;
   }
 
@@ -83,16 +78,16 @@ void Font::LoadCharacter(wchar_t const &character) {
     return;
   }
 
-  Shared<Character> c;
-  c = new Character();
+  Shared<Character> c = std::make_shared<Character>();
   c->codepoint = (unsigned)character;
-  c->texture = Shared<Texture>("Glyph");
+  c->texture = std::make_shared<Texture>("Glyph_" + std::to_string(character));
   c->texture->LoadData(mFace->glyph->bitmap.width, mFace->glyph->bitmap.rows, 1,
                        mFace->glyph->bitmap.buffer);
+
   c->size = {mFace->glyph->bitmap.width, mFace->glyph->bitmap.rows};
   c->bearing = {mFace->glyph->bitmap_left, mFace->glyph->bitmap_top};
   c->advance = mFace->glyph->advance.x;
 
-  mCharacters.insert({character, std::move(c)});
+  mCharacters.insert({character, c});
 }
 } // namespace GeoFrame

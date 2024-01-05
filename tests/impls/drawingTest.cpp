@@ -3,10 +3,10 @@
 using namespace GeoFrame;
 
 void buffer_drawing_test() {
-  GeoFrameContext context = Singleton<GeoFrameContext>::AquireInstance();
+  GeoFrameContext context = Singleton<GeoFrameContext>::AcquireInstance();
 
   Window window(800, 600, "Buffer Drawing Test", WindowSettings());
-  window->Bind();
+  window.Bind();
   Buffer buffer("Rect", BufferUsage::DYNAMIC_DRAW);
 
   auto attrs = Attribute::GenerateAttributes({2});
@@ -27,21 +27,21 @@ void buffer_drawing_test() {
                                  "}\n");
   shader.Compile();
 
-  while (!window->IsClosed()) {
-    window->PollEvents();
-    window->Fill({0, 0, 1});
-    window->Clear((int)BufferBit::COLOR_BUFFER);
+  while (!window.IsClosed()) {
+    window.PollEvents();
+    window.Fill({0, 0, 1});
+    window.Clear((int)BufferBit::COLOR_BUFFER);
 
-    if (window->IsEntering()) {
-      auto pos = window->GetCursorPosition();
-      float x = (float)pos.first / (float)window->GetSize().first;
-      float y = (float)pos.second / (float)window->GetSize().second;
+    if (window.IsEntering()) {
+      auto pos = window.GetCursorPosition();
+      float x = (float)pos.first / (float)window.GetSize().first;
+      float y = (float)pos.second / (float)window.GetSize().second;
       buffer.LoadVertices(
           {-0.5f, -0.5f, 2 * x - 1.0f, -2 * y + 1.0f, 0.5f, -0.5f});
     }
 
     shader.Use();
     buffer.Draw(DrawMode::TRIANGLES);
-    window->Swap();
+    window.Swap();
   }
 }

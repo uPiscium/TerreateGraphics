@@ -1,10 +1,10 @@
 #pragma once
 #include "core.hpp"
 #include "defines.hpp"
+#include "interface.hpp"
 #include "object.hpp"
 
 namespace GeoFrame {
-namespace Kernel {
 extern bool S_GLAD_INITIALIZED;
 
 class Icon : public ResourceBase {
@@ -79,47 +79,29 @@ public:
   operator GLFWcursor *() const { return mCursor; }
 };
 
-void _WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos);
-void _WindowSizeCallbackWrapper(GLFWwindow *window, int width, int height);
-void _WindowCloseCallbackWrapper(GLFWwindow *window);
-void _WindowRefreshCallbackWrapper(GLFWwindow *window);
-void _WindowFocusCallbackWrapper(GLFWwindow *window, int focused);
-void _WindowIconifyCallbackWrapper(GLFWwindow *window, int iconified);
-void _WindowMaximizeCallbackWrapper(GLFWwindow *window, int maximized);
-void _WindowFramebufferSizeCallbackWrapper(GLFWwindow *window, int width,
-                                           int height);
-void _WindowContentScaleCallbackWrapper(GLFWwindow *window, float xscale,
-                                        float yscale);
-void _MousebuttonCallbackWrapper(GLFWwindow *window, int button, int action,
-                                 int mods);
-void _CursorPositionCallbackWrapper(GLFWwindow *window, double xpos,
-                                    double ypos);
-void _CursorEnterCallbackWrapper(GLFWwindow *window, int entered);
-void _ScrollCallbackWrapper(GLFWwindow *window, double xoffset, double yoffset);
-void _KeyCallbackWrapper(GLFWwindow *window, int key, int scancode, int action,
-                         int mods);
-void _CharCallbackWrapper(GLFWwindow *window, unsigned codepoint);
-void _DropCallbackWrapper(GLFWwindow *window, int count, const char **paths);
-
-struct Callback {
-public:
-  WindowPositionCallback windowPositionCallback = nullptr;
-  WindowSizeCallback windowSizeCallback = nullptr;
-  WindowCloseCallback windowCloseCallback = nullptr;
-  WindowRefreshCallback windowRefreshCallback = nullptr;
-  WindowFocusCallback windowFocusCallback = nullptr;
-  WindowIconifyCallback windowIconifyCallback = nullptr;
-  WindowMaximizeCallback windowMaximizeCallback = nullptr;
-  WindowFramebufferSizeCallback windowFramebufferSizeCallback = nullptr;
-  WindowContentScaleCallback windowContentScaleCallback = nullptr;
-  MousebuttonCallback mousebuttonCallback = nullptr;
-  CursorPositionCallback cursorPositionCallback = nullptr;
-  CursorEnterCallback cursorEnterCallback = nullptr;
-  ScrollCallback scrollCallback = nullptr;
-  KeyCallback keyCallback = nullptr;
-  CharCallback charCallback = nullptr;
-  DropCallback dropCallback = nullptr;
-};
+namespace Callbacks {
+void WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos);
+void WindowSizeCallbackWrapper(GLFWwindow *window, int width, int height);
+void WindowCloseCallbackWrapper(GLFWwindow *window);
+void WindowRefreshCallbackWrapper(GLFWwindow *window);
+void WindowFocusCallbackWrapper(GLFWwindow *window, int focused);
+void WindowIconifyCallbackWrapper(GLFWwindow *window, int iconified);
+void WindowMaximizeCallbackWrapper(GLFWwindow *window, int maximized);
+void WindowFramebufferSizeCallbackWrapper(GLFWwindow *window, int width,
+                                          int height);
+void WindowContentScaleCallbackWrapper(GLFWwindow *window, float xscale,
+                                       float yscale);
+void MousebuttonCallbackWrapper(GLFWwindow *window, int button, int action,
+                                int mods);
+void CursorPositionCallbackWrapper(GLFWwindow *window, double xpos,
+                                   double ypos);
+void CursorEnterCallbackWrapper(GLFWwindow *window, int entered);
+void ScrollCallbackWrapper(GLFWwindow *window, double xoffset, double yoffset);
+void KeyCallbackWrapper(GLFWwindow *window, int key, int scancode, int action,
+                        int mods);
+void CharCallbackWrapper(GLFWwindow *window, unsigned codepoint);
+void DropCallbackWrapper(GLFWwindow *window, int count, const char **paths);
+} // namespace Callbacks
 
 struct WindowSettings {
 public:
@@ -134,6 +116,119 @@ public:
   unsigned transparentFramebuffer = GLFW_FALSE;
   unsigned focusOnShow = GLFW_TRUE;
   unsigned scaleToMonitor = GLFW_FALSE;
+};
+
+class Window;
+
+class WindowProperty {
+private:
+  Str mTitle = "GeoFrame";
+  Pair<double> mScrollOffset;
+  Vec<unsigned> mCodePoints;
+  Vec<Key> mKeys;
+  Vec<Str> mDroppedFiles;
+  Pair<unsigned> mSize;
+  Pair<unsigned> mPosition;
+  Pair<double> mCursorPosition;
+
+  friend void Callbacks::ScrollCallbackWrapper(GLFWwindow *window,
+                                               double xoffset, double yoffset);
+  friend void Callbacks::CharCallbackWrapper(GLFWwindow *window,
+                                             unsigned codepoint);
+  friend void Callbacks::KeyCallbackWrapper(GLFWwindow *window, int key,
+                                            int scancode, int action, int mods);
+  friend void Callbacks::DropCallbackWrapper(GLFWwindow *window, int count,
+                                             const char **paths);
+  friend void Callbacks::WindowSizeCallbackWrapper(GLFWwindow *window,
+                                                   int width, int height);
+  friend void Callbacks::WindowPositionCallbackWrapper(GLFWwindow *window,
+                                                       int xpos, int ypos);
+  friend void Callbacks::CursorPositionCallbackWrapper(GLFWwindow *window,
+                                                       double xpos,
+                                                       double ypos);
+  friend Window;
+
+public:
+  WindowProperty() = default;
+  ~WindowProperty() = default;
+
+  /*
+   * @brief: This function returns window title.
+   * @return: Window title.
+   */
+  Str const &GetTitle() const { return mTitle; }
+  /*
+   * @brief: This function returns scroll offset.
+   * @return: Scroll offset.
+   * @detail: Return format is (x, y).
+   */
+  Pair<double> const &GetScrollOffset() const { return mScrollOffset; }
+  /*
+   * @brief: This function returns inputted code points.
+   * @return: Inputted code points.
+   * @detail: Code points are Unicode code points.
+   */
+  Vec<unsigned> const &GetCodePoints() const { return mCodePoints; }
+  /*
+   * @brief: This function returns inputted keys.
+   * @return: Inputted keys.
+   */
+  Vec<Key> const &GetKeys() const { return mKeys; }
+  /*
+   * @brief: This function returns dropped files.
+   * @return: Dropped files.
+   */
+  Vec<Str> const &GetDroppedFiles() const { return mDroppedFiles; }
+  /*
+   * @brief: This function returns window size.
+   * @return: Window size.
+   * @detail: Return format is (width, height).
+   */
+  Pair<unsigned> const &GetSize() const { return mSize; }
+  /*
+   * @brief: This function returns window position.
+   * @return: Window position.
+   * @detail: Return format is (x, y).
+   */
+  Pair<unsigned> const &GetPosition() const { return mPosition; }
+  /*
+   * @brief: This function returns cursor position.
+   * @return: Cursor position.
+   * @detail: Return format is (x, y).
+   */
+  Pair<double> const &GetCursorPosition() const { return mCursorPosition; }
+
+  /*
+   * @brief: This function clears inputted chars, inputted codepoints, and
+   * inputted keys.
+   */
+  void ClearInputs();
+};
+
+class WindowCallbackBase : public IRunnable {
+public:
+  virtual ~WindowCallbackBase() = default;
+
+  virtual void PositionCallback(int const &xpos, int const &ypos) {}
+  virtual void SizeCallback(int const &width, int const &height) {}
+  virtual void CloseCallback() {}
+  virtual void RefreshCallback() {}
+  virtual void FocusCallback(bool const &focused) {}
+  virtual void IconifyCallback(bool const &iconified) {}
+  virtual void MaximizeCallback(bool const &maximized) {}
+  virtual void FramebufferSizeCallback(int const &width, int const &height) {}
+  virtual void ContentScaleCallback(float const &xscale, float const &yscale) {}
+  virtual void MousebuttonCallback(unsigned const &button,
+                                   unsigned const &action,
+                                   Modifier const &mods) {}
+  virtual void CursorPositionCallback(double const &xpos, double const &ypos) {}
+  virtual void CursorEnterCallback(bool const &entered) {}
+  virtual void ScrollCallback(double const &xoffset, double const &yoffset) {}
+  virtual void KeyCallback(Key const &key) {}
+  virtual void CharCallback(unsigned const &codepoint) {}
+  virtual void DropCallback(Vec<Str> const &paths) {}
+
+  virtual void Run(Window const *window) = 0;
 };
 
 class Monitor : public ResourceBase {
@@ -153,21 +248,43 @@ class Window : public ResourceBase {
 private:
   GLFWwindow *mWindow = nullptr;
   void *mUserPointer = nullptr;
+  WindowProperty mProperty;
+  WindowCallbackBase *mCallbacks = nullptr;
 
-  Str mTitle = "GeoFrame";
-  Pair<double> mScrollOffset;
-  Vec<unsigned> mCodePoints;
-  Vec<Key> mKeys;
-  Vec<Str> mDroppedFiles;
-  Callback mCallbacks;
-
-  friend void _ScrollCallbackWrapper(GLFWwindow *window, double xoffset,
-                                     double yoffset);
-  friend void _KeyCallbackWrapper(GLFWwindow *window, int key, int scancode,
-                                  int action, int mods);
-  friend void _CharCallbackWrapper(GLFWwindow *window, unsigned codepoint);
-  friend void _DropCallbackWrapper(GLFWwindow *window, int count,
-                                   const char **paths);
+  friend void Callbacks::WindowPositionCallbackWrapper(GLFWwindow *window,
+                                                       int xpos, int ypos);
+  friend void Callbacks::WindowSizeCallbackWrapper(GLFWwindow *window,
+                                                   int width, int height);
+  friend void Callbacks::WindowCloseCallbackWrapper(GLFWwindow *window);
+  friend void Callbacks::WindowRefreshCallbackWrapper(GLFWwindow *window);
+  friend void Callbacks::WindowFocusCallbackWrapper(GLFWwindow *window,
+                                                    int focused);
+  friend void Callbacks::WindowIconifyCallbackWrapper(GLFWwindow *window,
+                                                      int iconified);
+  friend void Callbacks::WindowMaximizeCallbackWrapper(GLFWwindow *window,
+                                                       int maximized);
+  friend void
+  Callbacks::WindowFramebufferSizeCallbackWrapper(GLFWwindow *window, int width,
+                                                  int height);
+  friend void Callbacks::WindowContentScaleCallbackWrapper(GLFWwindow *window,
+                                                           float xscale,
+                                                           float yscale);
+  friend void Callbacks::MousebuttonCallbackWrapper(GLFWwindow *window,
+                                                    int button, int action,
+                                                    int mods);
+  friend void Callbacks::CursorPositionCallbackWrapper(GLFWwindow *window,
+                                                       double xpos,
+                                                       double ypos);
+  friend void Callbacks::CursorEnterCallbackWrapper(GLFWwindow *window,
+                                                    int entered);
+  friend void Callbacks::ScrollCallbackWrapper(GLFWwindow *window,
+                                               double xoffset, double yoffset);
+  friend void Callbacks::KeyCallbackWrapper(GLFWwindow *window, int key,
+                                            int scancode, int action, int mods);
+  friend void Callbacks::CharCallbackWrapper(GLFWwindow *window,
+                                             unsigned codepoint);
+  friend void Callbacks::DropCallbackWrapper(GLFWwindow *window, int count,
+                                             const char **paths);
 
 private:
   M_DISABLE_COPY_AND_ASSIGN(Window);
@@ -192,26 +309,28 @@ public:
    * @return: Window size.
    * @detail: Return format is (width, height).
    */
-  Pair<int> GetSize() const;
+  Pair<int> GetSize() const { return mProperty.GetSize(); }
   /*
    * @brief: This function returns window position.
    * @return: Window position.
    * @detail: Return format is (x, y).
    */
-  Pair<int> GetPosition() const;
+  Pair<int> GetPosition() const { return mProperty.GetPosition(); }
   /*
    * @brief: This function returns cursor position.
    * @return: Cursor position.
    * @detail: Return format is (x, y)
    */
-  Pair<double> GetCursorPosition() const;
+  Pair<double> GetCursorPosition() const {
+    return mProperty.GetCursorPosition();
+  }
   /*
    * @brief: This function returns scroll offset.
    * @return: Scroll offset.
    * @detail: Return format is (x, y).
    * @note: Scroll offset cannot be set.
    */
-  Pair<double> GetScrollOffset() const { return mScrollOffset; }
+  Pair<double> GetScrollOffset() const { return mProperty.GetScrollOffset(); }
   /*
    * @brief: This function returns clipboard string.
    * @return: Clipboard string.
@@ -221,7 +340,7 @@ public:
    * @brief: This function returns window title.
    * @return: Window title.
    */
-  Str GetTitle() const { return mTitle; }
+  Str GetTitle() const { return mProperty.GetTitle(); }
   /*
    * @brief: This function returns inputted code points.
    * @return: Inputted code points.
@@ -230,7 +349,9 @@ public:
    * inputted code points. If you want to clear inputted code points, use
    * ClearInputs() function.
    */
-  Vec<unsigned> const &GetCodePoints() const { return mCodePoints; }
+  Vec<unsigned> const &GetCodePoints() const {
+    return mProperty.GetCodePoints();
+  }
   /*
    * @brief: This function returns inputted keys.
    * @return: Inputted keys.
@@ -238,7 +359,7 @@ public:
    * @detail: This function doesn't clear inputted keys. If you want to clear
    * inputted keys, use ClearInputs() function.
    */
-  Vec<Key> const &GetKeys() const { return mKeys; }
+  Vec<Key> const &GetKeys() const { return mProperty.GetKeys(); }
   /*
    * @brief: This function returns dropped files.
    * @return: Dropped files.
@@ -246,7 +367,9 @@ public:
    * @detail: This function doesn't clear dropped files. If you want to clear
    * dropped files, use ClearInputs() function.
    */
-  Vec<Str> const &GetDroppedFiles() const { return mDroppedFiles; }
+  Vec<Str> const &GetDroppedFiles() const {
+    return mProperty.GetDroppedFiles();
+  }
   /*
    * @brief: This function returns window opacity.
    * @return: Window opacity.
@@ -269,11 +392,6 @@ public:
   int GetInputMode(InputType const &type) const {
     return glfwGetInputMode(mWindow, (unsigned)type);
   }
-  /*
-   * @brief: This function returns window callback manager.
-   * @return: Window callback manager.
-   */
-  Callback const &GetCallbacks() const { return mCallbacks; }
   /*
    * @brief: This function returns user pointer binded to window.
    * @return: User pointer.
@@ -357,55 +475,12 @@ public:
   template <typename T> void SetUserPointer(T *pointer) {
     mUserPointer = static_cast<void *>(pointer);
   }
-
-  void SetSizeCallback(WindowSizeCallback const &callback) {
-    mCallbacks.windowSizeCallback = callback;
-  }
-  void SetPositionCallback(WindowPositionCallback const &callback) {
-    mCallbacks.windowPositionCallback = callback;
-  }
-  void SetCloseCallback(WindowCloseCallback const &callback) {
-    mCallbacks.windowCloseCallback = callback;
-  }
-  void SetRefreshCallback(WindowRefreshCallback const &callback) {
-    mCallbacks.windowRefreshCallback = callback;
-  }
-  void SetFocusCallback(WindowFocusCallback const &callback) {
-    mCallbacks.windowFocusCallback = callback;
-  }
-  void SetIconifyCallback(WindowIconifyCallback const &callback) {
-    mCallbacks.windowIconifyCallback = callback;
-  }
-  void SetMaximizeCallback(WindowMaximizeCallback const &callback) {
-    mCallbacks.windowMaximizeCallback = callback;
-  }
-  void
-  SetFramebufferSizeCallback(WindowFramebufferSizeCallback const &callback) {
-    mCallbacks.windowFramebufferSizeCallback = callback;
-  }
-  void SetContentScaleCallback(WindowContentScaleCallback const &callback) {
-    mCallbacks.windowContentScaleCallback = callback;
-  }
-  void SetKeyCallback(KeyCallback const &callback) {
-    mCallbacks.keyCallback = callback;
-  }
-  void SetCharCallback(CharCallback const &callback) {
-    mCallbacks.charCallback = callback;
-  }
-  void SetMouseButtonCallback(MousebuttonCallback const &callback) {
-    mCallbacks.mousebuttonCallback = callback;
-  }
-  void SetCursorPosCallback(CursorPositionCallback const &callback) {
-    mCallbacks.cursorPositionCallback = callback;
-  }
-  void SetCursorEnterCallback(CursorEnterCallback const &callback) {
-    mCallbacks.cursorEnterCallback = callback;
-  }
-  void SetScrollCallback(ScrollCallback const &callback) {
-    mCallbacks.scrollCallback = callback;
-  }
-  void SetDropCallback(DropCallback const &callback) {
-    mCallbacks.dropCallback = callback;
+  /*
+   * @brief: This function sets window callbacks.
+   * @param: callbacks: Window callbacks.
+   */
+  void SetWindowCallback(WindowCallbackBase *callbacks) {
+    mCallbacks = callbacks;
   }
 
   /*
@@ -529,11 +604,6 @@ public:
    */
   void Close();
   /*
-   * @brief: This function clears inputted chars, inputted codepoints, and
-   * inputted keys.
-   */
-  void ClearInputs();
-  /*
    * @brief: This function iconifies window.
    */
   void Iconify() const { glfwIconifyWindow(mWindow); }
@@ -567,7 +637,7 @@ public:
    * @detail: Color format is (red, green, blue). Each color is float (0
    * ~ 1.0).
    */
-  void Fill(Vec<float> const &color);
+  void Fill(Vec<float> const &color) const;
   /*
    * @brief: This function clears specified buffers.
    * @param: buffer: Buffer to clear.
@@ -585,9 +655,9 @@ public:
    * @brief: This function binds window to current context.
    */
   void Bind() const { glfwMakeContextCurrent(mWindow); }
+  /*
+   * @brief: This function launches window render callback.
+   */
+  void Launch() const;
 };
-} // namespace Kernel
-
-using WindowSettings = Kernel::WindowSettings;
-using Window = Shared<Kernel::Window>;
 } // namespace GeoFrame
