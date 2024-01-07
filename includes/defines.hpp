@@ -1,7 +1,9 @@
 #pragma once
+#include <atomic>
 #include <condition_variable>
 #include <cstring>
 #include <deque>
+#include <future>
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -62,6 +64,9 @@ template <typename T, typename Container = std::deque<T>>
 using Queue = std::queue<T, Container>;
 template <typename T> using UniqueLock = std::unique_lock<T>;
 template <typename T> using LockGuard = std::lock_guard<T>;
+template <typename T> using Atomic = std::atomic<T>;
+template <typename T> using SharedFuture = std::shared_future<T>;
+template <typename T> using PackagedTask = std::packaged_task<T>;
 template <typename T> using Vec = std::vector<T>;
 template <typename T> using vec2T = GeoMath::vec2<T>;
 template <typename T> using vec3T = GeoMath::vec3<T>;

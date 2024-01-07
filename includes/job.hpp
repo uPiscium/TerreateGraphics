@@ -14,47 +14,58 @@ public:
 
   bool IsComplete() const { return mComplete; }
 
-  virtual void Preprocess() {}
-  virtual void Postprocess() {}
   virtual void Run() override {}
 
   void operator()();
 };
 
-class Worker : public Geobject {
+class JobHandle : public Geobject {
 private:
-  M_DISABLE_COPY_AND_ASSIGN(Worker);
-
-private:
-  Shared<Queue<Shared<JobBase>>> mJobQueue;
-  Shared<CondVar> mCondVar;
-  Shared<Mutex> mQueueMutex;
-  Thread mThread;
+  SharedFuture<void> mHandle;
 
 public:
-  Worker(Shared<Queue<Shared<JobBase>>> jobQueue, Shared<CondVar> condVar,
-         Shared<Mutex> queueMutex)
-      : mJobQueue(jobQueue), mCondVar(condVar),
-        mThread([this]() { this->WorkerThread(); }) {}
-  ~Worker() override { this->Delete(); }
+  JobHandle(SharedFuture<void> const handle) : mHandle(handle) {}
+  JobHandle(JobHandle const &other) : mHandle(other.mHandle) {}
+  JobHandle(JobHandle &&other) : mHandle(std::move(other.mHandle)) {}
+  ~JobHandle() override { this->Delete(); }
 
-  void Delete() override;
-  void WorkerThread();
+  bool IsValid() const { return mHandle.valid(); }
+
+  void Delete() override { mHandle.get(); }
+  void Wait() const { mHandle.wait(); }
+
+  JobHandle &operator=(JobHandle const &other);
 };
 
 class JobSystem : public Geobject {
 private:
-  Queue<Shared<JobBase>> mJobQueue;
-  CondVar mCondVar;
+  Vec<Thread> mThreads;
+  Vec<Thread> mDaemonThreads;
+  Queue<PackagedTask<void()>> mJobs;
+  CondVar mCondition;
   Mutex mQueueMutex;
-  Vec<Worker> mWorkers;
+
+  Atomic<bool> mRunning = true;
+  Atomic<bool> mStop = false;
+  Atomic<int> mNumJobs = 0;
+
+private:
+  void WorkerThread();
+  void DaemonThread(JobBase *job);
 
 public:
-  JobSystem(unsigned const &numWorkers);
+  JobSystem(unsigned const &numThreads = std::thread::hardware_concurrency());
   ~JobSystem() override { this->Delete(); }
 
   void Delete() override;
-  void Schedule(JobBase *job);
-  void Wait();
+  JobHandle Schedule(JobBase *job);
+  JobHandle Schedule(JobBase *job, JobHandle const dependency);
+  JobHandle Schedule(JobBase *job, Vec<JobHandle> const dependencies);
+  void Daemonize(JobBase *job) {
+    mDaemonThreads.push_back(
+        Thread([this, job]() { this->DaemonThread(job); }));
+  }
+  void WaitForAll() { mRunning.wait(false); }
+  void Stop();
 };
 } // namespace GeoFrame
