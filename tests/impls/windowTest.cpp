@@ -36,6 +36,7 @@ void window_generation_test(unsigned const &width, unsigned const &height,
 
   CallbackSet callbackSet;
   window.SetWindowCallback(&callbackSet);
+  glfwSwapInterval(0);
 
   window.Launch();
 }
