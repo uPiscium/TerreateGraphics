@@ -3,7 +3,7 @@
 #include <condition_variable>
 #include <cstring>
 #include <deque>
-#include <future>
+#include <functional>
 #include <iostream>
 #include <memory>
 #include <mutex>
@@ -65,9 +65,8 @@ using Queue = std::queue<T, Container>;
 template <typename T> using UniqueLock = std::unique_lock<T>;
 template <typename T> using LockGuard = std::lock_guard<T>;
 template <typename T> using Atomic = std::atomic<T>;
-template <typename T> using SharedFuture = std::shared_future<T>;
-template <typename T> using PackagedTask = std::packaged_task<T>;
 template <typename T> using Vec = std::vector<T>;
+template <typename T> using Function = std::function<T>;
 template <typename T> using vec2T = GeoMath::vec2<T>;
 template <typename T> using vec3T = GeoMath::vec3<T>;
 template <typename T> using vec4T = GeoMath::vec4<T>;
@@ -103,9 +102,9 @@ using Index = unsigned long long;
 using Str = std::string;
 using WStr = std::wstring;
 
-using ErrorCallback = void (*)(int errorCode, char const *description);
-using MonitorCallback = void (*)(GLFWmonitor *monitor, int event);
-using JoystickCallback = void (*)(int joystickID, int event);
+using ErrorCallback = std::function<void(int errorCode, char const *message)>;
+using MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>;
+using JoystickCallback = std::function<void(int joystickID, int event)>;
 
 template <typename Derived, typename Base>
 concept extends = std::derived_from<Derived, Base>;

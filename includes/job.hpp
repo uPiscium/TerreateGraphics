@@ -3,51 +3,54 @@
 #include "exceptions.hpp"
 #include "interface.hpp"
 #include "object.hpp"
+#include <thread>
 
 namespace GeoFrame {
-class JobBase : public IRunnable {
+class JobBase : public Geobject {
 private:
-  bool mComplete = false;
+  friend class JobSystem;
+
+private:
+  bool mFinished;
+  Vec<JobBase *> mDependencies;
+  std::exception_ptr mException = nullptr;
+
+private:
+  void Run();
 
 public:
-  virtual ~JobBase() override {}
+  JobBase() {}
+  JobBase(JobBase *dependency) { mDependencies.push_back(dependency); }
+  JobBase(Vec<JobBase *> const &dependencies) : mDependencies(dependencies) {}
 
-  bool IsComplete() const { return mComplete; }
-
-  virtual void Run() override {}
-
-  void operator()();
+  bool IsExecutable() const;
+  bool IsFinished() const { return mFinished; }
+  virtual void Execute() = 0;
 };
 
-class JobHandle : public Geobject {
+class SimpleJob : public JobBase {
 private:
-  SharedFuture<void> mHandle;
+  Function<void()> mFunction;
 
 public:
-  JobHandle(SharedFuture<void> const handle) : mHandle(handle) {}
-  JobHandle(JobHandle const &other) : mHandle(other.mHandle) {}
-  JobHandle(JobHandle &&other) : mHandle(std::move(other.mHandle)) {}
-  ~JobHandle() override { this->Delete(); }
+  SimpleJob() {}
+  SimpleJob(Function<void()> const &target) : mFunction(target) {}
 
-  bool IsValid() const { return mHandle.valid(); }
+  void Execute() { mFunction(); }
 
-  void Delete() override { mHandle.get(); }
-  void Wait() const { mHandle.wait(); }
-
-  JobHandle &operator=(JobHandle const &other);
+  SimpleJob &operator=(Function<void()> const &target);
 };
 
 class JobSystem : public Geobject {
 private:
-  Vec<Thread> mThreads;
-  Vec<Thread> mDaemonThreads;
-  Queue<PackagedTask<void()>> mJobs;
+  Queue<JobBase *> mJobs;
+  Vec<Thread> mWorkers;
+  Vec<Thread> mDaemons;
+  Mutex mJobLock;
   CondVar mCondition;
-  Mutex mQueueMutex;
-
-  Atomic<bool> mRunning = true;
+  Atomic<bool> mComplete = false;
   Atomic<bool> mStop = false;
-  Atomic<int> mNumJobs = 0;
+  Atomic<unsigned> mNumJobs = 0;
 
 private:
   void WorkerThread();
@@ -55,17 +58,14 @@ private:
 
 public:
   JobSystem(unsigned const &numThreads = std::thread::hardware_concurrency());
-  ~JobSystem() override { this->Delete(); }
+  ~JobSystem() override { this->Stop(); }
 
-  void Delete() override;
-  JobHandle Schedule(JobBase *job);
-  JobHandle Schedule(JobBase *job, JobHandle const dependency);
-  JobHandle Schedule(JobBase *job, Vec<JobHandle> const dependencies);
-  void Daemonize(JobBase *job) {
-    mDaemonThreads.push_back(
-        Thread([this, job]() { this->DaemonThread(job); }));
-  }
-  void WaitForAll() { mRunning.wait(false); }
   void Stop();
+  void Schedule(JobBase *job);
+  void Daemonize(JobBase *job) {
+    mDaemons.emplace_back(Thread([this, job] { this->DaemonThread(job); }));
+  }
+  void WaitForAll() { mComplete.wait(false); }
 };
+
 } // namespace GeoFrame
