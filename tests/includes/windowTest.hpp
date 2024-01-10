@@ -1,5 +1,6 @@
 #pragma once
 #include "../../includes/core.hpp"
+#include "../../includes/job.hpp"
 #include "../../includes/window.hpp"
 
 using namespace GeoFrame;
