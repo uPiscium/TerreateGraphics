@@ -1,5 +1,14 @@
 # About GeoFrame
 `GeoFrame` is a basic `OpenGL` handler for `C++`. This framework is using `glfw` and `glad` for handling `OpenGL`. You can get more information about `OpenGL` in `glfw` [homepage](https://www.glfw.org/docs/latest/) The license is BSD3(BSD 3-Clause "New" or "Revised" License).
+
+# Sections
+- [How to use](#how-to-use)
+  - [Windows](#windows)
+  - [Linux](#linux)
+  - [Test codes](#test-codes)
+- [License](#license)
+- [Contact](#contact)
+
 # How to use
 `GeoFrame` supports `Windows` and `Linux`.
 ## Windows
@@ -14,3 +23,10 @@ Then copy `libGeoFrame.a` to your project folder.
 
 ## Test codes
 You can test `GeoFrame` with `testBuild.bat` or `testBuild.sh`. Then run `runTest.bat` or `runTest.sh` file.
+
+# License
+BSD3(BSD 3-Clause "New" or "Revised" License)
+
+# Contact
+If you have any questions, please contact me by email.
+- Email: [ [email](mailto:uPiscium@gmail.com) ]
