@@ -6,6 +6,7 @@
   - [Windows](#windows)
   - [Linux](#linux)
   - [Test codes](#test-codes)
+- [Examples](#examples)
 - [License](#license)
 - [Contact](#contact)
 
@@ -24,9 +25,15 @@ Then copy `libGeoFrame.a` to your project folder.
 ## Test codes
 You can test `GeoFrame` with `testBuild.bat` or `testBuild.sh`. Then run `runTest.bat` or `runTest.sh` file.
 
+# Examples
+## Window example
+```cpp
+#include "GeoFrame.hpp"
+```
+
 # License
 BSD3(BSD 3-Clause "New" or "Revised" License)
 
 # Contact
 If you have any questions, please contact me by email.
-- Email: [ [email](mailto:uPiscium@gmail.com) ]
+- Email: [ uPiscium@gmail.com ]

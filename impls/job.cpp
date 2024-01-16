@@ -2,7 +2,7 @@
 #include <thread>
 
 namespace GeoFrame {
-void JobBase::Run() {
+void IJob::Run() {
   try {
     this->Execute();
   } catch (...) {
@@ -11,7 +11,7 @@ void JobBase::Run() {
   mFinished = true;
 }
 
-bool JobBase::IsExecutable() const {
+bool IJob::IsExecutable() const {
   for (auto &dep : mDependencies) {
     if (!dep->IsFinished()) {
       return false;
@@ -27,7 +27,7 @@ SimpleJob &SimpleJob::operator=(Function<void()> const &target) {
 
 void JobSystem::WorkerThread() {
   while (!mStop) {
-    JobBase *job = nullptr;
+    IJob *job = nullptr;
     {
       std::unique_lock<std::mutex> lock(mJobLock);
       mCondition.wait(lock, [this] { return !mJobs.empty() || mStop; });
@@ -49,7 +49,7 @@ void JobSystem::WorkerThread() {
   }
 }
 
-void JobSystem::DaemonThread(JobBase *job) {
+void JobSystem::DaemonThread(IJob *job) {
   while (!mStop) {
     job->Run();
   }
@@ -74,7 +74,7 @@ void JobSystem::Stop() {
   }
 }
 
-void JobSystem::Schedule(JobBase *job) {
+void JobSystem::Schedule(IJob *job) {
   {
     std::unique_lock<std::mutex> lock(mJobLock);
     mJobs.push(job);
