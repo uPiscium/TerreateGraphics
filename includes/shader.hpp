@@ -18,6 +18,15 @@ struct ShaderOption {
   bool stencil = false;
   BlendingFuntion src = BlendingFuntion::ONE;
   BlendingFuntion dst = BlendingFuntion::ZERO;
+  CullingFace cullFace = CullingFace::BACK;
+  CullingMode frontFace = CullingMode::CCW;
+  DepthFunction depthFunc = DepthFunction::LESS;
+  StencilFunction stencilFunc = StencilFunction::ALWAYS;
+  int stencilRef = 0;
+  unsigned stencilMask = 0xFF;
+  StencilOperation sFail = StencilOperation::KEEP;
+  StencilOperation dpFail = StencilOperation::KEEP;
+  StencilOperation dpPass = StencilOperation::KEEP;
 };
 
 class Shader : public ResourceBase {
@@ -40,6 +49,15 @@ public:
     mShaderID = glCreateProgram();
   }
   ~Shader() { this->Delete(); }
+
+  /*
+   * @brief: Getter for shader uniform ID.
+   * @param: name: name of uniform
+   * @return: uniform ID
+   */
+  unsigned GetLocation(Str const &name) const {
+    return glGetUniformLocation(mShaderID, name.c_str());
+  }
 
   /*
    * @brief: Setter for shader bool uniform.
@@ -201,15 +219,38 @@ public:
     glUniformMatrix4fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                        GL_FALSE, (float const *)value);
   }
-
   /*
-   * @brief: Getter for shader uniform ID.
-   * @param: name: name of uniform
-   * @return: uniform ID
+   * @brief: Setter for blending function.
+   * @param: src: source blending function
+   * @param: dst: destination blending function
    */
-  unsigned GetLocation(Str const &name) const {
-    return glGetUniformLocation(mShaderID, name.c_str());
-  }
+  void SetBlending(BlendingFuntion const &src, BlendingFuntion const &dst);
+  /*
+   * @brief: Setter for culling face.
+   * @param: face: face to cull
+   */
+  void SetCullingFace(CullingFace const &face,
+                      CullingMode const &frontFace = CullingMode::CCW);
+  /*
+   * @brief: Setter for depth function.
+   * @param: func: depth function
+   */
+  void SetDepth(DepthFunction const &func) { mOption.depthFunc = func; }
+  /*
+   * @brief: Setter for stencil function.
+   * @param: func: stencil function
+   */
+  void SetStencilFunction(StencilFunction const &func, int const &ref,
+                          unsigned const &mask);
+  /*
+   * @brief: Setter for stencil operation.
+   * @param: sFail: stencil fail operation
+   * @param: dpFail: stencil depth fail operation
+   * @param: dpPass: stencil depth pass operation
+   */
+  void SetStencilOperation(StencilOperation const &sFail,
+                           StencilOperation const &dpFail,
+                           StencilOperation const &dpPass);
 
   /*
    * @brief: Delete shader resource.
@@ -275,7 +316,7 @@ public:
    * @sa: Compile
    * @detail: This function should be called after shader is compiled.
    */
-  void Use() const { glUseProgram(mShaderID); }
+  void Use() const;
 
 public:
   /*
