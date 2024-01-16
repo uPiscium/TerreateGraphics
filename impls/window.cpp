@@ -165,9 +165,11 @@ void Window::Fill(Vec<float> const &color) const {
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void Window::Launch() const {
-  while (!this->IsClosed()) {
-    mCallbacks->Run(this);
+void Window::Frame() {
+  if (mWindow == nullptr) {
+    return;
   }
+
+  mCallbacks->Run(this);
 }
 } // namespace GeoFrame

@@ -1,4 +1,3 @@
-#!bin/bash
 cd tests
 mkdir -p build
 rm -rf build/*

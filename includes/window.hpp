@@ -2,6 +2,7 @@
 #include "core.hpp"
 #include "defines.hpp"
 #include "interface.hpp"
+#include "job.hpp"
 #include "object.hpp"
 
 namespace GeoFrame {
@@ -205,7 +206,7 @@ public:
   void ClearInputs();
 };
 
-class WindowCallbackBase : public IRunnable {
+class WindowCallbackBase {
 public:
   virtual ~WindowCallbackBase() = default;
 
@@ -250,6 +251,7 @@ private:
   void *mUserPointer = nullptr;
   WindowProperty mProperty;
   WindowCallbackBase *mCallbacks = nullptr;
+  SimpleJob mRenderLoop;
 
   friend void Callbacks::WindowPositionCallbackWrapper(GLFWwindow *window,
                                                        int xpos, int ypos);
@@ -400,6 +402,10 @@ public:
     return static_cast<T *>(mUserPointer);
   }
 
+  /*
+   * @brief: This function sets window as current context.
+   */
+  void SetCurrentContext() const { glfwMakeContextCurrent(mWindow); }
   /*
    * @brief: This function sets window icon.
    * @param: icon: Window icon.
@@ -656,8 +662,8 @@ public:
    */
   void Bind() const { glfwMakeContextCurrent(mWindow); }
   /*
-   * @brief: This function launches window render callback.
+   * @brief: This function executes callbacks->Run().
    */
-  void Launch() const;
+  void Frame();
 };
 } // namespace GeoFrame

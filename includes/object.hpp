@@ -44,7 +44,7 @@ protected:
 
 public:
   Geobject() : mUUID() {}
-  virtual ~Geobject() {}
+  virtual ~Geobject() { this->Delete(); }
 
   UUID const &GetUUID() const { return mUUID; }
   virtual Str GetName() const { return mUUID.ToString(); }
