@@ -2,7 +2,7 @@
 
 using namespace GeoFrame;
 
-class CallbackSet : public WindowCallbackBase {
+class CallbackSet : public WindowController {
 private:
   float s = 0.0f;
   float f = 0.001f;
@@ -35,7 +35,7 @@ void window_generation_test(unsigned const &width, unsigned const &height,
   Window window = Window(width, height, title, WindowSettings());
 
   CallbackSet callbackSet;
-  window.SetWindowCallback(&callbackSet);
+  window.SetWindowController(&callbackSet);
   glfwSwapInterval(0);
 
   while (!window.IsClosed()) {

@@ -45,6 +45,32 @@ void CheckLinkStatus(unsigned const &id) {
   }
 }
 
+void Shader::SetBlending(BlendingFuntion const &src,
+                         BlendingFuntion const &dst) {
+  mOption.src = src;
+  mOption.dst = dst;
+}
+
+void Shader::SetCullingFace(CullingFace const &face,
+                            CullingMode const &frontFace) {
+  mOption.cullFace = face;
+  mOption.frontFace = frontFace;
+}
+
+void Shader::SetStencilFunction(StencilFunction const &func, int const &ref,
+                                unsigned const &mask) {
+  mOption.stencilFunc = func;
+  mOption.stencilRef = ref;
+  mOption.stencilMask = mask;
+}
+
+void Shader::SetStencilOperation(StencilOperation const &sFail,
+                                 StencilOperation const &dpFail,
+                                 StencilOperation const &dpPass) {
+  mOption.sFail = sFail;
+  mOption.dpFail = dpFail;
+  mOption.dpPass = dpPass;
+}
 void Shader::Compile() {
   if (mVertexShaderSource == "") {
     M_GEO_THROW(KernelError, "Vertex shader source is empty");
@@ -107,5 +133,47 @@ Str Shader::LoadShaderSource(const Str &path) {
 void Shader::ActiveTexture(TextureTargets const &target) const {
   this->Use();
   glActiveTexture((GLenum)target);
+}
+
+void Shader::Use() const {
+  glUseProgram(mShaderID);
+
+  if (mOption.blending) {
+    glEnable(GL_BLEND);
+    glBlendFunc((GLenum)mOption.src, (GLenum)mOption.dst);
+  } else {
+    glDisable(GL_BLEND);
+  }
+
+  if (mOption.depth) {
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc((GLenum)mOption.depthFunc);
+  } else {
+    glDisable(GL_DEPTH_TEST);
+  }
+
+  if (mOption.stencil) {
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc((GLenum)mOption.stencilFunc, mOption.stencilRef,
+                  mOption.stencilMask);
+    glStencilOp((GLenum)mOption.sFail, (GLenum)mOption.dpFail,
+                (GLenum)mOption.dpPass);
+  } else {
+    glDisable(GL_STENCIL_TEST);
+  }
+
+  if (mOption.scissor) {
+    glEnable(GL_SCISSOR_TEST);
+  } else {
+    glDisable(GL_SCISSOR_TEST);
+  }
+
+  if (mOption.culling) {
+    glEnable(GL_CULL_FACE);
+    glCullFace((GLenum)mOption.cullFace);
+    glFrontFace((GLenum)mOption.frontFace);
+  } else {
+    glDisable(GL_CULL_FACE);
+  }
 }
 } // namespace GeoFrame
