@@ -27,7 +27,8 @@ void font_drawing_test() {
                                  "out vec4 color;\n"
                                  "uniform sampler2D tex;\n"
                                  "void main() {\n"
-                                 "    color = texture(tex, texCoord);\n"
+                                 "    float a = texture(tex, texCoord).r;\n"
+                                 "    color = vec4(1.0, 0.0, 0.0, a);\n"
                                  "}\n");
   shader.Compile();
   shader.ActiveTexture(TextureTargets::TEX_1);

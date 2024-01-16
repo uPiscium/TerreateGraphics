@@ -10,12 +10,23 @@
 #include "object.hpp"
 
 namespace GeoFrame {
+struct ShaderOption {
+  bool blending = true;
+  bool culling = false;
+  bool depth = true;
+  bool scissor = false;
+  bool stencil = false;
+  BlendingFuntion src = BlendingFuntion::ONE;
+  BlendingFuntion dst = BlendingFuntion::ZERO;
+};
+
 class Shader : public ResourceBase {
 private:
   ID mShaderID = 0;
   Str mVertexShaderSource = "";
   Str mFragmentShaderSource = "";
   Str mGeometryShaderSource = "";
+  ShaderOption mOption;
 
 public:
   static Tag sTag;
@@ -225,6 +236,31 @@ public:
   void AddGeometryShaderSource(Str const &source) {
     mGeometryShaderSource += source;
   }
+  /*
+   * @brief: This function swiches blending on or off.
+   * @param: value: true to turn on, false to turn off
+   */
+  void UseBlending(bool const &value) { mOption.blending = value; }
+  /*
+   * @brief: This function swiches culling on or off.
+   * @param: value: true to turn on, false to turn off
+   */
+  void UseCulling(bool const &value) { mOption.culling = value; }
+  /*
+   * @brief: This function swiches depth testing on or off.
+   * @param: value: true to turn on, false to turn off
+   */
+  void UseDepth(bool const &value) { mOption.depth = value; }
+  /*
+   * @brief: This function swiches scissor testing on or off.
+   * @param: value: true to turn on, false to turn off
+   */
+  void UseScissor(bool const &value) { mOption.scissor = value; }
+  /*
+   * @brief: This function swiches stencil testing on or off.
+   * @param: value: true to turn on, false to turn off
+   */
+  void UseStencil(bool const &value) { mOption.stencil = value; }
   /*
    * @brief: This function activates selected texture binding point.
    * @param: target: texture binding point

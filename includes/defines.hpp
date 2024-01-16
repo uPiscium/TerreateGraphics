@@ -249,6 +249,25 @@ enum class BufferType {
   ELEMENT_BUFFER = GL_ELEMENT_ARRAY_BUFFER
 };
 
+// Use to select blending function.
+enum class BlendingFuntion {
+  ZERO = GL_ZERO,
+  ONE = GL_ONE,
+  SRC_COLOR = GL_SRC_COLOR,
+  ONE_MINUS_SRC_COLOR = GL_ONE_MINUS_SRC_COLOR,
+  DST_COLOR = GL_DST_COLOR,
+  ONE_MINUS_DST_COLOR = GL_ONE_MINUS_DST_COLOR,
+  SRC_ALPHA = GL_SRC_ALPHA,
+  ONE_MINUS_SRC_ALPHA = GL_ONE_MINUS_SRC_ALPHA,
+  DST_ALPHA = GL_DST_ALPHA,
+  ONE_MINUS_DST_ALPHA = GL_ONE_MINUS_DST_ALPHA,
+  CONSTANT_COLOR = GL_CONSTANT_COLOR,
+  ONE_MINUS_CONSTANT_COLOR = GL_ONE_MINUS_CONSTANT_COLOR,
+  CONSTANT_ALPHA = GL_CONSTANT_ALPHA,
+  ONE_MINUS_CONSTANT_ALPHA = GL_ONE_MINUS_CONSTANT_ALPHA,
+  SRC_ALPHA_SATURATE = GL_SRC_ALPHA_SATURATE
+};
+
 // Use to select opengl cube map face direction.
 enum class CubeFace {
   RIGHT = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -257,6 +276,28 @@ enum class CubeFace {
   BOTTOM = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y,
   FRONT = GL_TEXTURE_CUBE_MAP_POSITIVE_Z,
   BACK = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z
+};
+
+// Use to select opengl culling face.
+enum class CullingFace {
+  FRONT = GL_FRONT,
+  BACK = GL_BACK,
+  FRONT_AND_BACK = GL_FRONT_AND_BACK
+};
+
+// Use to select opengl culling mode.
+enum class CullingMode { CW = GL_CW, CCW = GL_CCW };
+
+// Use to select opengl depth function.
+enum class DepthFunction {
+  NEVER = GL_NEVER,
+  LESS = GL_LESS,
+  EQUAL = GL_EQUAL,
+  LEQUAL = GL_LEQUAL,
+  GREATER = GL_GREATER,
+  NOTEQUAL = GL_NOTEQUAL,
+  GEQUAL = GL_GEQUAL,
+  ALWAYS = GL_ALWAYS
 };
 
 // Use to select opengl drawing mode.
@@ -279,6 +320,19 @@ enum class FilterType {
   LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,   // MIN_FILTER only
   NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,   // MIN_FILTER only
   LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR      // MIN_FILTER only
+};
+
+// Use to select opengl feature.
+enum class GLFeature {
+  BLEND = GL_BLEND,
+  CULL_FACE = GL_CULL_FACE,
+  DEPTH_TEST = GL_DEPTH_TEST,
+  DITHER = GL_DITHER,
+  POLYGON_OFFSET_FILL = GL_POLYGON_OFFSET_FILL,
+  SAMPLE_ALPHA_TO_COVERAGE = GL_SAMPLE_ALPHA_TO_COVERAGE,
+  SAMPLE_COVERAGE = GL_SAMPLE_COVERAGE,
+  SCISSOR_TEST = GL_SCISSOR_TEST,
+  STENCIL_TEST = GL_STENCIL_TEST
 };
 
 // Use to select input mode.
@@ -428,6 +482,30 @@ enum class MousebuttonInput {
   BUTTON6 = GLFW_MOUSE_BUTTON_6,
   BUTTON7 = GLFW_MOUSE_BUTTON_7,
   BUTTON8 = GLFW_MOUSE_BUTTON_8
+};
+
+// Use to select opengl stencil function.
+enum class StencilFunction {
+  NEVER = GL_NEVER,
+  LESS = GL_LESS,
+  EQUAL = GL_EQUAL,
+  LEQUAL = GL_LEQUAL,
+  GREATER = GL_GREATER,
+  NOTEQUAL = GL_NOTEQUAL,
+  GEQUAL = GL_GEQUAL,
+  ALWAYS = GL_ALWAYS
+};
+
+// Use to select opengl stencil operation.
+enum class StencilOperation {
+  KEEP = GL_KEEP,
+  ZERO = GL_ZERO,
+  REPLACE = GL_REPLACE,
+  INCR = GL_INCR,
+  INCR_WRAP = GL_INCR_WRAP,
+  DECR = GL_DECR,
+  DECR_WRAP = GL_DECR_WRAP,
+  INVERT = GL_INVERT
 };
 
 // Use to select opengl texture target to activate.

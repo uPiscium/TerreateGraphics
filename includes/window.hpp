@@ -206,9 +206,9 @@ public:
   void ClearInputs();
 };
 
-class WindowCallbackBase {
+class WindowController {
 public:
-  virtual ~WindowCallbackBase() = default;
+  virtual ~WindowController() = default;
 
   virtual void PositionCallback(int const &xpos, int const &ypos) {}
   virtual void SizeCallback(int const &width, int const &height) {}
@@ -250,8 +250,7 @@ private:
   GLFWwindow *mWindow = nullptr;
   void *mUserPointer = nullptr;
   WindowProperty mProperty;
-  WindowCallbackBase *mCallbacks = nullptr;
-  SimpleJob mRenderLoop;
+  WindowController *mController = nullptr;
 
   friend void Callbacks::WindowPositionCallbackWrapper(GLFWwindow *window,
                                                        int xpos, int ypos);
@@ -485,8 +484,8 @@ public:
    * @brief: This function sets window callbacks.
    * @param: callbacks: Window callbacks.
    */
-  void SetWindowCallback(WindowCallbackBase *callbacks) {
-    mCallbacks = callbacks;
+  void SetWindowController(WindowController *callbacks) {
+    mController = callbacks;
   }
 
   /*
