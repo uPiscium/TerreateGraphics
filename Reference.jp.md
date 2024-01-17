@@ -3,54 +3,54 @@ GeoFrameとはglfwとgladを利用したオープンソースのOpenGLハンド�
 
 # 型エイリアス一覧
 ## 基本型の型エイリアス
-ID = unsigned
-Index = unsigned long long
-EventID = unsigned long long
+- ID = unsigned
+- Index = unsigned long long
+- EventID = unsigned long long
 
 ## stdの型エイリアス
-Map = std::unordered_map
-Pair = std::pair
-Set = std::unordered_set
-Shared = std::shared_ptr
-Queue = std::queue
-UniqueLock = std::unique_lock
-LockGuard = std::lock_guard
-Atomic = std::atomic
-Vec = std::vector
-Function = std::function
-Mutex = std::mutex
-Thread = std::thread
-CondVar = std::condition_variable
-Str = std::string
-WStr = std::wstring
+- Map = std::unordered_map
+- Pair = std::pair
+- Set = std::unordered_set
+- Shared = std::shared_ptr
+- Queue = std::queue
+- UniqueLock = std::unique_lock
+- LockGuard = std::lock_guard
+- Atomic = std::atomic
+- Vec = std::vector
+- Function = std::function
+- Mutex = std::mutex
+- Thread = std::thread
+- CondVar = std::condition_variable
+- Str = std::string
+- WStr = std::wstring
 
 ## GeoMathの型エイリアス
-vec2T = GeoMath::vec2
-vec3T = GeoMath::vec3
-vec4T = GeoMath::vec4
-mat2T = GeoMath::mat2
-mat2x3T = GeoMath::mat2x3
-mat2x4T = GeoMath::mat2x4
-mat3x2T = GeoMath::mat3x2
-mat3T = GeoMath::mat3
-mat3x4T = GeoMath::mat3x4
-mat4x2T = GeoMath::mat4x2
-mat4x3T = GeoMath::mat4x3
-mat4T = GeoMath::mat4
-QuaternionT = GeoMath::Quaternion
-vec2 = vec2T
-vec3 = vec3T
-vec4 = vec4T
-mat2 = mat2T
-mat2x3 = mat2x3T
-mat2x4 = mat2x4T
-mat3x2 = mat3x2T
-mat3 = mat3T
-mat3x4 = mat3x4T
-mat4x2 = mat4x2T
-mat4x3 = mat4x3T
-mat4 = mat4T
-Quaternion = QuaternionT
+- vec2T = GeoMath::vec2
+- vec3T = GeoMath::vec3
+- vec4T = GeoMath::vec4
+- mat2T = GeoMath::mat2
+- mat2x3T = GeoMath::mat2x3
+- mat2x4T = GeoMath::mat2x4
+- mat3x2T = GeoMath::mat3x2
+- mat3T = GeoMath::mat3
+- mat3x4T = GeoMath::mat3x4
+- mat4x2T = GeoMath::mat4x2
+- mat4x3T = GeoMath::mat4x3
+- mat4T = GeoMath::mat4
+- QuaternionT = GeoMath::Quaternion
+- vec2 = vec2T
+- vec3 = vec3T
+- vec4 = vec4T
+- mat2 = mat2T
+- mat2x3 = mat2x3T
+- mat2x4 = mat2x4T
+- mat3x2 = mat3x2T
+- mat3 = mat3T
+- mat3x4 = mat3x4T
+- mat4x2 = mat4x2T
+- mat4x3 = mat4x3T
+- mat4 = mat4T
+- Quaternion = QuaternionT
 
 # 例外一覧
 ## APIError
