@@ -3,21 +3,16 @@
 #include "object.hpp"
 
 namespace GeoFrame {
-class IEvent : public Geobject {
+using EventCallback = Function<void(Str)>;
+
+class EventSystem : public Geobject {
 private:
-  Str mEventCode;
-  EventID mEventID;
+  Queue<Str> mEventQueue;
+  Mutex mQueueMutex;
+  Map<Str, EventCallback> mCallbacks;
 
 public:
-  IEvent(Str eventCode) : mEventCode(eventCode) {}
-  virtual ~IEvent() {}
-
-  virtual Str const &GetEventCode() const { return mEventCode; }
-  virtual EventID const &GetEventID() const { return mEventID; }
-};
-
-class EventSystem {
-private:
-  Queue<IEvent *> mEventQueue;
+  EventSystem() {}
+  ~EventSystem() {}
 };
 } // namespace GeoFrame
