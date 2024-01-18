@@ -50,6 +50,8 @@ public:
   virtual Str GetName() const { return mUUID.ToString(); }
 
   virtual void Delete() {}
+
+  virtual operator bool() const { return true; }
 };
 
 template <typename T>
@@ -112,6 +114,12 @@ public:
 
   virtual void SetName(Str const &name) { mName = name; }
   virtual void SetTag(Tag const &tag) { mTag = tag; }
+
+  virtual void Delete() override {}
+
+  virtual operator bool() const override {
+    return mName != "" && mTag != Tag("NONE");
+  }
 };
 
 template <typename T>

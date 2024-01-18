@@ -84,5 +84,7 @@ public:
    * @param: text: text to load
    */
   void LoadText(WStr const &text);
+
+  operator bool() const override { return mFace != nullptr; }
 };
 } // namespace GeoFrame

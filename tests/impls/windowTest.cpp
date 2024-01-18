@@ -6,8 +6,10 @@ class CallbackSet : public WindowController {
 private:
   float s = 0.0f;
   float f = 0.001f;
+  StandardCursor cursor;
 
 public:
+  CallbackSet() : WindowController(), cursor(CursorShape::HAND) {}
   void PositionCallback(int const &xpos, int const &ypos) override {
     std::cout << "PositionCallback: " << xpos << ", " << ypos << std::endl;
   }
@@ -16,8 +18,9 @@ public:
     std::cout << "SizeCallback: " << width << ", " << height << std::endl;
   }
 
-  void Run(Window const *window) override {
+  void Run(Window *window) override {
     window->PollEvents();
+    window->SetCursor(cursor);
     window->Fill({s, s, s});
     window->Clear((int)BufferBit::COLOR_BUFFER);
     window->Swap();

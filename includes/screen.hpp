@@ -70,5 +70,6 @@ public:
   Shared<Texture> const &operator[](Index const &index) const {
     return mTextures[index];
   }
+  operator bool() const override { return mFrameBuffer != 0; }
 };
 } // namespace GeoFrame
