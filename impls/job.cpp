@@ -36,8 +36,16 @@ void JobSystem::WorkerThread() {
         return;
       }
 
-      job = std::move(mJobs.front());
-      mJobs.pop();
+      while (true) {
+        job = std::move(mJobs.front());
+        mJobs.pop();
+
+        if (job->IsExecutable()) {
+          break;
+        } else {
+          mJobs.push(job);
+        }
+      }
     }
 
     job->Run();
