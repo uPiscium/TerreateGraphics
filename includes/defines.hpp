@@ -289,6 +289,16 @@ enum class CullingFace {
 // Use to select opengl culling mode.
 enum class CullingMode { CW = GL_CW, CCW = GL_CCW };
 
+// Use to select opengl standard cursor shape.
+enum class CursorShape {
+  ARROW = GLFW_ARROW_CURSOR,
+  IBEAM = GLFW_IBEAM_CURSOR,
+  CROSSHAIR = GLFW_CROSSHAIR_CURSOR,
+  HAND = GLFW_HAND_CURSOR,
+  HRESIZE = GLFW_HRESIZE_CURSOR,
+  VRESIZE = GLFW_VRESIZE_CURSOR
+};
+
 // Use to select opengl depth function.
 enum class DepthFunction {
   NEVER = GL_NEVER,

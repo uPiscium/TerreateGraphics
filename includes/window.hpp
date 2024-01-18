@@ -10,7 +10,7 @@ extern bool S_GLAD_INITIALIZED;
 class Icon : public ResourceBase {
 private:
   Vec<GLFWimage> mImages;
-  Vec<void *> mPointers;
+  Vec<unsigned char *> mPointers;
 
 private:
   M_DISABLE_COPY_AND_ASSIGN(Icon);
@@ -19,7 +19,7 @@ public:
   /*
    * @brief: This function creates a glfw icon.
    */
-  Icon();
+  Icon() {}
   ~Icon() override { this->Delete(); }
 
   size_t GetSize() const { return mImages.size(); }
@@ -41,12 +41,16 @@ public:
                 unsigned char const *pixels);
 
   operator GLFWimage const *() const { return mImages.data(); }
+  operator bool() const override { return mImages.size() > 0; }
 };
 
 class Cursor : public ResourceBase {
 private:
   GLFWcursor *mCursor = nullptr;
   GLFWimage mImage = GLFWimage();
+  unsigned char *mPixels = nullptr;
+  int mXHot = 0;
+  int mYHot = 0;
 
 private:
   M_DISABLE_COPY_AND_ASSIGN(Cursor);
@@ -57,7 +61,7 @@ public:
    * @param: xHot: The x-coordinate of the cursor's hot spot.
    * @param: yHot: The y-coordinate of the cursor's hot spot.
    */
-  Cursor(unsigned const &xHot, unsigned const &yHot);
+  Cursor(int const &xHot = 0, int const &yHot = 0) : mXHot(xHot), mYHot(yHot) {}
   ~Cursor() override { this->Delete(); }
 
   /*
@@ -77,6 +81,30 @@ public:
   void Delete() override;
 
   operator GLFWcursor *() const { return mCursor; }
+  operator bool() const override { return mCursor != nullptr; }
+};
+
+class StandardCursor : public ResourceBase {
+private:
+  GLFWcursor *mCursor = nullptr;
+
+public:
+  /*
+   * @brief: This function creates a glfw standard cursor.
+   * @param: shape: Cursor shape.
+   */
+  StandardCursor(CursorShape const &shape) {
+    mCursor = glfwCreateStandardCursor((unsigned)shape);
+  }
+  ~StandardCursor() override { this->Delete(); }
+
+  /*
+   * @brief: Delete standard cursor resource.
+   */
+  void Delete() override { glfwDestroyCursor(mCursor); }
+
+  operator GLFWcursor *() const { return mCursor; }
+  operator bool() const override { return mCursor != nullptr; }
 };
 
 namespace Callbacks {
@@ -228,7 +256,7 @@ public:
   virtual void CharCallback(unsigned const &codepoint) {}
   virtual void DropCallback(Vec<Str> const &paths) {}
 
-  virtual void Run(Window const *window) = 0;
+  virtual void Run(Window *window) = 0;
 };
 
 class Monitor : public ResourceBase {
@@ -242,6 +270,9 @@ private:
 
 public:
   static Tag sTag;
+
+public:
+  operator bool() const override { return mMonitor != nullptr; }
 };
 
 class Window : public ResourceBase {
@@ -418,6 +449,17 @@ public:
   void SetCursor(Cursor const &cursor) {
     glfwSetCursor(mWindow, (GLFWcursor *)cursor);
   }
+  /*
+   * @brief: This function sets standard cursor appearance.
+   * @param: cursor: Standard cursor data.
+   */
+  void SetCursor(StandardCursor const &cursor) {
+    glfwSetCursor(mWindow, (GLFWcursor *)cursor);
+  }
+  /*
+   * @brief: This function sets window cursor to default.
+   */
+  void SetDefaultCursor() { glfwSetCursor(mWindow, nullptr); }
   /*
    * @brief: This function sets window size.
    * @param: size: Window size.
@@ -663,5 +705,7 @@ public:
    * @brief: This function executes callbacks->Run().
    */
   void Frame();
+
+  operator bool() const override { return mWindow != nullptr; }
 };
 } // namespace GeoFrame

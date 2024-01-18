@@ -5,6 +5,40 @@ bool S_GLAD_INITIALIZED = false;
 Tag Monitor::sTag = ResourceBase::sTag + Tag("Monitor");
 Tag Window::sTag = ResourceBase::sTag + Tag("Window");
 
+void Icon::Delete() {
+  for (auto &pointer : mPointers) {
+    delete[] pointer;
+  }
+}
+
+void Icon::AddImage(unsigned const &width, unsigned const &height,
+                    unsigned char const *pixels) {
+  GLFWimage image;
+  image.width = width;
+  image.height = height;
+  unsigned char *newPixels = new unsigned char[width * height * 4];
+  memcpy(newPixels, pixels, width * height * 4);
+  image.pixels = newPixels;
+  mPointers.push_back(newPixels);
+  mImages.push_back(image);
+}
+
+void Cursor::SetImage(unsigned const &width, unsigned const &height,
+                      unsigned char const *pixels) {
+  GLFWimage image;
+  image.width = width;
+  image.height = height;
+  mPixels = new unsigned char[width * height * 4];
+  memcpy(mPixels, pixels, width * height * 4);
+  image.pixels = mPixels;
+  mCursor = glfwCreateCursor(&image, mXHot, mYHot);
+}
+
+void Cursor::Delete() {
+  glfwDestroyCursor(mCursor);
+  delete[] mPixels;
+}
+
 namespace Callbacks {
 void WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
