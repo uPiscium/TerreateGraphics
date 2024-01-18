@@ -99,6 +99,7 @@ using Thread = std::thread;
 using CondVar = std::condition_variable;
 using ID = unsigned;
 using Index = unsigned long long;
+using EventID = unsigned long long;
 using Str = std::string;
 using WStr = std::wstring;
 

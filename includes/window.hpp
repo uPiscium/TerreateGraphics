@@ -1,7 +1,6 @@
 #pragma once
 #include "core.hpp"
 #include "defines.hpp"
-#include "interface.hpp"
 #include "job.hpp"
 #include "object.hpp"
 
