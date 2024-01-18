@@ -34,6 +34,10 @@ private:
 public:
   SimpleJob() {}
   SimpleJob(Function<void()> const &target) : mFunction(target) {}
+  SimpleJob(Function<void()> const &target, IJob *const dependency)
+      : mFunction(target), IJob(dependency) {}
+  SimpleJob(Function<void()> const &target, Vec<IJob *> const &dependencies)
+      : mFunction(target), IJob(dependencies) {}
 
   void Execute() { mFunction(); }
 
