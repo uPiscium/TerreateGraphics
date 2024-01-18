@@ -91,6 +91,8 @@ public:
    */
   void Unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
 
+  operator bool() const override { return mTexture != 0; }
+
 public:
   /*
    * @brief: Loads texture data from file.
@@ -180,5 +182,7 @@ public:
    * @brief: Unbinds texture from OpenGL.
    */
   void Unbind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
+
+  operator bool() const override { return mTexture != 0; }
 };
 } // namespace GeoFrame

@@ -144,5 +144,7 @@ public:
    * @param: drawMode: Draw mode of opengl.
    */
   void DrawInstances(size_t const &numInstances, DrawMode const &drawMode);
+
+  operator bool() const override { return mVAO != 0 && mVBO != 0 && mIBO != 0; }
 };
 } // namespace GeoFrame

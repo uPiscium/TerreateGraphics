@@ -25,6 +25,8 @@ public:
   bool IsExecutable() const;
   bool IsFinished() const { return mFinished; }
   virtual void Execute() = 0;
+
+  operator bool() const override { return this->IsFinished(); }
 };
 
 class SimpleJob : public IJob {
@@ -39,9 +41,10 @@ public:
   SimpleJob(Function<void()> const &target, Vec<IJob *> const &dependencies)
       : mFunction(target), IJob(dependencies) {}
 
-  void Execute() { mFunction(); }
+  void Execute() override { mFunction(); }
 
   SimpleJob &operator=(Function<void()> const &target);
+  operator bool() const override { return this->IsFinished(); }
 };
 
 class JobSystem : public Geobject {
@@ -69,6 +72,8 @@ public:
     mDaemons.emplace_back(Thread([this, job] { this->DaemonThread(job); }));
   }
   void WaitForAll() { mComplete.wait(false); }
+
+  operator bool() const override { return mComplete; }
 };
 
 } // namespace GeoFrame

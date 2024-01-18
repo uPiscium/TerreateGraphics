@@ -318,6 +318,8 @@ public:
    */
   void Use() const;
 
+  operator bool() const override { return mShaderID != 0; }
+
 public:
   /*
    * @brief: Load shader source from file.
