@@ -11,109 +11,63 @@
 #include "object.hpp"
 
 namespace GeoFrame {
-class DataChunk : public Geobject {
-private:
-  Vec<uint8_t> mData = {};
-  size_t mOffset = 0;
-
-public:
-  DataChunk() = default;
-  DataChunk(uint8_t const *data, size_t const &size)
-      : mData(data, data + size) {}
-  DataChunk(Vec<uint8_t> const &data) : mData(data) {}
-  DataChunk(Vec<uint8_t> &&data) : mData(std::move(data)) {}
-  DataChunk(DataChunk const &chunk)
-      : mData(chunk.mData), mOffset(chunk.mOffset) {}
-  DataChunk(DataChunk &&chunk) : mData(std::move(chunk.mData)) {}
-  ~DataChunk() = default;
-
-  size_t GetSize() const { return mData.size(); }
-  uint8_t const *GetData() const { return mData.data(); }
-
-  void Read(uint8_t *data, size_t const &size);
-  void Write(uint8_t const *data, size_t const &size) {
-    mData.insert(mData.end(), data, data + size);
-  }
-
-  template <typename T> DataChunk &operator<<=(T const &data) {
-    Write(reinterpret_cast<uint8_t const *>(&data), sizeof(T));
-    return *this;
-  }
-  template <typename T> DataChunk &operator>>=(T &data) {
-    Read(reinterpret_cast<uint8_t *>(&data), sizeof(T));
-    return *this;
-  }
-
-  DataChunk &operator=(DataChunk const &chunk);
-  DataChunk &operator=(DataChunk &&chunk);
-  DataChunk &operator=(Vec<uint8_t> const &data);
-  operator uint8_t *() { return mData.data(); }
-};
-
-template <typename T>
-DataChunk operator<<(DataChunk const &chunk, T const &data) {
-  DataChunk newChunk = chunk;
-  newChunk <<= data;
-  return chunk;
-}
-
-template <typename T> DataChunk operator>>(DataChunk const &chunk, T &data) {
-  DataChunk newChunk = chunk;
-  newChunk >>= data;
-  return chunk;
-}
-
-class Packet : public Geobject {
-private:
-  DataChunk mHeader = {};
-  DataChunk mBody = {};
-  DataChunk mFooter = {};
-  uint8_t mSystemFlags = 0x00;
-  uint16_t mUserFlags = 0x0000;
-  uint16_t mIndex = 0;
-
-public:
-  enum class SystemFlag { FRG = 0x01, ACK = 0x02, SYN = 0x04, FIN = 0x08 };
-
-public:
-  Packet() = default;
-  Packet(Packet const &packet)
-      : mHeader(packet.mHeader), mBody(packet.mBody), mFooter(packet.mFooter),
-        mSystemFlags(packet.mSystemFlags), mUserFlags(packet.mUserFlags),
-        mIndex(packet.mIndex) {}
-  Packet(Packet &&packet)
-      : mHeader(std::move(packet.mHeader)), mBody(std::move(packet.mBody)),
-        mFooter(std::move(packet.mFooter)),
-        mSystemFlags(std::move(packet.mSystemFlags)),
-        mUserFlags(std::move(packet.mUserFlags)),
-        mIndex(std::move(packet.mIndex)) {}
-  Packet(bool const &fragmented, uint16_t const &index);
-
-  size_t GetSize() const {
-    return mHeader.GetSize() + mBody.GetSize() + mFooter.GetSize();
-  }
-  uint8_t const *GetRawData() const;
-  uint16_t const &GetIndex() const { return mIndex; }
-
-  DataChunk AcquireData();
-
-  bool IsFragmented() const { return mSystemFlags & (uint8_t)SystemFlag::FRG; }
-  bool IsACKPacket() const { return mSystemFlags & (uint8_t)SystemFlag::ACK; }
-  bool IsSYNPacket() const { return mSystemFlags & (uint8_t)SystemFlag::SYN; }
-  bool IsFINPacket() const { return mSystemFlags & (uint8_t)SystemFlag::FIN; }
-
-  Packet &operator<<=(DataChunk const &chunk);
-
-  Packet &operator|=(uint16_t const &flags);
-  Packet &operator&=(uint16_t const &flags);
-
-  Packet &operator=(Packet const &packet);
-  Packet &operator=(Packet &&packet);
-};
-
 using IP = Str;
 using Port = uint16_t;
 using Endpoint = sockaddr;
+using Byte = uint8_t;
+
+class Packet {
+private:
+  Vec<Byte> mData;
+  size_t mOffset = 0;
+
+public:
+  Packet() = default;
+  Packet(size_t const &size) : mData(size) {}
+  Packet(Vec<Byte> const &data) : mData(data) {}
+  Packet(Packet const &packet) : mData(packet.mData) {}
+  Packet(Packet &&packet) : mData(std::move(packet.mData)) {}
+  ~Packet() = default;
+
+  size_t GetOffset() const { return mOffset; }
+  size_t GetSize() const { return mData.size(); }
+  Byte const *GetRawData() const { return mData.data(); }
+
+  void Clear() { mData.clear(); }
+  void Read(Byte *data, size_t const &size);
+  void Write(Byte const *data, size_t const &size) {
+    mData.insert(mData.end(), data, data + size);
+  }
+  void Union(Byte const *data, size_t const &size) {
+    mData.insert(mData.end(), data, data + size);
+  }
+  void Union(Vec<Byte> const &data) {
+    mData.insert(mData.end(), data.begin(), data.end());
+  }
+  void Union(Packet const &packet) {
+    mData.insert(mData.end(), packet.mData.begin(), packet.mData.end());
+  }
+  void Union(Packet &&packet) {
+    mData.insert(mData.end(), std::make_move_iterator(packet.mData.begin()),
+                 std::make_move_iterator(packet.mData.end()));
+  }
+
+  template <typename T> Packet &operator<<(T const &data) {
+    Write((Byte const *)&data, sizeof(T));
+    return *this;
+  }
+  template <typename T> Packet &operator>>(T &data) {
+    Read((Byte *)&data, sizeof(T));
+    return *this;
+  }
+
+  Packet &operator=(Packet const &packet);
+  Packet &operator=(Packet &&packet);
+  Packet &operator=(Vec<Byte> const &data);
+  Packet &operator+=(Packet const &packet);
+  Packet &operator+=(Packet &&packet);
+  Packet &operator+=(Vec<Byte> const &data);
+};
 
 class Address {
 public:
@@ -122,6 +76,8 @@ public:
 
   virtual socklen_t GetSize() const { return 0; }
   virtual Endpoint const *GetInfo() const { return nullptr; }
+
+  virtual void SetInfo(Endpoint const *info) {}
 };
 
 class IPv4Address : public Address {
@@ -138,10 +94,15 @@ public:
 
   socklen_t GetSize() const override { return sizeof(mInfo); }
   Endpoint const *GetInfo() const override { return (Endpoint const *)&mInfo; }
+
+  void SetInfo(Endpoint const *info) override {
+    mInfo = *(sockaddr_in const *)info;
+  }
 };
 
 // WIP
 // TODO: IPv6Address
+/*
 class IPv6Address : public Address {
 private:
   sockaddr_in6 mInfo = {};
@@ -156,7 +117,12 @@ public:
 
   socklen_t GetSize() const override { return sizeof(mInfo); }
   Endpoint const *GetInfo() const override { return (Endpoint const *)&mInfo; }
+
+  void SetInfo(Endpoint const *info) override {
+    mInfo = *(sockaddr_in6 const *)info;
+  }
 };
+*/
 
 class Socket : public Geobject {
 private:
@@ -164,14 +130,14 @@ private:
 
 private:
   int mSocket = -1;
-  Address *mAddress = nullptr;
+  Address const *mAddress = nullptr;
 
 public:
   Socket() = default;
-  Socket(Address const &address);
+  Socket(Address const *address);
   Socket(int const &socket);
   Socket(Socket &&socket);
-  ~Socket();
+  ~Socket() override { this->Close(); }
 
   void Connect();
   void Close();
@@ -189,7 +155,60 @@ public:
     sendto(mSocket, packet.GetRawData(), packet.GetSize(), 0,
            address->GetInfo(), address->GetSize());
   }
-  Packet Receive();
-  Packet ReceiveFrom(Address &address);
+  Packet Receive(size_t const &maxSize = 1024);
+  Packet ReceiveFrom(Address *address = nullptr, size_t const &maxSize = 1024);
+};
+
+class ClientBase : public Geobject {
+private:
+  M_DISABLE_COPY_AND_ASSIGN(ClientBase);
+
+protected:
+  Socket mSocket;
+  Address const *mAddress = nullptr;
+  Vec<Packet> mPackets;
+
+public:
+  ClientBase() = default;
+  ClientBase(Address const *address);
+  ClientBase(ClientBase &&client);
+  virtual ~ClientBase() override { this->Close(); }
+
+  virtual Vec<Packet> const &GetPackets() const { return mPackets; }
+
+  virtual void ClearPackets() { mPackets.clear(); }
+  virtual void Close();
+  virtual void Connect() { mSocket.Connect(); }
+  virtual void ClientLoop() = 0;
+};
+
+class ServerBase : public Geobject {
+private:
+  M_DISABLE_COPY_AND_ASSIGN(ServerBase);
+
+protected:
+  Socket mAcceptor;
+  Vec<Socket> mClients;
+  Address const *mAddress = nullptr;
+  Vec<Packet> mPackets;
+  bool mIsRunning = false;
+
+public:
+  ServerBase(Address const *address);
+  ServerBase(ServerBase &&server);
+  virtual ~ServerBase() override { this->Close(); }
+
+  virtual Vec<Socket> const &GetClients() const { return mClients; }
+  virtual Vec<Packet> const &GetPackets() const { return mPackets; }
+
+  virtual void ClearPackets() { mPackets.clear(); }
+  virtual void Close();
+  virtual void Listen(unsigned const &maxConnections = 10) {
+    mAcceptor.Listen(maxConnections);
+  }
+  virtual Socket Accept() { return mAcceptor.Accept(); }
+  virtual void ServerLoop() = 0;
+  virtual void Start();
+  virtual void Stop() { mIsRunning = false; }
 };
 } // namespace GeoFrame
