@@ -10,8 +10,7 @@ GeoFrameとはglfwとgladを利用したオープンソースのOpenGLハンド�
 - [Job関連のクラス](# 
 - [Screen関連のクラス](# 
 
-[typealiases] :
-# 型エイリアス一覧
+<a id="typealiases"># 型エイリアス一覧</a>
 ## 基本型の型エイリアス
 - ID = unsigned
 - Index = unsigned long long
