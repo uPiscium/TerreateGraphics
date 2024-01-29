@@ -5,6 +5,7 @@
 #include "object.hpp"
 
 namespace GeoFrame {
+namespace Core {
 extern bool S_GLAD_INITIALIZED;
 
 class Icon : public ResourceBase {
@@ -683,7 +684,9 @@ public:
    * @detail: Color format is (red, green, blue). Each color is float (0
    * ~ 1.0).
    */
-  void Fill(Vec<float> const &color) const;
+  void Fill(Vec<float> const &color) const {
+    glClearColor(color[0], color[1], color[2], 0.0);
+  }
   /*
    * @brief: This function clears specified buffers.
    * @param: buffer: Buffer to clear.
@@ -708,4 +711,5 @@ public:
 
   operator bool() const override { return mWindow != nullptr; }
 };
+} // namespace Core
 } // namespace GeoFrame

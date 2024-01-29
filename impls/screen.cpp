@@ -2,6 +2,7 @@
 #include <memory>
 
 namespace GeoFrame {
+namespace Core {
 Tag Screen::sTag = ResourceBase::sTag + Tag("Screen");
 
 Screen::Screen(Str const &name, unsigned const &width, unsigned const &height)
@@ -69,4 +70,5 @@ void Screen::Unbind() const {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDrawBuffer(GL_BACK);
 }
+} // namespace Core
 } // namespace GeoFrame

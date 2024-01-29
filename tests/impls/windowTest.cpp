@@ -1,6 +1,7 @@
 #include "../includes/windowTest.hpp"
 
 using namespace GeoFrame;
+using namespace GeoFrame::Core;
 
 class CallbackSet : public WindowController {
 private:

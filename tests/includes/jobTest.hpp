@@ -3,6 +3,4 @@
 
 #include "../../includes/job.hpp"
 
-using namespace GeoFrame;
-
 void job_test();

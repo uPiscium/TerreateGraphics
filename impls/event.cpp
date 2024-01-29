@@ -1,6 +1,7 @@
 #include "../includes/event.hpp"
 
 namespace GeoFrame {
+namespace Utils {
 void EventSystem::Register(Str const &event, EventCallback const &callback) {
   if (mCallbacks.find(event) == mCallbacks.end()) {
     mCallbacks[event] = Vec<EventCallback>();
@@ -42,4 +43,5 @@ void EventSystem::PublishEvent(Str const &event) {
   LockGuard<Mutex> lock(mQueueMutex);
   mEventQueue.push(event);
 }
+} // namespace Utils
 } // namespace GeoFrame

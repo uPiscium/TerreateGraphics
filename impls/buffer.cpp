@@ -1,6 +1,7 @@
 #include "../includes/buffer.hpp"
 
 namespace GeoFrame {
+namespace Core {
 Tag Buffer::sTag = ResourceBase::sTag + Tag("Buffer");
 
 Vec<Attribute> Attribute::GenerateAttributes(Vec<size_t> const &comps) {
@@ -104,4 +105,5 @@ void Buffer::DrawInstances(size_t const &numInstances,
                           numInstances);
   glBindVertexArray(0);
 }
+} // namespace Core
 } // namespace GeoFrame

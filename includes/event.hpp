@@ -3,6 +3,7 @@
 #include "object.hpp"
 
 namespace GeoFrame {
+namespace Utils {
 using EventCallback = Function<void(Str)>;
 
 class EventSystem : public Geobject {
@@ -45,4 +46,5 @@ public:
    */
   void PublishEvent(Str const &event);
 };
+} // namespace Utils
 } // namespace GeoFrame

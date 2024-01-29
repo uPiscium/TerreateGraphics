@@ -1,5 +1,8 @@
 #include "../includes/screenTest.hpp"
 
+using namespace GeoFrame;
+using namespace GeoFrame::Core;
+
 void screen_drawing_test() {
   GeoFrameContext context = Context::AcquireInstance();
 

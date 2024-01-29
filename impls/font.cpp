@@ -1,6 +1,7 @@
 #include "../includes/font.hpp"
 
 namespace GeoFrame {
+namespace Core {
 Tag Font::sTag = ResourceBase::sTag + Tag("Font");
 
 Font::Font(Str const &path, unsigned const &size)
@@ -90,4 +91,5 @@ void Font::LoadCharacter(wchar_t const &character) {
 
   mCharacters.insert({character, c});
 }
+} // namespace Core
 } // namespace GeoFrame

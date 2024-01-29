@@ -1,5 +1,8 @@
 #include "../includes/textureTest.hpp"
 
+using namespace GeoFrame;
+using namespace GeoFrame::Core;
+
 void texture_drawing_test() {
   GeoFrameContext context = Context::AcquireInstance();
 

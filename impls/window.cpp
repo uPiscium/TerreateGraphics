@@ -1,6 +1,7 @@
 #include "../includes/window.hpp"
 
 namespace GeoFrame {
+namespace Core {
 bool S_GLAD_INITIALIZED = false;
 Tag Monitor::sTag = ResourceBase::sTag + Tag("Monitor");
 Tag Window::sTag = ResourceBase::sTag + Tag("Window");
@@ -194,11 +195,6 @@ void Window::Close() {
   mWindow = nullptr;
 }
 
-void Window::Fill(Vec<float> const &color) const {
-  glClearColor(color[0], color[1], color[2], 0.0);
-  glClear(GL_COLOR_BUFFER_BIT);
-}
-
 void Window::Frame() {
   if (mWindow == nullptr) {
     return;
@@ -206,4 +202,5 @@ void Window::Frame() {
 
   mController->Run(this);
 }
+} // namespace Core
 } // namespace GeoFrame

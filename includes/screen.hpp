@@ -4,6 +4,7 @@
 #include "texture.hpp"
 
 namespace GeoFrame {
+namespace Core {
 class Screen : public ResourceBase {
 private:
   ID mFrameBuffer;
@@ -72,4 +73,5 @@ public:
   }
   operator bool() const override { return mFrameBuffer != 0; }
 };
+} // namespace Core
 } // namespace GeoFrame

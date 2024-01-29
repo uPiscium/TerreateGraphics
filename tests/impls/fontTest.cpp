@@ -1,5 +1,8 @@
 #include "../includes/fontTest.hpp"
 
+using namespace GeoFrame;
+using namespace GeoFrame::Core;
+
 void font_drawing_test() {
   GeoFrameContext context = Context::AcquireInstance();
 

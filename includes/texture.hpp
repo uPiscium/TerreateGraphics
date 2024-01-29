@@ -7,6 +7,7 @@
 #include "object.hpp"
 
 namespace GeoFrame {
+namespace Core {
 struct TextureData {
   Vec<unsigned char> pixels;
   unsigned width = 0;
@@ -185,4 +186,5 @@ public:
 
   operator bool() const override { return mTexture != 0; }
 };
+} // namespace Core
 } // namespace GeoFrame
