@@ -16,6 +16,9 @@ using Port = uint16_t;
 using Endpoint = sockaddr;
 using Byte = uint8_t;
 
+enum class SocketProtocol { IPV4 = AF_INET, IPV6 = AF_INET6 };
+enum class SocketType { TCP = SOCK_STREAM, UDP = SOCK_DGRAM };
+
 class Packet {
 private:
   Vec<Byte> mData;
@@ -85,11 +88,12 @@ private:
   sockaddr_in mInfo = {};
 
 public:
-  IPv4Address() = default;
+  IPv4Address() : Address() {}
   IPv4Address(IP const &ip, Port const &port);
-  IPv4Address(sockaddr_in const &info) : mInfo(info) {}
-  IPv4Address(IPv4Address const &address) : mInfo(address.mInfo) {}
-  IPv4Address(IPv4Address &&address) : mInfo(std::move(address.mInfo)) {}
+  IPv4Address(sockaddr_in const &info) : Address(), mInfo(info) {}
+  IPv4Address(IPv4Address const &address) : Address(), mInfo(address.mInfo) {}
+  IPv4Address(IPv4Address &&address)
+      : Address(), mInfo(std::move(address.mInfo)) {}
   ~IPv4Address() = default;
 
   socklen_t GetSize() const override { return sizeof(mInfo); }
@@ -130,33 +134,67 @@ private:
 
 private:
   int mSocket = -1;
-  Address const *mAddress = nullptr;
+  Mutex mMutex;
 
 public:
   Socket() = default;
-  Socket(Address const *address);
-  Socket(int const &socket);
+  Socket(SocketType const &type,
+         SocketProtocol const &protocol = SocketProtocol::IPV4);
+  Socket(int const &socket) : mSocket(socket) {}
   Socket(Socket &&socket);
   ~Socket() override { this->Close(); }
 
-  void Connect();
+  void Connect(Address const *address);
   void Close();
-  bool Bind() {
-    return bind(mSocket, mAddress->GetInfo(), mAddress->GetSize()) == 0;
+  bool Bind(Address const *address) {
+    return bind(mSocket, address->GetInfo(), address->GetSize()) == 0;
   }
   void Listen(unsigned const &maxConnections = 10) {
     listen(mSocket, maxConnections);
   }
   Socket Accept();
-  void Send(Packet const &packet) {
-    send(mSocket, packet.GetRawData(), packet.GetSize(), 0);
-  }
-  void SendTo(Packet const &packet, Address const *address) {
-    sendto(mSocket, packet.GetRawData(), packet.GetSize(), 0,
-           address->GetInfo(), address->GetSize());
-  }
+  void Send(Packet const &packet);
+  void SendTo(Packet const &packet, Address const *address);
   Packet Receive(size_t const &maxSize = 1024);
-  Packet ReceiveFrom(Address *address = nullptr, size_t const &maxSize = 1024);
+  Packet ReceiveFrom(IPv4Address *address = nullptr,
+                     size_t const &maxSize = 1024);
+  // Packet ReceiveFrom(IPv6Address *address = nullptr,
+  //                 size_t const &maxSize = 1024);
+};
+
+class ServerBase : public Geobject {
+private:
+  M_DISABLE_COPY_AND_ASSIGN(ServerBase);
+
+protected:
+  Socket mAccepter;
+  Map<UUID, Vec<Packet>> mPackets;
+  Vec<Socket> mClients;
+  Thread mServerThread;
+  Vec<Thread> mClientThreads;
+  bool mRunning = false;
+  unsigned mMaxClients = 10;
+
+protected:
+  void ClientThread(Socket &client);
+  void ServerThread();
+
+public:
+  ServerBase() = default;
+  ServerBase(SocketType const &type, IPv4Address const &address,
+             unsigned const &maxClients = 10);
+  // ServerBase(IPv6Address const &address, unsigned const &maxClients = 10);
+  virtual ~ServerBase();
+
+  virtual Vec<Packet> const &GetPackets(Socket const &socket) const;
+  virtual Vec<Packet> const &GetPackets(UUID const &uuid) const;
+
+  virtual void Receive(Socket &socket);
+  virtual void Connect();
+
+  virtual void Start();
+  virtual void Stop();
+  virtual void Close();
 };
 
 class ClientBase : public Geobject {
@@ -165,50 +203,28 @@ private:
 
 protected:
   Socket mSocket;
-  Address const *mAddress = nullptr;
   Vec<Packet> mPackets;
+  Thread mReceiveThread;
+  bool mRunning = false;
+
+protected:
+  void ReceiveThread();
 
 public:
   ClientBase() = default;
-  ClientBase(Address const *address);
-  ClientBase(ClientBase &&client);
-  virtual ~ClientBase() override { this->Close(); }
+  ClientBase(SocketType const &type) : mSocket(type) {}
+  // ClientBase(IPv6Address const &address);
+  virtual ~ClientBase();
 
-  virtual Vec<Packet> const &GetPackets() const { return mPackets; }
+  virtual Vec<Packet> const &GetPackets() const;
 
-  virtual void ClearPackets() { mPackets.clear(); }
-  virtual void Close();
-  virtual void Connect() { mSocket.Connect(); }
-  virtual void ClientLoop() = 0;
-};
-
-class ServerBase : public Geobject {
-private:
-  M_DISABLE_COPY_AND_ASSIGN(ServerBase);
-
-protected:
-  Socket mAcceptor;
-  Vec<Socket> mClients;
-  Address const *mAddress = nullptr;
-  Vec<Packet> mPackets;
-  bool mIsRunning = false;
-
-public:
-  ServerBase(Address const *address);
-  ServerBase(ServerBase &&server);
-  virtual ~ServerBase() override { this->Close(); }
-
-  virtual Vec<Socket> const &GetClients() const { return mClients; }
-  virtual Vec<Packet> const &GetPackets() const { return mPackets; }
-
-  virtual void ClearPackets() { mPackets.clear(); }
-  virtual void Close();
-  virtual void Listen(unsigned const &maxConnections = 10) {
-    mAcceptor.Listen(maxConnections);
+  virtual void Receive();
+  virtual void Connect(IPv4Address const &address) {
+    mSocket.Connect(&address);
   }
-  virtual Socket Accept() { return mAcceptor.Accept(); }
-  virtual void ServerLoop() = 0;
-  virtual void Start();
-  virtual void Stop() { mIsRunning = false; }
+
+  virtual void Send(Packet const &packet);
+  virtual void Send(IPv4Address const &address, Packet const &packet);
+  // virtual void Send(IPv6Address const &address, Packet const &packet);
 };
 } // namespace GeoFrame
