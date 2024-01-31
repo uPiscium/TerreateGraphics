@@ -3,13 +3,13 @@
 using namespace GeoFrame;
 using namespace GeoFrame::Core;
 
-class CallbackSet : public WindowController {
+class BufferTest : public WindowController {
 private:
   Buffer mBuffer;
   Shader mShader;
 
 public:
-  CallbackSet()
+  BufferTest()
       : mBuffer("Rect", BufferUsage::DYNAMIC_DRAW), mShader("RectShader") {
     auto attrs = Attribute::GenerateAttributes({2});
     mBuffer.LoadVertices({-0.5f, -0.5f, 0.0f, 0.5f, 0.5f, -0.5f});
@@ -29,19 +29,10 @@ public:
     mShader.Compile();
   }
 
-  void Run(Window *window) override {
-    window->Bind();
+  void OnFrame(Window *window) override {
     window->PollEvents();
     window->Fill({0.0, 0.0, 1.0});
-    window->Clear((int)BufferBit::COLOR_BUFFER);
-
-    /* if (window->IsEntering()) { */
-    /*   auto pos = window->GetCursorPosition(); */
-    /*   float x = (float)pos.first / (float)window->GetSize().first; */
-    /*   float y = (float)pos.second / (float)window->GetSize().second; */
-    /*   mBuffer.LoadVertices( */
-    /*       {-0.5f, -0.5f, 2 * x - 1.0f, -2 * y + 1.0f, 0.5f, -0.5f}); */
-    /* } */
+    window->Clear();
 
     mShader.Use();
     mBuffer.Draw(DrawMode::TRIANGLES);
@@ -51,11 +42,10 @@ public:
 
 void buffer_drawing_test() {
   GeoFrameContext context = Singleton<GeoFrameContext>::AcquireInstance();
-
   Window window(800, 600, "Buffer Drawing Test", WindowSettings());
 
-  CallbackSet callbackSet;
-  window.SetWindowController(&callbackSet);
+  BufferTest controller;
+  window.SetWindowController(&controller);
 
   while (!window.IsClosed()) {
     window.Frame();

@@ -257,7 +257,7 @@ public:
   virtual void CharCallback(unsigned const &codepoint) {}
   virtual void DropCallback(Vec<Str> const &paths) {}
 
-  virtual void Run(Window *window) = 0;
+  virtual void OnFrame(Window *window) = 0;
 };
 
 class Monitor : public ResourceBase {
@@ -688,10 +688,23 @@ public:
     glClearColor(color[0], color[1], color[2], 0.0);
   }
   /*
-   * @brief: This function clears specified buffers.
-   * @param: buffer: Buffer to clear.
+   * @brief: This function clears color, depth, and stencil buffers.
    */
-  void Clear(int const &buffer) const { glClear(buffer); }
+  void Clear() const {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  }
+  /*
+   * @brief: This function clears color buffer.
+   */
+  void ClearColor() const { glClear(GL_COLOR_BUFFER_BIT); }
+  /*
+   * @brief: This function clears depth buffer.
+   */
+  void ClearDepth() const { glClear(GL_DEPTH_BUFFER_BIT); }
+  /*
+   * @brief: This function clears stencil buffer.
+   */
+  void ClearStencil() const { glClear(GL_STENCIL_BUFFER_BIT); }
   /*
    * @brief: This function swaps front and back buffers.
    */

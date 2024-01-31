@@ -3,52 +3,71 @@
 using namespace GeoFrame;
 using namespace GeoFrame::Core;
 
+class FontTest : public WindowController {
+private:
+  Buffer mBuffer;
+  Shader mShader;
+  Font mFont;
+
+public:
+  FontTest()
+      : mBuffer("Rect", BufferUsage::DYNAMIC_DRAW), mShader("RectShader"),
+        mFont("../../../resources/AsebiMin-Light.otf", 48) {
+    mFont.LoadCharacter(L'A');
+
+    auto attrs = Attribute::GenerateAttributes({2, 2});
+
+    mBuffer.LoadVertices({-0.5f, -0.5f, 0.0f, 0.0f, 0.5f, -0.5f, 1.0f, 0.0f,
+                          0.5f, 0.5f, 1.0f, 1.0f, -0.5f, 0.5f, 0.0f, 1.0f});
+    mBuffer.LoadAttributes(attrs);
+    mBuffer.LoadIndices({0, 1, 2, 2, 3, 0});
+
+    mShader.AddVertexShaderSource("#version 330 core\n"
+                                  "layout (location = 0) in vec2 pos;\n"
+                                  "layout (location = 1) in vec2 tex;\n"
+                                  "out vec2 texCoord;\n"
+                                  "void main() {\n"
+                                  "    gl_Position = vec4(pos, 0.0, 1.0);\n"
+                                  "    texCoord = vec2(tex.x, 1 - tex.y);\n"
+                                  "}\n");
+    mShader.AddFragmentShaderSource("#version 330 core\n"
+                                    "in vec2 texCoord;\n"
+                                    "out vec4 color;\n"
+                                    "uniform sampler2D tex;\n"
+                                    "void main() {\n"
+                                    "    float a = texture(tex, texCoord).r;\n"
+                                    "    color = vec4(a, 0.0, 0.0, a);\n"
+                                    "}\n");
+    mShader.Compile();
+    mShader.ActiveTexture(TextureTargets::TEX_1);
+    mShader.SetInt("tex", 0);
+    mShader.SetBlending(BlendingFuntion::SRC_ALPHA,
+                        BlendingFuntion::ONE_MINUS_SRC_ALPHA);
+    mShader.UseBlending(true);
+  }
+
+  void OnFrame(Window *window) override {
+    window->PollEvents();
+    window->Fill({0.0, 0.0, 1.0});
+    window->Clear();
+
+    mShader.Use();
+    auto charData = mFont.GetCharacter(L'A');
+    charData->texture->Bind();
+    mBuffer.Draw(DrawMode::TRIANGLES);
+    charData->texture->Unbind();
+    window->Swap();
+  }
+};
+
 void font_drawing_test() {
   GeoFrameContext context = Context::AcquireInstance();
+  Window window(800, 600, "Font Drawing Test", WindowSettings());
 
-  Window window(800, 600, "Buffer Drawing Test", WindowSettings());
-  window.Bind();
-  Buffer buffer("Rect", BufferUsage::STATIC_DRAW);
-
-  auto attrs = Attribute::GenerateAttributes({2, 2});
-  buffer.LoadVertices({-0.5f, -0.5f, 0.0f, 0.0f, 0.5f, -0.5f, 1.0f, 0.0f, 0.5f,
-                       0.5f, 1.0f, 1.0f, -0.5f, 0.5f, 0.0f, 1.0f});
-  buffer.LoadAttributes(attrs);
-  buffer.LoadIndices({0, 1, 2, 2, 3, 0});
-
-  Shader shader("RectShader");
-  shader.AddVertexShaderSource("#version 330 core\n"
-                               "layout (location = 0) in vec2 pos;\n"
-                               "layout (location = 1) in vec2 tex;\n"
-                               "out vec2 texCoord;\n"
-                               "void main() {\n"
-                               "    gl_Position = vec4(pos, 0.0, 1.0);\n"
-                               "    texCoord = tex;\n"
-                               "}\n");
-  shader.AddFragmentShaderSource("#version 330 core\n"
-                                 "in vec2 texCoord;\n"
-                                 "out vec4 color;\n"
-                                 "uniform sampler2D tex;\n"
-                                 "void main() {\n"
-                                 "    float a = texture(tex, texCoord).r;\n"
-                                 "    color = vec4(1.0, 0.0, 0.0, a);\n"
-                                 "}\n");
-  shader.Compile();
-  shader.ActiveTexture(TextureTargets::TEX_1);
-  shader.SetInt("tex", 0);
-
-  Font font("../../../resources/AsebiMin-Light.otf", 48);
-  font.LoadCharacter(L'A');
-  auto charData = font.AcquireCharacter(L'A');
+  FontTest controller;
+  window.SetWindowController(&controller);
 
   while (!window.IsClosed()) {
-    window.PollEvents();
-    window.Fill({0, 0, 1});
-    window.Clear((int)BufferBit::COLOR_BUFFER);
-    shader.Use();
-    charData->texture->Bind();
-    buffer.Draw(DrawMode::TRIANGLES);
-    charData->texture->Unbind();
-    window.Swap();
+    window.Frame();
   }
 }

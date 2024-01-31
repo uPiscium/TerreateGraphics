@@ -200,7 +200,7 @@ void Window::Frame() {
     return;
   }
 
-  mController->Run(this);
+  mController->OnFrame(this);
 }
 } // namespace Core
 } // namespace GeoFrame
