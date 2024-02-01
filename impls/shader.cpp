@@ -1,6 +1,7 @@
 #include "../includes/shader.hpp"
 
 namespace GeoFrame {
+namespace Core {
 Tag Shader::sTag = ResourceBase::sTag + Tag("Shader");
 
 Str GetShaderLog(unsigned const &id) {
@@ -176,4 +177,5 @@ void Shader::Use() const {
     glDisable(GL_CULL_FACE);
   }
 }
+} // namespace Core
 } // namespace GeoFrame

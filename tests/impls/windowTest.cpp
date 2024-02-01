@@ -1,6 +1,7 @@
 #include "../includes/windowTest.hpp"
 
 using namespace GeoFrame;
+using namespace GeoFrame::Core;
 
 class CallbackSet : public WindowController {
 private:
@@ -18,11 +19,11 @@ public:
     std::cout << "SizeCallback: " << width << ", " << height << std::endl;
   }
 
-  void Run(Window *window) override {
+  void OnFrame(Window *window) override {
     window->PollEvents();
     window->SetCursor(cursor);
     window->Fill({s, s, s});
-    window->Clear((int)BufferBit::COLOR_BUFFER);
+    window->Clear();
     window->Swap();
     s += f;
 

@@ -4,12 +4,14 @@
 #include "texture.hpp"
 
 namespace GeoFrame {
+namespace Core {
 class Screen : public ResourceBase {
 private:
   ID mFrameBuffer;
   unsigned mWidth;
   unsigned mHeight;
   Vec<Shared<Texture>> mTextures;
+  Vec<GLenum> mDrawBuffers;
 
 public:
   static Tag sTag;
@@ -66,10 +68,26 @@ public:
    * @brief: Unbinds the screen.
    */
   void Unbind() const;
+  /*
+   * @brief: Fill screen with color.
+   * @param: color: color to fill screen with
+   * @detail: Color format is (red, green, blue). Each color is float (0
+   * ~ 1.0).
+   */
+  void Fill(Vec<float> const &color) const {
+    glClearColor(color[0], color[1], color[2], 0.0f);
+  }
+  /*
+   * @brief: Clear screen.
+   */
+  void Clear() const {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  }
 
   Shared<Texture> const &operator[](Index const &index) const {
     return mTextures[index];
   }
   operator bool() const override { return mFrameBuffer != 0; }
 };
+} // namespace Core
 } // namespace GeoFrame

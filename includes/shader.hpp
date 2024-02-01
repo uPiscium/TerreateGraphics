@@ -10,6 +10,7 @@
 #include "object.hpp"
 
 namespace GeoFrame {
+namespace Core {
 struct ShaderOption {
   bool blending = true;
   bool culling = false;
@@ -329,4 +330,5 @@ public:
    */
   static Str LoadShaderSource(Str const &path);
 };
+} // namespace Core
 } // namespace GeoFrame

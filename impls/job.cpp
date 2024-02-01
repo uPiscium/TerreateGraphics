@@ -2,6 +2,7 @@
 #include <thread>
 
 namespace GeoFrame {
+namespace Utils {
 void IJob::Run() {
   try {
     this->Execute();
@@ -92,4 +93,5 @@ void JobSystem::Schedule(IJob *job) {
 
   mCondition.notify_one();
 }
+} // namespace Utils
 } // namespace GeoFrame

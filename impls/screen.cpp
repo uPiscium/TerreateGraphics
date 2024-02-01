@@ -2,6 +2,7 @@
 #include <memory>
 
 namespace GeoFrame {
+namespace Core {
 Tag Screen::sTag = ResourceBase::sTag + Tag("Screen");
 
 Screen::Screen(Str const &name, unsigned const &width, unsigned const &height)
@@ -33,8 +34,8 @@ void Screen::AddBuffer() {
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
   glGenTextures(1, &buffer);
   glBindTexture(GL_TEXTURE_2D, buffer);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, mWidth, mHeight, 0, GL_RGBA,
-               GL_UNSIGNED_BYTE, nullptr);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA, GL_FLOAT,
+               nullptr);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glFramebufferTexture2D(GL_FRAMEBUFFER,
                          GL_COLOR_ATTACHMENT0 + mTextures.size(), GL_TEXTURE_2D,
@@ -43,6 +44,7 @@ void Screen::AddBuffer() {
 
   Shared<Texture> texture =
       std::make_shared<Texture>(buffer, mWidth, mHeight, 4);
+  mDrawBuffers.push_back(GL_COLOR_ATTACHMENT0 + mTextures.size());
   mTextures.push_back(texture);
   glBindTexture(GL_TEXTURE_2D, 0);
 }
@@ -57,16 +59,17 @@ void Screen::Transcript(Screen const &screen) const {
 
 void Screen::DrawOnlyBind() const {
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFrameBuffer);
-  glDrawBuffers(mTextures.size(), COLOR_BUFFERS);
+  glDrawBuffers(mDrawBuffers.size(), mDrawBuffers.data());
 }
 
 void Screen::Bind() const {
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
-  glDrawBuffers(mTextures.size(), COLOR_BUFFERS);
+  glDrawBuffers(mDrawBuffers.size(), mDrawBuffers.data());
 }
 
 void Screen::Unbind() const {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDrawBuffer(GL_BACK);
 }
+} // namespace Core
 } // namespace GeoFrame

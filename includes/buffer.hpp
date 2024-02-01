@@ -3,6 +3,7 @@
 #include "object.hpp"
 
 namespace GeoFrame {
+namespace Core {
 class Attribute {
 private:
   size_t mIndex = 0;
@@ -147,4 +148,5 @@ public:
 
   operator bool() const override { return mVAO != 0 && mVBO != 0 && mIBO != 0; }
 };
+} // namespace Core
 } // namespace GeoFrame

@@ -5,6 +5,7 @@
 #include <thread>
 
 namespace GeoFrame {
+namespace Utils {
 class IJob : public Geobject {
 private:
   friend class JobSystem;
@@ -152,5 +153,5 @@ public:
 
   operator bool() const override { return mComplete; }
 };
-
+} // namespace Utils
 } // namespace GeoFrame

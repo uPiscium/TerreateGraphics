@@ -1,5 +1,7 @@
 #include "../includes/jobTest.hpp"
 
+using namespace GeoFrame::Utils;
+
 void Job1() {
   std::this_thread::sleep_for(std::chrono::seconds(3));
   std::cout << "Job1" << std::endl;

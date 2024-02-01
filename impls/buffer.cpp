@@ -1,6 +1,7 @@
 #include "../includes/buffer.hpp"
 
 namespace GeoFrame {
+namespace Core {
 Tag Buffer::sTag = ResourceBase::sTag + Tag("Buffer");
 
 Vec<Attribute> Attribute::GenerateAttributes(Vec<size_t> const &comps) {
@@ -41,6 +42,7 @@ void Buffer::Delete() {
 }
 
 void Buffer::LoadVertices(float const *data, size_t const &size) {
+  glBindVertexArray(mVAO);
   glBindBuffer(GL_ARRAY_BUFFER, mVBO);
   if (mSetVBO) {
     glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
@@ -49,6 +51,7 @@ void Buffer::LoadVertices(float const *data, size_t const &size) {
     mSetVBO = true;
   }
 
+  glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
@@ -104,4 +107,5 @@ void Buffer::DrawInstances(size_t const &numInstances,
                           numInstances);
   glBindVertexArray(0);
 }
+} // namespace Core
 } // namespace GeoFrame
