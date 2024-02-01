@@ -157,12 +157,14 @@
 
 # Loader関連のクラス
 *このクラスは現在開発中のため動作が不安定です。*
+// 未実装
 
 -----
 
 # Network関連のクラス
 *このクラスは現在開発中のため動作が不安定です。*
 ## Socketクラス
+~~実装中~~
 
 -----
 
@@ -206,22 +208,22 @@
 ## WindowSettings構造体
 この構造体はウィンドウの設定を保持します。この構造体のメンバは全て`public`であり、この構造体のメンバを書き換えた上で`Window`クラスに渡すことでウィンドウの設定を変更できます。
 それぞれのメンバの詳細は以下の通りです。
-- `resizable` : `GLFW_TRUE`;
-- `visible` : `GLFW_TRUE`;
-- `decorated` : `GLFW_TRUE`;
-- `focused` : `GLFW_TRUE`;
-- `autoIconify` : `GLFW_TRUE`;
-- `floating` : `GLFW_FALSE`;
-- `maximized` : `GLFW_FALSE`;
-- `centerCursor` : `GLFW_TRUE`;
-- `transparentFramebuffer` : `GLFW_FALSE`;
-- `focusOnShow` : `GLFW_TRUE`;
-- `scaleToMonitor` : `GLFW_FALSE`;
-
-
-## Monitorクラス
+- `resizable` : 画面のサイズが変更可能かを設定します。デフォルトは`GLFW_TRUE`です。
+- `visible` : 画面の表示/非表示を設定します。デフォルトは`GLFW_TRUE`です。
+- `decorated` : 画面上部のボタン等を付けるかどうかを設定します。デフォルトは`GLFW_TRUE`です。
+- `focused` : 画面が非最大化されて生成されたときに入力フォーカスが与えられるかどうかを設定します。デフォルトは`GLFW_TRUE`です。
+- `autoIconify` : 画面が入力フォーカスを失ったときに全画面化が自動的に解除され、アイコン化されるかを設定します。デフォルトは`GLFW_TRUE`です。
+- `floating` : 画面が常に最前面に表示されるかを設定します。デフォルトは`GLFW_FALSE`です。
+- `maximized` : 画面が生成時に最大化されるかを設定します。デフォルトは`GLFW_FALSE`です。
+- `centerCursor` : 全画面生成時にカーソルを中央に配置するかを設定します。デフォルトは`GLFW_TRUE`です。
+- `transparentFramebuffer` : 画面のフレームバッファが透明かどうかを設定します。デフォルトは`GLFW_FALSE`です。
+- `focusOnShow` : `Window::Show()`が呼び出されたときに画面に入力フォーカスをあてるかを設定します。デフォルトは`GLFW_TRUE`です。
+- `scaleToMonitor` : 画面のコンテンツ領域を、それが配置されているモニターのコンテンツスケールに基づいてサイズ変更するかどうかを設定します。デフォルトは`GLFW_FALSE`です。
 
 ## WindowControllerクラス
+このクラスはウィンドウの各種コールバック関数及び毎フレームの処理を行う関数を管理します。ウィンドウのコールバック関数及び毎フレームの処理はこのクラスを継承し実装することで行ってください。`OnFrame()`関数は必ずオーバーライドしてください。他のコールバックはデフォルトでは何も行いません。\
+オーバーライド可能なコールバック関数は以下の通りです。
 
 ## Windowクラス
-
+このクラスはウィンドウを管理します。ウィンドウの作成及び描画はこのクラスのメンバ関数を利用して行ってください。また、ウィンドウの設定は`WindowSettings`構造体を利用して行ってください。ウィンドウに対する操作等もこのクラスのメンバ関数を利用して行ってください。\
+主なメンバ関数は以下の通りです。
