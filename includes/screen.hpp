@@ -11,6 +11,7 @@ private:
   unsigned mWidth;
   unsigned mHeight;
   Vec<Shared<Texture>> mTextures;
+  Vec<GLenum> mDrawBuffers;
 
 public:
   static Tag sTag;
@@ -79,11 +80,9 @@ public:
   /*
    * @brief: Clear screen.
    */
-  void Clear() const { glClear(GL_COLOR_BUFFER_BIT); }
-  /*
-   * @brief: Flush screen.
-   */
-  void Flush() const { glFlush(); }
+  void Clear() const {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  }
 
   Shared<Texture> const &operator[](Index const &index) const {
     return mTextures[index];
