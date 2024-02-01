@@ -4,7 +4,7 @@
 
 namespace GeoFrame {
 namespace Utils {
-using EventCallback = Function<void(Str)>;
+using EventCallback = Function<void(Str const &)>;
 
 class EventSystem : public Geobject {
 private:
