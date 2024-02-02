@@ -3,7 +3,5 @@
 #include "../../includes/job.hpp"
 #include "../../includes/window.hpp"
 
-using namespace GeoFrame;
-
 void window_generation_test(unsigned const &width, unsigned const &height,
-                            Str const &title);
+                            GeoFrame::Str const &title);

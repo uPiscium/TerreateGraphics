@@ -6,8 +6,6 @@
 #include "../includes/textureTest.hpp"
 #include "../includes/windowTest.hpp"
 
-using namespace GeoFrame;
-
 int main() {
   // window_generation_test(800, 600, "Window Test");
   // buffer_drawing_test();
@@ -15,7 +13,7 @@ int main() {
   // font_drawing_test();
   // screen_drawing_test();
   // job_test();
-  server_test();
+  // server_test();
   // client_test();
 
   return 0;
