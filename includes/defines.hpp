@@ -1,6 +1,7 @@
 #pragma once
 #include <atomic>
 #include <condition_variable>
+#include <cstdint>
 #include <cstring>
 #include <deque>
 #include <functional>
@@ -28,8 +29,8 @@
 #endif // GEOFRAME_IGNORE_EXCEPTIONS
 
 #define M_DISABLE_COPY_AND_ASSIGN(Type)                                        \
-  Type(const Type &) = delete;                                                 \
-  Type &operator=(const Type &) = delete
+  Type(Type const &) = delete;                                                 \
+  Type &operator=(Type const &) = delete
 
 #ifdef __linux__
 #define M_MEMCPY(dest, src, size) memcpy(dest, src, size)
@@ -97,9 +98,9 @@ using Quaternion = QuaternionT<float>;
 using Mutex = std::mutex;
 using Thread = std::thread;
 using CondVar = std::condition_variable;
-using ID = unsigned;
-using Index = unsigned long long;
-using EventID = unsigned long long;
+using ID = uint32_t;
+using Index = uint64_t;
+using EventID = uint64_t;
 using Str = std::string;
 using WStr = std::wstring;
 

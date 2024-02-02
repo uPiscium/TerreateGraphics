@@ -16,6 +16,7 @@ add_library(
   font.cpp
   gl.cpp
   job.cpp
+  network.cpp
   object.cpp
   screen.cpp
   shader.cpp
@@ -24,12 +25,12 @@ add_library(
 
 target_link_directories(${PROJECT_NAME} PUBLIC ../libs)
 if(WIN32)
-    target_link_libraries(${PROJECT_NAME} PUBLIC glfw3)
-    target_link_libraries(${PROJECT_NAME} PUBLIC freetyped)
+  target_link_libraries(${PROJECT_NAME} PUBLIC glfw3)
+  target_link_libraries(${PROJECT_NAME} PUBLIC freetyped)
 elseif(UNIX)
-    find_package(glfw3 REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
-    target_link_libraries(${PROJECT_NAME} PUBLIC freetype)
+  find_package(glfw3 REQUIRED)
+  target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
+  target_link_libraries(${PROJECT_NAME} PUBLIC freetype)
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC ../includes/headers)

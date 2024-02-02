@@ -1,6 +1,7 @@
 #include "../includes/drawingTest.hpp"
 #include "../includes/fontTest.hpp"
 #include "../includes/jobTest.hpp"
+#include "../includes/networkTest.hpp"
 #include "../includes/screenTest.hpp"
 #include "../includes/textureTest.hpp"
 #include "../includes/windowTest.hpp"
@@ -12,6 +13,7 @@ int main() {
   // font_drawing_test();
   screen_drawing_test();
   // job_test();
+  server_test();
 
   return 0;
 }
