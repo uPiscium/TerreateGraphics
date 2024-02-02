@@ -71,9 +71,6 @@ public:
     mShader.SetInt("tex", 0);
     mShader.ActiveTexture(TextureTargets::TEX_1);
     mShader.SetInt("tex2", 1);
-
-    mScreen.AddBuffer();
-    mScreen.AddBuffer();
   }
 
   void OnFrame(Window *window) override {
