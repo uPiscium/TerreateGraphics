@@ -17,6 +17,7 @@ Screen::Screen(Str const &name, unsigned const &width, unsigned const &height)
                             GL_RENDERBUFFER, rbo);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glBindRenderbuffer(GL_RENDERBUFFER, 0);
+  this->AddBuffer();
 }
 
 void Screen::Delete() {

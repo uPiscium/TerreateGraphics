@@ -12,6 +12,10 @@ private:
   unsigned mHeight;
   Vec<Shared<Texture>> mTextures;
   Vec<GLenum> mDrawBuffers;
+  /*
+   * @brief: Add new buffer to screen. (Max 32)
+   */
+  void AddBuffer();
 
 public:
   static Tag sTag;
@@ -40,10 +44,6 @@ public:
    * @brief: Delete screen resource.
    */
   void Delete() override;
-  /*
-   * @brief: Add new buffer to screen. (Max 32)
-   */
-  void AddBuffer();
 
   /*
    * @brief: Transcript to other screen.
