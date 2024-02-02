@@ -11,6 +11,7 @@
 #include "object.hpp"
 
 namespace GeoFrame {
+namespace Network {
 using IP = Str;
 using Port = uint16_t;
 using Endpoint = sockaddr;
@@ -79,6 +80,8 @@ public:
 
   virtual socklen_t GetSize() const { return 0; }
   virtual Endpoint const *GetInfo() const { return nullptr; }
+  virtual Str GetIP() const { return "127.0.0.1"; }
+  virtual Port GetPort() const { return 0; }
 
   virtual void SetInfo(Endpoint const *info) {}
 };
@@ -98,6 +101,8 @@ public:
 
   socklen_t GetSize() const override { return sizeof(mInfo); }
   Endpoint const *GetInfo() const override { return (Endpoint const *)&mInfo; }
+  Str GetIP() const override { return inet_ntoa(mInfo.sin_addr); }
+  Port GetPort() const override { return ntohs(mInfo.sin_port); }
 
   void SetInfo(Endpoint const *info) override {
     mInfo = *(sockaddr_in const *)info;
@@ -152,7 +157,7 @@ public:
   void Listen(unsigned const &maxConnections = 10) {
     listen(mSocket, maxConnections);
   }
-  Socket Accept();
+  Socket Accept(Endpoint *info = nullptr);
   void Send(Packet const &packet);
   void SendTo(Packet const &packet, Address const *address);
   Packet Receive(size_t const &maxSize = 1024);
@@ -162,39 +167,50 @@ public:
   //                 size_t const &maxSize = 1024);
 };
 
-class ServerBase : public Geobject {
+class TCPServer : public Geobject {
 private:
-  M_DISABLE_COPY_AND_ASSIGN(ServerBase);
+  M_DISABLE_COPY_AND_ASSIGN(TCPServer);
 
-protected:
+public:
+  using Receiver = Function<void(Packet const &, IP const &, Port const &)>;
+
+private:
   Socket mAccepter;
-  Map<UUID, Vec<Packet>> mPackets;
   Vec<Socket> mClients;
   Thread mServerThread;
   Vec<Thread> mClientThreads;
   bool mRunning = false;
   unsigned mMaxClients = 10;
+  Receiver mReceiver = [](Packet const &, IP const &, Port const &) {};
 
 protected:
-  void ClientThread(Socket &client);
+  void ReceiverThread(Socket &client, IP const &ip, Port const &port);
+  void Receive(Socket &client, IP const &ip, Port const &port);
   void ServerThread();
 
 public:
-  ServerBase() = default;
-  ServerBase(SocketType const &type, IPv4Address const &address,
-             unsigned const &maxClients = 10);
-  // ServerBase(IPv6Address const &address, unsigned const &maxClients = 10);
-  virtual ~ServerBase();
+  TCPServer(IPv4Address const &address, unsigned const &maxClients = 10);
+  // TCPServer(IPv6Address const &address, unsigned const &maxClients = 10);
+  ~TCPServer() override;
 
-  virtual Vec<Packet> const &GetPackets(Socket const &socket) const;
-  virtual Vec<Packet> const &GetPackets(UUID const &uuid) const;
+  Vec<Socket> const &GetClients() const { return mClients; }
 
-  virtual void Receive(Socket &socket);
-  virtual void Connect();
+  void SetReceiver(Receiver const &receiver) { mReceiver = receiver; }
 
-  virtual void Start();
-  virtual void Stop();
-  virtual void Close();
+  bool IsRunning() const { return mRunning; }
+
+  void Start();
+  void Close();
+
+  operator bool() const override { return mRunning; }
+};
+
+class TCPClient : public Geobject {
+private:
+  M_DISABLE_COPY_AND_ASSIGN(TCPClient);
+
+public:
+  ;
 };
 
 class ClientBase : public Geobject {
@@ -227,4 +243,5 @@ public:
   virtual void Send(IPv4Address const &address, Packet const &packet);
   // virtual void Send(IPv6Address const &address, Packet const &packet);
 };
+} // namespace Network
 } // namespace GeoFrame

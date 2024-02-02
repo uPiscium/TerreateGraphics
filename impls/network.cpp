@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 
 namespace GeoFrame {
+namespace Network {
 void Packet::Read(Byte *data, size_t const &size) {
   if (mOffset + size > mData.size()) {
     M_GEO_THROW(KernelError, "Reading out of range");
@@ -73,11 +74,13 @@ void Socket::Close() {
   }
 }
 
-Socket Socket::Accept() {
-  int socket = accept(mSocket, nullptr, nullptr);
+Socket Socket::Accept(Endpoint *endpoint) {
+  socklen_t size = 0;
+  int socket = accept(mSocket, endpoint, &size);
   if (socket == -1) {
     M_GEO_THROW(KernelError, "Failed to accept socket");
   }
+  Socket client(socket);
   return std::move(Socket(socket));
 }
 
@@ -124,85 +127,51 @@ Packet Socket::ReceiveFrom(IPv4Address *address, size_t const &maxSize) {
   return packet;
 }
 
-void ServerBase::ClientThread(Socket &client) {
+void TCPServer::ReceiverThread(Socket &client, IP const &ip, Port const &port) {
   while (mRunning) {
-    this->Receive(client);
+    this->Receive(client, ip, port);
   }
 }
 
-void ServerBase::ServerThread() {
+void TCPServer::Receive(Socket &client, IP const &ip, Port const &port) {
+  Packet packet = client.Receive();
+  mReceiver(packet, ip, port);
+}
+
+void TCPServer::ServerThread() {
+  sockaddr_in info = {};
   while (mRunning) {
-    this->Connect();
+    Socket client = mAccepter.Accept((Endpoint *)&info);
+    IP ip = inet_ntoa(info.sin_addr);
+    Port port = ntohs(info.sin_port);
+    mClients.push_back(std::move(client));
+    mClientThreads.push_back(Thread([this, &client, ip, port]() {
+      this->ReceiverThread(client, ip, port);
+    }));
   }
 }
 
-ServerBase::ServerBase(SocketType const &type, IPv4Address const &address,
-                       unsigned const &maxClients)
-    : mAccepter(type) {
+TCPServer::TCPServer(IPv4Address const &address, unsigned const &maxClients)
+    : mAccepter(SocketType::TCP) {
   mAccepter.Bind(&address);
   mAccepter.Listen(maxClients);
 }
 
-ServerBase::~ServerBase() {
-  mAccepter.Close();
-  for (auto &client : mClients) {
-    client.Close();
-  }
-}
+TCPServer::~TCPServer() { this->Close(); }
 
-Vec<Packet> const &ServerBase::GetPackets(Socket const &socket) const {
-  if (mPackets.find(socket.GetUUID()) == mPackets.end()) {
-    M_GEO_THROW(KernelError, "Socket not found");
-  }
-  return mPackets.at(socket.GetUUID());
-}
-
-Vec<Packet> const &ServerBase::GetPackets(UUID const &uuid) const {
-  if (mPackets.find(uuid) == mPackets.end()) {
-    M_GEO_THROW(KernelError, "Socket not found");
-  }
-  return mPackets.at(uuid);
-}
-
-void ServerBase::Receive(Socket &socket) {
-  Packet packet = socket.Receive();
-  if (packet.GetSize() > 0) {
-    mPackets[socket.GetUUID()].push_back(packet);
-  }
-}
-
-void ServerBase::Connect() {
-  Socket socket = mAccepter.Accept();
-  mClients.push_back(std::move(socket));
-  mPackets[socket.GetUUID()] = Vec<Packet>();
-  mClientThreads.push_back(
-      Thread([this, &socket]() { this->ClientThread(socket); }));
-}
-
-void ServerBase::Start() {
+void TCPServer::Start() {
   mRunning = true;
   mServerThread = Thread([this]() { this->ServerThread(); });
   mServerThread.join();
 }
 
-void ServerBase::Stop() {
-  mRunning = false;
-
-  if (mServerThread.joinable()) {
-    mServerThread.join();
-  }
-
-  for (auto &thread : mClientThreads) {
-    if (thread.joinable()) {
-      thread.join();
-    }
-  }
-}
-
-void ServerBase::Close() {
+void TCPServer::Close() {
   mAccepter.Close();
   for (auto &client : mClients) {
     client.Close();
   }
+  mRunning = false;
+  mClients.clear();
 }
+} // namespace Network
 } // namespace GeoFrame
