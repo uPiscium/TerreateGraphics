@@ -39,6 +39,11 @@ public:
    * @return: height
    */
   unsigned GetHeight() const { return mHeight; }
+  /*
+   * @brief: Getter for texture.
+   * @return: texture
+   */
+  Shared<Texture> const &GetTexture() const { return mTextures[0]; }
 
   /*
    * @brief: Delete screen resource.
@@ -84,9 +89,10 @@ public:
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   }
 
-  Shared<Texture> const &operator[](Index const &index) const {
-    return mTextures[index];
-  }
+  // FIXME: Support multi-buffer screen.
+  /* Shared<Texture> const &operator[](Index const &index) const { */
+  /*   return mTextures[index]; */
+  /* } */
   operator bool() const override { return mFrameBuffer != 0; }
 };
 } // namespace Core
