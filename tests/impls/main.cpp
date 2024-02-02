@@ -16,6 +16,7 @@ int main() {
   // screen_drawing_test();
   // job_test();
   server_test();
+  // client_test();
 
   return 0;
 }

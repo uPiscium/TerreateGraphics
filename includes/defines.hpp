@@ -9,6 +9,7 @@
 #include <memory>
 #include <mutex>
 #include <queue>
+#include <sstream>
 #include <string>
 #include <thread>
 #include <unordered_map>
@@ -103,6 +104,7 @@ using Index = uint64_t;
 using EventID = uint64_t;
 using Str = std::string;
 using WStr = std::wstring;
+using Stream = std::stringstream;
 
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;
 using MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>;
