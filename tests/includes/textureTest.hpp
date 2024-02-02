@@ -5,6 +5,4 @@
 #include "../../includes/texture.hpp"
 #include "../../includes/window.hpp"
 
-using namespace GeoFrame;
-
 void texture_drawing_test();

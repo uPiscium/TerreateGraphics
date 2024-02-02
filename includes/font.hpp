@@ -7,6 +7,7 @@
 #include "texture.hpp"
 
 namespace GeoFrame {
+namespace Core {
 struct Character {
   unsigned codepoint;
   Shared<Texture> texture;
@@ -87,4 +88,5 @@ public:
 
   operator bool() const override { return mFace != nullptr; }
 };
+} // namespace Core
 } // namespace GeoFrame

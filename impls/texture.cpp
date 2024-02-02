@@ -1,6 +1,7 @@
 #include "../includes/texture.hpp"
 
 namespace GeoFrame {
+namespace Core {
 Tag Texture::sTag = ResourceBase::sTag + Tag("Texture");
 
 void Texture::SetFilter(FilterType const &filter) {
@@ -144,4 +145,5 @@ void CubeTexture::LoadDatas(Vec<TextureData> const &datas) {
     this->LoadData((CubeFace)((unsigned)CubeFace::RIGHT + i), datas[i]);
   }
 }
+} // namespace Core
 } // namespace GeoFrame

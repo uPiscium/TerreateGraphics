@@ -7,7 +7,6 @@
   - [Linux](#linux)
   - [Test codes](#test-codes)
 - [Examples](#examples)
-- [License](#license)
 - [Contact](#contact)
 
 # How to use
@@ -30,9 +29,6 @@ You can test `GeoFrame` with `testBuild.bat` or `testBuild.sh`. Then run `runTes
 ```cpp
 #include "GeoFrame.hpp"
 ```
-
-# License
-BSD3(BSD 3-Clause "New" or "Revised" License)
 
 # Contact
 If you have any questions, please contact me by email.

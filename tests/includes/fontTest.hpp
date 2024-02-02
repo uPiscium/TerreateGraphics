@@ -6,6 +6,4 @@
 #include "../../includes/texture.hpp"
 #include "../../includes/window.hpp"
 
-using namespace GeoFrame;
-
 void font_drawing_test();

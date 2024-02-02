@@ -5,6 +5,4 @@
 #include "../../includes/shader.hpp"
 #include "../../includes/window.hpp"
 
-using namespace GeoFrame;
-
 void screen_drawing_test();
