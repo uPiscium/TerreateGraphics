@@ -58,19 +58,12 @@ public:
                                     "in vec2 texCoord;\n"
                                     "out vec4 color;\n"
                                     "uniform sampler2D tex;\n"
-                                    "uniform sampler2D tex2;\n"
                                     "void main() {\n"
-                                    "    if (texCoord.x > 0.5) {\n"
-                                    "        color = texture(tex2, texCoord);\n"
-                                    "    } else {\n"
-                                    "        color = texture(tex, texCoord);\n"
-                                    "    }\n"
+                                    "    color = texture(tex, texCoord);\n"
                                     "}\n");
     mShader.Compile();
     mShader.ActiveTexture(TextureTargets::TEX_0);
     mShader.SetInt("tex", 0);
-    mShader.ActiveTexture(TextureTargets::TEX_1);
-    mShader.SetInt("tex2", 1);
   }
 
   void OnFrame(Window *window) override {
@@ -86,15 +79,11 @@ public:
     mScreen.Unbind();
 
     window->Bind();
-    auto &texture = mScreen[0];
-    auto &texture2 = mScreen[1];
     mShader.Use();
     mShader.ActiveTexture(TextureTargets::TEX_0);
+    auto texture = mScreen.GetTexture();
     texture->Bind();
-    mShader.ActiveTexture(TextureTargets::TEX_1);
-    texture2->Bind();
     mBuffer.Draw(DrawMode::TRIANGLES);
-    texture2->Unbind();
     texture->Unbind();
 
     window->Swap();
@@ -103,7 +92,7 @@ public:
 
 void screen_drawing_test() {
   GeoFrameContext context = Context::AcquireInstance();
-  Window window(800, 600, "Buffer Drawing Test", WindowSettings());
+  Window window(800, 600, "Screen Drawing Test", WindowSettings());
 
   ScreenTest controller;
   window.SetWindowController(&controller);
