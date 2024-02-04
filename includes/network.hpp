@@ -135,17 +135,14 @@ public:
 
 class Socket : public Geobject {
 private:
-  M_DISABLE_COPY_AND_ASSIGN(Socket);
-
-private:
   int mSocket = -1;
-  Mutex mMutex;
 
 public:
   Socket() = default;
   Socket(SocketType const &type,
          SocketProtocol const &protocol = SocketProtocol::IPV4);
   Socket(int const &socket) : mSocket(socket) {}
+  Socket(Socket const &socket) : mSocket(socket.mSocket) {}
   Socket(Socket &&socket);
   ~Socket() override { this->Close(); }
 
@@ -158,13 +155,45 @@ public:
     listen(mSocket, maxConnections);
   }
   Socket Accept(Endpoint *info = nullptr);
-  void Send(Packet const &packet);
-  void SendTo(Packet const &packet, Address const *address);
-  Packet Receive(size_t const &maxSize = 1024);
+  void Send(Packet const &packet) {
+    send(mSocket, packet.GetRawData(), packet.GetSize(), 0);
+  }
+  void SendTo(Packet const &packet, Address const *address) {
+    sendto(mSocket, packet.GetRawData(), packet.GetSize(), 0,
+           address->GetInfo(), address->GetSize());
+  }
+  Packet Receive(size_t const &maxSize = 8192);
   Packet ReceiveFrom(IPv4Address *address = nullptr,
-                     size_t const &maxSize = 1024);
+                     size_t const &maxSize = 8192);
   // Packet ReceiveFrom(IPv6Address *address = nullptr,
   //                 size_t const &maxSize = 1024);
+  Socket &operator=(Socket const &socket);
+  operator bool() const override { return mSocket != -1; }
+};
+
+class Connector : public Geobject {
+private:
+  M_DISABLE_COPY_AND_ASSIGN(Connector);
+
+protected:
+  Socket mSocket;
+  Thread mAcceptThread;
+  bool mRunning = false;
+
+protected:
+  void AcceptThread();
+
+public:
+  Connector() = default;
+  Connector(SocketType const &type) : mSocket(type) {}
+  virtual ~Connector();
+
+  virtual bool IsRunning() const { return mRunning; }
+
+  virtual void Accept(IPv4Address const &address);
+  virtual void Close();
+
+  virtual operator bool() const override { return mRunning; }
 };
 
 class TCPServer : public Geobject {
@@ -184,7 +213,7 @@ private:
   Receiver mReceiver = [](Packet const &, IP const &, Port const &) {};
 
 protected:
-  void ReceiverThread(Socket &client, IP const &ip, Port const &port);
+  void ReceiverThread(size_t const &index, IP const &ip, Port const &port);
   void Receive(Socket &client, IP const &ip, Port const &port);
   void ServerThread();
 

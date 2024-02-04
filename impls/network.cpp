@@ -1,4 +1,5 @@
 #include "../includes/network.hpp"
+#include <cstdint>
 #include <sys/socket.h>
 
 namespace GeoFrame {
@@ -84,21 +85,10 @@ Socket Socket::Accept(Endpoint *endpoint) {
   return std::move(Socket(socket));
 }
 
-void Socket::Send(Packet const &packet) {
-  UniqueLock<Mutex> lock(mMutex);
-  send(mSocket, packet.GetRawData(), packet.GetSize(), 0);
-}
-void Socket::SendTo(Packet const &packet, Address const *address) {
-  UniqueLock<Mutex> lock(mMutex);
-  sendto(mSocket, packet.GetRawData(), packet.GetSize(), 0, address->GetInfo(),
-         address->GetSize());
-}
-
 Packet Socket::Receive(size_t const &maxSize) {
-  UniqueLock<Mutex> lock(mMutex);
   Packet packet;
   Byte *buffer = new Byte[maxSize];
-  ssize_t size = recv(mSocket, buffer, maxSize, 0);
+  int64_t size = recv(mSocket, (void *)buffer, maxSize, 0);
   if (size == -1) {
     M_GEO_THROW(KernelError, "Failed to receive packet");
   }
@@ -108,7 +98,6 @@ Packet Socket::Receive(size_t const &maxSize) {
 }
 
 Packet Socket::ReceiveFrom(IPv4Address *address, size_t const &maxSize) {
-  UniqueLock<Mutex> lock(mMutex);
   Packet packet;
   Byte *buffer = new Byte[maxSize];
   sockaddr_in info = {};
@@ -127,8 +116,15 @@ Packet Socket::ReceiveFrom(IPv4Address *address, size_t const &maxSize) {
   return packet;
 }
 
-void TCPServer::ReceiverThread(Socket &client, IP const &ip, Port const &port) {
+Socket &Socket::operator=(Socket const &socket) {
+  mSocket = socket.mSocket;
+  return *this;
+}
+
+void TCPServer::ReceiverThread(size_t const &index, IP const &ip,
+                               Port const &port) {
   while (mRunning) {
+    Socket client = mClients[index];
     this->Receive(client, ip, port);
   }
 }
@@ -144,10 +140,10 @@ void TCPServer::ServerThread() {
     Socket client = mAccepter.Accept((Endpoint *)&info);
     IP ip = inet_ntoa(info.sin_addr);
     Port port = ntohs(info.sin_port);
-    mClients.push_back(std::move(client));
-    mClientThreads.push_back(Thread([this, &client, ip, port]() {
-      this->ReceiverThread(client, ip, port);
-    }));
+    mClients.push_back(client);
+    size_t index = mClients.size() - 1;
+    mClientThreads.push_back(Thread(
+        [this, index, ip, port]() { this->ReceiverThread(index, ip, port); }));
   }
 }
 
