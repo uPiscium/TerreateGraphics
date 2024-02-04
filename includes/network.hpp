@@ -15,7 +15,9 @@ namespace Network {
 using IP = Str;
 using Port = uint16_t;
 using Endpoint = sockaddr;
-using Byte = uint8_t;
+using Byte = char;
+using IPv4Endpoint = sockaddr_in;
+using IPv6Endpoint = sockaddr_in6;
 
 enum class SocketProtocol { IPV4 = AF_INET, IPV6 = AF_INET6 };
 enum class SocketType { TCP = SOCK_STREAM, UDP = SOCK_DGRAM };
@@ -37,7 +39,7 @@ public:
   size_t GetSize() const { return mData.size(); }
   Byte const *GetRawData() const { return mData.data(); }
 
-  void Clear() { mData.clear(); }
+  void Clear();
   void Read(Byte *data, size_t const &size);
   void Write(Byte const *data, size_t const &size) {
     mData.insert(mData.end(), data, data + size);
@@ -46,6 +48,9 @@ public:
     mData.insert(mData.end(), data, data + size);
   }
   void Union(Vec<Byte> const &data) {
+    mData.insert(mData.end(), data.begin(), data.end());
+  }
+  void Union(Str const &data) {
     mData.insert(mData.end(), data.begin(), data.end());
   }
   void Union(Packet const &packet) {
@@ -144,7 +149,7 @@ public:
   Socket(int const &socket) : mSocket(socket) {}
   Socket(Socket const &socket) : mSocket(socket.mSocket) {}
   Socket(Socket &&socket);
-  ~Socket() override { this->Close(); }
+  ~Socket() override {}
 
   void Connect(Address const *address);
   void Close();
@@ -171,106 +176,59 @@ public:
   operator bool() const override { return mSocket != -1; }
 };
 
-class Connector : public Geobject {
+class TCPSocket : public Geobject {
 private:
-  M_DISABLE_COPY_AND_ASSIGN(Connector);
-
-protected:
   Socket mSocket;
-  Thread mAcceptThread;
-  bool mRunning = false;
-
-protected:
-  void AcceptThread();
+  bool mConnected = false;
+  bool mBound = false;
+  bool mListening = false;
 
 public:
-  Connector() = default;
-  Connector(SocketType const &type) : mSocket(type) {}
-  virtual ~Connector();
+  TCPSocket() : mSocket(SocketType::TCP) {}
+  TCPSocket(Socket const &socket) : mSocket(socket) {}
+  TCPSocket(TCPSocket const &socket) : mSocket(socket.mSocket) {}
+  TCPSocket(TCPSocket &&socket) : mSocket(std::move(socket.mSocket)) {}
+  ~TCPSocket() override = default;
 
-  virtual bool IsRunning() const { return mRunning; }
+  bool IsConnected() const { return mConnected; }
+  bool IsBound() const { return mBound; }
+  bool IsListening() const { return mListening; }
 
-  virtual void Accept(IPv4Address const &address);
-  virtual void Close();
-
-  virtual operator bool() const override { return mRunning; }
-};
-
-class TCPServer : public Geobject {
-private:
-  M_DISABLE_COPY_AND_ASSIGN(TCPServer);
-
-public:
-  using Receiver = Function<void(Packet const &, IP const &, Port const &)>;
-
-private:
-  Socket mAccepter;
-  Vec<Socket> mClients;
-  Thread mServerThread;
-  Vec<Thread> mClientThreads;
-  bool mRunning = false;
-  unsigned mMaxClients = 10;
-  Receiver mReceiver = [](Packet const &, IP const &, Port const &) {};
-
-protected:
-  void ReceiverThread(size_t const &index, IP const &ip, Port const &port);
-  void Receive(Socket &client, IP const &ip, Port const &port);
-  void ServerThread();
-
-public:
-  TCPServer(IPv4Address const &address, unsigned const &maxClients = 10);
-  // TCPServer(IPv6Address const &address, unsigned const &maxClients = 10);
-  ~TCPServer() override;
-
-  Vec<Socket> const &GetClients() const { return mClients; }
-
-  void SetReceiver(Receiver const &receiver) { mReceiver = receiver; }
-
-  bool IsRunning() const { return mRunning; }
-
-  void Start();
+  void Connect(IP const &ip, Port const &port);
   void Close();
-
-  operator bool() const override { return mRunning; }
-};
-
-class TCPClient : public Geobject {
-private:
-  M_DISABLE_COPY_AND_ASSIGN(TCPClient);
-
-public:
-  ;
-};
-
-class ClientBase : public Geobject {
-private:
-  M_DISABLE_COPY_AND_ASSIGN(ClientBase);
-
-protected:
-  Socket mSocket;
-  Vec<Packet> mPackets;
-  Thread mReceiveThread;
-  bool mRunning = false;
-
-protected:
-  void ReceiveThread();
-
-public:
-  ClientBase() = default;
-  ClientBase(SocketType const &type) : mSocket(type) {}
-  // ClientBase(IPv6Address const &address);
-  virtual ~ClientBase();
-
-  virtual Vec<Packet> const &GetPackets() const;
-
-  virtual void Receive();
-  virtual void Connect(IPv4Address const &address) {
-    mSocket.Connect(&address);
+  void Bind(IP const &ip, Port const &port);
+  void Listen(unsigned const &maxConnections = 10);
+  TCPSocket Accept(IP *ip = nullptr, Port *port = nullptr);
+  void Send(Packet const &packet) { mSocket.Send(packet); }
+  Packet Receive(size_t const &maxSize = 8192) {
+    return mSocket.Receive(maxSize);
   }
 
-  virtual void Send(Packet const &packet);
-  virtual void Send(IPv4Address const &address, Packet const &packet);
-  // virtual void Send(IPv6Address const &address, Packet const &packet);
+  TCPSocket &operator=(TCPSocket const &socket);
+  operator bool() const override { return mSocket; }
+};
+
+class UDPSocket : public Geobject {
+private:
+  Socket mSocket;
+  bool mBound = false;
+
+public:
+  UDPSocket() : mSocket(SocketType::UDP) {}
+  UDPSocket(Socket const &socket) : mSocket(socket) {}
+  UDPSocket(UDPSocket const &socket) : mSocket(socket.mSocket) {}
+  UDPSocket(UDPSocket &&socket) : mSocket(std::move(socket.mSocket)) {}
+  ~UDPSocket() override = default;
+
+  bool IsBound() const { return mBound; }
+
+  void Close() { mSocket.Close(); }
+  void Bind(IP const &ip, Port const &port);
+  void SendTo(Packet const &packet, IP const &ip, Port const &port);
+  Packet ReceiveFrom(IP *ip = nullptr, Port *port = nullptr,
+                     size_t const &maxSize = 8192);
+  UDPSocket &operator=(UDPSocket const &socket);
+  operator bool() const override { return mSocket; }
 };
 } // namespace Network
 } // namespace GeoFrame

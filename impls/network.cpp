@@ -12,6 +12,11 @@ void Packet::Read(Byte *data, size_t const &size) {
   mOffset += size;
 }
 
+void Packet::Clear() {
+  mData.clear();
+  mOffset = 0;
+}
+
 Packet &Packet::operator=(Packet const &packet) {
   mData = packet.mData;
   return *this;
@@ -63,6 +68,7 @@ Socket::Socket(Socket &&socket) {
 
 void Socket::Connect(Address const *address) {
   if (connect(mSocket, address->GetInfo(), address->GetSize()) == -1) {
+    std::cout << strerror(errno) << std::endl;
     M_GEO_THROW(KernelError, "Failed to connect socket");
   }
 }
@@ -82,7 +88,7 @@ Socket Socket::Accept(Endpoint *endpoint) {
     M_GEO_THROW(KernelError, "Failed to accept socket");
   }
   Socket client(socket);
-  return std::move(Socket(socket));
+  return Socket(socket);
 }
 
 Packet Socket::Receive(size_t const &maxSize) {
@@ -91,6 +97,8 @@ Packet Socket::Receive(size_t const &maxSize) {
   int64_t size = recv(mSocket, (void *)buffer, maxSize, 0);
   if (size == -1) {
     M_GEO_THROW(KernelError, "Failed to receive packet");
+  } else if (size == 0) {
+    mSocket = -1; // Close the socket
   }
   packet.Union(buffer, size);
   delete[] buffer;
@@ -121,53 +129,76 @@ Socket &Socket::operator=(Socket const &socket) {
   return *this;
 }
 
-void TCPServer::ReceiverThread(size_t const &index, IP const &ip,
-                               Port const &port) {
-  while (mRunning) {
-    Socket client = mClients[index];
-    this->Receive(client, ip, port);
+void TCPSocket::Connect(IP const &ip, Port const &port) {
+  IPv4Address address(ip, port);
+  mSocket.Connect(&address);
+  mConnected = true;
+}
+
+void TCPSocket::Close() {
+  mSocket.Close();
+  mConnected = false;
+  mBound = false;
+  mListening = false;
+}
+
+void TCPSocket::Bind(IP const &ip, Port const &port) {
+  IPv4Address address(ip, port);
+  mSocket.Bind(&address);
+  mBound = true;
+}
+void TCPSocket::Listen(unsigned const &maxConnections) {
+  mSocket.Listen(maxConnections);
+  mListening = true;
+}
+
+TCPSocket TCPSocket::Accept(IP *ip, Port *port) {
+  IPv4Endpoint endpoint;
+  Socket socket = mSocket.Accept(reinterpret_cast<Endpoint *>(&endpoint));
+  if (ip != nullptr) {
+    *ip = htonl(endpoint.sin_addr.s_addr);
   }
-}
-
-void TCPServer::Receive(Socket &client, IP const &ip, Port const &port) {
-  Packet packet = client.Receive();
-  mReceiver(packet, ip, port);
-}
-
-void TCPServer::ServerThread() {
-  sockaddr_in info = {};
-  while (mRunning) {
-    Socket client = mAccepter.Accept((Endpoint *)&info);
-    IP ip = inet_ntoa(info.sin_addr);
-    Port port = ntohs(info.sin_port);
-    mClients.push_back(client);
-    size_t index = mClients.size() - 1;
-    mClientThreads.push_back(Thread(
-        [this, index, ip, port]() { this->ReceiverThread(index, ip, port); }));
+  if (port != nullptr) {
+    *port = htons(endpoint.sin_port);
   }
+  return TCPSocket(socket);
 }
 
-TCPServer::TCPServer(IPv4Address const &address, unsigned const &maxClients)
-    : mAccepter(SocketType::TCP) {
-  mAccepter.Bind(&address);
-  mAccepter.Listen(maxClients);
+TCPSocket &TCPSocket::operator=(TCPSocket const &socket) {
+  mSocket = socket.mSocket;
+  mConnected = socket.mConnected;
+  mBound = socket.mBound;
+  mListening = socket.mListening;
+  return *this;
 }
 
-TCPServer::~TCPServer() { this->Close(); }
-
-void TCPServer::Start() {
-  mRunning = true;
-  mServerThread = Thread([this]() { this->ServerThread(); });
-  mServerThread.join();
+void UDPSocket::Bind(IP const &ip, Port const &port) {
+  IPv4Address address(ip, port);
+  mSocket.Bind(&address);
+  mBound = true;
 }
 
-void TCPServer::Close() {
-  mAccepter.Close();
-  for (auto &client : mClients) {
-    client.Close();
+void UDPSocket::SendTo(Packet const &packet, IP const &ip, Port const &port) {
+  IPv4Address address(ip, port);
+  mSocket.SendTo(packet, &address);
+}
+
+Packet UDPSocket::ReceiveFrom(IP *ip, Port *port, size_t const &maxSize) {
+  IPv4Address address;
+  Packet packet = mSocket.ReceiveFrom(&address, maxSize);
+  if (ip != nullptr) {
+    *ip = address.GetIP();
   }
-  mRunning = false;
-  mClients.clear();
+  if (port != nullptr) {
+    *port = address.GetPort();
+  }
+  return packet;
+}
+
+UDPSocket &UDPSocket::operator=(UDPSocket const &socket) {
+  mSocket = socket.mSocket;
+  mBound = socket.mBound;
+  return *this;
 }
 } // namespace Network
 } // namespace GeoFrame
