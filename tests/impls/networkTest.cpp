@@ -23,22 +23,8 @@ void server_test() {
   return;
 }
 
-void client_test() {
-  TCPSocket socket;
-  socket.Connect("127.0.0.1", 12800);
-  Packet packet;
-  Str message;
-  int8_t buffer[1024];
-  while (true) {
-    std::cin >> message;
-    if (message == "exit") {
-      break;
-    }
-    packet.Clear();
-    packet.Write(message.c_str(), message.size());
-    socket.Send(packet);
-    std::cout << "Sent: " << message << std::endl;
-  }
-  socket.Close();
-  return;
-}
+void client_test() {}
+
+int main() {
+  server_test();
+  return 0;

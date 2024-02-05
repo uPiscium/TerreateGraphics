@@ -12,7 +12,7 @@ private:
 public:
   FontTest()
       : mBuffer("Rect", BufferUsage::DYNAMIC_DRAW), mShader("RectShader"),
-        mFont("../../../resources/AsebiMin-Light.otf", 48) {
+        mFont("../resources/AsebiMin-Light.otf", 48) {
     mFont.LoadCharacter(L'A');
 
     auto attrs = Attribute::GenerateAttributes({2, 2});
@@ -39,7 +39,7 @@ public:
                                     "    color = vec4(a, 0.0, 0.0, a);\n"
                                     "}\n");
     mShader.Compile();
-    mShader.ActiveTexture(TextureTargets::TEX_1);
+    mShader.ActiveTexture(TextureTargets::TEX_0);
     mShader.SetInt("tex", 0);
     mShader.SetBlending(BlendingFuntion::SRC_ALPHA,
                         BlendingFuntion::ONE_MINUS_SRC_ALPHA);
@@ -70,4 +70,9 @@ void font_drawing_test() {
   while (!window.IsClosed()) {
     window.Frame();
   }
+}
+
+int main() {
+  font_drawing_test();
+  return 0;
 }

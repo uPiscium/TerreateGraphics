@@ -1,29 +1,99 @@
 cmake_minimum_required(VERSION 3.20)
-project(Tests)
+set(PROJECT_NAMES
+    "buffer"
+    "font"
+    "job"
+    "network"
+    "screen"
+    "texture"
+    "window")
+
+if(NOT DEFINED TARGET)
+  message(STATUS "TARGET is not defined...")
+  set(TARGET "window")
+  message(STATUS "TARGET is set to default value: window")
+else()
+  message(STATUS "TARGET is : ${TARGET}")
+endif()
+project(${TARGET}Test)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(
-  ${PROJECT_NAME}
-  main.cpp
-  drawingTest.cpp
-  fontTest.cpp
-  jobTest.cpp
-  networkTest.cpp
-  screenTest.cpp
-  textureTest.cpp
-  windowTest.cpp)
+function(buildBuffer)
+  add_executable(${PROJECT_NAME} drawingTest.cpp)
+  target_link_libraries(${PROJECT_NAME} GeoFrame)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
+endfunction()
 
-if(UNIX)
-  message(STATUS "Environment is UNIX-like")
+function(buildFont)
+  add_executable(${PROJECT_NAME} fontTest.cpp)
   target_link_libraries(${PROJECT_NAME} GeoFrame)
-elseif(WIN32)
-  message(STATUS "Environment is Windows")
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
+endfunction()
+
+function(buildJob)
+  add_executable(${PROJECT_NAME} jobTest.cpp)
   target_link_libraries(${PROJECT_NAME} GeoFrame)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
+endfunction()
+
+function(buildNetwork)
+  add_executable(${PROJECT_NAME} networkTest.cpp)
+  target_link_libraries(${PROJECT_NAME} GeoFrame)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
+endfunction()
+
+function(buildScreen)
+  add_executable(${PROJECT_NAME} screenTest.cpp)
+  target_link_libraries(${PROJECT_NAME} GeoFrame)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
+endfunction()
+
+function(buildTexture)
+  add_executable(${PROJECT_NAME} textureTest.cpp)
+  target_link_libraries(${PROJECT_NAME} GeoFrame)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
+endfunction()
+
+function(buildWindow)
+  add_executable(${PROJECT_NAME} windowTest.cpp)
+  target_link_libraries(${PROJECT_NAME} GeoFrame)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
+endfunction()
+
+if(${TARGET} STREQUAL "buffer")
+  buildbuffer()
+elseif(${TARGET} STREQUAL "font")
+  buildfont()
+elseif(${TARGET} STREQUAL "job")
+  buildjob()
+elseif(${TARGET} STREQUAL "network")
+  buildnetwork()
+elseif(${TARGET} STREQUAL "screen")
+  buildscreen()
+elseif(${TARGET} STREQUAL "texture")
+  buildtexture()
+elseif(${TARGET} STREQUAL "window")
+  buildwindow()
+else()
+  message(STATUS "TARGET target is not recognized...")
+  set(TARGET "window")
+  message(STATUS "TARGET target is set to default value: window")
+  buildwindow()
 endif()
-
-target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
-target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
-target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
