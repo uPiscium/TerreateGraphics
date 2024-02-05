@@ -46,3 +46,8 @@ void window_generation_test(unsigned const &width, unsigned const &height,
     window.Frame();
   }
 }
+
+int main() {
+  window_generation_test(800, 600, "Window Test");
+  return 0;
+}

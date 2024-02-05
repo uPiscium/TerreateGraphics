@@ -101,3 +101,8 @@ void screen_drawing_test() {
     window.Frame();
   }
 }
+
+int main() {
+  screen_drawing_test();
+  return 0;
+}

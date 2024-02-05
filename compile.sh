@@ -1,5 +1,5 @@
 mkdir -p build
 cd build
-cmake ../impls
+cmake ../
 cmake --build .
 cd ..
