@@ -10,3 +10,8 @@ void server_test() {
 }
 
 void client_test() {}
+
+int main() {
+  server_test();
+  return 0;
+}

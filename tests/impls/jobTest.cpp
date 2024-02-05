@@ -32,3 +32,8 @@ void job_test() {
 
   jobs.WaitForAll();
 }
+
+int main() {
+  job_test();
+  return 0;
+}

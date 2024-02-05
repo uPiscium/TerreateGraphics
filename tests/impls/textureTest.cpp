@@ -68,3 +68,8 @@ void texture_drawing_test() {
     window.Frame();
   }
 }
+
+int main() {
+  texture_drawing_test();
+  return 0;
+}

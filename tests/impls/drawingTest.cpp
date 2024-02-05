@@ -51,3 +51,8 @@ void buffer_drawing_test() {
     window.Frame();
   }
 }
+
+int main() {
+  buffer_drawing_test();
+  return 0;
+}
