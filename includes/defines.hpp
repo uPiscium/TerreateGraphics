@@ -58,6 +58,7 @@
 
 namespace GeoFrame {
 // Typedefs
+// std types
 template <typename S, typename T> using Map = std::unordered_map<S, T>;
 template <typename T> using Pair = std::pair<T, T>;
 template <typename T> using Set = std::unordered_set<T>;
@@ -69,6 +70,18 @@ template <typename T> using LockGuard = std::lock_guard<T>;
 template <typename T> using Atomic = std::atomic<T>;
 template <typename T> using Vec = std::vector<T>;
 template <typename T> using Function = std::function<T>;
+
+using Mutex = std::mutex;
+using Thread = std::thread;
+using CondVar = std::condition_variable;
+using ID = uint32_t;
+using Index = uint64_t;
+using EventID = uint64_t;
+using Str = std::string;
+using WStr = std::wstring;
+using Stream = std::stringstream;
+
+// GeoMath types
 template <typename T> using vec2T = GeoMath::vec2<T>;
 template <typename T> using vec3T = GeoMath::vec3<T>;
 template <typename T> using vec4T = GeoMath::vec4<T>;
@@ -96,20 +109,23 @@ using mat4x3 = mat4x3T<float>;
 using mat4 = mat4T<float>;
 using Quaternion = QuaternionT<float>;
 
-using Mutex = std::mutex;
-using Thread = std::thread;
-using CondVar = std::condition_variable;
-using ID = uint32_t;
-using Index = uint64_t;
-using EventID = uint64_t;
-using Str = std::string;
-using WStr = std::wstring;
-using Stream = std::stringstream;
+// Physics types
+using Position = vec3;
+using Force = vec3;
+using Velocity = vec3;
+using Acceleration = vec3;
+using AngularVelocity = Quaternion;
+using AngularAcceleration = Quaternion;
+using Mass = float;
+using Restitution = float;
+using Friction = float;
 
+// Callbacks
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;
 using MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>;
 using JoystickCallback = std::function<void(int joystickID, int event)>;
 
+// Concepts
 template <typename Derived, typename Base>
 concept extends = std::derived_from<Derived, Base>;
 
