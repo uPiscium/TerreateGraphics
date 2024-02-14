@@ -14,13 +14,25 @@ private:
   Map<Str, Queue<EventCallback>> mTriggers;
 
 public:
+  static ObjectID const sOID;
+
+public:
   /*
    * @brief: Eventsystem is a event driven system that allows for
    * callbacks to be registered to events and for events
    * to be published to the system.
    */
-  EventSystem() {}
-  ~EventSystem() {}
+  EventSystem() : Geobject(EventSystem::sOID) {}
+  /*
+   * @brief: Eventsystem is a event driven system that allows for
+   * callbacks to be registered to events and for events
+   * to be published to the system.
+   * @param: id: the id of the object
+   * @note: This constructor is used in derived classes to set the id
+   * of the object.
+   */
+  EventSystem(ObjectID const &id) : Geobject(id) {}
+  virtual ~EventSystem() override = default;
 
   /*
    * @brief: Register a callback to an event

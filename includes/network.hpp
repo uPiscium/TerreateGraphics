@@ -91,7 +91,7 @@ public:
   virtual void SetInfo(Endpoint const *info) {}
 };
 
-class IPv4Address : public Address {
+class IPv4Address final : public Address {
 private:
   sockaddr_in mInfo = {};
 
@@ -138,16 +138,20 @@ public:
 };
 */
 
-class Socket : public Geobject {
+class Socket final : public Geobject {
 private:
   int mSocket = -1;
 
 public:
-  Socket() = default;
+  static ObjectID const sOID;
+
+public:
+  Socket() : Geobject(Socket::sOID) {}
   Socket(SocketType const &type,
          SocketProtocol const &protocol = SocketProtocol::IPV4);
-  Socket(int const &socket) : mSocket(socket) {}
-  Socket(Socket const &socket) : mSocket(socket.mSocket) {}
+  Socket(int const &socket) : Geobject(Socket::sOID), mSocket(socket) {}
+  Socket(Socket const &socket)
+      : Geobject(Socket::sOID), mSocket(socket.mSocket) {}
   Socket(Socket &&socket);
   ~Socket() override {}
 
@@ -176,7 +180,7 @@ public:
   operator bool() const override { return mSocket != -1; }
 };
 
-class TCPSocket : public Geobject {
+class TCPSocket final : public Geobject {
 private:
   Socket mSocket;
   bool mConnected = false;
@@ -184,10 +188,16 @@ private:
   bool mListening = false;
 
 public:
-  TCPSocket() : mSocket(SocketType::TCP) {}
-  TCPSocket(Socket const &socket) : mSocket(socket) {}
-  TCPSocket(TCPSocket const &socket) : mSocket(socket.mSocket) {}
-  TCPSocket(TCPSocket &&socket) : mSocket(std::move(socket.mSocket)) {}
+  static ObjectID const sOID;
+
+public:
+  TCPSocket() : Geobject(TCPSocket::sOID), mSocket(SocketType::TCP) {}
+  TCPSocket(Socket const &socket)
+      : Geobject(TCPSocket::sOID), mSocket(socket) {}
+  TCPSocket(TCPSocket const &socket)
+      : Geobject(TCPSocket::sOID), mSocket(socket.mSocket) {}
+  TCPSocket(TCPSocket &&socket)
+      : Geobject(TCPSocket::sOID), mSocket(std::move(socket.mSocket)) {}
   ~TCPSocket() override = default;
 
   bool IsConnected() const { return mConnected; }
@@ -208,16 +218,22 @@ public:
   operator bool() const override { return mSocket; }
 };
 
-class UDPSocket : public Geobject {
+class UDPSocket final : public Geobject {
 private:
   Socket mSocket;
   bool mBound = false;
 
 public:
-  UDPSocket() : mSocket(SocketType::UDP) {}
-  UDPSocket(Socket const &socket) : mSocket(socket) {}
-  UDPSocket(UDPSocket const &socket) : mSocket(socket.mSocket) {}
-  UDPSocket(UDPSocket &&socket) : mSocket(std::move(socket.mSocket)) {}
+  static ObjectID const sOID;
+
+public:
+  UDPSocket() : Geobject(UDPSocket::sOID), mSocket(SocketType::UDP) {}
+  UDPSocket(Socket const &socket)
+      : Geobject(UDPSocket::sOID), mSocket(socket) {}
+  UDPSocket(UDPSocket const &socket)
+      : Geobject(UDPSocket::sOID), mSocket(socket.mSocket) {}
+  UDPSocket(UDPSocket &&socket)
+      : Geobject(UDPSocket::sOID), mSocket(std::move(socket.mSocket)) {}
   ~UDPSocket() override = default;
 
   bool IsBound() const { return mBound; }

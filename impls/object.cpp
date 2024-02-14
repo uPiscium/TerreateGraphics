@@ -2,7 +2,7 @@
 
 namespace GeoFrame {
 std::mt19937 UUID::sRandomEngine = std::mt19937(std::random_device()());
-Tag ResourceBase::sTag = Tag("Resource");
+ObjectID const Geobject::sOID = ObjectID("GEOBJECT");
 
 void UUID::GenerateUUID() {
   auto time = std::chrono::system_clock::now();
@@ -15,7 +15,7 @@ void UUID::GenerateUUID() {
   }
 }
 
-std::string UUID::ToString() const {
+Str UUID::ToString() const {
   std::stringstream ss;
   for (int i = 0; i < 8; i++) {
     short block = 0;
@@ -28,30 +28,20 @@ std::string UUID::ToString() const {
   return ss.str();
 }
 
-Tag Tag::operator+=(Str const &other) {
-  mTag += ".";
-  mTag += other;
-  return *this;
-}
-
-Tag Tag::operator+=(Tag const &other) {
-  mTag += ".";
-  mTag += other.mTag;
-  return *this;
-}
-
-Tag &Tag::operator=(Str const &other) {
-  mTag = other;
-  return *this;
-}
-
-Tag &Tag::operator=(Tag const &other) {
-  mTag = other.mTag;
-  return *this;
+Str ObjectID::ToUpper(Str const &str) {
+  Str upper = str;
+  for (auto &c : upper)
+    c = std::toupper(c);
+  return upper;
 }
 } // namespace GeoFrame
 
 std::ostream &operator<<(std::ostream &stream, const GeoFrame::UUID &uuid) {
   stream << uuid.ToString();
+  return stream;
+}
+
+std::ostream &operator<<(std::ostream &stream, const GeoFrame::ObjectID &id) {
+  stream << id.GetID();
   return stream;
 }

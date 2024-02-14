@@ -4,6 +4,10 @@
 
 namespace GeoFrame {
 namespace Network {
+ObjectID const Socket::sOID = ObjectID("SOCKET");
+ObjectID const TCPSocket::sOID = ObjectID("TCP_SOCKET");
+ObjectID const UDPSocket::sOID = ObjectID("UDP_SOCKET");
+
 void Packet::Read(Byte *data, size_t const &size) {
   if (mOffset + size > mData.size()) {
     M_GEO_THROW(KernelError, "Reading out of range");
@@ -54,14 +58,15 @@ IPv4Address::IPv4Address(IP const &ip, Port const &port) : Address() {
   mInfo.sin_addr.s_addr = inet_addr(ip.c_str());
 }
 
-Socket::Socket(SocketType const &type, SocketProtocol const &protocol) {
+Socket::Socket(SocketType const &type, SocketProtocol const &protocol)
+    : Geobject(Socket::sOID) {
   mSocket = socket((int)protocol, (int)type, 0);
   if (mSocket == -1) {
     M_GEO_THROW(KernelError, "Failed to create socket");
   }
 }
 
-Socket::Socket(Socket &&socket) {
+Socket::Socket(Socket &&socket) : Geobject(Socket::sOID) {
   mSocket = socket.mSocket;
   socket.mSocket = -1;
 }

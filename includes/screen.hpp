@@ -5,7 +5,7 @@
 
 namespace GeoFrame {
 namespace Core {
-class Screen : public ResourceBase {
+class Screen final : public Geobject {
 private:
   ID mFrameBuffer;
   unsigned mWidth;
@@ -18,7 +18,7 @@ private:
   void AddBuffer();
 
 public:
-  static Tag sTag;
+  static ObjectID const sOID;
 
 public:
   /*
@@ -27,7 +27,7 @@ public:
    * @param: height: height of screen
    */
   Screen(Str const &name, unsigned const &width, unsigned const &height);
-  ~Screen() override { this->Delete(); }
+  ~Screen() override;
 
   /*
    * @brief: Getter for width.
@@ -44,11 +44,6 @@ public:
    * @return: texture
    */
   Shared<Texture> const &GetTexture() const { return mTextures[0]; }
-
-  /*
-   * @brief: Delete screen resource.
-   */
-  void Delete() override;
 
   /*
    * @brief: Transcript to other screen.
