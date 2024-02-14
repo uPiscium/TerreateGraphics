@@ -16,7 +16,7 @@ struct Character {
   long advance;
 };
 
-class Font : public ResourceBase {
+class Font final : public Geobject {
 private:
   FT_Library mLibrary;
   FT_Face mFace;
@@ -27,7 +27,7 @@ private:
   M_DISABLE_COPY_AND_ASSIGN(Font);
 
 public:
-  static Tag sTag;
+  static ObjectID const sOID;
 
 public:
   /*
@@ -36,7 +36,7 @@ public:
    * @param: size: size of font
    */
   Font(Str const &path, unsigned const &size);
-  ~Font() override { this->Delete(); }
+  ~Font() override;
 
   /*
    * @brief: Getter for font size.
@@ -71,10 +71,6 @@ public:
    */
   Vec<Shared<Character>> AcquireCharacters(WStr const &text) const;
 
-  /*
-   * @brief: Delete font resource.
-   */
-  void Delete() override;
   /*
    * @brief: Loads character data.
    * @param: character: character to load

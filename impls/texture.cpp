@@ -2,7 +2,8 @@
 
 namespace GeoFrame {
 namespace Core {
-Tag Texture::sTag = ResourceBase::sTag + Tag("Texture");
+ObjectID const Texture::sOID = ObjectID("TEXTURE");
+ObjectID const CubeTexture::sOID = ObjectID("CUBETEXTURE");
 
 void Texture::SetFilter(FilterType const &filter) {
   mFilter = filter;

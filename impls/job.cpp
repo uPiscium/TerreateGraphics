@@ -3,7 +3,10 @@
 
 namespace GeoFrame {
 namespace Utils {
-void IJob::Run() {
+ObjectID const JobBase::sOID = ObjectID("JOB_BASE");
+ObjectID const SimpleJob::sOID = ObjectID("SIMPLE_JOB");
+
+void JobBase::Run() {
   try {
     this->Execute();
   } catch (...) {
@@ -12,7 +15,7 @@ void IJob::Run() {
   mFinished = true;
 }
 
-bool IJob::IsExecutable() const {
+bool JobBase::IsExecutable() const {
   for (auto &dep : mDependencies) {
     if (!dep->IsFinished()) {
       return false;
@@ -28,7 +31,7 @@ SimpleJob &SimpleJob::operator=(Function<void()> const &target) {
 
 void JobSystem::WorkerThread() {
   while (!mStop) {
-    IJob *job = nullptr;
+    JobBase *job = nullptr;
     {
       std::unique_lock<std::mutex> lock(mJobLock);
       mCondition.wait(lock, [this] { return !mJobs.empty() || mStop; });
@@ -58,7 +61,7 @@ void JobSystem::WorkerThread() {
   }
 }
 
-void JobSystem::DaemonThread(IJob *job) {
+void JobSystem::DaemonThread(JobBase *job) {
   while (!mStop) {
     job->Run();
   }
@@ -83,7 +86,7 @@ void JobSystem::Stop() {
   }
 }
 
-void JobSystem::Schedule(IJob *job) {
+void JobSystem::Schedule(JobBase *job) {
   {
     std::unique_lock<std::mutex> lock(mJobLock);
     mJobs.push(job);

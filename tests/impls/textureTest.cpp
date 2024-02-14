@@ -35,10 +35,10 @@ public:
                                     "    color = texture(tex, texCoord);\n"
                                     "}\n");
     mShader.Compile();
-    mShader.ActiveTexture(TextureTargets::TEX_1);
+    mShader.ActiveTexture(TextureTargets::TEX_0);
     mShader.SetInt("tex", 0);
 
-    auto texData = Texture::LoadTexture("../../../resources/testImage.png");
+    auto texData = Texture::LoadTexture("../resources/testImage.png");
     mTexture.LoadData(texData);
   }
 

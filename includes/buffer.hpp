@@ -57,7 +57,7 @@ public:
                                            Vec<size_t> const &strides);
 };
 
-class Buffer : public ResourceBase {
+class Buffer final : public Geobject {
 private:
   ID mVAO = 0;
   ID mVBO = 0;
@@ -70,7 +70,7 @@ private:
   bool mSetIBO = false;
 
 public:
-  static Tag sTag;
+  static ObjectID const sOID;
 
 public:
   M_DISABLE_COPY_AND_ASSIGN(Buffer);
@@ -82,7 +82,7 @@ public:
    * @param: usage: Usage of this buffer on OpenGL.
    */
   Buffer(Str const &name, BufferUsage usage);
-  ~Buffer() { this->Delete(); }
+  ~Buffer() override;
 
   /*
    * @brief: Get buffer usage on opengl.
@@ -90,10 +90,6 @@ public:
    */
   BufferUsage const &GetUsage() const { return mUsage; }
 
-  /*
-   * @brief: Delete buffer resource.
-   */
-  void Delete() override;
   /*
    * @brief: Load vertex buffer data.
    * @param: data: Pointer to vertex buffer data to be loaded.

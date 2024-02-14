@@ -3,10 +3,10 @@
 
 namespace GeoFrame {
 namespace Core {
-Tag Screen::sTag = ResourceBase::sTag + Tag("Screen");
+ObjectID const Screen::sOID = ObjectID("SCREEN");
 
 Screen::Screen(Str const &name, unsigned const &width, unsigned const &height)
-    : mWidth(width), mHeight(height), ResourceBase(name, sTag) {
+    : mWidth(width), mHeight(height), Geobject(Screen::sOID) {
   glGenFramebuffers(1, &mFrameBuffer);
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
   unsigned rbo = 0;
@@ -20,7 +20,7 @@ Screen::Screen(Str const &name, unsigned const &width, unsigned const &height)
   this->AddBuffer();
 }
 
-void Screen::Delete() {
+Screen::~Screen() {
   mTextures.clear();
   glDeleteFramebuffers(1, &mFrameBuffer);
 }

@@ -30,7 +30,7 @@ struct ShaderOption {
   StencilOperation dpPass = StencilOperation::KEEP;
 };
 
-class Shader : public ResourceBase {
+class Shader final : public Geobject {
 private:
   ID mShaderID = 0;
   Str mVertexShaderSource = "";
@@ -39,17 +39,17 @@ private:
   ShaderOption mOption;
 
 public:
-  static Tag sTag;
+  static ObjectID const sOID;
 
 public:
   /*
    * @brief: OpenGL shader wrapper class. This class handles vertex, fragment,
    * and geometry shaders.
    */
-  Shader(Str const &name) : ResourceBase(name, sTag) {
+  Shader(Str const &name) : Geobject(Shader::sOID) {
     mShaderID = glCreateProgram();
   }
-  ~Shader() { this->Delete(); }
+  ~Shader() override { glDeleteProgram(mShaderID); }
 
   /*
    * @brief: Getter for shader uniform ID.
@@ -253,10 +253,6 @@ public:
                            StencilOperation const &dpFail,
                            StencilOperation const &dpPass);
 
-  /*
-   * @brief: Delete shader resource.
-   */
-  void Delete() override { glDeleteProgram(mShaderID); }
   /*
    * @brief: Add vertex shader source to current source.
    * @param: source: source code to add
