@@ -2,7 +2,7 @@
 
 namespace GeoFrame {
 namespace Core {
-Tag Shader::sTag = ResourceBase::sTag + Tag("Shader");
+ObjectID const Shader::sOID = ObjectID("SHADER");
 
 Str GetShaderLog(unsigned const &id) {
   int status;

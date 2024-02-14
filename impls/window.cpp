@@ -3,10 +3,12 @@
 namespace GeoFrame {
 namespace Core {
 bool S_GLAD_INITIALIZED = false;
-Tag Monitor::sTag = ResourceBase::sTag + Tag("Monitor");
-Tag Window::sTag = ResourceBase::sTag + Tag("Window");
+ObjectID const Icon::sOID = ObjectID("ICON");
+ObjectID const Cursor::sOID = ObjectID("CURSOR");
+ObjectID const StandardCursor::sOID = ObjectID("STANDARD_CURSOR");
+ObjectID const Window::sOID = ObjectID("WINDOW");
 
-void Icon::Delete() {
+Icon::~Icon() {
   for (auto &pointer : mPointers) {
     delete[] pointer;
   }
@@ -35,7 +37,7 @@ void Cursor::SetImage(unsigned const &width, unsigned const &height,
   mCursor = glfwCreateCursor(&image, mXHot, mYHot);
 }
 
-void Cursor::Delete() {
+Cursor::~Cursor() {
   glfwDestroyCursor(mCursor);
   delete[] mPixels;
 }
@@ -138,7 +140,7 @@ void DropCallbackWrapper(GLFWwindow *window, int count, const char **paths) {
 
 Window::Window(unsigned const &width, unsigned const &height, Str const &title,
                WindowSettings const &settings)
-    : ResourceBase(mUUID.ToString(), sTag) {
+    : Geobject(Window::sOID) {
   glfwWindowHint(GLFW_RESIZABLE, settings.resizable);
   glfwWindowHint(GLFW_VISIBLE, settings.visible);
   glfwWindowHint(GLFW_DECORATED, settings.decorated);

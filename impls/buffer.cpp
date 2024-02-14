@@ -2,7 +2,7 @@
 
 namespace GeoFrame {
 namespace Core {
-Tag Buffer::sTag = ResourceBase::sTag + Tag("Buffer");
+ObjectID const Buffer::sOID = ObjectID("BUFFER");
 
 Vec<Attribute> Attribute::GenerateAttributes(Vec<size_t> const &comps) {
   Vec<Attribute> attributes;
@@ -29,13 +29,13 @@ Vec<Attribute> Attribute::GenerateAttributes(Vec<size_t> const &comps,
 }
 
 Buffer::Buffer(Str const &name, BufferUsage usage)
-    : mUsage(usage), ResourceBase(name, sTag) {
+    : Geobject(Buffer::sOID), mUsage(usage) {
   glGenVertexArrays(1, &mVAO);
   glGenBuffers(1, &mVBO);
   glGenBuffers(1, &mIBO);
 }
 
-void Buffer::Delete() {
+Buffer::~Buffer() {
   glDeleteVertexArrays(1, &mVAO);
   glDeleteBuffers(1, &mVBO);
   glDeleteBuffers(1, &mIBO);

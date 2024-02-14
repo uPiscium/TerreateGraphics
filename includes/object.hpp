@@ -26,105 +26,76 @@ public:
   UUID() { GenerateUUID(); }
   UUID(const UUID &other) { M_MEMCPY(mUUID, other.mUUID, sizeof(char) * 16); }
 
-  std::string ToString() const;
+  char const *GetUUID() const { return mUUID; }
 
-  bool operator==(const UUID &other) const {
-    return M_MEMCMP(mUUID, other.mUUID, sizeof(char) * 16) == 0;
-  }
-  bool operator!=(const UUID &other) const { return !(*this == other); }
+  Str ToString() const;
 
 public:
   static UUID FromChar(const char *uuid) { return UUID(uuid); }
   static UUID FromString(const std::string &uuid) { return UUID(uuid); }
 };
 
+inline bool operator==(UUID const &lhs, UUID const &rhs) {
+  return M_MEMCMP(lhs.GetUUID(), rhs.GetUUID(), sizeof(char) * 16) == 0;
+}
+inline bool operator!=(UUID const &lhs, UUID const &rhs) {
+  return !(lhs == rhs);
+}
+
+class ObjectID {
+private:
+  Str mID;
+  size_t mHash;
+
+public:
+  ObjectID() : mID("NONE") { mHash = std::hash<Str>()(mID); }
+  ObjectID(Str const &id) : mID(ObjectID::ToUpper(id)) {
+    mHash = std::hash<Str>()(mID);
+  }
+  ~ObjectID() {}
+
+  Str const &GetID() const { return mID; }
+  size_t GetHash() const { return mHash; }
+
+public:
+  static Str ToUpper(Str const &str);
+};
+
+inline bool operator==(ObjectID const &lhs, ObjectID const &rhs) {
+  return lhs.GetHash() == rhs.GetHash();
+}
+inline bool operator!=(ObjectID const &lhs, ObjectID const &rhs) {
+  return !(lhs == rhs);
+}
+inline bool operator==(ObjectID const &lhs, Str const &rhs) {
+  return lhs.GetID() == ObjectID::ToUpper(rhs);
+}
+inline bool operator!=(ObjectID const &lhs, Str const &rhs) {
+  return !(lhs == rhs);
+}
+
 class Geobject {
 protected:
   UUID mUUID;
+  ObjectID mOID;
 
 public:
-  Geobject() : mUUID() {}
-  virtual ~Geobject() { this->Delete(); }
+  static ObjectID const sOID;
+
+public:
+  Geobject() : mUUID(), mOID(Geobject::sOID) {}
+  Geobject(ObjectID const &id) : mUUID(), mOID(id) {}
+  virtual ~Geobject() {}
 
   UUID const &GetUUID() const { return mUUID; }
-  virtual Str GetName() const { return mUUID.ToString(); }
-
-  virtual void Delete() {}
+  ObjectID const &GetOID() const { return mOID; }
 
   virtual operator bool() const { return true; }
 };
-
-template <typename T>
-concept GeoFamily = std::derived_from<T, Geobject>;
-
-class Tag final : public Geobject {
-private:
-  Str mTag = "NONE";
-
-public:
-  Tag() {}
-  Tag(Str const &tag) : mTag(tag) {}
-  Tag(Tag const &tag) : mTag(tag.mTag) {}
-  ~Tag() { this->Delete(); }
-
-  Str GetName() const override { return mTag; }
-
-  void Delete() override {}
-
-  Tag operator+=(Str const &other);
-  Tag operator+=(Tag const &other);
-
-  Tag &operator=(Str const &tag);
-  Tag &operator=(Tag const &other);
-
-  bool operator==(Tag const &other) { return mTag == other.mTag; }
-  bool operator!=(Tag const &other) { return !(*this == other); }
-
-  operator Str() const { return mTag; }
-};
-
-inline Tag operator+(Tag const &tag, Str const &other) {
-  return Tag(tag.GetName() + "." + other);
-}
-inline Tag operator+(Str const &other, Tag const &tag) {
-  return Tag(other + "." + tag.GetName());
-}
-inline Tag operator+(Tag const &tag, Tag const &other) {
-  return Tag(tag.GetName() + "." + other.GetName());
-}
-
-class ResourceBase : public Geobject {
-private:
-  M_DISABLE_COPY_AND_ASSIGN(ResourceBase);
-
-protected:
-  Str mName;
-  Tag mTag;
-
-public:
-  static Tag sTag;
-
-public:
-  ResourceBase() : mName("NONE"), mTag(sTag) {}
-  ResourceBase(Str const &name, Tag const &tag) : mName(name), mTag(tag) {}
-  virtual ~ResourceBase() { this->Delete(); }
-
-  virtual Str GetName() const override { return mName; }
-  virtual Tag GetTag() const { return mTag; }
-
-  virtual void SetName(Str const &name) { mName = name; }
-  virtual void SetTag(Tag const &tag) { mTag = tag; }
-
-  virtual void Delete() override {}
-
-  virtual operator bool() const override {
-    return mName != "" && mTag != Tag("NONE");
-  }
-};
-
-template <typename T>
-concept ResourceFamily = std::derived_from<T, ResourceBase>;
 } // namespace GeoFrame
+
+std::ostream &operator<<(std::ostream &stream, const GeoFrame::UUID &uuid);
+std::ostream &operator<<(std::ostream &stream, const GeoFrame::ObjectID &id);
 
 template <> struct std::hash<GeoFrame::UUID> {
   size_t operator()(GeoFrame::UUID const &uuid) const {
@@ -132,8 +103,6 @@ template <> struct std::hash<GeoFrame::UUID> {
   }
 };
 
-template <> struct std::hash<GeoFrame::Tag> {
-  size_t operator()(GeoFrame::Tag const &tag) const {
-    return std::hash<std::string>()(std::string(tag));
-  }
+template <> struct std::hash<GeoFrame::ObjectID> {
+  size_t operator()(GeoFrame::ObjectID const &id) const { return id.GetHash(); }
 };

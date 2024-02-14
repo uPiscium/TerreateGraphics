@@ -2,10 +2,10 @@
 
 namespace GeoFrame {
 namespace Core {
-Tag Font::sTag = ResourceBase::sTag + Tag("Font");
+ObjectID const Font::sOID = ObjectID("FONT");
 
 Font::Font(Str const &path, unsigned const &size)
-    : mSize(size), ResourceBase(path, sTag) {
+    : mSize(size), Geobject(Font::sOID) {
   if (FT_Init_FreeType(&mLibrary)) {
     M_GEO_THROW(KernelError, "Failed to initialize FreeType library.");
   }
@@ -15,6 +15,12 @@ Font::Font(Str const &path, unsigned const &size)
   }
 
   FT_Set_Pixel_Sizes(mFace, 0, size);
+}
+
+Font::~Font() {
+  FT_Done_Face(mFace);
+  FT_Done_FreeType(mLibrary);
+  mCharacters.clear();
 }
 
 Shared<Character> const &
@@ -46,12 +52,6 @@ Vec<Shared<Character>> Font::AcquireCharacters(WStr const &text) const {
     characters.push_back(c);
   }
   return characters;
-}
-
-void Font::Delete() {
-  FT_Done_Face(mFace);
-  FT_Done_FreeType(mLibrary);
-  mCharacters.clear();
 }
 
 void Font::LoadCharacter(wchar_t const &character) {

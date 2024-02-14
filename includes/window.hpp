@@ -8,7 +8,7 @@ namespace GeoFrame {
 namespace Core {
 extern bool S_GLAD_INITIALIZED;
 
-class Icon : public ResourceBase {
+class Icon final : public Geobject {
 private:
   Vec<GLFWimage> mImages;
   Vec<unsigned char *> mPointers;
@@ -17,18 +17,17 @@ private:
   M_DISABLE_COPY_AND_ASSIGN(Icon);
 
 public:
+  static ObjectID const sOID;
+
+public:
   /*
    * @brief: This function creates a glfw icon.
    */
-  Icon() {}
-  ~Icon() override { this->Delete(); }
+  Icon() : Geobject(Icon::sOID) {}
+  ~Icon() override;
 
   size_t GetSize() const { return mImages.size(); }
 
-  /*
-   * @brief: Delete icon resource.
-   */
-  void Delete() override;
   /*
    * @brief: This function adds an image to the icon.
    * @param: width: Image width.
@@ -45,7 +44,7 @@ public:
   operator bool() const override { return mImages.size() > 0; }
 };
 
-class Cursor : public ResourceBase {
+class Cursor final : public Geobject {
 private:
   GLFWcursor *mCursor = nullptr;
   GLFWimage mImage = GLFWimage();
@@ -57,13 +56,17 @@ private:
   M_DISABLE_COPY_AND_ASSIGN(Cursor);
 
 public:
+  static ObjectID const sOID;
+
+public:
   /*
    * @brief: This function creates a glfw cursor.
    * @param: xHot: The x-coordinate of the cursor's hot spot.
    * @param: yHot: The y-coordinate of the cursor's hot spot.
    */
-  Cursor(int const &xHot = 0, int const &yHot = 0) : mXHot(xHot), mYHot(yHot) {}
-  ~Cursor() override { this->Delete(); }
+  Cursor(int const &xHot = 0, int const &yHot = 0)
+      : Geobject(Cursor::sOID), mXHot(xHot), mYHot(yHot) {}
+  ~Cursor() override;
 
   /*
    * @brief: This function sets the image of the cursor.
@@ -76,33 +79,26 @@ public:
   void SetImage(unsigned const &width, unsigned const &height,
                 unsigned char const *pixels);
 
-  /*
-   * @brief: Delete cursor resource.
-   */
-  void Delete() override;
-
   operator GLFWcursor *() const { return mCursor; }
   operator bool() const override { return mCursor != nullptr; }
 };
 
-class StandardCursor : public ResourceBase {
+class StandardCursor : public Geobject {
 private:
   GLFWcursor *mCursor = nullptr;
+
+public:
+  static ObjectID const sOID;
 
 public:
   /*
    * @brief: This function creates a glfw standard cursor.
    * @param: shape: Cursor shape.
    */
-  StandardCursor(CursorShape const &shape) {
+  StandardCursor(CursorShape const &shape) : Geobject(StandardCursor::sOID) {
     mCursor = glfwCreateStandardCursor((unsigned)shape);
   }
-  ~StandardCursor() override { this->Delete(); }
-
-  /*
-   * @brief: Delete standard cursor resource.
-   */
-  void Delete() override { glfwDestroyCursor(mCursor); }
+  ~StandardCursor() override { glfwDestroyCursor(mCursor); }
 
   operator GLFWcursor *() const { return mCursor; }
   operator bool() const override { return mCursor != nullptr; }
@@ -260,23 +256,7 @@ public:
   virtual void OnFrame(Window *window) = 0;
 };
 
-class Monitor : public ResourceBase {
-private:
-  GLFWmonitor *mMonitor = nullptr;
-  GLFWvidmode const *mVideoMode = nullptr;
-
-private:
-  Monitor(GLFWmonitor *monitor);
-  ~Monitor() override { this->Delete(); }
-
-public:
-  static Tag sTag;
-
-public:
-  operator bool() const override { return mMonitor != nullptr; }
-};
-
-class Window : public ResourceBase {
+class Window final : public Geobject {
 private:
   GLFWwindow *mWindow = nullptr;
   void *mUserPointer = nullptr;
@@ -322,7 +302,7 @@ private:
   M_DISABLE_COPY_AND_ASSIGN(Window);
 
 public:
-  static Tag sTag;
+  static ObjectID const sOID;
 
 public:
   /*
@@ -334,7 +314,7 @@ public:
    */
   Window(unsigned const &width, unsigned const &height, Str const &title,
          WindowSettings const &settings);
-  ~Window() { this->Delete(); }
+  ~Window() override { this->Close(); }
 
   /*
    * @brief: This function returns window size.
@@ -642,10 +622,6 @@ public:
     return bool(glfwGetWindowAttrib(mWindow, GLFW_HOVERED));
   }
 
-  /*
-   * @brief: Delete window resource.
-   */
-  void Delete() override { this->Close(); }
   /*
    * @brief: This function closes window.
    */

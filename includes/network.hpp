@@ -170,7 +170,7 @@ public:
   virtual void SetInfo(Endpoint const *info) {}
 };
 
-class IPv4Address : public Address {
+class IPv4Address final : public Address {
 private:
   IPv4Endpoint mInfo = {}; // IPv4Endpoint
 
@@ -262,9 +262,12 @@ public:
 };
 */
 
-class Socket : public Geobject {
+class Socket final : public Geobject {
 private:
   int mSocket = -1;
+
+public:
+  static ObjectID const sOID;
 
 public:
   /*
@@ -272,7 +275,7 @@ public:
    * used to create, connect, bind, listen, accept, send, and receive data
    * through sockets.
    */
-  Socket() = default;
+  Socket() : Geobject(Socket::sOID) {}
   /*
    * @brief: Socket class is a wrapper for the socket file descriptor. It is
    * used to create, connect, bind, listen, accept, send, and receive data
@@ -288,21 +291,15 @@ public:
    * through sockets.
    * @param: int const &socket: The socket file descriptor.
    */
-  Socket(int const &socket) : mSocket(socket) {}
-  /*
-   * @brief: Socket class is a wrapper for the socket file descriptor. It is
-   * used to create, connect, bind, listen, accept, send, and receive data
-   * through sockets.
-   * @param: Socket const &socket: The socket to be copied.
-   */
-  Socket(Socket const &socket) : mSocket(socket.mSocket) {}
+  Socket(int const &socket) : Geobject(Socket::sOID), mSocket(socket) {}
   /*
    * @brief: Socket class is a wrapper for the socket file descriptor. It is
    * used to create, connect, bind, listen, accept, send, and receive data
    * through sockets.
    * @param: Socket &&socket: The socket to be moved.
    */
-  Socket(Socket &&socket);
+  Socket(Socket const &socket)
+      : Geobject(Socket::sOID), mSocket(socket.mSocket) {}
   ~Socket() override {}
 
   /*
@@ -372,7 +369,7 @@ public:
   operator bool() const override { return mSocket != -1; }
 };
 
-class TCPSocket : public Geobject {
+class TCPSocket final : public Geobject {
 private:
   Socket mSocket;
   bool mConnected = false;
@@ -385,28 +382,28 @@ public:
    * create, connect, bind, listen, accept, send, and receive data through
    * sockets.
    */
-  TCPSocket() : mSocket(SocketType::TCP) {}
+  TCPSocket() : Geobject(TCPSocket::sOID), mSocket(SocketType::TCP) {}
   /*
    * @brief: TCPSocket class is a wrapper for the TCP socket. It is used to
    * create, connect, bind, listen, accept, send, and receive data through
    * sockets.
    * @param: Socket const &socket: The socket to be copied.
    */
-  TCPSocket(Socket const &socket) : mSocket(socket) {}
+  TCPSocket(Socket const &socket) : Geobject(TCPSocket::sOID), mSocket(socket) {}
   /*
    * @brief: TCPSocket class is a wrapper for the TCP socket. It is used to
    * create, connect, bind, listen, accept, send, and receive data through
    * sockets.
    * @param: TCPSocket const &socket: The socket to be copied.
    */
-  TCPSocket(TCPSocket const &socket) : mSocket(socket.mSocket) {}
+  TCPSocket(TCPSocket const &socket) : Geobject(TCPSocket::sOID), mSocket(socket.mSocket) {}
   /*
    * @brief: TCPSocket class is a wrapper for the TCP socket. It is used to
    * create, connect, bind, listen, accept, send, and receive data through
    * sockets.
    * @param: TCPSocket &&socket: The socket to be moved.
    */
-  TCPSocket(TCPSocket &&socket) : mSocket(std::move(socket.mSocket)) {}
+  TCPSocket(TCPSocket &&socket) : Geobject(TCPSocket::sOID), mSocket(std::move(socket.mSocket)) {}
   ~TCPSocket() override = default;
 
   /*
@@ -471,7 +468,7 @@ public:
   operator bool() const override { return mSocket; }
 };
 
-class UDPSocket : public Geobject {
+class UDPSocket final : public Geobject {
 private:
   Socket mSocket;
   bool mBound = false;
@@ -481,25 +478,25 @@ public:
    * @brief: UDPSocket class is a wrapper for the UDP socket. It is used to
    * create, bind, send, and receive data through sockets.
    */
-  UDPSocket() : mSocket(SocketType::UDP) {}
+  UDPSocket() : Geobject(UDPSocket::sOID), mSocket(SocketType::UDP) {}
   /*
    * @brief: UDPSocket class is a wrapper for the UDP socket. It is used to
    * create, bind, send, and receive data through sockets.
    * @param: Socket const &socket: The socket to be copied.
    */
-  UDPSocket(Socket const &socket) : mSocket(socket) {}
+  UDPSocket(Socket const &socket) : Geobject(UDPSocket::sOID), mSocket(socket) {}
   /*
    * @brief: UDPSocket class is a wrapper for the UDP socket. It is used to
    * create, bind, send, and receive data through sockets.
    * @param: UDPSocket const &socket: The socket to be copied.
    */
-  UDPSocket(UDPSocket const &socket) : mSocket(socket.mSocket) {}
+  UDPSocket(UDPSocket const &socket) : Geobject(UDPSocket::sOID), mSocket(socket.mSocket) {}
   /*
    * @brief: UDPSocket class is a wrapper for the UDP socket. It is used to
    * create, bind, send, and receive data through sockets.
    * @param: UDPSocket &&socket: The socket to be moved.
    */
-  UDPSocket(UDPSocket &&socket) : mSocket(std::move(socket.mSocket)) {}
+  UDPSocket(UDPSocket &&socket) : Geobject(UDPSocket::sOID), mSocket(std::move(socket.mSocket)) {}
   ~UDPSocket() override = default;
 
   /*

@@ -15,7 +15,7 @@ struct TextureData {
   unsigned channels = 0;
 };
 
-class Texture : public ResourceBase {
+class Texture final : public Geobject {
 private:
   ID mTexture = 0;
   unsigned mWidth = 0;
@@ -28,7 +28,7 @@ private:
   M_DISABLE_COPY_AND_ASSIGN(Texture);
 
 public:
-  static Tag sTag;
+  static ObjectID const sOID;
 
 public:
   /*
@@ -42,14 +42,14 @@ public:
   Texture(unsigned const &texture, unsigned const &width,
           unsigned const &height, unsigned const &channels)
       : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels),
-        ResourceBase(mUUID.ToString(), sTag) {}
+        Geobject(Texture::sOID) {}
   /*
    * @brief: This function creates a opengl texture.
    */
-  Texture(Str const &name) : ResourceBase(name, sTag) {
+  Texture(Str const &name) : Geobject(Texture::sOID) {
     glGenTextures(1, &mTexture);
   }
-  ~Texture() override { this->Delete(); }
+  ~Texture() override { glDeleteTextures(1, &mTexture); }
 
   /*
    * @brief: Setter for texture filter.
@@ -62,10 +62,6 @@ public:
    */
   void SetWrapping(WrappingType const &wrap);
 
-  /*
-   * @brief: Delete texture resource.
-   */
-  void Delete() override { glDeleteTextures(1, &mTexture); }
   /*
    * @brief: Loads texture data into OpenGL texture.
    * @param: width: width of texture
@@ -103,7 +99,7 @@ public:
   static TextureData LoadTexture(Str const &path);
 };
 
-class CubeTexture : public Geobject {
+class CubeTexture final : public Geobject {
 private:
   unsigned mTexture = 0;
   unsigned mWidth = 0;
@@ -131,10 +127,13 @@ private:
   friend class RawCubeScreen;
 
 public:
+  static ObjectID const sOID;
+
+public:
   /*
    * @brief: This function creates a opengl cube texture.
    */
-  CubeTexture() { glGenTextures(1, &mTexture); }
+  CubeTexture() : Geobject(CubeTexture::sOID) { glGenTextures(1, &mTexture); }
   ~CubeTexture() override { glDeleteTextures(1, &mTexture); }
 
   /*

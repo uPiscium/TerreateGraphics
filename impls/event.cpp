@@ -2,6 +2,8 @@
 
 namespace GeoFrame {
 namespace Utils {
+ObjectID const EventSystem::sOID = ObjectID("EVENT_SYSTEM");
+
 void EventSystem::Register(Str const &event, EventCallback const &callback) {
   if (mCallbacks.find(event) == mCallbacks.end()) {
     mCallbacks[event] = Vec<EventCallback>();
