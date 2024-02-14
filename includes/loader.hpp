@@ -5,6 +5,7 @@
 namespace GeoFrame {
 namespace Loader {
 class ILoader {
+public:
   ;
 };
 } // namespace Loader

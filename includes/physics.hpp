@@ -5,20 +5,14 @@
 
 namespace GeoFrame {
 namespace Physics {
-using unit = double;
-using Mass = unit;
-using Volume = unit;
-using Restitution = unit;
-using Friction = unit;
-
-using Position = vec3T<unit>;
-using Force = vec3T<unit>;
-using Acceleration = vec3T<unit>;
-using Velocity = vec3T<unit>;
-
 class Body : public Geobject {
 private:
   Position mPosition;
+  AABB mAABB;
+  BS mBS;
+
+public:
+  Body() : mPosition(0, 0, 0), mAABB({0, 0, 0}, {0, 0, 0}), mBS({0, 0, 0}, 0) {}
 };
 
 } // namespace Physics
