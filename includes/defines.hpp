@@ -109,17 +109,6 @@ using mat4x3 = mat4x3T<float>;
 using mat4 = mat4T<float>;
 using Quaternion = QuaternionT<float>;
 
-// Physics types
-using Position = vec3;
-using Force = vec3;
-using Velocity = vec3;
-using Acceleration = vec3;
-using AngularVelocity = Quaternion;
-using AngularAcceleration = Quaternion;
-using Mass = float;
-using Restitution = float;
-using Friction = float;
-
 // Callbacks
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;
 using MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>;

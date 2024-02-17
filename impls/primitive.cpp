@@ -151,5 +151,6 @@ Cylinder &Cylinder::operator=(Cylinder const &cylinder) {
   mLine = cylinder.mLine;
   mRadius = cylinder.mRadius;
   return *this;
+}
 } // namespace Primitive
 } // namespace GeoFrame
