@@ -18,6 +18,7 @@ add_library(
   job.cpp
   network.cpp
   object.cpp
+  primitive.cpp
   screen.cpp
   shader.cpp
   texture.cpp
