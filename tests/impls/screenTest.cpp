@@ -91,7 +91,7 @@ public:
 };
 
 void screen_drawing_test() {
-  GeoFrameContext context = Context::AcquireInstance();
+  GeoFrameContext context;
   Window window(800, 600, "Screen Drawing Test", WindowSettings());
 
   ScreenTest controller;

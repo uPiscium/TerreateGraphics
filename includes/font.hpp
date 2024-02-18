@@ -9,18 +9,18 @@
 namespace GeoFrame {
 namespace Core {
 struct Character {
-  unsigned codepoint;
+  Uint codepoint;
   Shared<Texture> texture;
-  Pair<unsigned> size;
-  Pair<unsigned> bearing;
-  long advance;
+  Pair<Uint> size;
+  Pair<Uint> bearing;
+  Long advance;
 };
 
 class Font final : public Geobject {
 private:
   FT_Library mLibrary;
   FT_Face mFace;
-  unsigned mSize;
+  Uint mSize;
   Map<wchar_t, Shared<Character>> mCharacters;
 
 private:
@@ -35,14 +35,14 @@ public:
    * @param: path: path to font file
    * @param: size: size of font
    */
-  Font(Str const &path, unsigned const &size);
+  Font(Str const &path, Uint const &size);
   ~Font() override;
 
   /*
    * @brief: Getter for font size.
    * @return: font size
    */
-  unsigned GetFontSize() const { return mSize; }
+  Uint GetFontSize() const { return mSize; }
   /*
    * @brief: Getter for character.
    * @param: character: character to get
@@ -63,7 +63,7 @@ public:
    * @param: text: text to acquire size of
    * @return: text size in pixels {width, height}
    */
-  Pair<unsigned> AcquireTextSize(WStr const &text) const;
+  Pair<Uint> AcquireTextSize(WStr const &text) const;
   /*
    * @brief: Acquirer for characters of the text.
    * @param: text: text to acquire characters of
@@ -82,7 +82,7 @@ public:
    */
   void LoadText(WStr const &text);
 
-  operator bool() const override { return mFace != nullptr; }
+  operator Bool() const override { return mFace != nullptr; }
 };
 } // namespace Core
 } // namespace GeoFrame

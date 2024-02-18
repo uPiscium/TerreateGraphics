@@ -11,28 +11,26 @@
 namespace GeoFrame {
 class UUID {
 private:
-  char mUUID[16] = {0};
+  Byte mUUID[16] = {0};
   static std::mt19937 sRandomEngine;
 
 private:
   void GenerateUUID();
-  UUID(const char *uuid) { M_MEMCPY(mUUID, uuid, sizeof(char) * 16); }
-  UUID(const std::string &uuid) {
-    M_MEMCPY(mUUID, uuid.c_str(), sizeof(char) * 16);
-  }
-  UUID &operator=(const UUID &other) = delete;
+  UUID(Byte const *uuid) { M_MEMCPY(mUUID, uuid, sizeof(char) * 16); }
+  UUID(Str const &uuid) { M_MEMCPY(mUUID, uuid.c_str(), sizeof(char) * 16); }
+  UUID &operator=(UUID const &other) = delete;
 
 public:
   UUID() { GenerateUUID(); }
   UUID(const UUID &other) { M_MEMCPY(mUUID, other.mUUID, sizeof(char) * 16); }
 
-  char const *GetUUID() const { return mUUID; }
+  Byte const *GetUUID() const { return mUUID; }
 
   Str ToString() const;
 
 public:
-  static UUID FromChar(const char *uuid) { return UUID(uuid); }
-  static UUID FromString(const std::string &uuid) { return UUID(uuid); }
+  static UUID FromChar(Byte const *uuid) { return UUID(uuid); }
+  static UUID FromString(Str const &uuid) { return UUID(uuid); }
 };
 
 inline bool operator==(UUID const &lhs, UUID const &rhs) {
@@ -45,7 +43,7 @@ inline bool operator!=(UUID const &lhs, UUID const &rhs) {
 class ObjectID {
 private:
   Str mID;
-  size_t mHash;
+  GFu64 mHash;
 
 public:
   ObjectID() : mID("NONE") { mHash = std::hash<Str>()(mID); }
@@ -90,7 +88,7 @@ public:
   UUID const &GetUUID() const { return mUUID; }
   ObjectID const &GetOID() const { return mOID; }
 
-  virtual operator bool() const { return true; }
+  virtual operator GFbool() const { return true; }
 };
 } // namespace GeoFrame
 

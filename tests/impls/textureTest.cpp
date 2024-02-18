@@ -56,7 +56,7 @@ public:
 };
 
 void texture_drawing_test() {
-  GeoFrameContext context = Context::AcquireInstance();
+  GeoFrameContext context;
 
   Window window(800, 600, "Texture Drawing Test", WindowSettings());
   window.Bind();

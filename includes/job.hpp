@@ -11,7 +11,7 @@ private:
   friend class JobSystem;
 
 private:
-  bool mFinished;
+  Bool mFinished;
   Vec<JobBase *> mDependencies;
   std::exception_ptr mException = nullptr;
 
@@ -81,18 +81,18 @@ public:
    * @brief: Returns true if the job is ready to be executed.
    * @return: True if the job is ready to be executed.
    */
-  bool IsExecutable() const;
+  Bool IsExecutable() const;
   /*
    * @brief: Returns true if the job has finished executing.
    * @return: True if the job has finished executing.
    */
-  bool IsFinished() const { return mFinished; }
+  Bool IsFinished() const { return mFinished; }
   /*
    * @brief: Overload this function to execute the job.
    */
   virtual void Execute() = 0;
 
-  virtual operator bool() const override { return this->IsFinished(); }
+  virtual operator Bool() const override { return this->IsFinished(); }
 };
 
 class SimpleJob : public JobBase {
@@ -184,7 +184,7 @@ public:
   virtual void Execute() override { mFunction(); }
 
   SimpleJob &operator=(Function<void()> const &target);
-  virtual operator bool() const override { return this->IsFinished(); }
+  virtual operator Bool() const override { return this->IsFinished(); }
 };
 
 class JobSystem : public Geobject {
@@ -194,9 +194,9 @@ private:
   Vec<Thread> mDaemons;
   Mutex mJobLock;
   CondVar mCondition;
-  Atomic<bool> mComplete = false;
-  Atomic<bool> mStop = false;
-  Atomic<unsigned> mNumJobs = 0;
+  Atomic<Bool> mComplete = false;
+  Atomic<Bool> mStop = false;
+  Atomic<Uint> mNumJobs = 0;
 
 private:
   void WorkerThread();
@@ -211,7 +211,7 @@ public:
    * asynchronously.
    * @param: numThreads: The number of threads to be used by the JobSystem.
    */
-  JobSystem(unsigned const &numThreads = std::thread::hardware_concurrency());
+  JobSystem(Uint const &numThreads = std::thread::hardware_concurrency());
   /*
    * @brief: JobSystem is a thread pool that can be used to execute jobs
    * asynchronously.
@@ -220,7 +220,7 @@ public:
    * @note: This constructor is used in derived classes to set the id
    * of the object.
    */
-  JobSystem(unsigned const &numThreads, ObjectID const &id);
+  JobSystem(Uint const &numThreads, ObjectID const &id);
   virtual ~JobSystem() override { this->Stop(); }
 
   /*
@@ -245,7 +245,7 @@ public:
    */
   virtual void WaitForAll() { mComplete.wait(false); }
 
-  virtual operator bool() const override { return mComplete; }
+  virtual operator Bool() const override { return mComplete; }
 };
 } // namespace Utils
 } // namespace GeoFrame

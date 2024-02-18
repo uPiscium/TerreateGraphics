@@ -12,19 +12,19 @@
 namespace GeoFrame {
 namespace Core {
 struct ShaderOption {
-  bool blending = true;
-  bool culling = false;
-  bool depth = true;
-  bool scissor = false;
-  bool stencil = false;
+  Bool blending = true;
+  Bool culling = false;
+  Bool depth = true;
+  Bool scissor = false;
+  Bool stencil = false;
   BlendingFuntion src = BlendingFuntion::ONE;
   BlendingFuntion dst = BlendingFuntion::ZERO;
   CullingFace cullFace = CullingFace::BACK;
   CullingMode frontFace = CullingMode::CCW;
   DepthFunction depthFunc = DepthFunction::LESS;
   StencilFunction stencilFunc = StencilFunction::ALWAYS;
-  int stencilRef = 0;
-  unsigned stencilMask = 0xFF;
+  Int stencilRef = 0;
+  Uint stencilMask = 0xFF;
   StencilOperation sFail = StencilOperation::KEEP;
   StencilOperation dpFail = StencilOperation::KEEP;
   StencilOperation dpPass = StencilOperation::KEEP;
@@ -61,47 +61,48 @@ public:
   }
 
   /*
-   * @brief: Setter for shader bool uniform.
+   * @brief: Setter for shader Bool uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetBool(Str const &name, bool const &value) const {
+  void SetBool(Str const &name, Bool const &value) const {
     glUniform1i(glGetUniformLocation(mShaderID, name.c_str()), (int)value);
   }
   /*
-   * @brief: Setter for shader bool array uniform.
+   * @brief: Setter for shader Bool array uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    * @param: count: number of elements in array
    */
-  void SetBools(Str const &name, bool const *value, int const &count) const {
+  void SetBools(Str const &name, Bool const *value, Int const &count) const {
     glUniform1iv(glGetUniformLocation(mShaderID, name.c_str()), count,
-                 (int *)value);
+                 (int const *)value);
   }
   /*
-   * @brief: Setter for shader int uniform.
+   * @brief: Setter for shader Int uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetInt(Str const &name, int const &value) const {
-    glUniform1i(glGetUniformLocation(mShaderID, name.c_str()), value);
+  void SetInt(Str const &name, Int const &value) const {
+    glUniform1i(glGetUniformLocation(mShaderID, name.c_str()), (int)value);
   }
   /*
-   * @brief: Setter for shader int array uniform.
+   * @brief: Setter for shader Int array uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    * @param: count: number of elements in array
    */
-  void SetInts(Str const &name, int const *value, int const &count) const {
-    glUniform1iv(glGetUniformLocation(mShaderID, name.c_str()), count, value);
+  void SetInts(Str const &name, Int const *value, Int const &count) const {
+    glUniform1iv(glGetUniformLocation(mShaderID, name.c_str()), count,
+                 (int const *)value);
   }
   /*
    * @brief: Setter for shader float uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetFloat(Str const &name, float const &value) const {
-    glUniform1f(glGetUniformLocation(mShaderID, name.c_str()), value);
+  void SetFloat(Str const &name, Float const &value) const {
+    glUniform1f(glGetUniformLocation(mShaderID, name.c_str()), (float)value);
   }
   /*
    * @brief: Setter for shader float array uniform.
@@ -109,15 +110,16 @@ public:
    * @param: value: value of uniform
    * @param: count: number of elements in array
    */
-  void SetFloats(Str const &name, float const *value, int const &count) const {
-    glUniform1fv(glGetUniformLocation(mShaderID, name.c_str()), count, value);
+  void SetFloats(Str const &name, Float const *value, Int const &count) const {
+    glUniform1fv(glGetUniformLocation(mShaderID, name.c_str()), count,
+                 (float const *)value);
   }
   /*
    * @brief: Setter for shader vec2 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetVec2(Str const &name, GeoMath::vec2<float> const &value) const {
+  void SetVec2(Str const &name, vec2 const &value) const {
     glUniform2fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                  (float const *)value);
   }
@@ -126,7 +128,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetVec3(Str const &name, GeoMath::vec3<float> const &value) const {
+  void SetVec3(Str const &name, vec3 const &value) const {
     glUniform3fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                  (float const *)value);
   }
@@ -135,7 +137,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetVec4(Str const &name, GeoMath::vec4<float> const &value) const {
+  void SetVec4(Str const &name, vec4 const &value) const {
     glUniform4fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                  (float const *)value);
   }
@@ -144,7 +146,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat2(Str const &name, GeoMath::mat2<float> const &value) const {
+  void SetMat2(Str const &name, mat2 const &value) const {
     glUniformMatrix2fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                        GL_FALSE, (float const *)value);
   }
@@ -153,7 +155,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat2x3(Str const &name, GeoMath::mat2x3<float> const &value) const {
+  void SetMat2x3(Str const &name, mat2x3 const &value) const {
     glUniformMatrix2x3fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                          GL_FALSE, (float const *)value);
   }
@@ -162,7 +164,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat2x4(Str const &name, GeoMath::mat2x4<float> const &value) const {
+  void SetMat2x4(Str const &name, mat2x4 const &value) const {
     glUniformMatrix2x4fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                          GL_FALSE, (float const *)value);
   }
@@ -171,7 +173,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat3x2(Str const &name, GeoMath::mat3x2<float> const &value) const {
+  void SetMat3x2(Str const &name, mat3x2 const &value) const {
     glUniformMatrix3x2fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                          GL_FALSE, (float const *)value);
   }
@@ -180,7 +182,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat3(Str const &name, GeoMath::mat3<float> const &value) const {
+  void SetMat3(Str const &name, mat3 const &value) const {
     glUniformMatrix3fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                        GL_FALSE, (float const *)value);
   }
@@ -189,7 +191,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat3x4(Str const &name, GeoMath::mat3x4<float> const &value) const {
+  void SetMat3x4(Str const &name, mat3x4 const &value) const {
     glUniformMatrix3x4fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                          GL_FALSE, (float const *)value);
   }
@@ -198,7 +200,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat4x2(Str const &name, GeoMath::mat4<float> const &value) const {
+  void SetMat4x2(Str const &name, mat4x2 const &value) const {
     glUniformMatrix4x2fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                          GL_FALSE, (float const *)value);
   }
@@ -207,7 +209,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat4x3(Str const &name, GeoMath::mat4<float> const &value) const {
+  void SetMat4x3(Str const &name, mat4x3 const &value) const {
     glUniformMatrix4x3fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                          GL_FALSE, (float const *)value);
   }
@@ -216,7 +218,7 @@ public:
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat4(Str const &name, GeoMath::mat4<float> const &value) const {
+  void SetMat4(Str const &name, mat4 const &value) const {
     glUniformMatrix4fv(glGetUniformLocation(mShaderID, name.c_str()), 1,
                        GL_FALSE, (float const *)value);
   }
@@ -241,8 +243,8 @@ public:
    * @brief: Setter for stencil function.
    * @param: func: stencil function
    */
-  void SetStencilFunction(StencilFunction const &func, int const &ref,
-                          unsigned const &mask);
+  void SetStencilFunction(StencilFunction const &func, Int const &ref,
+                          Uint const &mask);
   /*
    * @brief: Setter for stencil operation.
    * @param: sFail: stencil fail operation
@@ -278,27 +280,27 @@ public:
    * @brief: This function swiches blending on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseBlending(bool const &value) { mOption.blending = value; }
+  void UseBlending(Bool const &value) { mOption.blending = value; }
   /*
    * @brief: This function swiches culling on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseCulling(bool const &value) { mOption.culling = value; }
+  void UseCulling(Bool const &value) { mOption.culling = value; }
   /*
    * @brief: This function swiches depth testing on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseDepth(bool const &value) { mOption.depth = value; }
+  void UseDepth(Bool const &value) { mOption.depth = value; }
   /*
    * @brief: This function swiches scissor testing on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseScissor(bool const &value) { mOption.scissor = value; }
+  void UseScissor(Bool const &value) { mOption.scissor = value; }
   /*
    * @brief: This function swiches stencil testing on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseStencil(bool const &value) { mOption.stencil = value; }
+  void UseStencil(Bool const &value) { mOption.stencil = value; }
   /*
    * @brief: This function activates selected texture binding point.
    * @param: target: texture binding point
@@ -315,7 +317,7 @@ public:
    */
   void Use() const;
 
-  operator bool() const override { return mShaderID != 0; }
+  operator Bool() const override { return mShaderID != 0; }
 
 public:
   /*

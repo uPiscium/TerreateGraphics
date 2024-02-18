@@ -41,7 +41,7 @@ public:
 };
 
 void buffer_drawing_test() {
-  GeoFrameContext context = Singleton<GeoFrameContext>::AcquireInstance();
+  GeoFrameContext context;
   Window window(800, 600, "Buffer Drawing Test", WindowSettings());
 
   BufferTest controller;

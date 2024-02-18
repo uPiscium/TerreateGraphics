@@ -1,31 +1,14 @@
 #pragma once
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <unistd.h>
-
 #include "defines.hpp"
 #include "exceptions.hpp"
 #include "object.hpp"
 
 namespace GeoFrame {
 namespace Network {
-using IP = Str;
-using Port = uint16_t;
-using Endpoint = sockaddr;
-using Byte = char;
-using IPv4Endpoint = sockaddr_in;
-using IPv6Endpoint = sockaddr_in6;
-
-enum class SocketProtocol { IPV4 = AF_INET, IPV6 = AF_INET6 };
-enum class SocketType { TCP = SOCK_STREAM, UDP = SOCK_DGRAM };
-
 class Packet {
 private:
   Vec<Byte> mData;
-  size_t mOffset = 0;
+  Size mOffset = 0;
 
 public:
   /*
@@ -38,9 +21,9 @@ public:
    * @brief: Packet class is a wrapper for a vector of bytes. It is used to send
    * and receive data through sockets. It has methods to read and write data,
    * and also to clear the data.
-   * @param: size_t const &size: The size of the packet.
+   * @param: Size const &size: The size of the packet.
    */
-  Packet(size_t const &size) : mData(size) {}
+  Packet(Size const &size) : mData(size) {}
   /*
    * @brief: Packet class is a wrapper for a vector of bytes. It is used to send
    * and receive data through sockets. It has methods to read and write data,
@@ -66,14 +49,14 @@ public:
 
   /*
    * @brief: Get the current reading offset of the packet.
-   * @return: size_t: The current reading offset of the packet.
+   * @return: Size: The current reading offset of the packet.
    */
-  size_t GetOffset() const { return mOffset; }
+  Size GetOffset() const { return mOffset; }
   /*
    * @brief: Get the size of the packet.
-   * @return: size_t: The size of the packet.
+   * @return: Size: The size of the packet.
    */
-  size_t GetSize() const { return mData.size(); }
+  Size GetSize() const { return mData.size(); }
   /*
    * @brief: Get the raw data of the packet.
    * @return: Byte const *: The raw data of the packet.
@@ -87,23 +70,23 @@ public:
   /*
    * @brief: Read data from the packet.
    * @param: Byte *data: The data to be read.
-   * @param: size_t const &size: The size of the data to be read.
+   * @param: Size const &size: The size of the data to be read.
    */
-  void Read(Byte *data, size_t const &size);
+  void Read(Byte *data, Size const &size);
   /*
    * @brief: Write data to the packet.
    * @param: Byte const *data: The data to be written.
-   * @param: size_t const &size: The size of the data to be written.
+   * @param: Size const &size: The size of the data to be written.
    */
-  void Write(Byte const *data, size_t const &size) {
+  void Write(Byte const *data, Size const &size) {
     mData.insert(mData.end(), data, data + size);
   }
   /*
    * @brief: Union data to the packet.
    * @param: Byte const *data: The data to be unioned.
-   * @param: size_t const &size: The size of the data to be unioned.
+   * @param: Size const &size: The size of the data to be unioned.
    */
-  void Union(Byte const *data, size_t const &size) {
+  void Union(Byte const *data, Size const &size) {
     mData.insert(mData.end(), data, data + size);
   }
   /*
@@ -314,16 +297,16 @@ public:
   /*
    * @brief: Bind the socket to address.
    * @param: Address const *address: The address to bind to.
-   * @return: bool: True if the socket is bound, false otherwise.
+   * @return: Bool: True if the socket is bound, false otherwise.
    */
-  bool Bind(Address const *address) {
+  Bool Bind(Address const *address) {
     return bind(mSocket, address->GetInfo(), address->GetSize()) == 0;
   }
   /*
    * @brief: Listen for connections.
-   * @param: unsigned const &maxConnections: The maximum number of connections.
+   * @param: Uint const &maxConnections: The maximum number of connections.
    */
-  void Listen(unsigned const &maxConnections = 10) {
+  void Listen(Uint const &maxConnections = 10) {
     listen(mSocket, maxConnections);
   }
   /*
@@ -350,31 +333,34 @@ public:
   }
   /*
    * @brief: Receive data through the socket.
-   * @param: size_t const &maxSize: The maximum size of the packet.
+   * @param: Size const &maxSize: The maximum size of the packet.
    * @return: Packet: The received packet.
    */
-  Packet Receive(size_t const &maxSize = 8192);
+  Packet Receive(Size const &maxSize = 8192);
   /*
    * @brief: Receive data through the socket from address.
    * @param: Address *address: The data of source address.
-   * @param: size_t const &maxSize: The maximum size of the packet.
+   * @param: Size const &maxSize: The maximum size of the packet.
    * @return: Packet: The received packet.
    */
   Packet ReceiveFrom(IPv4Address *address = nullptr,
-                     size_t const &maxSize = 8192);
+                     Size const &maxSize = 8192);
   // Packet ReceiveFrom(IPv6Address *address = nullptr,
-  //                 size_t const &maxSize = 1024);
+  //                 Size const &maxSize = 1024);
 
   Socket &operator=(Socket const &socket);
-  operator bool() const override { return mSocket != -1; }
+  operator Bool() const override { return mSocket != -1; }
 };
 
 class TCPSocket final : public Geobject {
 private:
   Socket mSocket;
-  bool mConnected = false;
-  bool mBound = false;
-  bool mListening = false;
+  Bool mConnected = false;
+  Bool mBound = false;
+  Bool mListening = false;
+
+public:
+  static ObjectID const sOID;
 
 public:
   /*
@@ -389,38 +375,41 @@ public:
    * sockets.
    * @param: Socket const &socket: The socket to be copied.
    */
-  TCPSocket(Socket const &socket) : Geobject(TCPSocket::sOID), mSocket(socket) {}
+  TCPSocket(Socket const &socket)
+      : Geobject(TCPSocket::sOID), mSocket(socket) {}
   /*
    * @brief: TCPSocket class is a wrapper for the TCP socket. It is used to
    * create, connect, bind, listen, accept, send, and receive data through
    * sockets.
    * @param: TCPSocket const &socket: The socket to be copied.
    */
-  TCPSocket(TCPSocket const &socket) : Geobject(TCPSocket::sOID), mSocket(socket.mSocket) {}
+  TCPSocket(TCPSocket const &socket)
+      : Geobject(TCPSocket::sOID), mSocket(socket.mSocket) {}
   /*
    * @brief: TCPSocket class is a wrapper for the TCP socket. It is used to
    * create, connect, bind, listen, accept, send, and receive data through
    * sockets.
    * @param: TCPSocket &&socket: The socket to be moved.
    */
-  TCPSocket(TCPSocket &&socket) : Geobject(TCPSocket::sOID), mSocket(std::move(socket.mSocket)) {}
+  TCPSocket(TCPSocket &&socket)
+      : Geobject(TCPSocket::sOID), mSocket(std::move(socket.mSocket)) {}
   ~TCPSocket() override = default;
 
   /*
    * @brief: Check whether the socket is connected.
-   * @return: bool: True if the socket is connected, false otherwise.
+   * @return: Bool: True if the socket is connected, false otherwise.
    */
-  bool IsConnected() const { return mConnected; }
+  Bool IsConnected() const { return mConnected; }
   /*
    * @brief: Check whether the socket is bound.
-   * @return: bool: True if the socket is bound, false otherwise.
+   * @return: Bool: True if the socket is bound, false otherwise.
    */
-  bool IsBound() const { return mBound; }
+  Bool IsBound() const { return mBound; }
   /*
    * @brief: Check whether the socket is listening.
-   * @return: bool: True if the socket is listening, false otherwise.
+   * @return: Bool: True if the socket is listening, false otherwise.
    */
-  bool IsListening() const { return mListening; }
+  Bool IsListening() const { return mListening; }
 
   /*
    * @brief: Connect the socket to IP and port.
@@ -440,9 +429,9 @@ public:
   void Bind(IP const &ip, Port const &port);
   /*
    * @brief: Listen for connections.
-   * @param: unsigned const &maxConnections: The maximum number of connections.
+   * @param: Uint const &maxConnections: The maximum number of connections.
    */
-  void Listen(unsigned const &maxConnections = 10);
+  void Listen(Uint const &maxConnections = 10);
   /*
    * @brief: Accept a connection.
    * @param: IP *ip: The data of source address.
@@ -457,21 +446,24 @@ public:
   void Send(Packet const &packet) { mSocket.Send(packet); }
   /*
    * @brief: Receive data through the socket.
-   * @param: size_t const &maxSize: The maximum size of the packet.
+   * @param: Size const &maxSize: The maximum size of the packet.
    * @return: Packet: The received packet.
    */
-  Packet Receive(size_t const &maxSize = 8192) {
+  Packet Receive(Size const &maxSize = 8192) {
     return mSocket.Receive(maxSize);
   }
 
   TCPSocket &operator=(TCPSocket const &socket);
-  operator bool() const override { return mSocket; }
+  operator Bool() const override { return mSocket; }
 };
 
 class UDPSocket final : public Geobject {
 private:
   Socket mSocket;
-  bool mBound = false;
+  Bool mBound = false;
+
+public:
+  static ObjectID const sOID;
 
 public:
   /*
@@ -484,26 +476,29 @@ public:
    * create, bind, send, and receive data through sockets.
    * @param: Socket const &socket: The socket to be copied.
    */
-  UDPSocket(Socket const &socket) : Geobject(UDPSocket::sOID), mSocket(socket) {}
+  UDPSocket(Socket const &socket)
+      : Geobject(UDPSocket::sOID), mSocket(socket) {}
   /*
    * @brief: UDPSocket class is a wrapper for the UDP socket. It is used to
    * create, bind, send, and receive data through sockets.
    * @param: UDPSocket const &socket: The socket to be copied.
    */
-  UDPSocket(UDPSocket const &socket) : Geobject(UDPSocket::sOID), mSocket(socket.mSocket) {}
+  UDPSocket(UDPSocket const &socket)
+      : Geobject(UDPSocket::sOID), mSocket(socket.mSocket) {}
   /*
    * @brief: UDPSocket class is a wrapper for the UDP socket. It is used to
    * create, bind, send, and receive data through sockets.
    * @param: UDPSocket &&socket: The socket to be moved.
    */
-  UDPSocket(UDPSocket &&socket) : Geobject(UDPSocket::sOID), mSocket(std::move(socket.mSocket)) {}
+  UDPSocket(UDPSocket &&socket)
+      : Geobject(UDPSocket::sOID), mSocket(std::move(socket.mSocket)) {}
   ~UDPSocket() override = default;
 
   /*
    * @brief: Check whether the socket is bound.
-   * @return: bool: True if the socket is bound, false otherwise.
+   * @return: Bool: True if the socket is bound, false otherwise.
    */
-  bool IsBound() const { return mBound; }
+  Bool IsBound() const { return mBound; }
 
   /*
    * @brief: Close the socket.
@@ -526,14 +521,14 @@ public:
    * @brief: Receive data through the socket.
    * @param: IP *ip: The data of source address.
    * @param: Port *port: The data of source port.
-   * @param: size_t const &maxSize: The maximum size of the packet.
+   * @param: Size const &maxSize: The maximum size of the packet.
    * @return: Packet: The received packet.
    */
   Packet ReceiveFrom(IP *ip = nullptr, Port *port = nullptr,
-                     size_t const &maxSize = 8192);
+                     Size const &maxSize = 8192);
 
   UDPSocket &operator=(UDPSocket const &socket);
-  operator bool() const override { return mSocket; }
+  operator Bool() const override { return mSocket; }
 };
 } // namespace Network
 } // namespace GeoFrame

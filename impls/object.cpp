@@ -9,18 +9,18 @@ void UUID::GenerateUUID() {
   time_t epoch = time.time_since_epoch().count();
   M_MEMCPY(mUUID, &epoch, sizeof(time_t));
   for (int i = 0; i < 2; i++) {
-    unsigned random = sRandomEngine();
-    M_MEMCPY(mUUID + sizeof(time_t) + i * sizeof(unsigned), &random,
-             sizeof(unsigned));
+    GFu32 random = sRandomEngine();
+    M_MEMCPY(mUUID + sizeof(time_t) + i * sizeof(GFu32), &random,
+             sizeof(GFu32));
   }
 }
 
 Str UUID::ToString() const {
   std::stringstream ss;
   for (int i = 0; i < 8; i++) {
-    short block = 0;
-    memcpy(&block, mUUID + i * sizeof(short), sizeof(short));
-    M_MEMCPY(&block, mUUID + i * sizeof(short), sizeof(short));
+    GFi16 block = 0;
+    memcpy(&block, mUUID + i * sizeof(GFi16), sizeof(GFi16));
+    M_MEMCPY(&block, mUUID + i * sizeof(GFi16), sizeof(GFi16));
     ss << std::hex << std::setfill('0') << std::setw(4) << block;
     if (i != 7)
       ss << "-";

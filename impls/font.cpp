@@ -4,7 +4,7 @@ namespace GeoFrame {
 namespace Core {
 ObjectID const Font::sOID = ObjectID("FONT");
 
-Font::Font(Str const &path, unsigned const &size)
+Font::Font(Str const &path, Uint const &size)
     : mSize(size), Geobject(Font::sOID) {
   if (FT_Init_FreeType(&mLibrary)) {
     M_GEO_THROW(KernelError, "Failed to initialize FreeType library.");
@@ -32,9 +32,9 @@ Font::AcquireCharacter(wchar_t const &character) const {
   return it->second;
 }
 
-Pair<unsigned> Font::AcquireTextSize(WStr const &text) const {
-  unsigned width = 0;
-  unsigned height = 0;
+Pair<Uint> Font::AcquireTextSize(WStr const &text) const {
+  Uint width = 0;
+  Uint height = 0;
   for (wchar_t const &character : text) {
     Shared<Character> const &c = AcquireCharacter(character);
     width += c->advance >> 6;
@@ -59,12 +59,11 @@ void Font::LoadCharacter(wchar_t const &character) {
     return;
   }
 
-  if ((unsigned)character == D_HALF_WIDTH_SPACE ||
-      (unsigned)character == D_FULL_WIDTH_SPACE) {
+  if ((Uint)character == D_HALF_WIDTH_SPACE ||
+      (Uint)character == D_FULL_WIDTH_SPACE) {
     Shared<Character> c = std::make_shared<Character>();
-    unsigned width =
-        ((unsigned)character == D_HALF_WIDTH_SPACE) ? mSize / 2 : mSize;
-    c->codepoint = (unsigned)character;
+    Uint width = ((Uint)character == D_HALF_WIDTH_SPACE) ? mSize / 2 : mSize;
+    c->codepoint = (Uint)character;
     c->texture = nullptr;
     c->size = {width, mSize};
     c->bearing = {0, 0};
@@ -80,7 +79,7 @@ void Font::LoadCharacter(wchar_t const &character) {
   }
 
   Shared<Character> c = std::make_shared<Character>();
-  c->codepoint = (unsigned)character;
+  c->codepoint = (Uint)character;
   c->texture = std::make_shared<Texture>("Glyph_" + std::to_string(character));
   c->texture->LoadData(mFace->glyph->bitmap.width, mFace->glyph->bitmap.rows, 1,
                        mFace->glyph->bitmap.buffer);

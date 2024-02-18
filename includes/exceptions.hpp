@@ -1,26 +1,28 @@
 #pragma once
 #include <exception>
 
+#include "defines.hpp"
+
 namespace GeoFrame {
 class GeoException : public std::exception {
 private:
-  const char *mMessage;
+  char const *mMessage;
 
 public:
-  GeoException(const char *message) : mMessage(message) {}
+  GeoException(char const *message) : mMessage(message) {}
 
-  const char *what() const noexcept override { return mMessage; }
+  char const *what() const noexcept override { return mMessage; }
 };
 
 struct APIError : public GeoException {
-  APIError(const char *message) : GeoException(message) {}
+  APIError(char const *message) : GeoException(message) {}
 };
 
 struct KernelError : public GeoException {
-  KernelError(const char *message) : GeoException(message) {}
+  KernelError(char const *message) : GeoException(message) {}
 };
 
 struct InterfaceError : public GeoException {
-  InterfaceError(const char *message) : GeoException(message) {}
+  InterfaceError(char const *message) : GeoException(message) {}
 };
 } // namespace GeoFrame

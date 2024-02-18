@@ -61,7 +61,7 @@ public:
 };
 
 void font_drawing_test() {
-  GeoFrameContext context = Context::AcquireInstance();
+  GeoFrameContext context;
   Window window(800, 600, "Font Drawing Test", WindowSettings());
 
   FontTest controller;

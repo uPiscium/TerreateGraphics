@@ -6,10 +6,10 @@ namespace GeoFrame {
 namespace Core {
 class Attribute {
 private:
-  size_t mIndex = 0;
-  size_t mComps = 0;
-  size_t mStride = 0;
-  size_t mOffset = 0;
+  Ulong mIndex = 0;
+  Ulong mComps = 0;
+  Ulong mStride = 0;
+  Ulong mOffset = 0;
 
 public:
   /*
@@ -18,26 +18,26 @@ public:
    * @param comps: Number of components of this attribute.
    * @param offset: Offset of this attribute.
    */
-  Attribute(size_t const &index, size_t const &comps, size_t const &stride,
-            size_t const &offset)
+  Attribute(Ulong const &index, Ulong const &comps, Ulong const &stride,
+            Ulong const &offset)
       : mIndex(index), mComps(comps), mStride(stride), mOffset(offset) {}
 
   /*
    * @return: Index of this attribute.
    */
-  size_t const &GetIndex() const { return mIndex; }
+  Ulong const &GetIndex() const { return mIndex; }
   /*
    * @return: Number of components of this attribute.
    */
-  size_t const &GetComps() const { return mComps; }
+  Ulong const &GetComps() const { return mComps; }
   /*
    * @return: Size of stride of this attribute.
    */
-  size_t const &GetStride() const { return mStride; }
+  Ulong const &GetStride() const { return mStride; }
   /*
    * @return: Offset from the beginning of this attributes.
    */
-  size_t const &GetOffset() const { return mOffset; }
+  Ulong const &GetOffset() const { return mOffset; }
 
 public:
   /*
@@ -46,15 +46,15 @@ public:
    * @params comps: Component of each attribute.
    * @return: Attribute list.
    */
-  static Vec<Attribute> GenerateAttributes(Vec<size_t> const &comps);
+  static Vec<Attribute> GenerateAttributes(Vec<Ulong> const &comps);
   /*
    * Generate attributes from component, offset, and index data.
    * @params comps: Component of each attribute.
    * @return: Attribute list.
    */
-  static Vec<Attribute> GenerateAttributes(Vec<size_t> const &comps,
-                                           Vec<size_t> const &offsets,
-                                           Vec<size_t> const &strides);
+  static Vec<Attribute> GenerateAttributes(Vec<Ulong> const &comps,
+                                           Vec<Ulong> const &offsets,
+                                           Vec<Ulong> const &strides);
 };
 
 class Buffer final : public Geobject {
@@ -64,10 +64,10 @@ private:
   ID mIBO = 0;
   BufferUsage mUsage = BufferUsage::STATIC_DRAW;
 
-  size_t mNumIndices = 0;
+  Ulong mNumIndices = 0;
 
-  bool mSetVBO = false;
-  bool mSetIBO = false;
+  Bool mSetVBO = false;
+  Bool mSetIBO = false;
 
 public:
   static ObjectID const sOID;
@@ -95,25 +95,25 @@ public:
    * @param: data: Pointer to vertex buffer data to be loaded.
    * @param: size: Size of data to be loaded.
    */
-  void LoadVertices(float const *data, size_t const &size);
+  void LoadVertices(Float const *data, Size const &size);
   /*
    * @brief: Load vertex buffer data.
    * @param data: Vector of vertex buffer data to be loaded.
    */
-  void LoadVertices(Vec<float> const &data) {
-    this->LoadVertices(data.data(), data.size() * sizeof(float));
+  void LoadVertices(Vec<Float> const &data) {
+    this->LoadVertices(data.data(), data.size() * sizeof(Float));
   }
   /*
    * @brief: Load index buffer data.
    * @param: data: Pointer to index buffer data to be loaded.
    * @param: size: Size of data to be loaded.
    */
-  void LoadIndices(unsigned const *data, size_t const &size);
+  void LoadIndices(Uint const *data, Size const &size);
   /*
    * @brief: Load index buffer data.
    * @param: data: Vector of index buffer data to be loaded.
    */
-  void LoadIndices(Vec<unsigned> const &data) {
+  void LoadIndices(Vec<Uint> const &data) {
     this->LoadIndices(data.data(), data.size() * sizeof(Index));
   }
   /*
@@ -121,7 +121,7 @@ public:
    * @param: data: Pointer to attribute data to be loaded.
    * @param: size: Size of data to be loaded.
    */
-  void LoadAttributes(Attribute const *data, size_t const &size);
+  void LoadAttributes(Attribute const *data, Size const &size);
   /*
    * @brief: Load vertex attributes.
    * @param: data: Vector of attribute data to be loaded.
@@ -140,9 +140,9 @@ public:
    * @param: numInstances: Number of instances to draw.
    * @param: drawMode: Draw mode of opengl.
    */
-  void DrawInstances(size_t const &numInstances, DrawMode const &drawMode);
+  void DrawInstances(Size const &numInstances, DrawMode const &drawMode);
 
-  operator bool() const override { return mVAO != 0 && mVBO != 0 && mIBO != 0; }
+  operator Bool() const override { return mVAO != 0 && mVBO != 0 && mIBO != 0; }
 };
 } // namespace Core
 } // namespace GeoFrame

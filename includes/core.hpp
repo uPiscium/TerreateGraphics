@@ -9,6 +9,4 @@ public:
   GeoFrameContext();
   ~GeoFrameContext();
 };
-
-using Context = Singleton<GeoFrameContext>;
 } // namespace GeoFrame
