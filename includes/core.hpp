@@ -4,9 +4,35 @@
 #include "object.hpp"
 
 namespace GeoFrame {
-class GeoFrameContext {
+class Clock : public Geobject {
+private:
+  Float mLastTime = 0.0f;
+  Float mDeltaTime = 0.0f;
+
 public:
-  GeoFrameContext();
-  ~GeoFrameContext();
+  static ObjectID const sOID;
+
+public:
+  Clock() : Geobject(Clock::sOID) {}
+  ~Clock() {}
+
+  Bool IsElapsed(Float const &time);
+
+  void Frame(Uint const &fps);
+};
+
+class Context : public Geobject {
+private:
+  static Bool sCreated;
+
+public:
+  static ObjectID const sOID;
+
+public:
+  Context();
+  ~Context() { this->Terminate(); }
+
+  void Intialize();
+  void Terminate();
 };
 } // namespace GeoFrame
