@@ -5,6 +5,8 @@
 namespace GeoFrame {
 namespace Parser {
 ObjectID const Serializer::sOID = ObjectID("SELIALIZER");
+ObjectID const ParserBase::sOID = ObjectID("PARSER_BASE");
+ObjectID const JsonParser::sOID = ObjectID("JSON_PARSER");
 
 Byte IOBuffer::GetChar() {
   if (mCursor == mEnd) {
@@ -41,10 +43,7 @@ Byte IOBuffer::FetchChar() {
   if (mCursor == mEnd) {
     return -1;
   }
-  if (*mCursor == '\n') {
-    ++mLine;
-  }
-  Byte const chr = *mCursor & 0xff;
+  Byte const chr = *mCursor; // & 0xff;
   return chr;
 }
 
@@ -138,7 +137,6 @@ Bool IOBuffer::Match(Byte const &chr) {
     return false;
   }
   if (*mCursor == chr) {
-    ++mCursor;
     return true;
   }
   return false;
@@ -149,7 +147,6 @@ Bool IOBuffer::Match(Str const &pattern) {
     return false;
   }
   if (std::equal(pattern.begin(), pattern.end(), mCursor)) {
-    mCursor += pattern.size();
     return true;
   }
   return false;
@@ -580,6 +577,7 @@ Str Serializer::Serialize(Node const &node, Size const &level) {
   }
   return buffer.str();
 }
+
 ParserBase::ParserBase(Str const &filename) : Geobject(ParserBase::sOID) {
   std::ifstream file;
   file.open(filename, std::ios::in);
@@ -591,8 +589,8 @@ ParserBase::ParserBase(Str const &filename) : Geobject(ParserBase::sOID) {
   buffer << file.rdbuf();
   file.close();
 
-  Str data = buffer.str();
-  mBuffer = std::make_shared<IOBuffer>(data.begin(), data.end());
+  mFiledata = buffer.str();
+  mBuffer = std::make_shared<IOBuffer>(mFiledata.begin(), mFiledata.end());
 }
 
 ParserBase::ParserBase(ObjectID const &oid, Str const &filename)
@@ -607,8 +605,8 @@ ParserBase::ParserBase(ObjectID const &oid, Str const &filename)
   buffer << file.rdbuf();
   file.close();
 
-  Str data = buffer.str();
-  mBuffer = std::make_shared<IOBuffer>(data.begin(), data.end());
+  mFiledata = buffer.str();
+  mBuffer = std::make_shared<IOBuffer>(mFiledata.begin(), mFiledata.end());
 }
 
 JsonParser::JsonParser(Str const &filename, Size const &maxDepth)
@@ -627,6 +625,7 @@ JsonParser::JsonParser(Shared<IOBuffer> buffer, Size const &depth)
 
 Bool JsonParser::ParseNull(Node &node) {
   if (mBuffer->Match("null")) {
+    mBuffer->Ignore(4); // Skip "null"
     node = Node();
     return true;
   }
@@ -635,10 +634,12 @@ Bool JsonParser::ParseNull(Node &node) {
 
 Bool JsonParser::ParseBool(Node &node) {
   if (mBuffer->Match("true")) {
+    mBuffer->Ignore(4); // Skip "true"
     node = true;
     return true;
   }
   if (mBuffer->Match("false")) {
+    mBuffer->Ignore(5); // Skip "false"
     node = false;
     return true;
   }
@@ -665,6 +666,11 @@ Bool JsonParser::ParseNumber(Node &node) {
 }
 
 Bool JsonParser::ParseString(Node &node) {
+  if (!mBuffer->Match('"')) {
+    return false;
+  }
+  mBuffer->Ignore(1); // Skip '"'
+
   Stream rstBuffer;
   while (1) {
     Byte chr = mBuffer->GetChar();
@@ -672,6 +678,7 @@ Bool JsonParser::ParseString(Node &node) {
     case -1:
       return false;
     case '"':
+      node = rstBuffer.str();
       return true;
     case '\\':
       chr = mBuffer->GetChar();
@@ -723,26 +730,26 @@ Bool JsonParser::ParseArray(Node &node) {
   Node::Array array;
   while (1) {
     mBuffer->SkipWhiteSpace();
-    if (mBuffer->Match(']')) {
-      node = array;
-      mBuffer->Ignore(1); // Skip ']'
-      return true;
-    }
-
     JsonParser parser(mBuffer, mDepth - 1);
     if (!parser.Parse()) {
       return false;
     }
-    array.push_back(parser.GetRoot());
+    array.push_back(parser.GetNode());
     mBuffer->SkipWhiteSpace();
 
     if (mBuffer->Match(',')) {
       mBuffer->Ignore(1); // Skip ','
       continue;
     }
+    if (mBuffer->Match(']')) {
+      node = array;
+      mBuffer->Ignore(1); // Skip ']'
+      return true;
+    }
     return false;
   }
 }
+
 Bool JsonParser::ParseObject(Node &node) {
   if (!mBuffer->Match('{')) {
     return false;
@@ -752,13 +759,7 @@ Bool JsonParser::ParseObject(Node &node) {
   Node::Object object;
   while (1) {
     mBuffer->SkipWhiteSpace();
-    if (mBuffer->Match('}')) {
-      node = object;
-      mBuffer->Ignore(1); // Skip '}'
-      return true;
-    }
-
-    Node key;
+    Node key(Node::DataType::STRING_TYPE);
     if (!this->ParseString(key)) {
       return false;
     }
@@ -774,13 +775,19 @@ Bool JsonParser::ParseObject(Node &node) {
     if (!parser.Parse()) {
       return false;
     }
-    object.insert(std::make_pair(key.GetString(), parser.GetRoot()));
+    object.insert(std::make_pair(key.GetString(), parser.GetNode()));
     mBuffer->SkipWhiteSpace();
 
     if (mBuffer->Match(',')) {
       mBuffer->Ignore(1); // Skip ','
       continue;
     }
+    if (mBuffer->Match('}')) {
+      node = object;
+      mBuffer->Ignore(1); // Skip '}'
+      return true;
+    }
+
     return false;
   }
 }
@@ -792,22 +799,21 @@ Bool JsonParser::Parse() {
     return false;
   }
 
-  Node node;
   switch (chr) {
   case 'n':
-    return this->ParseNull(node);
+    return this->ParseNull(mNode);
   case 't':
   case 'f':
-    return this->ParseBool(node);
+    return this->ParseBool(mNode);
   case '"':
-    return this->ParseString(node);
+    return this->ParseString(mNode);
   case '[':
-    return this->ParseArray(node);
+    return this->ParseArray(mNode);
   case '{':
-    return this->ParseObject(node);
+    return this->ParseObject(mNode);
   default:
     if (('0' <= chr && chr <= '9') || chr == '+' || chr == '-') {
-      return this->ParseNumber(node);
+      return this->ParseNumber(mNode);
     }
     return false;
   }

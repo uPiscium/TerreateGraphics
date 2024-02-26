@@ -176,6 +176,7 @@ public:
 
 class ParserBase : public Geobject {
 protected:
+  Str mFiledata;
   Shared<IOBuffer> mBuffer;
 
 public:
@@ -193,7 +194,7 @@ public:
 
 class JsonParser : public ParserBase {
 protected:
-  Node mRoot;
+  Node mNode;
   Size mDepth;
 
 public:
@@ -202,9 +203,9 @@ public:
 public:
   JsonParser(Str const &filename, Size const &maxDepth = 1024);
   JsonParser(Shared<IOBuffer> buffer, Size const &depth);
-  ~JsonParser() override;
+  ~JsonParser() override {}
 
-  Node const &GetRoot() const { return mRoot; }
+  Node const &GetNode() const { return mNode; }
 
   Bool ParseNull(Node &node);
   Bool ParseBool(Node &node);

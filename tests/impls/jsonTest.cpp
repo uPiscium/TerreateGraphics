@@ -2,9 +2,9 @@
 
 void parse(Str const &filename) {
   JsonParser parser("../resources/testJson.json");
-  parser.Parse();
+  std::cout << parser.Parse() << std::endl;
   Serializer serializer(2);
-  Str result = serializer.Serialize(parser.GetRoot());
+  Str result = serializer.Serialize(parser.GetNode());
   std::cout << result << std::endl;
 }
 
