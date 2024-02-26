@@ -13,10 +13,8 @@ private:
 
 public:
   ScreenTest()
-      : mScreenRect("Rect", BufferUsage::STATIC_DRAW),
-        mBuffer("Buffer", BufferUsage::STATIC_DRAW),
-        mScreenShader("ScreenShader"), mShader("RectShader"),
-        mScreen("Screen", 800, 600) {
+      : mScreenRect(BufferUsage::STATIC_DRAW),
+        mBuffer(BufferUsage::STATIC_DRAW), mScreen(800, 600) {
     auto screenRectAttrs = Attribute::GenerateAttributes({2, 2});
     mScreenRect.LoadVertices({-0.5f, -0.5f, 0.0f, 0.0f, 0.5f, -0.5f, 1.0f, 0.0f,
                               0.5f, 0.5f, 1.0f, 1.0f, -0.5f, 0.5f, 0.0f, 1.0f});
@@ -91,7 +89,7 @@ public:
 };
 
 void screen_drawing_test() {
-  GeoFrameContext context;
+  Context context;
   Window window(800, 600, "Screen Drawing Test", WindowSettings());
 
   ScreenTest controller;

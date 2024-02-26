@@ -29,7 +29,7 @@ public:
    * @param: width: width of screen
    * @param: height: height of screen
    */
-  Screen(Str const &name, Uint const &width, Uint const &height);
+  Screen(Uint const &width, Uint const &height);
   ~Screen() override;
 
   /*

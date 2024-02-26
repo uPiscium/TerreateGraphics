@@ -1,7 +1,4 @@
 #pragma once
-#include <fstream>
-#include <sstream>
-
 #include <GeoMath/matrix.hpp>
 #include <GeoMath/vector.hpp>
 
@@ -46,9 +43,7 @@ public:
    * @brief: OpenGL shader wrapper class. This class handles vertex, fragment,
    * and geometry shaders.
    */
-  Shader(Str const &name) : Geobject(Shader::sOID) {
-    mShaderID = glCreateProgram();
-  }
+  Shader() : Geobject(Shader::sOID) { mShaderID = glCreateProgram(); }
   ~Shader() override { glDeleteProgram(mShaderID); }
 
   /*

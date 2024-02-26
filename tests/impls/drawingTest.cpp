@@ -9,8 +9,7 @@ private:
   Shader mShader;
 
 public:
-  BufferTest()
-      : mBuffer("Rect", BufferUsage::DYNAMIC_DRAW), mShader("RectShader") {
+  BufferTest() : mBuffer(BufferUsage::DYNAMIC_DRAW) {
     auto attrs = Attribute::GenerateAttributes({2});
     mBuffer.LoadVertices({-0.5f, -0.5f, 0.0f, 0.5f, 0.5f, -0.5f});
     mBuffer.LoadIndices({0, 1, 2});
@@ -41,7 +40,7 @@ public:
 };
 
 void buffer_drawing_test() {
-  GeoFrameContext context;
+  Context context;
   Window window(800, 600, "Buffer Drawing Test", WindowSettings());
 
   BufferTest controller;

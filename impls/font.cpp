@@ -80,7 +80,7 @@ void Font::LoadCharacter(wchar_t const &character) {
 
   Shared<Character> c = std::make_shared<Character>();
   c->codepoint = (Uint)character;
-  c->texture = std::make_shared<Texture>("Glyph_" + std::to_string(character));
+  c->texture = std::make_shared<Texture>();
   c->texture->LoadData(mFace->glyph->bitmap.width, mFace->glyph->bitmap.rows, 1,
                        mFace->glyph->bitmap.buffer);
 

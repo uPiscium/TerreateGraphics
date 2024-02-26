@@ -81,7 +81,7 @@ public:
    * vertex buffer, and element array.
    * @param: usage: Usage of this buffer on OpenGL.
    */
-  Buffer(Str const &name, BufferUsage usage);
+  Buffer(BufferUsage usage);
   ~Buffer() override;
 
   /*

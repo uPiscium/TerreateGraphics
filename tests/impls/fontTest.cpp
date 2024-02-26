@@ -11,7 +11,7 @@ private:
 
 public:
   FontTest()
-      : mBuffer("Rect", BufferUsage::DYNAMIC_DRAW), mShader("RectShader"),
+      : mBuffer(BufferUsage::DYNAMIC_DRAW),
         mFont("../resources/AsebiMin-Light.otf", 48) {
     mFont.LoadCharacter(L'A');
 
@@ -61,7 +61,7 @@ public:
 };
 
 void font_drawing_test() {
-  GeoFrameContext context;
+  Context context;
   Window window(800, 600, "Font Drawing Test", WindowSettings());
 
   FontTest controller;

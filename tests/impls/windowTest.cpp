@@ -35,7 +35,7 @@ public:
 
 void window_generation_test(unsigned const &width, unsigned const &height,
                             Str const &title) {
-  GeoFrameContext context;
+  Context context;
   Window window = Window(width, height, title, WindowSettings());
 
   CallbackSet callbackSet;

@@ -32,6 +32,10 @@ public:
 
 public:
   /*
+   * @brief: This function creates a opengl texture.
+   */
+  Texture() : Geobject(Texture::sOID) { glGenTextures(1, &mTexture); }
+  /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be created by Screen.
    * @param: texture: OpenGL texture ID
@@ -43,12 +47,6 @@ public:
           Uint const &channels)
       : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels),
         Geobject(Texture::sOID) {}
-  /*
-   * @brief: This function creates a opengl texture.
-   */
-  Texture(Str const &name) : Geobject(Texture::sOID) {
-    glGenTextures(1, &mTexture);
-  }
   ~Texture() override { glDeleteTextures(1, &mTexture); }
 
   /*

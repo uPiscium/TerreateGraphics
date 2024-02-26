@@ -28,8 +28,7 @@ Vec<Attribute> Attribute::GenerateAttributes(Vec<Ulong> const &comps,
   return attributes;
 }
 
-Buffer::Buffer(Str const &name, BufferUsage usage)
-    : Geobject(Buffer::sOID), mUsage(usage) {
+Buffer::Buffer(BufferUsage usage) : Geobject(Buffer::sOID), mUsage(usage) {
   glGenVertexArrays(1, &mVAO);
   glGenBuffers(1, &mVBO);
   glGenBuffers(1, &mIBO);

@@ -3,6 +3,7 @@ set(PROJECT_NAMES
     "buffer"
     "font"
     "job"
+    "json"
     "network"
     "screen"
     "texture"
@@ -31,6 +32,14 @@ endfunction()
 
 function(buildFont)
   add_executable(${PROJECT_NAME} fontTest.cpp)
+  target_link_libraries(${PROJECT_NAME} GeoFrame)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
+endfunction()
+
+function(buildJson)
+  add_executable(${PROJECT_NAME} jsonTest.cpp)
   target_link_libraries(${PROJECT_NAME} GeoFrame)
   target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
   target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
@@ -83,6 +92,8 @@ elseif(${TARGET} STREQUAL "font")
   buildfont()
 elseif(${TARGET} STREQUAL "job")
   buildjob()
+elseif(${TARGET} STREQUAL "json")
+  buildjson()
 elseif(${TARGET} STREQUAL "network")
   buildnetwork()
 elseif(${TARGET} STREQUAL "screen")

@@ -5,7 +5,7 @@ namespace GeoFrame {
 namespace Core {
 ObjectID const Screen::sOID = ObjectID("SCREEN");
 
-Screen::Screen(Str const &name, Uint const &width, Uint const &height)
+Screen::Screen(Uint const &width, Uint const &height)
     : mWidth(width), mHeight(height), Geobject(Screen::sOID) {
   glGenFramebuffers(1, &mFrameBuffer);
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);

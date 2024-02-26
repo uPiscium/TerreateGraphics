@@ -1,0 +1,16 @@
+{
+  "test1": "This is a test",
+  "test2": "This is another test",
+  "Array": [
+    "This is a test",
+    "This is another test"
+  ],
+  "Object": {
+    "test1": "This is a test",
+    "test2": "This is another test",
+    "Array": [
+      "This is a test",
+      "This is another test"
+    ]
+  }
+}
