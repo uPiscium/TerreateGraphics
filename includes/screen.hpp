@@ -8,11 +8,14 @@ namespace Core {
 class Screen final : public Geobject {
 private:
   ID mFrameBuffer;
-  unsigned mWidth;
-  unsigned mHeight;
+  Uint mWidth;
+  Uint mHeight;
   Vec<Shared<Texture>> mTextures;
   Vec<GLenum> mDrawBuffers;
+
+  // FIXME: Support multi-buffer screen.
   /*
+   * This function is not working properly. Need to fix this.
    * @brief: Add new buffer to screen. (Max 32)
    */
   void AddBuffer();
@@ -26,19 +29,19 @@ public:
    * @param: width: width of screen
    * @param: height: height of screen
    */
-  Screen(Str const &name, unsigned const &width, unsigned const &height);
+  Screen(Uint const &width, Uint const &height);
   ~Screen() override;
 
   /*
    * @brief: Getter for width.
    * @return: width
    */
-  unsigned GetWidth() const { return mWidth; }
+  Uint GetWidth() const { return mWidth; }
   /*
    * @brief: Getter for height.
    * @return: height
    */
-  unsigned GetHeight() const { return mHeight; }
+  Uint GetHeight() const { return mHeight; }
   /*
    * @brief: Getter for texture.
    * @return: texture
@@ -74,7 +77,7 @@ public:
    * @detail: Color format is (red, green, blue). Each color is float (0
    * ~ 1.0).
    */
-  void Fill(Vec<float> const &color) const {
+  void Fill(Vec<Float> const &color) const {
     glClearColor(color[0], color[1], color[2], 0.0f);
   }
   /*
@@ -88,7 +91,7 @@ public:
   /* Shared<Texture> const &operator[](Index const &index) const { */
   /*   return mTextures[index]; */
   /* } */
-  operator bool() const override { return mFrameBuffer != 0; }
+  operator Bool() const override { return mFrameBuffer != 0; }
 };
 } // namespace Core
 } // namespace GeoFrame

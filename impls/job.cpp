@@ -33,7 +33,7 @@ void JobSystem::WorkerThread() {
   while (!mStop) {
     JobBase *job = nullptr;
     {
-      std::unique_lock<std::mutex> lock(mJobLock);
+      UniqueLock<Mutex> lock(mJobLock);
       mCondition.wait(lock, [this] { return !mJobs.empty() || mStop; });
 
       if (mJobs.empty()) {
@@ -67,8 +67,8 @@ void JobSystem::DaemonThread(JobBase *job) {
   }
 }
 
-JobSystem::JobSystem(unsigned const &numThreads) {
-  for (unsigned i = 0; i < numThreads; ++i) {
+JobSystem::JobSystem(Uint const &numThreads) {
+  for (Uint i = 0; i < numThreads; ++i) {
     mWorkers.emplace_back(Thread([this] { this->WorkerThread(); }));
   }
 }

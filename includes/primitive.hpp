@@ -7,27 +7,27 @@ namespace GeoFrame {
 namespace Primitive {
 class Point {
 private:
-  float mCoord[3];
+  Float mCoord[3];
 
 public:
   Point() : mCoord{0, 0, 0} {}
-  Point(float x, float y, float z) : mCoord{x, y, z} {}
+  Point(Float x, Float y, Float z) : mCoord{x, y, z} {}
   Point(vec3 const &vec) : mCoord{vec[0], vec[1], vec[2]} {}
-  Point(Point const &point)
-      : mCoord{point.mCoord[0], point.mCoord[1], point.mCoord[2]} {}
+  Point(Point const &Point)
+      : mCoord{Point.mCoord[0], Point.mCoord[1], Point.mCoord[2]} {}
   ~Point() {}
 
-  float GetX() const { return mCoord[0]; }
-  float GetY() const { return mCoord[1]; }
-  float GetZ() const { return mCoord[2]; }
+  Float GetX() const { return mCoord[0]; }
+  Float GetY() const { return mCoord[1]; }
+  Float GetZ() const { return mCoord[2]; }
 
-  void SetX(float x) { mCoord[0] = x; }
-  void SetY(float y) { mCoord[1] = y; }
-  void SetZ(float z) { mCoord[2] = z; }
+  void SetX(Float x) { mCoord[0] = x; }
+  void SetY(Float y) { mCoord[1] = y; }
+  void SetZ(Float z) { mCoord[2] = z; }
 
-  float &operator[](int const &index);
-  float const &operator[](int const &index) const;
-  Point &operator=(Point const &point);
+  Float &operator[](Int const &index);
+  Float const &operator[](Int const &index) const;
+  Point &operator=(Point const &Point);
   operator vec3() const { return vec3(mCoord[0], mCoord[1], mCoord[2]); }
 };
 
@@ -45,17 +45,17 @@ public:
 
   Point const &GetStart() const { return mStart; }
   vec3 const &GetDirection() const { return mDirection; }
-  Point GetPoint(float const &t) const {
+  Point GetPoint(Float const &t) const {
     return Point((vec3)mStart + mDirection * t);
   }
 
   void SetStart(Point const &start) { mStart = start; }
   void SetDirection(vec3 const &direction) { mDirection = direction; }
 
-  bool IsParallel(Line const &line, float eps = 1e-6) const {
+  Bool IsParallel(Line const &line, Float eps = 1e-6) const {
     return GeoMath::Cross(line.GetDirection(), mDirection).GetLength() < eps;
   }
-  bool IsVertical(Line const &line, float eps = 1e-6) const {
+  Bool IsVertical(Line const &line, Float eps = 1e-6) const {
     return GeoMath::Dot(line.GetDirection(), mDirection) < eps;
   }
 
@@ -65,28 +65,28 @@ public:
 class Segment {
 private:
   Line mLine;
-  float mLength;
+  Float mLength;
 
 public:
   Segment() : mLine(), mLength(0) {}
-  Segment(Line const &line, float const &length)
+  Segment(Line const &line, Float const &length)
       : mLine(line), mLength(length) {}
   Segment(Segment const &segment)
       : mLine(segment.mLine), mLength(segment.mLength) {}
   ~Segment() {}
 
   Line const &GetLine() const { return mLine; }
-  float GetLength() const { return mLength; }
+  Float GetLength() const { return mLength; }
   Point GetStart() const { return mLine.GetStart(); }
   Point GetEnd() const { return mLine.GetPoint(mLength); }
 
   void SetLine(Line const &line) { mLine = line; }
-  void SetLength(float const &length) { mLength = length; }
+  void SetLength(Float const &length) { mLength = length; }
 
-  bool IsParallel(Segment const &segment, float eps = 1e-6) const {
+  Bool IsParallel(Segment const &segment, Float eps = 1e-6) const {
     return mLine.IsParallel(segment.GetLine(), eps);
   }
-  bool IsVertical(Segment const &segment, float eps = 1e-6) const {
+  Bool IsVertical(Segment const &segment, Float eps = 1e-6) const {
     return mLine.IsVertical(segment.GetLine(), eps);
   }
 
@@ -105,18 +105,18 @@ public:
       : mPoint{triangle.mPoint[0], triangle.mPoint[1], triangle.mPoint[2]} {}
   ~Triangle() {}
 
-  Point const &GetPoint(int const &index) const;
+  Point const &GetPoint(Int const &index) const;
   vec3 GetNormal() const;
 
-  void SetPoint(int const &index, Point const &point);
+  void SetPoint(Int const &index, Point const &Point);
 
-  Point &operator[](int const &index);
-  Point const &operator[](int const &index) const;
+  Point &operator[](Int const &index);
+  Point const &operator[](Int const &index) const;
   Triangle &operator=(Triangle const &triangle);
 
 public:
   // Implement me
-  // static Vec<Triangle> Split(Vec<Point> const &points);
+  // static Vec<Triangle> Split(Vec<Point> const &Points);
 };
 
 class Rectangle {
@@ -132,34 +132,34 @@ public:
                rectangle.mPoint[3]} {}
   ~Rectangle() {}
 
-  Point const &GetPoint(int const &index) const;
+  Point const &GetPoint(Int const &index) const;
   vec3 GetNormal() const;
 
-  void SetPoint(int const &index, Point const &point);
+  void SetPoint(Int const &index, Point const &Point);
 
-  Point &operator[](int const &index);
-  Point const &operator[](int const &index) const;
+  Point &operator[](Int const &index);
+  Point const &operator[](Int const &index) const;
   Rectangle &operator=(Rectangle const &rectangle);
 };
 
 class Circle {
 private:
   Point mCenter;
-  float mRadius;
+  Float mRadius;
 
 public:
   Circle() : mCenter(), mRadius(0) {}
-  Circle(Point const &center, float const &radius)
+  Circle(Point const &center, Float const &radius)
       : mCenter(center), mRadius(radius) {}
   Circle(Circle const &circle)
       : mCenter(circle.mCenter), mRadius(circle.mRadius) {}
   ~Circle() {}
 
   Point const &GetCenter() const { return mCenter; }
-  float GetRadius() const { return mRadius; }
+  Float GetRadius() const { return mRadius; }
 
   void SetCenter(Point const &center) { mCenter = center; }
-  void SetRadius(float const &radius) { mRadius = radius; }
+  void SetRadius(Float const &radius) { mRadius = radius; }
 
   Circle &operator=(Circle const &circle);
 };
@@ -167,11 +167,11 @@ public:
 class Plane {
 private:
   vec3 mNormal;
-  float mDistance;
+  Float mDistance;
 
 public:
   Plane() : mNormal(0, 0, 0), mDistance(0) {}
-  Plane(vec3 const &normal, float const &distance)
+  Plane(vec3 const &normal, Float const &distance)
       : mNormal(normal), mDistance(distance) {}
   Plane(Triangle const &triangle)
       : mNormal(triangle.GetNormal()),
@@ -181,10 +181,10 @@ public:
   ~Plane() {}
 
   vec3 const &GetNormal() const { return mNormal; }
-  float GetDistance() const { return mDistance; }
+  Float GetDistance() const { return mDistance; }
 
   void SetNormal(vec3 const &normal) { mNormal = normal; }
-  void SetDistance(float const &distance) { mDistance = distance; }
+  void SetDistance(Float const &distance) { mDistance = distance; }
 
   Plane &operator=(Plane const &plane);
 };
@@ -195,7 +195,7 @@ private:
 
 public:
   Box() : mSize(0, 0, 0) {}
-  Box(float x, float y, float z) : mSize(x, y, z) {}
+  Box(Float x, Float y, Float z) : mSize(x, y, z) {}
   Box(vec3 const &size) : mSize(size) {}
   Box(Box const &box) : mSize(box.mSize) {}
   ~Box() {}
@@ -210,21 +210,21 @@ public:
 class Sphere {
 private:
   Point mCenter;
-  float mRadius;
+  Float mRadius;
 
 public:
   Sphere() : mCenter(), mRadius(0) {}
-  Sphere(Point const &center, float const &radius)
+  Sphere(Point const &center, Float const &radius)
       : mCenter(center), mRadius(radius) {}
   Sphere(Sphere const &sphere)
       : mCenter(sphere.mCenter), mRadius(sphere.mRadius) {}
   ~Sphere() {}
 
   Point const &GetCenter() const { return mCenter; }
-  float GetRadius() const { return mRadius; }
+  Float GetRadius() const { return mRadius; }
 
   void SetCenter(Point const &center) { mCenter = center; }
-  void SetRadius(float const &radius) { mRadius = radius; }
+  void SetRadius(Float const &radius) { mRadius = radius; }
 
   Sphere &operator=(Sphere const &sphere);
 };
@@ -232,21 +232,21 @@ public:
 class Capsule {
 private:
   Segment mSegment;
-  float mRadius;
+  Float mRadius;
 
 public:
   Capsule() : mSegment(), mRadius(0) {}
-  Capsule(Segment const &segment, float const &radius)
+  Capsule(Segment const &segment, Float const &radius)
       : mSegment(segment), mRadius(radius) {}
   Capsule(Capsule const &capsule)
       : mSegment(capsule.mSegment), mRadius(capsule.mRadius) {}
   ~Capsule() {}
 
   Segment const &GetSegment() const { return mSegment; }
-  float GetRadius() const { return mRadius; }
+  Float GetRadius() const { return mRadius; }
 
   void SetSegment(Segment const &segment) { mSegment = segment; }
-  void SetRadius(float const &radius) { mRadius = radius; }
+  void SetRadius(Float const &radius) { mRadius = radius; }
 
   Capsule &operator=(Capsule const &capsule);
 };
@@ -254,21 +254,21 @@ public:
 class Cylinder {
 private:
   Line mLine;
-  float mRadius;
+  Float mRadius;
 
 public:
   Cylinder() : mLine(), mRadius(0) {}
-  Cylinder(Line const &line, float const &radius)
+  Cylinder(Line const &line, Float const &radius)
       : mLine(line), mRadius(radius) {}
   Cylinder(Cylinder const &cylinder)
       : mLine(cylinder.mLine), mRadius(cylinder.mRadius) {}
   ~Cylinder() {}
 
   Line const &GetLine() const { return mLine; }
-  float GetRadius() const { return mRadius; }
+  Float GetRadius() const { return mRadius; }
 
   void SetLine(Line const &line) { mLine = line; }
-  void SetRadius(float const &radius) { mRadius = radius; }
+  void SetRadius(Float const &radius) { mRadius = radius; }
 
   Cylinder &operator=(Cylinder const &cylinder);
 };

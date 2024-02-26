@@ -10,9 +10,7 @@ private:
   Texture mTexture;
 
 public:
-  TextureTest()
-      : mBuffer("Rect", BufferUsage::STATIC_DRAW), mShader("RectShader"),
-        mTexture("testImage") {
+  TextureTest() : mBuffer(BufferUsage::STATIC_DRAW) {
     auto attrs = Attribute::GenerateAttributes({2, 2});
     mBuffer.LoadVertices({-0.5f, -0.5f, 0.0f, 0.0f, 0.5f, -0.5f, 1.0f, 0.0f,
                           0.5f, 0.5f, 1.0f, 1.0f, -0.5f, 0.5f, 0.0f, 1.0f});
@@ -56,7 +54,7 @@ public:
 };
 
 void texture_drawing_test() {
-  GeoFrameContext context = Context::AcquireInstance();
+  Context context;
 
   Window window(800, 600, "Texture Drawing Test", WindowSettings());
   window.Bind();

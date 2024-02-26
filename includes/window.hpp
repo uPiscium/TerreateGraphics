@@ -6,12 +6,12 @@
 
 namespace GeoFrame {
 namespace Core {
-extern bool S_GLAD_INITIALIZED;
+extern Bool S_GLAD_INITIALIZED;
 
 class Icon final : public Geobject {
 private:
   Vec<GLFWimage> mImages;
-  Vec<unsigned char *> mPointers;
+  Vec<Ubyte *> mPointers;
 
 private:
   M_DISABLE_COPY_AND_ASSIGN(Icon);
@@ -37,18 +37,17 @@ public:
    * instance. "glfw image" is used to render icon. Icon can have multiple of
    * images.
    */
-  void AddImage(unsigned const &width, unsigned const &height,
-                unsigned char const *pixels);
+  void AddImage(Uint const &width, Uint const &height, Ubyte const *pixels);
 
   operator GLFWimage const *() const { return mImages.data(); }
-  operator bool() const override { return mImages.size() > 0; }
+  operator Bool() const override { return mImages.size() > 0; }
 };
 
 class Cursor final : public Geobject {
 private:
   GLFWcursor *mCursor = nullptr;
   GLFWimage mImage = GLFWimage();
-  unsigned char *mPixels = nullptr;
+  Ubyte *mPixels = nullptr;
   int mXHot = 0;
   int mYHot = 0;
 
@@ -76,11 +75,10 @@ public:
    * @detail: The image is copied to new allocated array and set to "glfw
    * image" instance. "glfw image" is used to render cursor.
    */
-  void SetImage(unsigned const &width, unsigned const &height,
-                unsigned char const *pixels);
+  void SetImage(Uint const &width, Uint const &height, Ubyte const *pixels);
 
   operator GLFWcursor *() const { return mCursor; }
-  operator bool() const override { return mCursor != nullptr; }
+  operator Bool() const override { return mCursor != nullptr; }
 };
 
 class StandardCursor : public Geobject {
@@ -96,12 +94,12 @@ public:
    * @param: shape: Cursor shape.
    */
   StandardCursor(CursorShape const &shape) : Geobject(StandardCursor::sOID) {
-    mCursor = glfwCreateStandardCursor((unsigned)shape);
+    mCursor = glfwCreateStandardCursor((Uint)shape);
   }
   ~StandardCursor() override { glfwDestroyCursor(mCursor); }
 
   operator GLFWcursor *() const { return mCursor; }
-  operator bool() const override { return mCursor != nullptr; }
+  operator Bool() const override { return mCursor != nullptr; }
 };
 
 namespace Callbacks {
@@ -124,23 +122,23 @@ void CursorEnterCallbackWrapper(GLFWwindow *window, int entered);
 void ScrollCallbackWrapper(GLFWwindow *window, double xoffset, double yoffset);
 void KeyCallbackWrapper(GLFWwindow *window, int key, int scancode, int action,
                         int mods);
-void CharCallbackWrapper(GLFWwindow *window, unsigned codepoint);
+void CharCallbackWrapper(GLFWwindow *window, Uint codepoint);
 void DropCallbackWrapper(GLFWwindow *window, int count, const char **paths);
 } // namespace Callbacks
 
 struct WindowSettings {
 public:
-  unsigned resizable = GLFW_TRUE;
-  unsigned visible = GLFW_TRUE;
-  unsigned decorated = GLFW_TRUE;
-  unsigned focused = GLFW_TRUE;
-  unsigned autoIconify = GLFW_TRUE;
-  unsigned floating = GLFW_FALSE;
-  unsigned maximized = GLFW_FALSE;
-  unsigned centerCursor = GLFW_TRUE;
-  unsigned transparentFramebuffer = GLFW_FALSE;
-  unsigned focusOnShow = GLFW_TRUE;
-  unsigned scaleToMonitor = GLFW_FALSE;
+  Uint resizable = GLFW_TRUE;
+  Uint visible = GLFW_TRUE;
+  Uint decorated = GLFW_TRUE;
+  Uint focused = GLFW_TRUE;
+  Uint autoIconify = GLFW_TRUE;
+  Uint floating = GLFW_FALSE;
+  Uint maximized = GLFW_FALSE;
+  Uint centerCursor = GLFW_TRUE;
+  Uint transparentFramebuffer = GLFW_FALSE;
+  Uint focusOnShow = GLFW_TRUE;
+  Uint scaleToMonitor = GLFW_FALSE;
 };
 
 class Window;
@@ -149,17 +147,17 @@ class WindowProperty {
 private:
   Str mTitle = "GeoFrame";
   Pair<double> mScrollOffset;
-  Vec<unsigned> mCodePoints;
+  Vec<Uint> mCodePoints;
   Vec<Key> mKeys;
   Vec<Str> mDroppedFiles;
-  Pair<unsigned> mSize;
-  Pair<unsigned> mPosition;
+  Pair<Uint> mSize;
+  Pair<Uint> mPosition;
   Pair<double> mCursorPosition;
 
   friend void Callbacks::ScrollCallbackWrapper(GLFWwindow *window,
                                                double xoffset, double yoffset);
   friend void Callbacks::CharCallbackWrapper(GLFWwindow *window,
-                                             unsigned codepoint);
+                                             Uint codepoint);
   friend void Callbacks::KeyCallbackWrapper(GLFWwindow *window, int key,
                                             int scancode, int action, int mods);
   friend void Callbacks::DropCallbackWrapper(GLFWwindow *window, int count,
@@ -193,7 +191,7 @@ public:
    * @return: Inputted code points.
    * @detail: Code points are Unicode code points.
    */
-  Vec<unsigned> const &GetCodePoints() const { return mCodePoints; }
+  Vec<Uint> const &GetCodePoints() const { return mCodePoints; }
   /*
    * @brief: This function returns inputted keys.
    * @return: Inputted keys.
@@ -209,13 +207,13 @@ public:
    * @return: Window size.
    * @detail: Return format is (width, height).
    */
-  Pair<unsigned> const &GetSize() const { return mSize; }
+  Pair<Uint> const &GetSize() const { return mSize; }
   /*
    * @brief: This function returns window position.
    * @return: Window position.
    * @detail: Return format is (x, y).
    */
-  Pair<unsigned> const &GetPosition() const { return mPosition; }
+  Pair<Uint> const &GetPosition() const { return mPosition; }
   /*
    * @brief: This function returns cursor position.
    * @return: Cursor position.
@@ -238,19 +236,18 @@ public:
   virtual void SizeCallback(int const &width, int const &height) {}
   virtual void CloseCallback() {}
   virtual void RefreshCallback() {}
-  virtual void FocusCallback(bool const &focused) {}
-  virtual void IconifyCallback(bool const &iconified) {}
-  virtual void MaximizeCallback(bool const &maximized) {}
+  virtual void FocusCallback(Bool const &focused) {}
+  virtual void IconifyCallback(Bool const &iconified) {}
+  virtual void MaximizeCallback(Bool const &maximized) {}
   virtual void FramebufferSizeCallback(int const &width, int const &height) {}
   virtual void ContentScaleCallback(float const &xscale, float const &yscale) {}
-  virtual void MousebuttonCallback(unsigned const &button,
-                                   unsigned const &action,
+  virtual void MousebuttonCallback(Uint const &button, Uint const &action,
                                    Modifier const &mods) {}
   virtual void CursorPositionCallback(double const &xpos, double const &ypos) {}
-  virtual void CursorEnterCallback(bool const &entered) {}
+  virtual void CursorEnterCallback(Bool const &entered) {}
   virtual void ScrollCallback(double const &xoffset, double const &yoffset) {}
   virtual void KeyCallback(Key const &key) {}
-  virtual void CharCallback(unsigned const &codepoint) {}
+  virtual void CharCallback(Uint const &codepoint) {}
   virtual void DropCallback(Vec<Str> const &paths) {}
 
   virtual void OnFrame(Window *window) = 0;
@@ -294,7 +291,7 @@ private:
   friend void Callbacks::KeyCallbackWrapper(GLFWwindow *window, int key,
                                             int scancode, int action, int mods);
   friend void Callbacks::CharCallbackWrapper(GLFWwindow *window,
-                                             unsigned codepoint);
+                                             Uint codepoint);
   friend void Callbacks::DropCallbackWrapper(GLFWwindow *window, int count,
                                              const char **paths);
 
@@ -312,7 +309,7 @@ public:
    * @param: title: Window title.
    * @param: settings: Window settings.
    */
-  Window(unsigned const &width, unsigned const &height, Str const &title,
+  Window(Uint const &width, Uint const &height, Str const &title,
          WindowSettings const &settings);
   ~Window() override { this->Close(); }
 
@@ -361,9 +358,7 @@ public:
    * inputted code points. If you want to clear inputted code points, use
    * ClearInputs() function.
    */
-  Vec<unsigned> const &GetCodePoints() const {
-    return mProperty.GetCodePoints();
-  }
+  Vec<Uint> const &GetCodePoints() const { return mProperty.GetCodePoints(); }
   /*
    * @brief: This function returns inputted keys.
    * @return: Inputted keys.
@@ -391,8 +386,8 @@ public:
    * @brief: This function returns specified mouse button state.
    * @return: Mousebutton state [true(Pressed)/false(Released)].
    */
-  bool GetMousebutton(MousebuttonInput const &button) const {
-    return glfwGetMouseButton(mWindow, (unsigned)button);
+  Bool GetMousebutton(MousebuttonInput const &button) const {
+    return glfwGetMouseButton(mWindow, (Uint)button);
   }
   /*
    * @brief: This function returns specified input type state.
@@ -402,7 +397,7 @@ public:
    * GLFW_CURSOR_HIDDEN, GLFW_CURSOR_DISABLED.
    */
   int GetInputMode(InputType const &type) const {
-    return glfwGetInputMode(mWindow, (unsigned)type);
+    return glfwGetInputMode(mWindow, (Uint)type);
   }
   /*
    * @brief: This function returns user pointer binded to window.
@@ -493,7 +488,7 @@ public:
    * GLFW_CURSOR_HIDDEN, GLFW_CURSOR_DISABLED.
    */
   void SetInputMode(InputType const &type, int const &value) {
-    glfwSetInputMode(mWindow, (unsigned)type, value);
+    glfwSetInputMode(mWindow, (Uint)type, value);
   }
   /*
    * This function sets user pointer binded to window.
@@ -514,78 +509,78 @@ public:
    * @brief: This function returns whether window is closed or not.
    * @return: Whether window is closed or not.
    */
-  bool IsClosed() const {
+  Bool IsClosed() const {
     return mWindow == nullptr || glfwWindowShouldClose(mWindow);
   }
   /*
    * @brief: This function returns whether window is fullscreen or not.
    * @return: Whether window is fullscreen or not.
    */
-  bool IsFullScreen() const {
-    return bool(glfwGetWindowMonitor(mWindow) != NULL);
+  Bool IsFullScreen() const {
+    return Bool(glfwGetWindowMonitor(mWindow) != NULL);
   }
   /*
    * @brief: This function returns whether window is windowed or not.
    * @return: Whether window is windowed or not.
    */
-  bool IsWindowed() const {
-    return bool(glfwGetWindowMonitor(mWindow) == NULL);
+  Bool IsWindowed() const {
+    return Bool(glfwGetWindowMonitor(mWindow) == NULL);
   }
   /*
    * @brief: This function returns whether window is iconified or not.
    * @return: Whether window is iconified or not.
    */
-  bool IsIconified() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_ICONIFIED));
+  Bool IsIconified() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_ICONIFIED));
   }
   /*
    * @brief: This function returns whether window is maximized or not.
    * @return: Whether window is maximized or not.
    */
-  bool IsMaximized() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_MAXIMIZED));
+  Bool IsMaximized() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_MAXIMIZED));
   }
   /*
    * @brief: This function returns whether window is visible or not.
    * @return: Whether window is visible or not.
    */
-  bool IsVisible() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_VISIBLE));
+  Bool IsVisible() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_VISIBLE));
   }
   /*
    * @brief: This function returns whether window is focused or not.
    * @return: Whether window is focused or not.
    */
-  bool IsFocused() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_FOCUSED));
+  Bool IsFocused() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_FOCUSED));
   }
   /*
    * @brief: This function returns whether window is transparent or not.
    * @return: Whether window is transparent or not.
    */
-  bool IsTransparent() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_TRANSPARENT_FRAMEBUFFER));
+  Bool IsTransparent() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_TRANSPARENT_FRAMEBUFFER));
   }
   /*
    * @brief: This function returns whether window is decorated or not.
    * @return: Whether window is decorated or not.
    */
-  bool IsDecorated() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_DECORATED));
+  Bool IsDecorated() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_DECORATED));
   }
   /*
    * @brief: This function returns whether window is resizable or not.
    * @return: Whether window is resizable or not.
    */
-  bool IsResizable() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_RESIZABLE));
+  Bool IsResizable() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_RESIZABLE));
   }
   /*
    * @brief: This function returns whether window is floating or not.
    * @return: Whether window is floating or not.
    */
-  bool IsFloating() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_FLOATING));
+  Bool IsFloating() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_FLOATING));
   }
   /*
    * @brief: This function returns whether window is auto iconified or not.
@@ -594,8 +589,8 @@ public:
    * automatically iconify and restore the previous video mode on input focus
    * loss.
    */
-  bool IsAutoIconified() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_AUTO_ICONIFY));
+  Bool IsAutoIconified() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_AUTO_ICONIFY));
   }
   /*
    * @brief: This function returns whether window is focus on showed or not.
@@ -604,22 +599,22 @@ public:
    * @detail: "Focus on show" specifies whether the window will be given input
    * focus when Show() function is called.
    */
-  bool IsFocusOnShowed() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_FOCUS_ON_SHOW));
+  Bool IsFocusOnShowed() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_FOCUS_ON_SHOW));
   }
   /*
    * @brief: This function returns whether key is pressing or not.
    * @return: Whether key is pressing or not.
    */
-  bool IsPressing(Keyboard const &key) const {
-    return bool(glfwGetKey(mWindow, (unsigned)key) == GLFW_PRESS);
+  Bool IsPressing(Keyboard const &key) const {
+    return Bool(glfwGetKey(mWindow, (Uint)key) == GLFW_PRESS);
   }
   /*
    * @brief: This function returns whether cursor is entering or not.
    * @return: Whether cursor is entering or not.
    */
-  bool IsEntering() const {
-    return bool(glfwGetWindowAttrib(mWindow, GLFW_HOVERED));
+  Bool IsEntering() const {
+    return Bool(glfwGetWindowAttrib(mWindow, GLFW_HOVERED));
   }
 
   /*
@@ -698,7 +693,7 @@ public:
    */
   void Frame();
 
-  operator bool() const override { return mWindow != nullptr; }
+  operator Bool() const override { return mWindow != nullptr; }
 };
 } // namespace Core
 } // namespace GeoFrame

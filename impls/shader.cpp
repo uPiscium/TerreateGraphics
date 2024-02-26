@@ -4,8 +4,8 @@ namespace GeoFrame {
 namespace Core {
 ObjectID const Shader::sOID = ObjectID("SHADER");
 
-Str GetShaderLog(unsigned const &id) {
-  int status;
+Str GetShaderLog(Uint const &id) {
+  Int status;
   glGetShaderiv(id, GL_COMPILE_STATUS, &status);
   if (status) {
     return "";
@@ -16,7 +16,7 @@ Str GetShaderLog(unsigned const &id) {
   return log;
 }
 
-void CheckCompileStatus(unsigned const &id, Str const &name) {
+void CheckCompileStatus(Uint const &id, Str const &name) {
   Str log = GetShaderLog(id);
   if (log != "") {
     log = name + " shader log: " + log;
@@ -24,8 +24,8 @@ void CheckCompileStatus(unsigned const &id, Str const &name) {
   }
 }
 
-Str GetProgramLog(unsigned const &id) {
-  int status;
+Str GetProgramLog(Uint const &id) {
+  Int status;
   glGetProgramiv(id, GL_LINK_STATUS, &status);
 
   if (status) {
@@ -37,7 +37,7 @@ Str GetProgramLog(unsigned const &id) {
   return log;
 }
 
-void CheckLinkStatus(unsigned const &id) {
+void CheckLinkStatus(Uint const &id) {
   Str log = GetProgramLog(id);
 
   if (log != "") {
@@ -59,7 +59,7 @@ void Shader::SetCullingFace(CullingFace const &face,
 }
 
 void Shader::SetStencilFunction(StencilFunction const &func, int const &ref,
-                                unsigned const &mask) {
+                                Uint const &mask) {
   mOption.stencilFunc = func;
   mOption.stencilRef = ref;
   mOption.stencilMask = mask;
@@ -83,14 +83,14 @@ void Shader::Compile() {
     return;
   }
 
-  unsigned vertID = 0;
+  ID vertID = 0;
   vertID = glCreateShader(GL_VERTEX_SHADER);
   char const *vertSource = mVertexShaderSource.c_str();
   glShaderSource(vertID, 1, &vertSource, NULL);
   glCompileShader(vertID);
   CheckCompileStatus(vertID, "Vertex");
 
-  unsigned fragID = 0;
+  ID fragID = 0;
   fragID = glCreateShader(GL_FRAGMENT_SHADER);
   char const *fragSource = mFragmentShaderSource.c_str();
   glShaderSource(fragID, 1, &fragSource, NULL);
@@ -101,7 +101,7 @@ void Shader::Compile() {
   glAttachShader(mShaderID, fragID);
 
   if (mGeometryShaderSource != "") {
-    unsigned geomID = 0;
+    ID geomID = 0;
     geomID = glCreateShader(GL_GEOMETRY_SHADER);
     char const *geomSource = mGeometryShaderSource.c_str();
     glShaderSource(geomID, 1, &geomSource, NULL);

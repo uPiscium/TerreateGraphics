@@ -2,14 +2,14 @@
 
 namespace GeoFrame {
 namespace Primitive {
-float &Point::operator[](int const &index) {
+float &Point::operator[](Int const &index) {
   if (index < 0 || index > 2) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }
   return mCoord[index];
 }
 
-float const &Point::operator[](int const &index) const {
+float const &Point::operator[](Int const &index) const {
   if (index < 0 || index > 2) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }
@@ -35,7 +35,7 @@ Segment &Segment::operator=(Segment const &segment) {
   return *this;
 }
 
-Point const &Triangle::GetPoint(int const &index) const {
+Point const &Triangle::GetPoint(Int const &index) const {
   if (index < 0 || index > 2) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }
@@ -48,21 +48,21 @@ vec3 Triangle::GetNormal() const {
   return GeoMath::Cross(v1, v2).GetNormalized();
 }
 
-void Triangle::SetPoint(int const &index, Point const &point) {
+void Triangle::SetPoint(Int const &index, Point const &point) {
   if (index < 0 || index > 2) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }
   mPoint[index] = point;
 }
 
-Point &Triangle::operator[](int const &index) {
+Point &Triangle::operator[](Int const &index) {
   if (index < 0 || index > 2) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }
   return mPoint[index];
 }
 
-Point const &Triangle::operator[](int const &index) const {
+Point const &Triangle::operator[](Int const &index) const {
   if (index < 0 || index > 2) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }
@@ -76,7 +76,7 @@ Triangle &Triangle::operator=(Triangle const &triangle) {
   return *this;
 }
 
-Point const &Rectangle::GetPoint(int const &index) const {
+Point const &Rectangle::GetPoint(Int const &index) const {
   if (index < 0 || index > 3) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }
@@ -89,21 +89,21 @@ vec3 Rectangle::GetNormal() const {
   return GeoMath::Cross(v1, v2).GetNormalized();
 }
 
-void Rectangle::SetPoint(int const &index, Point const &point) {
+void Rectangle::SetPoint(Int const &index, Point const &point) {
   if (index < 0 || index > 3) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }
   mPoint[index] = point;
 }
 
-Point &Rectangle::operator[](int const &index) {
+Point &Rectangle::operator[](Int const &index) {
   if (index < 0 || index > 3) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }
   return mPoint[index];
 }
 
-Point const &Rectangle::operator[](int const &index) const {
+Point const &Rectangle::operator[](Int const &index) const {
   if (index < 0 || index > 3) {
     M_GEO_THROW(InterfaceError, "Index out of range");
   }

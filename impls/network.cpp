@@ -8,7 +8,7 @@ ObjectID const Socket::sOID = ObjectID("SOCKET");
 ObjectID const TCPSocket::sOID = ObjectID("TCP_SOCKET");
 ObjectID const UDPSocket::sOID = ObjectID("UDP_SOCKET");
 
-void Packet::Read(Byte *data, size_t const &size) {
+void Packet::Read(Byte *data, Size const &size) {
   if (mOffset + size > mData.size()) {
     M_GEO_THROW(KernelError, "Reading out of range");
   }
@@ -62,19 +62,17 @@ Socket::Socket(SocketType const &type, SocketProtocol const &protocol)
     : Geobject(Socket::sOID) {
   mSocket = socket((int)protocol, (int)type, 0);
   if (mSocket == -1) {
-    M_GEO_THROW(KernelError, "Failed to create socket");
+    Stream msg;
+    msg << "Failed to create socket: " << strerror(errno);
+    M_GEO_THROW(KernelError, msg.str().c_str());
   }
-}
-
-Socket::Socket(Socket &&socket) : Geobject(Socket::sOID) {
-  mSocket = socket.mSocket;
-  socket.mSocket = -1;
 }
 
 void Socket::Connect(Address const *address) {
   if (connect(mSocket, address->GetInfo(), address->GetSize()) == -1) {
-    std::cout << strerror(errno) << std::endl;
-    M_GEO_THROW(KernelError, "Failed to connect socket");
+    Stream msg;
+    msg << "Failed to connect socket: " << strerror(errno);
+    M_GEO_THROW(KernelError, msg.str().c_str());
   }
 }
 
@@ -96,12 +94,14 @@ Socket Socket::Accept(Endpoint *endpoint) {
   return Socket(socket);
 }
 
-Packet Socket::Receive(size_t const &maxSize) {
+Packet Socket::Receive(Size const &maxSize) {
   Packet packet;
   Byte *buffer = new Byte[maxSize];
-  int64_t size = recv(mSocket, (void *)buffer, maxSize, 0);
+  Long size = recv(mSocket, (void *)buffer, maxSize, 0);
   if (size == -1) {
-    M_GEO_THROW(KernelError, "Failed to receive packet");
+    Stream msg;
+    msg << "Failed to receive packet: " << strerror(errno);
+    M_GEO_THROW(KernelError, msg.str().c_str());
   } else if (size == 0) {
     mSocket = -1; // Close the socket
   }
@@ -110,15 +110,16 @@ Packet Socket::Receive(size_t const &maxSize) {
   return packet;
 }
 
-Packet Socket::ReceiveFrom(IPv4Address *address, size_t const &maxSize) {
+Packet Socket::ReceiveFrom(IPv4Address *address, Size const &maxSize) {
   Packet packet;
   Byte *buffer = new Byte[maxSize];
   sockaddr_in info = {};
   socklen_t size = 0;
-  size_t length =
-      recvfrom(mSocket, buffer, maxSize, 0, (sockaddr *)&info, &size);
+  Size length = recvfrom(mSocket, buffer, maxSize, 0, (sockaddr *)&info, &size);
   if (length == -1) {
-    M_GEO_THROW(KernelError, "Failed to receive packet");
+    Stream msg;
+    msg << "Failed to receive packet: " << strerror(errno);
+    M_GEO_THROW(KernelError, msg.str().c_str());
   }
   packet.Union(buffer, length);
   delete[] buffer;
@@ -152,7 +153,7 @@ void TCPSocket::Bind(IP const &ip, Port const &port) {
   mSocket.Bind(&address);
   mBound = true;
 }
-void TCPSocket::Listen(unsigned const &maxConnections) {
+void TCPSocket::Listen(Uint const &maxConnections) {
   mSocket.Listen(maxConnections);
   mListening = true;
 }
@@ -188,7 +189,7 @@ void UDPSocket::SendTo(Packet const &packet, IP const &ip, Port const &port) {
   mSocket.SendTo(packet, &address);
 }
 
-Packet UDPSocket::ReceiveFrom(IP *ip, Port *port, size_t const &maxSize) {
+Packet UDPSocket::ReceiveFrom(IP *ip, Port *port, Size const &maxSize) {
   IPv4Address address;
   Packet packet = mSocket.ReceiveFrom(&address, maxSize);
   if (ip != nullptr) {

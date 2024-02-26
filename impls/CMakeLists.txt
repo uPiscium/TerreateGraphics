@@ -11,11 +11,11 @@ add_library(
   ${PROJECT_NAME} STATIC
   buffer.cpp
   core.cpp
-  defines.cpp
   event.cpp
   font.cpp
   gl.cpp
   job.cpp
+  loader.cpp
   network.cpp
   object.cpp
   primitive.cpp

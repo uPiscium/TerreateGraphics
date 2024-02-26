@@ -9,18 +9,18 @@
 namespace GeoFrame {
 namespace Core {
 struct TextureData {
-  Vec<unsigned char> pixels;
-  unsigned width = 0;
-  unsigned height = 0;
-  unsigned channels = 0;
+  Vec<Ubyte> pixels;
+  Uint width = 0;
+  Uint height = 0;
+  Uint channels = 0;
 };
 
 class Texture final : public Geobject {
 private:
   ID mTexture = 0;
-  unsigned mWidth = 0;
-  unsigned mHeight = 0;
-  unsigned mChannels = 0;
+  Uint mWidth = 0;
+  Uint mHeight = 0;
+  Uint mChannels = 0;
   FilterType mFilter = FilterType::LINEAR;
   WrappingType mWrap = WrappingType::REPEAT;
 
@@ -32,6 +32,10 @@ public:
 
 public:
   /*
+   * @brief: This function creates a opengl texture.
+   */
+  Texture() : Geobject(Texture::sOID) { glGenTextures(1, &mTexture); }
+  /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be created by Screen.
    * @param: texture: OpenGL texture ID
@@ -39,16 +43,10 @@ public:
    * @param: height: height of texture
    * @param: channels: number of channels in texture
    */
-  Texture(unsigned const &texture, unsigned const &width,
-          unsigned const &height, unsigned const &channels)
+  Texture(Uint const &texture, Uint const &width, Uint const &height,
+          Uint const &channels)
       : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels),
         Geobject(Texture::sOID) {}
-  /*
-   * @brief: This function creates a opengl texture.
-   */
-  Texture(Str const &name) : Geobject(Texture::sOID) {
-    glGenTextures(1, &mTexture);
-  }
   ~Texture() override { glDeleteTextures(1, &mTexture); }
 
   /*
@@ -69,8 +67,7 @@ public:
    * @param: channels: number of channels in texture
    * @param: data: pointer to texture data
    */
-  void LoadData(unsigned width, unsigned height, unsigned channels,
-                unsigned char const *data);
+  void LoadData(Uint width, Uint height, Uint channels, Ubyte const *data);
   /*
    * @brief: Loads texture data into OpenGL texture.
    * @param: data: texture data
@@ -101,10 +98,10 @@ public:
 
 class CubeTexture final : public Geobject {
 private:
-  unsigned mTexture = 0;
-  unsigned mWidth = 0;
-  unsigned mHeight = 0;
-  unsigned mChannels = 0;
+  Uint mTexture = 0;
+  Uint mWidth = 0;
+  Uint mHeight = 0;
+  Uint mChannels = 0;
   FilterType mFilter = FilterType::LINEAR;
   WrappingType mWrap = WrappingType::REPEAT;
 
@@ -120,8 +117,8 @@ private:
    * @param: height: height of texture
    * @param: channels: number of channels in texture
    */
-  CubeTexture(unsigned const &texture, unsigned const &width,
-              unsigned const &height, unsigned const &channels)
+  CubeTexture(Uint const &texture, Uint const &width, Uint const &height,
+              Uint const &channels)
       : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
   }
   friend class RawCubeScreen;
@@ -155,8 +152,8 @@ public:
    * @param: channels: number of channels in texture
    * @param: data: pointer to texture data
    */
-  void LoadData(CubeFace face, unsigned width, unsigned height,
-                unsigned channels, unsigned char const *data);
+  void LoadData(CubeFace face, Uint width, Uint height, Uint channels,
+                Ubyte const *data);
   /*
    * @brief: Loads texture data into OpenGL texture.
    * @param: face: face of cube texture
@@ -183,7 +180,7 @@ public:
    */
   void Unbind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
 
-  operator bool() const override { return mTexture != 0; }
+  operator Bool() const override { return mTexture != 0; }
 };
 } // namespace Core
 } // namespace GeoFrame

@@ -1,17 +1,24 @@
 #pragma once
+#include <arpa/inet.h>
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
 #include <cstring>
 #include <deque>
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <memory>
 #include <mutex>
+#include <netdb.h>
+#include <netinet/in.h>
 #include <queue>
 #include <sstream>
 #include <string>
+#include <sys/socket.h>
+#include <sys/types.h>
 #include <thread>
+#include <unistd.h>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -58,6 +65,36 @@
 
 namespace GeoFrame {
 // Typedefs
+// Basic types
+using GFbool = bool;
+using GFi8 = int8_t;
+using GFu8 = uint8_t;
+using GFi16 = int16_t;
+using GFu16 = uint16_t;
+using GFi32 = int32_t;
+using GFu32 = uint32_t;
+using GFi64 = int64_t;
+using GFu64 = uint64_t;
+using GFfloat = float;
+using GFdouble = double;
+
+using Bool = GFbool;
+using Byte = GFi8;
+using Ubyte = GFu8;
+using Short = GFi16;
+using Ushort = GFu16;
+using Int = GFi32;
+using Uint = GFu32;
+using Long = GFi64;
+using Ulong = GFu64;
+using Float = GFfloat;
+using Double = GFdouble;
+
+using BYTE = GFi8;
+using WORD = GFi16;
+using DWORD = GFi32;
+using QWORD = GFi64;
+
 // std types
 template <typename S, typename T> using Map = std::unordered_map<S, T>;
 template <typename T> using Pair = std::pair<T, T>;
@@ -74,12 +111,18 @@ template <typename T> using Function = std::function<T>;
 using Mutex = std::mutex;
 using Thread = std::thread;
 using CondVar = std::condition_variable;
-using ID = uint32_t;
-using Index = uint64_t;
-using EventID = uint64_t;
+using ID = GFu32;
+using Index = GFu64;
+using EventID = GFu64;
+using Size = GFu64;
 using Str = std::string;
 using WStr = std::wstring;
 using Stream = std::stringstream;
+using Endpoint = sockaddr;
+using IPv4Endpoint = sockaddr_in;
+using IPv6Endpoint = sockaddr_in6;
+using IP = Str;
+using Port = GFu16;
 
 // GeoMath types
 template <typename T> using vec2T = GeoMath::vec2<T>;
@@ -95,19 +138,19 @@ template <typename T> using mat4x2T = GeoMath::mat4x2<T>;
 template <typename T> using mat4x3T = GeoMath::mat4x3<T>;
 template <typename T> using mat4T = GeoMath::mat4<T>;
 template <typename T> using QuaternionT = GeoMath::Quaternion<T>;
-using vec2 = vec2T<float>;
-using vec3 = vec3T<float>;
-using vec4 = vec4T<float>;
-using mat2 = mat2T<float>;
-using mat2x3 = mat2x3T<float>;
-using mat2x4 = mat2x4T<float>;
-using mat3x2 = mat3x2T<float>;
-using mat3 = mat3T<float>;
-using mat3x4 = mat3x4T<float>;
-using mat4x2 = mat4x2T<float>;
-using mat4x3 = mat4x3T<float>;
-using mat4 = mat4T<float>;
-using Quaternion = QuaternionT<float>;
+using vec2 = vec2T<GFfloat>;
+using vec3 = vec3T<GFfloat>;
+using vec4 = vec4T<GFfloat>;
+using mat2 = mat2T<GFfloat>;
+using mat2x3 = mat2x3T<GFfloat>;
+using mat2x4 = mat2x4T<GFfloat>;
+using mat3x2 = mat3x2T<GFfloat>;
+using mat3 = mat3T<GFfloat>;
+using mat3x4 = mat3x4T<GFfloat>;
+using mat4x2 = mat4x2T<GFfloat>;
+using mat4x3 = mat4x3T<GFfloat>;
+using mat4 = mat4T<GFfloat>;
+using Quaternion = QuaternionT<GFfloat>;
 
 // Callbacks
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;
@@ -120,10 +163,10 @@ concept extends = std::derived_from<Derived, Base>;
 
 struct Modifier {
 public:
-  bool shift = false;
-  bool control = false;
-  bool alt = false;
-  bool numLock = false;
+  GFbool shift = false;
+  GFbool control = false;
+  GFbool alt = false;
+  GFbool numLock = false;
 
 public:
   Modifier(int mods_)
@@ -133,68 +176,15 @@ public:
 
 struct Key {
 public:
-  int key = 0;
-  int scancode = 0;
-  int action = 0;
+  GFi32 key = 0;
+  GFi32 scancode = 0;
+  GFi32 action = 0;
   Modifier mods = 0;
 
 public:
   Key(int key_, int scancode_, int action_, int mods_)
       : key(key_), scancode(scancode_), action(action_), mods(mods_) {}
 };
-
-class SingletonFinalizer {
-public:
-  using Finalizer = void (*)();
-
-public:
-  static void AddFinalizer(Finalizer finalizer);
-  static void Finalize();
-};
-
-/*
- * @brief: This class is used to create a singleton.
- * @param: T: class to be created as a singleton
- */
-template <typename T> class Singleton final {
-private:
-  static T *sInstance;
-  static std::once_flag sCallFlag;
-
-private:
-  /*
-   * @brief: Constructor function for Singleton. This function is private
-   * because Singleton should only be created by Singleton::AquireInstance().
-   */
-  static void CreateInstance() {
-    sInstance = new T();
-    SingletonFinalizer::AddFinalizer(&Delete);
-  }
-  /*
-   * @brief: Destructor function for Singleton. This function is private because
-   * Singleton should only be destroyed by SingletonFinalizer::Finalize().
-   */
-  static void Delete() {
-    delete sInstance;
-    sInstance = nullptr;
-  }
-
-public:
-  /*
-   * @brief: Acquires the singleton instance.
-   * @return: singleton instance
-   */
-  static T &AcquireInstance() {
-    std::call_once(sCallFlag, &CreateInstance);
-    if (sInstance == nullptr) {
-      M_GEO_THROW(KernelError, "Failed to create singleton instance.");
-    }
-    return *sInstance;
-  }
-};
-
-template <typename T> T *Singleton<T>::sInstance = nullptr;
-template <typename T> std::once_flag Singleton<T>::sCallFlag;
 
 // Use to select opengl color frame buffer attachement.
 enum class Attachment {
@@ -488,6 +478,24 @@ enum class Keyboard {
   K_LAST = GLFW_KEY_LAST
 };
 
+// Use to select material texture type.
+enum class MaterialTexture {
+  AMBIENT,
+  DIFFUSE,
+  SPECULAR,
+  EMISSION,
+  NORMAL,
+  SHININESS,
+  DISSOLVE,
+  REFLECTION
+};
+
+// Use to select material color type.
+enum class MaterialColor { AMBIENT, DIFFUSE, SPECULAR, EMISSION };
+
+// Use to select material constant type.
+enum class MaterialConstant { SHININESS, DISSOLVE, REFLECTION };
+
 // Use to select mouse button input.
 enum class MousebuttonInput {
   BUTTON1 = GLFW_MOUSE_BUTTON_1,
@@ -502,6 +510,12 @@ enum class MousebuttonInput {
   BUTTON7 = GLFW_MOUSE_BUTTON_7,
   BUTTON8 = GLFW_MOUSE_BUTTON_8
 };
+
+// Use to select socket protocol.
+enum class SocketProtocol { IPV4 = AF_INET, IPV6 = AF_INET6 };
+
+// Use to select socket type.
+enum class SocketType { TCP = SOCK_STREAM, UDP = SOCK_DGRAM };
 
 // Use to select opengl stencil function.
 enum class StencilFunction {

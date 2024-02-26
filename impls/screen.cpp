@@ -5,11 +5,11 @@ namespace GeoFrame {
 namespace Core {
 ObjectID const Screen::sOID = ObjectID("SCREEN");
 
-Screen::Screen(Str const &name, unsigned const &width, unsigned const &height)
+Screen::Screen(Uint const &width, Uint const &height)
     : mWidth(width), mHeight(height), Geobject(Screen::sOID) {
   glGenFramebuffers(1, &mFrameBuffer);
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
-  unsigned rbo = 0;
+  ID rbo = 0;
   glGenRenderbuffers(1, &rbo);
   glBindRenderbuffer(GL_RENDERBUFFER, rbo);
   glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mWidth, mHeight);
@@ -30,7 +30,7 @@ void Screen::AddBuffer() {
     M_GEO_THROW(KernelError, "Cannot add more than 32 buffers to screen.");
   }
 
-  unsigned buffer = 0;
+  ID buffer = 0;
 
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
   glGenTextures(1, &buffer);

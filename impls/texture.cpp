@@ -8,25 +8,25 @@ ObjectID const CubeTexture::sOID = ObjectID("CUBETEXTURE");
 void Texture::SetFilter(FilterType const &filter) {
   mFilter = filter;
   Bind();
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (unsigned)mFilter);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (unsigned)mFilter);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLenum)mFilter);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLenum)mFilter);
   Unbind();
 }
 
 void Texture::SetWrapping(WrappingType const &wrap) {
   mWrap = wrap;
   Bind();
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (unsigned)mWrap);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (unsigned)mWrap);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (GLenum)mWrap);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLenum)mWrap);
   Unbind();
 }
 
-void Texture::LoadData(unsigned width, unsigned height, unsigned channels,
-                       unsigned char const *data) {
+void Texture::LoadData(Uint width, Uint height, Uint channels,
+                       Ubyte const *data) {
   mWidth = width;
   mHeight = height;
   mChannels = channels;
-  unsigned format;
+  GLenum format;
   switch (mChannels) {
   case 1:
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -75,7 +75,7 @@ TextureData Texture::LoadTexture(Str const &path) {
     return texData;
   }
 
-  texData.pixels = Vec<unsigned char>(
+  texData.pixels = Vec<Ubyte>(
       pixelData, pixelData + texData.width * texData.height * texData.channels);
   stbi_image_free(pixelData);
   return texData;
@@ -84,28 +84,26 @@ TextureData Texture::LoadTexture(Str const &path) {
 void CubeTexture::SetFilter(FilterType const &filter) {
   mFilter = filter;
   Bind();
-  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER,
-                  (unsigned)mFilter);
-  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER,
-                  (unsigned)mFilter);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, (GLenum)mFilter);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, (GLenum)mFilter);
   Unbind();
 }
 
 void CubeTexture::SetWrapping(WrappingType const &wrap) {
   mWrap = wrap;
   Bind();
-  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, (unsigned)mWrap);
-  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, (unsigned)mWrap);
-  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, (unsigned)mWrap);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, (GLenum)mWrap);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, (GLenum)mWrap);
+  glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, (GLenum)mWrap);
   Unbind();
 }
 
-void CubeTexture::LoadData(CubeFace face, unsigned width, unsigned height,
-                           unsigned channels, unsigned char const *data) {
+void CubeTexture::LoadData(CubeFace face, Uint width, Uint height,
+                           Uint channels, Ubyte const *data) {
   mWidth = width;
   mHeight = height;
   mChannels = channels;
-  unsigned format;
+  GLenum format;
   switch (mChannels) {
   case 1:
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -133,7 +131,7 @@ void CubeTexture::LoadData(CubeFace face, unsigned width, unsigned height,
   }
 
   Bind();
-  glTexImage2D((unsigned)face, 0, (unsigned)GL_RGBA, mWidth, mHeight, 0, format,
+  glTexImage2D((GLenum)face, 0, GL_RGBA, mWidth, mHeight, 0, format,
                GL_UNSIGNED_BYTE, data);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
   SetFilter(mFilter);
@@ -142,8 +140,8 @@ void CubeTexture::LoadData(CubeFace face, unsigned width, unsigned height,
 }
 
 void CubeTexture::LoadDatas(Vec<TextureData> const &datas) {
-  for (unsigned i = 0; i < datas.size(); ++i) {
-    this->LoadData((CubeFace)((unsigned)CubeFace::RIGHT + i), datas[i]);
+  for (Uint i = 0; i < datas.size(); ++i) {
+    this->LoadData((CubeFace)((GLenum)CubeFace::RIGHT + i), datas[i]);
   }
 }
 } // namespace Core
