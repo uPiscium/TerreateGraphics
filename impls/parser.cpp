@@ -825,11 +825,8 @@ Bool GLBParser::ParseHeader() {
     return false;
   }
   GFu32 const version = *(GFu32 *)(header + 4);
-  std::cout << "Version: " << version << std::endl;
   GFu32 const filesize = *(GFu32 *)(header + 8);
-  std::cout << "Filesize: " << filesize << std::endl;
   GFu32 const jsonLength = *(GFu32 *)(header + 12);
-  std::cout << "JSON Length: " << jsonLength << std::endl;
   if (M_MEMCMP(header + 16, "JSON", 4) != 0) {
     return false;
   };
@@ -847,8 +844,6 @@ Bool GLBParser::ParseHeader() {
     return false;
   }
   Node node = parser.GetNode();
-  Serializer serializer(2);
-  std::cout << serializer.Serialize(node) << std::endl;
   return true;
 }
 
