@@ -215,46 +215,31 @@ public:
   Bool ParseObject(Node &node);
   Bool Parse();
 };
-} // namespace Parser
 
-namespace Loader {
-class Material final : public Geobject {
+class GLBParser : public ParserBase {
 private:
-  Str mName;
-  Map<MaterialTexture, Shared<Core::Texture>> mTextures;
-  Map<MaterialColor, vec3> mColors;
-  Map<MaterialConstant, Float> mConstants;
+  Vec<vec3> mVertices;
+  Vec<vec3> mNormals;
+  Vec<vec2> mUVs;
+  Vec<Vec<Uint>> mMatrixIndices;
+  Vec<Uint> mIndices;
 
 public:
   static ObjectID const sOID;
 
 public:
-  Material(Str const &name) : Geobject(Material::sOID), mName(name) {}
-  Material(Material const &other)
-      : Geobject(Material::sOID), mName(other.mName),
-        mTextures(other.mTextures), mColors(other.mColors),
-        mConstants(other.mConstants) {}
+  GLBParser(Str const &filename) : ParserBase(GLBParser::sOID, filename) {}
+  GLBParser(Shared<IOBuffer> buffer);
+  ~GLBParser() override {}
 
-  Str const &GetName() const { return mName; }
-  Shared<Core::Texture> const &GetTexture(MaterialTexture const &type) const;
-  vec3 const &GetColor(MaterialColor const &type) const;
-  Float const &GetConstant(MaterialConstant const &type) const;
-
-  void SetName(Str const &name) { mName = name; }
-  void SetTexture(MaterialTexture const &type,
-                  Shared<Core::Texture> const &texture);
-  void SetColor(MaterialColor const &type, vec3 const &color);
-  void SetConstant(MaterialConstant const &type, Float const &constant);
-
-  Bool HasTexture(MaterialTexture const &type) const;
-  Bool HasColor(MaterialColor const &type) const;
-  Bool HasConstant(MaterialConstant const &type) const;
-
-  Shared<Core::Texture> const &operator[](MaterialTexture const &type) const;
-  vec3 const &operator[](MaterialColor const &type) const;
-  Float const &operator[](MaterialConstant const &type) const;
+  Bool ParseHeader();
+  Bool ParseJson();
+  Bool ParseBinary();
+  Bool Parse();
 };
+} // namespace Parser
 
+namespace Loader {
 class LoaderBase : public Geobject {
 private:
   Str mFilename;

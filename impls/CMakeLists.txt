@@ -15,9 +15,9 @@ add_library(
   font.cpp
   gl.cpp
   job.cpp
-  loader.cpp
   network.cpp
   object.cpp
+  parser.cpp
   primitive.cpp
   screen.cpp
   shader.cpp

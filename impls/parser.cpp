@@ -1,12 +1,11 @@
-#include "../includes/loader.hpp"
-#include <fstream>
-#include <iomanip>
+#include "../includes/parser.hpp"
 
 namespace GeoFrame {
 namespace Parser {
 ObjectID const Serializer::sOID = ObjectID("SELIALIZER");
 ObjectID const ParserBase::sOID = ObjectID("PARSER_BASE");
 ObjectID const JsonParser::sOID = ObjectID("JSON_PARSER");
+ObjectID const GLBParser::sOID = ObjectID("GLB_PARSER");
 
 Byte IOBuffer::GetChar() {
   if (mCursor == mEnd) {
@@ -580,7 +579,7 @@ Str Serializer::Serialize(Node const &node, Size const &level) {
 
 ParserBase::ParserBase(Str const &filename) : Geobject(ParserBase::sOID) {
   std::ifstream file;
-  file.open(filename, std::ios::in);
+  file.open(filename, std::ios::in | std::ios::binary);
   if (!file.is_open()) {
     M_GEO_THROW(InterfaceError, "Failed to open file");
   }
@@ -818,32 +817,54 @@ Bool JsonParser::Parse() {
     return false;
   }
 }
+
+Bool GLBParser::ParseHeader() {
+  Byte header[20];
+  mBuffer->Read(header, 20);
+  if (M_MEMCMP(header, "glTF", 4) != 0) {
+    return false;
+  }
+  GFu32 const version = *(GFu32 *)(header + 4);
+  std::cout << "Version: " << version << std::endl;
+  GFu32 const filesize = *(GFu32 *)(header + 8);
+  std::cout << "Filesize: " << filesize << std::endl;
+  GFu32 const jsonLength = *(GFu32 *)(header + 12);
+  std::cout << "JSON Length: " << jsonLength << std::endl;
+  if (M_MEMCMP(header + 16, "JSON", 4) != 0) {
+    return false;
+  };
+  Byte *rawJson = new Byte[jsonLength + 1];
+  mBuffer->Read((Byte *)rawJson, jsonLength);
+  rawJson[jsonLength] = '\0';
+  Stream json;
+  json << rawJson;
+  Str jsonStr = json.str();
+  Shared<IOBuffer> jsonBuffer =
+      std::make_shared<IOBuffer>(jsonStr.begin(), jsonStr.end());
+  delete[] rawJson;
+  JsonParser parser(jsonBuffer, 10);
+  if (!parser.Parse()) {
+    return false;
+  }
+  Node node = parser.GetNode();
+  Serializer serializer(2);
+  std::cout << serializer.Serialize(node) << std::endl;
+  return true;
+}
+
+Bool GLBParser::ParseJson() { return true; }
+Bool GLBParser::ParseBinary() { return true; }
+Bool GLBParser::Parse() {
+  if (!this->ParseHeader()) {
+    return false;
+  }
+  if (!this->ParseJson()) {
+    return false;
+  }
+  if (!this->ParseBinary()) {
+    return false;
+  }
+  return true;
+}
 } // namespace Parser
-
-namespace Loader {
-ObjectID const Material::sOID = ObjectID("MATERIAL");
-ObjectID const LoaderBase::sOID = ObjectID("LOADER_BASE");
-
-Shared<Core::Texture> const &
-Material::GetTexture(MaterialTexture const &type) const {
-  if (mTextures.find(type) == mTextures.end()) {
-    M_GEO_THROW(InterfaceError, "Texture not found");
-  }
-  return mTextures.at(type);
-}
-
-vec3 const &Material::GetColor(MaterialColor const &type) const {
-  if (mColors.find(type) == mColors.end()) {
-    M_GEO_THROW(InterfaceError, "Color not found");
-  }
-  return mColors.at(type);
-}
-
-Float const &Material::GetConstant(MaterialConstant const &type) const {
-  if (mConstants.find(type) == mConstants.end()) {
-    M_GEO_THROW(InterfaceError, "Constant not found");
-  }
-  return mConstants.at(type);
-}
-} // namespace Loader
 } // namespace GeoFrame
