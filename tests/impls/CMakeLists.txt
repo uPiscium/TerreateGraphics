@@ -30,6 +30,7 @@ endfunction(setLibs)
 function(setIncludes)
   target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
   target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/parser)
   target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
 endfunction()
 

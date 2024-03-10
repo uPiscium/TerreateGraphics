@@ -17,12 +17,14 @@ add_library(
   job.cpp
   network.cpp
   object.cpp
-  parser.cpp
   primitive.cpp
   screen.cpp
   shader.cpp
   texture.cpp
-  window.cpp)
+  window.cpp
+  parser/base.cpp
+  parser/json.cpp
+  parser/glb.cpp)
 
 target_link_directories(${PROJECT_NAME} PUBLIC ../libs)
 if(WIN32)
@@ -36,5 +38,6 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC ../includes/headers)
 target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+target_include_directories(${PROJECT_NAME} PUBLIC ../includes/parser)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION 1.0.0)
