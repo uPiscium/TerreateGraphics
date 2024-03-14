@@ -1,240 +1,11 @@
-#include "../includes/loader.hpp"
-#include <fstream>
-#include <iomanip>
+#include "../../includes/parser/json.hpp"
 
 namespace GeoFrame {
 namespace Parser {
-ObjectID const Serializer::sOID = ObjectID("SELIALIZER");
-ObjectID const ParserBase::sOID = ObjectID("PARSER_BASE");
+ObjectID const JsonSerializer::sOID = ObjectID("JSON_SELIALIZER");
 ObjectID const JsonParser::sOID = ObjectID("JSON_PARSER");
 
-Byte IOBuffer::GetChar() {
-  if (mCursor == mEnd) {
-    return -1;
-  }
-  if (*mCursor == '\n') {
-    ++mLine;
-  }
-  Byte const chr = *mCursor & 0xff;
-  ++mCursor;
-  return chr;
-}
-
-Str IOBuffer::GetWord() {
-  if (mCursor == mEnd) {
-    return "";
-  }
-
-  Stream buffer;
-  this->SkipWhiteSpace();
-  while (!(*mCursor == ' ' || *mCursor == '\t' || *mCursor == '\n' ||
-           *mCursor == '\r')) {
-    buffer << *mCursor;
-    ++mCursor;
-
-    if (mCursor == mEnd) {
-      break;
-    }
-  }
-  return buffer.str();
-}
-
-Byte IOBuffer::FetchChar() {
-  if (mCursor == mEnd) {
-    return -1;
-  }
-  Byte const chr = *mCursor; // & 0xff;
-  return chr;
-}
-
-Str IOBuffer::FetchWord() {
-  if (mCursor == mEnd) {
-    return "";
-  }
-
-  Stream buffer;
-  this->SkipWhiteSpace();
-  Iter cursor = mCursor;
-  while (!(*cursor == ' ' || *cursor == '\t' || *cursor == '\n' ||
-           *cursor == '\r')) {
-    buffer << *cursor;
-    ++cursor;
-
-    if (cursor == mEnd) {
-      break;
-    }
-  }
-  return buffer.str();
-}
-
-void IOBuffer::UngetChar() {
-  --mCursor;
-  if (*mCursor == '\n') {
-    --mLine;
-  }
-}
-
-void IOBuffer::UngetWord() {
-  while (mCursor != mBegin) {
-    if (*mCursor == ' ' || *mCursor == '\t' || *mCursor == '\n' ||
-        *mCursor == '\r') {
-      if (*mCursor == '\n') {
-        --mLine;
-      }
-      --mCursor;
-    } else {
-      break;
-    }
-  }
-  while (mCursor != mBegin) {
-    if (!(*mCursor == ' ' || *mCursor == '\t' || *mCursor == '\n' ||
-          *mCursor == '\r')) {
-      --mCursor;
-    } else {
-      break;
-    }
-  }
-}
-
-void IOBuffer::SkipWhiteSpace() {
-  while (mCursor != mEnd) {
-    if (*mCursor == ' ' || *mCursor == '\t' || *mCursor == '\n' ||
-        *mCursor == '\r') {
-      if (*mCursor == '\n') {
-        ++mLine;
-      }
-      ++mCursor;
-    } else {
-      break;
-    }
-  }
-}
-
-Size IOBuffer::Find(Byte const &chr) {
-  Iter cursor = mCursor;
-  while (cursor != mEnd) {
-    if (*cursor == chr) {
-      return (Size)(cursor - mCursor);
-    }
-    ++cursor;
-  }
-  return -1;
-}
-
-Size IOBuffer::Find(Str const &pattern) {
-  Iter cursor = mCursor;
-  while (cursor != mEnd) {
-    if (std::equal(pattern.begin(), pattern.end(), cursor)) {
-      return (Size)(cursor - mCursor);
-    }
-    ++cursor;
-  }
-  return -1;
-}
-
-Bool IOBuffer::Match(Byte const &chr) {
-  if (mCursor == mEnd) {
-    return false;
-  }
-  if (*mCursor == chr) {
-    return true;
-  }
-  return false;
-}
-
-Bool IOBuffer::Match(Str const &pattern) {
-  if (mCursor == mEnd) {
-    return false;
-  }
-  if (std::equal(pattern.begin(), pattern.end(), mCursor)) {
-    return true;
-  }
-  return false;
-}
-
-Bool IOBuffer::Except(Byte const &chr) {
-  if (mCursor == mEnd) {
-    return false;
-  }
-  if (*mCursor != chr) {
-    ++mCursor;
-    return true;
-  }
-  return false;
-}
-
-Bool IOBuffer::Except(Str const &pattern) {
-  if (mCursor == mEnd) {
-    return false;
-  }
-  if (!std::equal(pattern.begin(), pattern.end(), mCursor)) {
-    mCursor += pattern.size();
-    return true;
-  }
-  return false;
-}
-
-void IOBuffer::Read(Byte *buffer, Size const &size) {
-  if (mCursor + size > mEnd) {
-    M_GEO_THROW(InterfaceError, "End of buffer");
-  }
-  std::copy(mCursor, mCursor + size, buffer);
-  mCursor += size;
-}
-
-void IOBuffer::Unread(Size const &size) {
-  if (mCursor - size < mBegin) {
-    M_GEO_THROW(InterfaceError, "Begin of buffer");
-  }
-  mCursor -= size;
-}
-
-void IOBuffer::Ignore(Size const &size) {
-  if (mCursor + size > mEnd) {
-    M_GEO_THROW(InterfaceError, "End of buffer");
-  }
-  mCursor += size;
-}
-
-IOBuffer &IOBuffer::operator++() {
-  if (mCursor == mEnd) {
-    M_GEO_THROW(InterfaceError, "End of buffer");
-  }
-  if (*mCursor == '\n') {
-    ++mLine;
-  }
-  ++mCursor;
-  return *this;
-}
-
-IOBuffer &IOBuffer::operator--() {
-  if (mCursor == mBegin) {
-    M_GEO_THROW(InterfaceError, "Begin of buffer");
-  }
-  --mCursor;
-  if (*mCursor == '\n') {
-    --mLine;
-  }
-  return *this;
-}
-
-IOBuffer &IOBuffer::operator+=(Uint const &size) {
-  if (mCursor + size > mEnd) {
-    M_GEO_THROW(InterfaceError, "End of buffer");
-  }
-  mCursor += size;
-  return *this;
-}
-
-IOBuffer &IOBuffer::operator-=(Uint const &size) {
-  if (mCursor - size < mBegin) {
-    M_GEO_THROW(InterfaceError, "Begin of buffer");
-  }
-  mCursor -= size;
-  return *this;
-}
-
-void Node::Erase() {
+void JsonNode::Erase() {
   switch (mType) {
   case DataType::STRING_TYPE:
     delete mStorage.mString;
@@ -250,7 +21,7 @@ void Node::Erase() {
   }
 }
 
-Node::Node(DataType const &type) : mType(type) {
+JsonNode::JsonNode(DataType const &type) : mType(type) {
   switch (mType) {
   case DataType::BOOL_TYPE:
     mStorage.mBool = false;
@@ -272,7 +43,7 @@ Node::Node(DataType const &type) : mType(type) {
   }
 }
 
-Node::Node(Node const &other) : mType(other.mType) {
+JsonNode::JsonNode(JsonNode const &other) : mType(other.mType) {
   switch (mType) {
   case DataType::BOOL_TYPE:
     mStorage.mBool = other.mStorage.mBool;
@@ -294,86 +65,86 @@ Node::Node(Node const &other) : mType(other.mType) {
   }
 }
 
-Bool Node::GetBool() const {
+Bool JsonNode::GetBool() const {
   if (mType != DataType::BOOL_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }
   return mStorage.mBool;
 }
 
-Double Node::GetNumber() const {
+Double JsonNode::GetNumber() const {
   if (mType != DataType::NUMBER_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }
   return mStorage.mNumber;
 }
 
-Str const &Node::GetString() const {
+Str const &JsonNode::GetString() const {
   if (mType != DataType::STRING_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }
   return *mStorage.mString;
 }
 
-Node::Array const &Node::GetArray() const {
+JsonNode::Array const &JsonNode::GetArray() const {
   if (mType != DataType::ARRAY_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }
   return *mStorage.mArray;
 }
 
-Node::Object const &Node::GetObject() const {
+JsonNode::Object const &JsonNode::GetObject() const {
   if (mType != DataType::OBJECT_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }
   return *mStorage.mObject;
 }
 
-void Node::SetBool(Bool const &value) {
+void JsonNode::SetBool(Bool const &value) {
   this->Erase();
   mType = DataType::BOOL_TYPE;
   mStorage.mBool = value;
 }
 
-void Node::SetNumber(Double const &value) {
+void JsonNode::SetNumber(Double const &value) {
   this->Erase();
   mType = DataType::NUMBER_TYPE;
   mStorage.mNumber = value;
 }
 
-void Node::SetString(Str const &value) {
+void JsonNode::SetString(Str const &value) {
   this->Erase();
   mType = DataType::STRING_TYPE;
   mStorage.mString = new Str(value);
 }
 
-void Node::SetArray(Array const &value) {
+void JsonNode::SetArray(Array const &value) {
   this->Erase();
   mType = DataType::ARRAY_TYPE;
   mStorage.mArray = new Array(value);
 }
 
-void Node::SetObject(Object const &value) {
+void JsonNode::SetObject(Object const &value) {
   this->Erase();
   mType = DataType::OBJECT_TYPE;
   mStorage.mObject = new Object(value);
 }
 
-Bool Node::Has(Str const &key) const {
+Bool JsonNode::Has(Str const &key) const {
   if (mType != DataType::OBJECT_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }
   return mStorage.mObject->find(key) != mStorage.mObject->end();
 }
 
-Bool Node::Has(Size const &index) const {
+Bool JsonNode::Has(Size const &index) const {
   if (mType != DataType::ARRAY_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }
   return index <= mStorage.mArray->size();
 }
 
-Bool Node::EvalAsBool() const {
+Bool JsonNode::EvalAsBool() const {
   switch (mType) {
   case DataType::BOOL_TYPE:
     return mStorage.mBool;
@@ -390,7 +161,7 @@ Bool Node::EvalAsBool() const {
   }
 }
 
-Str Node::ToString() const {
+Str JsonNode::ToString() const {
   switch (mType) {
   case DataType::BOOL_TYPE:
     return mStorage.mBool ? "true" : "false";
@@ -407,32 +178,32 @@ Str Node::ToString() const {
   }
 }
 
-Node &Node::operator=(Bool const &value) {
+JsonNode &JsonNode::operator=(Bool const &value) {
   this->SetBool(value);
   return *this;
 }
 
-Node &Node::operator=(Double const &value) {
+JsonNode &JsonNode::operator=(Double const &value) {
   this->SetNumber(value);
   return *this;
 }
 
-Node &Node::operator=(Str const &value) {
+JsonNode &JsonNode::operator=(Str const &value) {
   this->SetString(value);
   return *this;
 }
 
-Node &Node::operator=(Array const &value) {
+JsonNode &JsonNode::operator=(Array const &value) {
   this->SetArray(value);
   return *this;
 }
 
-Node &Node::operator=(Object const &value) {
+JsonNode &JsonNode::operator=(Object const &value) {
   this->SetObject(value);
   return *this;
 }
 
-Node &Node::operator=(Node const &other) {
+JsonNode &JsonNode::operator=(JsonNode const &other) {
   if (this != &other) {
     this->Erase();
     mType = other.mType;
@@ -459,7 +230,7 @@ Node &Node::operator=(Node const &other) {
   return *this;
 }
 
-Node &Node::operator[](Size const &index) {
+JsonNode &JsonNode::operator[](Size const &index) {
   if (mType != DataType::ARRAY_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }
@@ -470,7 +241,7 @@ Node &Node::operator[](Size const &index) {
   }
 }
 
-Node &Node::operator[](Str const &key) {
+JsonNode &JsonNode::operator[](char const *key) {
   if (mType != DataType::OBJECT_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }
@@ -481,7 +252,7 @@ Node &Node::operator[](Str const &key) {
   }
 }
 
-Str Serializer::Indent(Size const &level) {
+Str JsonSerializer::Indent(Size const &level) {
   Stream buffer;
   buffer << (mIndent == 0 ? "" : "\n");
   for (Size i = 0; i < level * mIndent; ++i) {
@@ -490,7 +261,7 @@ Str Serializer::Indent(Size const &level) {
   return buffer.str();
 }
 
-Str Serializer::Escape(Byte const &chr) {
+Str JsonSerializer::Escape(Byte const &chr) {
   switch (chr) {
   case '"':
     return "\\\"";
@@ -513,7 +284,7 @@ Str Serializer::Escape(Byte const &chr) {
   }
 }
 
-Str Serializer::ConvertToUnicode(Byte const &chr) {
+Str JsonSerializer::ConvertToUnicode(Byte const &chr) {
   Stream buffer;
   if (chr < 0x20 || chr > 0x7E) {
     Byte const hex = chr & 0xFF;
@@ -526,21 +297,21 @@ Str Serializer::ConvertToUnicode(Byte const &chr) {
   return buffer.str();
 }
 
-Str Serializer::Serialize(Node const &node, Size const &level) {
-  Node::DataType const type = node.GetType();
+Str JsonSerializer::Serialize(JsonNode const &JsonNode, Size const &level) {
+  JsonNode::DataType const type = JsonNode.GetType();
   Stream buffer;
   switch (type) {
-  case Node::DataType::STRING_TYPE:
+  case JsonNode::DataType::STRING_TYPE:
     buffer << '"';
-    for (auto const &chr : node.GetString()) {
+    for (auto const &chr : JsonNode.GetString()) {
       buffer << this->Escape(chr);
     }
     buffer << '"';
     break;
-  case Node::DataType::ARRAY_TYPE:
+  case JsonNode::DataType::ARRAY_TYPE:
     buffer << '[';
-    for (Node::Array::const_iterator begin = node.GetArray().begin(),
-                                     end = node.GetArray().end();
+    for (JsonNode::Array::const_iterator begin = JsonNode.GetArray().begin(),
+                                         end = JsonNode.GetArray().end();
          begin != end; ++begin) {
       buffer << this->Indent(level + 1);
       buffer << this->Serialize(*begin, level + 1);
@@ -551,10 +322,10 @@ Str Serializer::Serialize(Node const &node, Size const &level) {
     buffer << this->Indent(level);
     buffer << "]";
     break;
-  case Node::DataType::OBJECT_TYPE:
+  case JsonNode::DataType::OBJECT_TYPE:
     buffer << '{';
-    for (Node::Object::const_iterator begin = node.GetObject().begin(),
-                                      end = node.GetObject().end();
+    for (JsonNode::Object::const_iterator begin = JsonNode.GetObject().begin(),
+                                          end = JsonNode.GetObject().end();
          begin != end; ++begin) {
       buffer << this->Indent(level + 1);
       buffer << '"';
@@ -572,41 +343,10 @@ Str Serializer::Serialize(Node const &node, Size const &level) {
     buffer << '}';
     break;
   default:
-    buffer << node.ToString();
+    buffer << JsonNode.ToString();
     break;
   }
   return buffer.str();
-}
-
-ParserBase::ParserBase(Str const &filename) : Geobject(ParserBase::sOID) {
-  std::ifstream file;
-  file.open(filename, std::ios::in);
-  if (!file.is_open()) {
-    M_GEO_THROW(InterfaceError, "Failed to open file");
-  }
-
-  Stream buffer;
-  buffer << file.rdbuf();
-  file.close();
-
-  mFiledata = buffer.str();
-  mBuffer = std::make_shared<IOBuffer>(mFiledata.begin(), mFiledata.end());
-}
-
-ParserBase::ParserBase(ObjectID const &oid, Str const &filename)
-    : Geobject(oid) {
-  std::ifstream file;
-  file.open(filename, std::ios::in);
-  if (!file.is_open()) {
-    M_GEO_THROW(InterfaceError, "Failed to open file");
-  }
-
-  Stream buffer;
-  buffer << file.rdbuf();
-  file.close();
-
-  mFiledata = buffer.str();
-  mBuffer = std::make_shared<IOBuffer>(mFiledata.begin(), mFiledata.end());
 }
 
 JsonParser::JsonParser(Str const &filename, Size const &maxDepth)
@@ -623,16 +363,16 @@ JsonParser::JsonParser(Shared<IOBuffer> buffer, Size const &depth)
   }
 }
 
-Bool JsonParser::ParseNull(Node &node) {
+Bool JsonParser::ParseNull(JsonNode &node) {
   if (mBuffer->Match("null")) {
     mBuffer->Ignore(4); // Skip "null"
-    node = Node();
+    node = JsonNode();
     return true;
   }
   return false;
 }
 
-Bool JsonParser::ParseBool(Node &node) {
+Bool JsonParser::ParseBool(JsonNode &node) {
   if (mBuffer->Match("true")) {
     mBuffer->Ignore(4); // Skip "true"
     node = true;
@@ -646,7 +386,7 @@ Bool JsonParser::ParseBool(Node &node) {
   return false;
 }
 
-Bool JsonParser::ParseNumber(Node &node) {
+Bool JsonParser::ParseNumber(JsonNode &node) {
   Stream buffer;
   while (1) {
     Byte chr = mBuffer->GetChar();
@@ -665,7 +405,7 @@ Bool JsonParser::ParseNumber(Node &node) {
   }
 }
 
-Bool JsonParser::ParseString(Node &node) {
+Bool JsonParser::ParseString(JsonNode &node) {
   if (!mBuffer->Match('"')) {
     return false;
   }
@@ -721,13 +461,13 @@ Bool JsonParser::ParseString(Node &node) {
   }
 }
 
-Bool JsonParser::ParseArray(Node &node) {
+Bool JsonParser::ParseArray(JsonNode &node) {
   if (!mBuffer->Match('[')) {
     return false;
   }
   mBuffer->Ignore(1); // Skip '['
 
-  Node::Array array;
+  JsonNode::Array array;
   while (1) {
     mBuffer->SkipWhiteSpace();
     JsonParser parser(mBuffer, mDepth - 1);
@@ -750,16 +490,16 @@ Bool JsonParser::ParseArray(Node &node) {
   }
 }
 
-Bool JsonParser::ParseObject(Node &node) {
+Bool JsonParser::ParseObject(JsonNode &node) {
   if (!mBuffer->Match('{')) {
     return false;
   }
   mBuffer->Ignore(1); // Skip '{'
 
-  Node::Object object;
+  JsonNode::Object object;
   while (1) {
     mBuffer->SkipWhiteSpace();
-    Node key(Node::DataType::STRING_TYPE);
+    JsonNode key(JsonNode::DataType::STRING_TYPE);
     if (!this->ParseString(key)) {
       return false;
     }
@@ -819,31 +559,4 @@ Bool JsonParser::Parse() {
   }
 }
 } // namespace Parser
-
-namespace Loader {
-ObjectID const Material::sOID = ObjectID("MATERIAL");
-ObjectID const LoaderBase::sOID = ObjectID("LOADER_BASE");
-
-Shared<Core::Texture> const &
-Material::GetTexture(MaterialTexture const &type) const {
-  if (mTextures.find(type) == mTextures.end()) {
-    M_GEO_THROW(InterfaceError, "Texture not found");
-  }
-  return mTextures.at(type);
-}
-
-vec3 const &Material::GetColor(MaterialColor const &type) const {
-  if (mColors.find(type) == mColors.end()) {
-    M_GEO_THROW(InterfaceError, "Color not found");
-  }
-  return mColors.at(type);
-}
-
-Float const &Material::GetConstant(MaterialConstant const &type) const {
-  if (mConstants.find(type) == mConstants.end()) {
-    M_GEO_THROW(InterfaceError, "Constant not found");
-  }
-  return mConstants.at(type);
-}
-} // namespace Loader
 } // namespace GeoFrame
