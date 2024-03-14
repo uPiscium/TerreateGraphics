@@ -1,8 +1,7 @@
 #pragma once
 #include "../defines.hpp"
-#include "../exceptions.hpp"
+#include "../model.hpp"
 #include "../object.hpp"
-#include "../texture.hpp"
 
 namespace GeoFrame {
 namespace Parser {
