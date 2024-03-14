@@ -158,6 +158,37 @@ using ErrorCallback = std::function<void(int errorCode, char const *message)>;
 using MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>;
 using JoystickCallback = std::function<void(int joystickID, int event)>;
 
+// Functions
+template <typename T> mat2T<T> Eye2() {
+  Vec<Vec<T>> data = {{1, 0}, {0, 1}};
+  return mat2T<T>(data);
+}
+
+template <typename T> mat2T<T> Zero2() {
+  Vec<Vec<T>> data = {{0, 0}, {0, 0}};
+  return mat2T<T>(data);
+}
+
+template <typename T> mat3T<T> Eye3() {
+  Vec<Vec<T>> data = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+  return mat3T<T>(data);
+}
+
+template <typename T> mat3T<T> Zero3() {
+  Vec<Vec<T>> data = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
+  return mat3T<T>(data);
+}
+
+template <typename T> mat4T<T> Eye4() {
+  Vec<Vec<T>> data = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
+  return mat4T<T>(data);
+}
+
+template <typename T> mat4T<T> Zero4() {
+  Vec<Vec<T>> data = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
+  return mat4T<T>(data);
+}
+
 // Concepts
 template <typename Derived, typename Base>
 concept extends = std::derived_from<Derived, Base>;
@@ -479,6 +510,12 @@ enum class Keyboard {
   K_LAST = GLFW_KEY_LAST
 };
 
+// Use to select material color type.
+enum class MaterialColor { AMBIENT, DIFFUSE, SPECULAR, EMISSION };
+
+// Use to select material constant type.
+enum class MaterialConstant { SHININESS, DISSOLVE, REFLECTION, REFRACTION };
+
 // Use to select material texture type.
 enum class MaterialTexture {
   AMBIENT,
@@ -488,14 +525,9 @@ enum class MaterialTexture {
   NORMAL,
   SHININESS,
   DISSOLVE,
-  REFLECTION
+  REFLECTION,
+  REFRACTION
 };
-
-// Use to select material color type.
-enum class MaterialColor { AMBIENT, DIFFUSE, SPECULAR, EMISSION };
-
-// Use to select material constant type.
-enum class MaterialConstant { SHININESS, DISSOLVE, REFLECTION };
 
 // Use to select mouse button input.
 enum class MousebuttonInput {
