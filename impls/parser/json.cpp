@@ -241,7 +241,7 @@ JsonNode &JsonNode::operator[](Size const &index) {
   }
 }
 
-JsonNode &JsonNode::operator[](Str const &key) {
+JsonNode &JsonNode::operator[](char const *key) {
   if (mType != DataType::OBJECT_TYPE) {
     M_GEO_THROW(InterfaceError, "Type mismatch");
   }

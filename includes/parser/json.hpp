@@ -54,10 +54,7 @@ public:
   explicit JsonNode(char const *value) : mType(DataType::STRING_TYPE) {
     mStorage.mString = new Str(value);
   }
-  JsonNode(DataType const &type);
-  JsonNode(char const *value, Size const &size) : mType(DataType::STRING_TYPE) {
-    mStorage.mString = new Str(value, size);
-  }
+  explicit JsonNode(DataType const &type);
   JsonNode(JsonNode const &other);
   ~JsonNode() { this->Erase(); }
 
@@ -93,7 +90,7 @@ public:
   JsonNode &operator=(Object const &value);
   JsonNode &operator=(JsonNode const &other);
   JsonNode &operator[](Size const &index);
-  JsonNode &operator[](Str const &key);
+  JsonNode &operator[](char const *key);
 
   operator Bool() const { return this->EvalAsBool(); }
   operator Double() const { return this->GetNumber(); }
