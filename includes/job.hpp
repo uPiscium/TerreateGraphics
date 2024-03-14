@@ -1,6 +1,5 @@
 #pragma once
 #include "defines.hpp"
-#include "exceptions.hpp"
 #include "object.hpp"
 #include <thread>
 
