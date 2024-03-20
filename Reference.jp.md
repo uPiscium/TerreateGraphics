@@ -116,9 +116,7 @@
 イベントのコールバック関数は`EventSystem`クラスの`RegisterCallback`関数を利用して登録します。コールバック関数は以下のフォーマットである必要があります。
 - `Function<void(Str const &event)>`\
 ※ `event`には発行されたイベントが格納されます
-また、イベントのトリガ関数は`EventSystem`クラスの`RegisterTrigger`関数を利用して登録します。トリガ関数はコールバックと同様の以下のフォーマットである必要があります。
-- `Function<void(Str const &event)>`\
-※ `event`には発行されたイベントが格納されます
+また、イベントのトリガ関数は`EventSystem`クラスの`RegisterTrigger`関数を利用して登録します。トリガ関数はコールバックと同様のフォーマットである必要があります。
 
 -----
 
