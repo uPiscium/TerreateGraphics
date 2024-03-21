@@ -825,47 +825,58 @@ Bool GLBParser::ParseBuffers() {
   return true;
 }
 
+Bool GLBParser::ParseBinHeader() {
+  Byte binHeader[8];
+  mBuffer->Read(binHeader, 8);
+  GFu32 size = *(GFu32 *)(binHeader);
+  mBufferData = new Byte[size];
+  mBuffer->Read(mBufferData, size);
+  if (M_MEMCMP(binHeader + 4, "BIN\0", 4) != 0) {
+    return false;
+  }
+
+  return true;
+}
+
+Bool GLBParser::ConstructScene() {
+  for (auto &scene : mScenes) {
+    auto sceneData = mContext.CreateScene(scene.name);
+    for (auto &node : scene.nodes) {
+      ;
+    }
+  }
+}
+
 Bool GLBParser::Parse() {
   if (!this->ParseHeader()) {
     return false;
+  };
+
+  Utils::JobSystem jobSystem;
+  Vec<Job> jobs;
+  jobs.push_back(Job([this]() { this->ParseAsset(); }));
+  jobs.push_back(Job([this]() { this->ParseScene(); }));
+  jobs.push_back(Job([this]() { this->ParseNodes(); }));
+  jobs.push_back(Job([this]() { this->ParseMaterials(); }));
+  jobs.push_back(Job([this]() { this->ParseMeshes(); }));
+  jobs.push_back(Job([this]() { this->ParseTextures(); }));
+  jobs.push_back(Job([this]() { this->ParseImages(); }));
+  jobs.push_back(Job([this]() { this->ParseSkins(); }));
+  jobs.push_back(Job([this]() { this->ParseAccessors(); }));
+  jobs.push_back(Job([this]() { this->ParseBufferViews(); }));
+  jobs.push_back(Job([this]() { this->ParseSamplers(); }));
+  jobs.push_back(Job([this]() { this->ParseBuffers(); }));
+  for (auto &job : jobs) {
+    jobSystem.Schedule(&job);
   }
-  if (!this->ParseAsset()) {
+  jobSystem.WaitForAll();
+
+  if (!this->ConstructScene()) {
     return false;
   }
-  if (!this->ParseScene()) {
-    return false;
-  }
-  if (!this->ParseNodes()) {
-    return false;
-  }
-  if (!this->ParseMaterials()) {
-    return false;
-  }
-  if (!this->ParseMeshes()) {
-    return false;
-  }
-  if (!this->ParseTextures()) {
-    return false;
-  }
-  if (!this->ParseImages()) {
-    return false;
-  }
-  if (!this->ParseSkins()) {
-    return false;
-  }
-  if (!this->ParseAccessors()) {
-    return false;
-  }
-  if (!this->ParseBufferViews()) {
-    return false;
-  }
-  if (!this->ParseSamplers()) {
-    return false;
-  }
-  if (!this->ParseBuffers()) {
-    return false;
-  }
+
   return true;
 }
+
 } // namespace Parser
 } // namespace GeoFrame

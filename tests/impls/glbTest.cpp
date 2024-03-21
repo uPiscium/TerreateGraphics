@@ -2,7 +2,7 @@
 
 void parse(Str const &filename) {
   GLBParser parser(filename);
-  parser.Parse();
+  std::cout << parser.Parse() << std::endl;
 }
 
 int main() {
