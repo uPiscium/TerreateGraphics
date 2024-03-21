@@ -86,6 +86,7 @@
 ## Attributeクラス
 このクラスは`OpenGL`の頂点属性に対する各設定値を保持します。各設定値の詳細は[頂点属性](#頂点属性)を参照してください。\
 主なメンバ関数は以下の通りです。
+- Attribute(Ulong const &index, Ulong const &comps, Ulong const &stride, Ulong const &offset);\
 
 ## Bufferクラス
 このクラスは`OpenGL`のバッファオブジェクトを制御します。バッファの`GPU`メモリへの送信及びバッファ内容の更新はこのクラスのメンバ関数を利用して行ってください。\
