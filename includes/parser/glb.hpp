@@ -1,11 +1,16 @@
 #pragma once
 #include "../context.hpp"
+#include "../job.hpp"
+#include "../texture.hpp"
 #include "json.hpp"
 
 namespace GeoFrame {
 namespace Parser {
-class GLBParser : public ParserBase {
-protected:
+class GLBParser final : public ParserBase {
+private:
+  using Job = Utils::SimpleJob;
+
+public:
   enum class MimeType { JPEG, PNG, UNKNOWN };
 
   struct GLBScene {
@@ -104,6 +109,11 @@ protected:
     Uint byteLength;
   };
 
+  struct BufferChunk {
+    Byte *buffer;
+    Size size;
+  };
+
 private:
   Context::Context mContext;
   Vec<GLBScene> mScenes;
@@ -118,6 +128,7 @@ private:
   Vec<GLBAccessor> mAccessors;
   Vec<GLBBuffer> mBuffers;
   JsonNode mJsonData;
+  Byte *mBufferData = nullptr;
 
   Str mVersion;
   Str mGenerator;
@@ -126,6 +137,7 @@ private:
 protected:
   Bool ParsePBRMaterial(JsonNode &node, PBRMetallicRoughness &material);
   Bool ParseAttribute(JsonNode &node, GLBAttribute &attr);
+
   Bool AcquireBool(JsonNode &node, Str const &key, Bool *value);
   Bool AcquireNumber(JsonNode &node, Str const &key, Float *value);
   Bool AcquireInt(JsonNode &node, Str const &key, Int *value);
@@ -137,14 +149,6 @@ protected:
   Bool AcquireArray(JsonNode &node, Str const &key, Vec<Str> *array);
   Bool AcquireArray(JsonNode &node, Str const &key, Vec<JsonNode> *array);
   Bool AcquireObject(JsonNode &node, Str const &key, JsonNode *object);
-
-public:
-  static ObjectID const sOID;
-
-public:
-  GLBParser(Str const &filename) : ParserBase(GLBParser::sOID, filename) {}
-  GLBParser(Shared<IOBuffer> buffer);
-  ~GLBParser() override {}
 
   Bool ParseHeader();
   Bool ParseAsset();
@@ -159,6 +163,19 @@ public:
   Bool ParseBufferViews();
   Bool ParseSamplers();
   Bool ParseBuffers();
+
+  Bool ParseBinHeader();
+
+  Bool ConstructScene();
+
+public:
+  static ObjectID const sOID;
+
+public:
+  GLBParser(Str const &filename) : ParserBase(GLBParser::sOID, filename) {}
+  GLBParser(Shared<IOBuffer> buffer);
+  ~GLBParser() override {}
+
   Bool Parse();
 };
 } // namespace Parser
