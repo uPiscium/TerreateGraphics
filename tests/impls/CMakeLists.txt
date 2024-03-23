@@ -1,14 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-set(PROJECT_NAMES
-    "buffer"
-    "font"
-    "glb"
-    "job"
-    "json"
-    "network"
-    "screen"
-    "texture"
-    "window")
+set(PROJECT_NAMES "buffer" "font" "job" "screen" "texture" "window")
 
 if(NOT DEFINED TARGET)
   message(STATUS "TARGET is not defined...")
@@ -46,26 +37,8 @@ function(buildFont)
   setincludes()
 endfunction()
 
-function(buildGlb)
-  add_executable(${PROJECT_NAME} glbTest.cpp)
-  setlibs()
-  setincludes()
-endfunction()
-
-function(buildJson)
-  add_executable(${PROJECT_NAME} jsonTest.cpp)
-  setlibs()
-  setincludes()
-endfunction()
-
 function(buildJob)
   add_executable(${PROJECT_NAME} jobTest.cpp)
-  setlibs()
-  setincludes()
-endfunction()
-
-function(buildNetwork)
-  add_executable(${PROJECT_NAME} networkTest.cpp)
   setlibs()
   setincludes()
 endfunction()
@@ -92,14 +65,8 @@ if(${TARGET} STREQUAL "buffer")
   buildbuffer()
 elseif(${TARGET} STREQUAL "font")
   buildfont()
-elseif(${TARGET} STREQUAL "glb")
-  buildglb()
 elseif(${TARGET} STREQUAL "job")
   buildjob()
-elseif(${TARGET} STREQUAL "json")
-  buildjson()
-elseif(${TARGET} STREQUAL "network")
-  buildnetwork()
 elseif(${TARGET} STREQUAL "screen")
   buildscreen()
 elseif(${TARGET} STREQUAL "texture")
