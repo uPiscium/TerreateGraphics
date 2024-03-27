@@ -510,25 +510,6 @@ enum class Keyboard {
   K_LAST = GLFW_KEY_LAST
 };
 
-// Use to select material color type.
-enum class MaterialColor { AMBIENT, DIFFUSE, SPECULAR, EMISSION };
-
-// Use to select material constant type.
-enum class MaterialConstant { SHININESS, DISSOLVE, REFLECTION, REFRACTION };
-
-// Use to select material texture type.
-enum class MaterialTexture {
-  AMBIENT,
-  DIFFUSE,
-  SPECULAR,
-  EMISSION,
-  NORMAL,
-  SHININESS,
-  DISSOLVE,
-  REFLECTION,
-  REFRACTION
-};
-
 // Use to select mouse button input.
 enum class MousebuttonInput {
   BUTTON1 = GLFW_MOUSE_BUTTON_1,

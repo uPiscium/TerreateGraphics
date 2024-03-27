@@ -9,24 +9,17 @@ message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
 add_library(
   ${PROJECT_NAME} STATIC
-  animation.cpp
   buffer.cpp
-  context.cpp
   core.cpp
   event.cpp
   font.cpp
   gl.cpp
   job.cpp
-  model.cpp
-  network.cpp
   object.cpp
   screen.cpp
   shader.cpp
   texture.cpp
-  window.cpp
-  parser/base.cpp
-  parser/json.cpp
-  parser/glb.cpp)
+  window.cpp)
 
 target_link_directories(${PROJECT_NAME} PUBLIC ../libs)
 if(WIN32)
