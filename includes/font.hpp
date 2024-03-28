@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __TC_FONT_HPP__
+#define __TC_FONT_HPP__
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -6,8 +8,10 @@
 #include "object.hpp"
 #include "texture.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
+using namespace TerreateCore::Defines;
+
 struct Character {
   Uint codepoint;
   Shared<Texture> texture;
@@ -16,7 +20,7 @@ struct Character {
   Long advance;
 };
 
-class Font final : public Geobject {
+class Font final : public Object {
 private:
   FT_Library mLibrary;
   FT_Face mFace;
@@ -24,10 +28,7 @@ private:
   Map<wchar_t, Shared<Character>> mCharacters;
 
 private:
-  M_DISABLE_COPY_AND_ASSIGN(Font);
-
-public:
-  static ObjectID const sOID;
+  TC_DISABLE_COPY_AND_ASSIGN(Font);
 
 public:
   /*
@@ -85,4 +86,6 @@ public:
   operator Bool() const override { return mFace != nullptr; }
 };
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore
+
+#endif // __TC_FONT_HPP__

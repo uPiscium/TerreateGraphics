@@ -1,17 +1,16 @@
 #include "../includes/font.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
-ObjectID const Font::sOID = ObjectID("FONT");
+using namespace TerreateCore::Defines;
 
-Font::Font(Str const &path, Uint const &size)
-    : mSize(size), Geobject(Font::sOID) {
+Font::Font(Str const &path, Uint const &size) : mSize(size) {
   if (FT_Init_FreeType(&mLibrary)) {
-    M_GEO_THROW(KernelError, "Failed to initialize FreeType library.");
+    TC_THROW("Failed to initialize FreeType library.");
   }
 
   if (FT_New_Face(mLibrary, path.c_str(), 0, &mFace)) {
-    M_GEO_THROW(KernelError, "Failed to load font.");
+    TC_THROW("Failed to load font.");
   }
 
   FT_Set_Pixel_Sizes(mFace, 0, size);
@@ -27,7 +26,7 @@ Shared<Character> const &
 Font::AcquireCharacter(wchar_t const &character) const {
   auto it = mCharacters.find(character);
   if (it == mCharacters.end()) {
-    M_GEO_THROW(KernelError, "Character not found.");
+    TC_THROW("Character not found.");
   }
   return it->second;
 }
@@ -59,10 +58,10 @@ void Font::LoadCharacter(wchar_t const &character) {
     return;
   }
 
-  if ((Uint)character == D_HALF_WIDTH_SPACE ||
-      (Uint)character == D_FULL_WIDTH_SPACE) {
+  if ((Uint)character == TC_UNICODE_HALF_SPACE ||
+      (Uint)character == TC_UNICODE_FULL_SPACE) {
     Shared<Character> c = std::make_shared<Character>();
-    Uint width = ((Uint)character == D_HALF_WIDTH_SPACE) ? mSize / 2 : mSize;
+    Uint width = ((Uint)character == TC_UNICODE_HALF_SPACE) ? mSize / 2 : mSize;
     c->codepoint = (Uint)character;
     c->texture = nullptr;
     c->size = {width, mSize};
@@ -74,7 +73,7 @@ void Font::LoadCharacter(wchar_t const &character) {
   }
 
   if (FT_Load_Char(mFace, character, FT_LOAD_RENDER)) {
-    M_GEO_THROW(KernelError, "Failed to load glyph.");
+    TC_THROW("Failed to load glyph.");
     return;
   }
 
@@ -91,4 +90,4 @@ void Font::LoadCharacter(wchar_t const &character) {
   mCharacters.insert({character, c});
 }
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore

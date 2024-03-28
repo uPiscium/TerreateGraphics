@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __TC_TERREATECORE_HPP__
+#define __TC_TERREATECORE_HPP__
 
 #include "buffer.hpp"
 #include "core.hpp"
@@ -12,3 +13,5 @@
 #include "shader.hpp"
 #include "texture.hpp"
 #include "window.hpp"
+
+#endif // __TC_TERREATECORE_HPP__

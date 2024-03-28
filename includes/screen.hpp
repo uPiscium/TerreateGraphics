@@ -1,11 +1,15 @@
-#pragma once
+#ifndef __TC_SCREEN_HPP__
+#define __TC_SCREEN_HPP__
+
 #include "defines.hpp"
 #include "object.hpp"
 #include "texture.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
-class Screen final : public Geobject {
+using namespace TerreateCore::Defines;
+
+class Screen final : public Object {
 private:
   ID mFrameBuffer;
   Uint mWidth;
@@ -19,9 +23,6 @@ private:
    * @brief: Add new buffer to screen. (Max 32)
    */
   void AddBuffer();
-
-public:
-  static ObjectID const sOID;
 
 public:
   /*
@@ -94,4 +95,6 @@ public:
   operator Bool() const override { return mFrameBuffer != 0; }
 };
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore
+
+#endif // __TC_SCREEN_HPP__

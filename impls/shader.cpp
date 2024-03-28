@@ -1,8 +1,8 @@
 #include "../includes/shader.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
-ObjectID const Shader::sOID = ObjectID("SHADER");
+using namespace TerreateCore::Defines;
 
 Str GetShaderLog(Uint const &id) {
   Int status;
@@ -20,7 +20,7 @@ void CheckCompileStatus(Uint const &id, Str const &name) {
   Str log = GetShaderLog(id);
   if (log != "") {
     log = name + " shader log: " + log;
-    M_GEO_THROW(KernelError, log.c_str());
+    TC_THROW(log.c_str());
   }
 }
 
@@ -42,7 +42,7 @@ void CheckLinkStatus(Uint const &id) {
 
   if (log != "") {
     log = "Shader program log: " + log;
-    M_GEO_THROW(KernelError, log.c_str());
+    TC_THROW(log.c_str());
   }
 }
 
@@ -74,12 +74,12 @@ void Shader::SetStencilOperation(StencilOperation const &sFail,
 }
 void Shader::Compile() {
   if (mVertexShaderSource == "") {
-    M_GEO_THROW(KernelError, "Vertex shader source is empty");
+    TC_THROW("Vertex shader source is empty");
     return;
   }
 
   if (mFragmentShaderSource == "") {
-    M_GEO_THROW(KernelError, "Fragment shader source is empty");
+    TC_THROW("Fragment shader source is empty");
     return;
   }
 
@@ -116,11 +116,11 @@ void Shader::Compile() {
 }
 
 Str Shader::LoadShaderSource(const Str &path) {
-  std::ifstream file;
+  InputFileStream file;
   file.open(path.c_str());
 
   if (!file.is_open()) {
-    M_GEO_THROW(KernelError, "Failed to open shader source file");
+    TC_THROW("Failed to open shader source file");
     return "";
   }
 
@@ -178,4 +178,4 @@ void Shader::Use() const {
   }
 }
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore

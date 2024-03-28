@@ -1,12 +1,12 @@
 #include "../includes/screen.hpp"
 #include <memory>
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
-ObjectID const Screen::sOID = ObjectID("SCREEN");
+using namespace TerreateCore::Defines;
 
 Screen::Screen(Uint const &width, Uint const &height)
-    : mWidth(width), mHeight(height), Geobject(Screen::sOID) {
+    : mWidth(width), mHeight(height) {
   glGenFramebuffers(1, &mFrameBuffer);
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
   ID rbo = 0;
@@ -27,7 +27,7 @@ Screen::~Screen() {
 
 void Screen::AddBuffer() {
   if (mTextures.size() >= 32) {
-    M_GEO_THROW(KernelError, "Cannot add more than 32 buffers to screen.");
+    TC_THROW("Cannot add more than 32 buffers to screen.");
   }
 
   ID buffer = 0;
@@ -73,4 +73,4 @@ void Screen::Unbind() const {
   glDrawBuffer(GL_BACK);
 }
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore
