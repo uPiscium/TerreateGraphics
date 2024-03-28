@@ -1,6 +1,6 @@
 #include "../includes/jobTest.hpp"
 
-using namespace GeoFrame::Utils;
+using namespace TerreateCore::Job;
 
 void Job1() {
   std::this_thread::sleep_for(std::chrono::seconds(3));

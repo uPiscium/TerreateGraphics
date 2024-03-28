@@ -1,8 +1,8 @@
 #include "../includes/event.hpp"
 
-namespace GeoFrame {
-namespace Utils {
-ObjectID const EventSystem::sOID = ObjectID("EVENT_SYSTEM");
+namespace TerreateCore {
+namespace Event {
+using namespace TerreateCore::Defines;
 
 void EventSystem::Register(Str const &event, EventCallback const &callback) {
   if (mCallbacks.find(event) == mCallbacks.end()) {
@@ -45,5 +45,5 @@ void EventSystem::PublishEvent(Str const &event) {
   LockGuard<Mutex> lock(mQueueMutex);
   mEventQueue.push(event);
 }
-} // namespace Utils
-} // namespace GeoFrame
+} // namespace Event
+} // namespace TerreateCore

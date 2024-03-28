@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __TC_TEXTURE_HPP__
+#define __TC_TEXTURE_HPP__
+
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -6,8 +8,10 @@
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
+using namespace TerreateCore::Defines;
+
 struct TextureData {
   Vec<Ubyte> pixels;
   Uint width = 0;
@@ -15,7 +19,7 @@ struct TextureData {
   Uint channels = 0;
 };
 
-class Texture final : public Geobject {
+class Texture final : public Object {
 private:
   ID mTexture = 0;
   Uint mWidth = 0;
@@ -25,16 +29,13 @@ private:
   WrappingType mWrap = WrappingType::REPEAT;
 
 private:
-  M_DISABLE_COPY_AND_ASSIGN(Texture);
-
-public:
-  static ObjectID const sOID;
+  TC_DISABLE_COPY_AND_ASSIGN(Texture);
 
 public:
   /*
    * @brief: This function creates a opengl texture.
    */
-  Texture() : Geobject(Texture::sOID) { glGenTextures(1, &mTexture); }
+  Texture() { glGenTextures(1, &mTexture); }
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be created by Screen.
@@ -45,8 +46,8 @@ public:
    */
   Texture(Uint const &texture, Uint const &width, Uint const &height,
           Uint const &channels)
-      : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels),
-        Geobject(Texture::sOID) {}
+      : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
+  }
   ~Texture() override { glDeleteTextures(1, &mTexture); }
 
   /*
@@ -96,7 +97,7 @@ public:
   static TextureData LoadTexture(Str const &path);
 };
 
-class CubeTexture final : public Geobject {
+class CubeTexture final : public Object {
 private:
   Uint mTexture = 0;
   Uint mWidth = 0;
@@ -106,12 +107,12 @@ private:
   WrappingType mWrap = WrappingType::REPEAT;
 
 private:
-  M_DISABLE_COPY_AND_ASSIGN(CubeTexture);
+  TC_DISABLE_COPY_AND_ASSIGN(CubeTexture);
 
 private:
   /*
-   * @brief: Constructor for RawCubeTexture. This constructor is private
-   * because RawCubeTexture should only be created by RawCubeScreen.
+   * @brief: DO NOT USE THIS CONSTRUCTOR.
+   * This constructor should only be created by CubeScreen.
    * @param: texture: OpenGL texture ID
    * @param: width: width of texture
    * @param: height: height of texture
@@ -121,16 +122,12 @@ private:
               Uint const &channels)
       : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
   }
-  friend class RawCubeScreen;
-
-public:
-  static ObjectID const sOID;
 
 public:
   /*
    * @brief: This function creates a opengl cube texture.
    */
-  CubeTexture() : Geobject(CubeTexture::sOID) { glGenTextures(1, &mTexture); }
+  CubeTexture() { glGenTextures(1, &mTexture); }
   ~CubeTexture() override { glDeleteTextures(1, &mTexture); }
 
   /*
@@ -183,4 +180,6 @@ public:
   operator Bool() const override { return mTexture != 0; }
 };
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore
+
+#endif // __TC_TEXTURE_HPP__

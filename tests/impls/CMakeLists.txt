@@ -15,14 +15,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 function(setLibs)
-  target_link_libraries(${PROJECT_NAME} GeoFrame)
+  target_link_libraries(${PROJECT_NAME} TerreateCore)
 endfunction(setLibs)
 
 function(setIncludes)
   target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
   target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
-  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/parser)
-  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/headers)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/deps)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/math)
 endfunction()
 
 function(buildBuffer)

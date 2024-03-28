@@ -1,4 +1,5 @@
 cd tests
+rm -rf build
 mkdir -p build
 cd build
 for file in `cat ../../scripts/targets.txt`

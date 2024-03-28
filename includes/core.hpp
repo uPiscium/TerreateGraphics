@@ -1,18 +1,22 @@
-#pragma once
+#ifndef __TC_CORE_HPP__
+#define __TC_CORE_HPP__
+
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace GeoFrame {
-class Clock : public Geobject {
+namespace TerreateCore {
+namespace Core {
+using namespace TerreateCore::Defines;
+extern Bool GLFW_INITIALIZED;
+extern Bool GLAD_INITIALIZED;
+
+class Clock : public Object {
 private:
   Float mLastTime = 0.0f;
   Float mDeltaTime = 0.0f;
 
 public:
-  static ObjectID const sOID;
-
-public:
-  Clock() : Geobject(Clock::sOID) {}
+  Clock() {}
   ~Clock() {}
 
   Bool IsElapsed(Float const &time);
@@ -20,18 +24,9 @@ public:
   void Frame(Uint const &fps);
 };
 
-class Context : public Geobject {
-private:
-  static Bool sCreated;
+void Initialize();
+void Terminate();
+} // namespace Core
+} // namespace TerreateCore
 
-public:
-  static ObjectID const sOID;
-
-public:
-  Context();
-  ~Context() { this->Terminate(); }
-
-  void Intialize();
-  void Terminate();
-};
-} // namespace GeoFrame
+#endif // __TC_CORE_HPP__

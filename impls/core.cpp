@@ -1,9 +1,10 @@
 #include "../includes/core.hpp"
 
-namespace GeoFrame {
-ObjectID const Clock::sOID = ObjectID("CLOCK");
-Bool Context::sCreated = false;
-ObjectID const Context::sOID = ObjectID("CONTEXT");
+namespace TerreateCore {
+namespace Core {
+using namespace TerreateCore::Defines;
+Bool GLFW_INITIALIZED = false;
+Bool GLAD_INITIALIZED = false;
 
 Bool Clock::IsElapsed(Float const &time) {
   Float const now = glfwGetTime();
@@ -16,24 +17,28 @@ Bool Clock::IsElapsed(Float const &time) {
   return false;
 }
 
-Context::Context() : Geobject(Context::sOID) {
-  if (sCreated) {
-    M_GEO_THROW(APIError, "Context already created");
-  }
-  sCreated = true;
-  this->Intialize();
-}
-
-void Context::Intialize() {
+void Initialize() {
   if (!glfwInit()) {
-    M_GEO_THROW(APIError, "Failed to initialize GLFW");
+    TC_THROW("Failed to initialize GLFW");
   }
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
+
+  GLFW_INITIALIZED = true;
 }
 
-void Context::Terminate() { glfwTerminate(); }
-} // namespace GeoFrame
+void Terminate() {
+  GLFW_INITIALIZED = false;
+
+  if (GLAD_INITIALIZED) {
+    gladLoaderUnloadGL();
+    GLAD_INITIALIZED = false;
+  }
+
+  glfwTerminate();
+}
+} // namespace Core
+} // namespace TerreateCore

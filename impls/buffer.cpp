@@ -1,8 +1,8 @@
 #include "../includes/buffer.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
-ObjectID const Buffer::sOID = ObjectID("BUFFER");
+using namespace TerreateCore::Defines;
 
 Vec<Attribute> Attribute::GenerateAttributes(Vec<Ulong> const &comps) {
   Vec<Attribute> attributes;
@@ -28,7 +28,7 @@ Vec<Attribute> Attribute::GenerateAttributes(Vec<Ulong> const &comps,
   return attributes;
 }
 
-Buffer::Buffer(BufferUsage usage) : Geobject(Buffer::sOID), mUsage(usage) {
+Buffer::Buffer(BufferUsage usage) : mUsage(usage) {
   glGenVertexArrays(1, &mVAO);
   glGenBuffers(1, &mVBO);
   glGenBuffers(1, &mIBO);
@@ -87,7 +87,7 @@ void Buffer::LoadAttributes(Attribute const *attributes, Size const &size) {
 void Buffer::Draw(DrawMode const &drawMode) {
   glBindVertexArray(mVAO);
   if (mNumIndices == 0) {
-    M_GEO_THROW(KernelError, "No indices loaded.");
+    TC_THROW("No indices loaded.");
   }
   glDrawElements((GLenum)drawMode, mNumIndices, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
@@ -98,7 +98,7 @@ void Buffer::DrawInstances(size_t const &numInstances,
   glBindVertexArray(mVAO);
 
   if (mNumIndices == 0) {
-    M_GEO_THROW(KernelError, "No indices loaded.");
+    TC_THROW("No indices loaded.");
     return;
   }
 
@@ -107,4 +107,4 @@ void Buffer::DrawInstances(size_t const &numInstances,
   glBindVertexArray(0);
 }
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore

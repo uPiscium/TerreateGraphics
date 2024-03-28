@@ -1,10 +1,8 @@
 #include "../includes/job.hpp"
-#include <thread>
 
-namespace GeoFrame {
-namespace Utils {
-ObjectID const JobBase::sOID = ObjectID("JOB_BASE");
-ObjectID const SimpleJob::sOID = ObjectID("SIMPLE_JOB");
+namespace TerreateCore {
+namespace Job {
+using namespace TerreateCore::Defines;
 
 void JobBase::Run() {
   try {
@@ -88,7 +86,7 @@ void JobSystem::Stop() {
 
 void JobSystem::Schedule(JobBase *job) {
   {
-    std::unique_lock<std::mutex> lock(mJobLock);
+    UniqueLock<Mutex> lock(mJobLock);
     mJobs.push(job);
     mNumJobs.fetch_add(1);
     mComplete.store(false);
@@ -96,5 +94,5 @@ void JobSystem::Schedule(JobBase *job) {
 
   mCondition.notify_one();
 }
-} // namespace Utils
-} // namespace GeoFrame
+} // namespace Job
+} // namespace TerreateCore

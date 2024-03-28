@@ -1,9 +1,8 @@
 #include "../includes/texture.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
-ObjectID const Texture::sOID = ObjectID("TEXTURE");
-ObjectID const CubeTexture::sOID = ObjectID("CUBETEXTURE");
+using namespace TerreateCore::Defines;
 
 void Texture::SetFilter(FilterType const &filter) {
   mFilter = filter;
@@ -49,7 +48,7 @@ void Texture::LoadData(Uint width, Uint height, Uint channels,
   }
 
   if (format == 0) {
-    M_GEO_THROW(KernelError, "Invalid number of channels.");
+    TC_THROW("Invalid number of channels.");
     return;
   }
 
@@ -71,7 +70,7 @@ TextureData Texture::LoadTexture(Str const &path) {
   stbi_set_flip_vertically_on_load(false);
 
   if (pixelData == nullptr) {
-    M_GEO_THROW(KernelError, "Failed to load texture.");
+    TC_THROW("Failed to load texture.");
     return texData;
   }
 
@@ -126,7 +125,7 @@ void CubeTexture::LoadData(CubeFace face, Uint width, Uint height,
   }
 
   if (format == 0) {
-    M_GEO_THROW(KernelError, "Invalid number of channels.");
+    TC_THROW("Invalid number of channels.");
     return;
   }
 
@@ -145,4 +144,4 @@ void CubeTexture::LoadDatas(Vec<TextureData> const &datas) {
   }
 }
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore

@@ -1,7 +1,7 @@
 #include "../includes/textureTest.hpp"
 
-using namespace GeoFrame;
-using namespace GeoFrame::Core;
+using namespace TerreateCore;
+using namespace TerreateCore::Core;
 
 class TextureTest : public WindowController {
 private:
@@ -54,7 +54,7 @@ public:
 };
 
 void texture_drawing_test() {
-  Context context;
+  Initialize();
 
   Window window(800, 600, "Texture Drawing Test", WindowSettings());
   window.Bind();
@@ -65,6 +65,8 @@ void texture_drawing_test() {
   while (!window.IsClosed()) {
     window.Frame();
   }
+
+  Terminate();
 }
 
 int main() {

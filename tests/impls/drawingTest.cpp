@@ -1,7 +1,7 @@
 #include "../includes/drawingTest.hpp"
 
-using namespace GeoFrame;
-using namespace GeoFrame::Core;
+using namespace TerreateCore;
+using namespace TerreateCore::Core;
 
 class BufferTest : public WindowController {
 private:
@@ -40,7 +40,8 @@ public:
 };
 
 void buffer_drawing_test() {
-  Context context;
+  Initialize();
+
   Window window(800, 600, "Buffer Drawing Test", WindowSettings());
 
   BufferTest controller;
@@ -49,6 +50,8 @@ void buffer_drawing_test() {
   while (!window.IsClosed()) {
     window.Frame();
   }
+
+  Terminate();
 }
 
 int main() {

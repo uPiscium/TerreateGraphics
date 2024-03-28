@@ -1,7 +1,7 @@
 #include "../includes/screenTest.hpp"
 
-using namespace GeoFrame;
-using namespace GeoFrame::Core;
+using namespace TerreateCore;
+using namespace TerreateCore::Core;
 
 class ScreenTest : public WindowController {
 private:
@@ -89,7 +89,8 @@ public:
 };
 
 void screen_drawing_test() {
-  Context context;
+  Initialize();
+
   Window window(800, 600, "Screen Drawing Test", WindowSettings());
 
   ScreenTest controller;
@@ -98,6 +99,8 @@ void screen_drawing_test() {
   while (!window.IsClosed()) {
     window.Frame();
   }
+
+  Terminate();
 }
 
 int main() {
