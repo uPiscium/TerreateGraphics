@@ -17,7 +17,7 @@ Bool Clock::IsElapsed(Float const &time) {
   return false;
 }
 
-void Intialize() {
+void Initialize() {
   if (!glfwInit()) {
     TC_THROW("Failed to initialize GLFW");
   }

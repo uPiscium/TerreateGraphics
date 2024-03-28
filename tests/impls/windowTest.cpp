@@ -1,7 +1,7 @@
 #include "../includes/windowTest.hpp"
 
-using namespace GeoFrame;
-using namespace GeoFrame::Core;
+using namespace TerreateCore;
+using namespace TerreateCore::Core;
 
 class CallbackSet : public WindowController {
 private:
@@ -35,7 +35,7 @@ public:
 
 void window_generation_test(unsigned const &width, unsigned const &height,
                             Str const &title) {
-  Context context;
+  Initialize();
   Window window = Window(width, height, title, WindowSettings());
 
   CallbackSet callbackSet;
@@ -45,6 +45,8 @@ void window_generation_test(unsigned const &width, unsigned const &height,
   while (!window.IsClosed()) {
     window.Frame();
   }
+
+  Terminate();
 }
 
 int main() {

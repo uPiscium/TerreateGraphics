@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(GeoFrame)
+project(TerreateCore)
 message(STATUS "Project name : " ${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 20)
@@ -31,8 +31,8 @@ elseif(UNIX)
   target_link_libraries(${PROJECT_NAME} PUBLIC freetype)
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC ../includes/headers)
+target_include_directories(${PROJECT_NAME} PUBLIC ../includes/deps)
+target_include_directories(${PROJECT_NAME} PUBLIC ../includes/math)
 target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
-target_include_directories(${PROJECT_NAME} PUBLIC ../includes/parser)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION 1.0.0)

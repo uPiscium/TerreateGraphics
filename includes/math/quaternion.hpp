@@ -126,7 +126,7 @@ Quaternion<T> operator/(const Quaternion<T> &q1, const Quaternion<T> &q2) {
 template <typename T>
 std::ostream &operator<<(std::ostream &stream,
                          const TerreateCore::Math::Quaternion<T> &q) {
-  GeoMath::vec3<T> im = q.GetImaginary();
+  auto const &im = q.GetImaginary();
   stream << q.GetReal() << " + " << im[0] << "i + " << im[1] << "j + " << im[2]
          << "k";
   return stream;

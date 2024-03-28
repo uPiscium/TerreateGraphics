@@ -1,6 +1,5 @@
 #pragma once
+#include "../../includes/TerreateCore.hpp"
 #include <chrono>
-
-#include "../../includes/job.hpp"
 
 void job_test();
