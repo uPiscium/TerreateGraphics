@@ -9,14 +9,18 @@ namespace TerreateCore {
 namespace Animation {
 using namespace TerreateCore::Defines;
 
-class Animator : public Core::Object {
-private:
-  Vec<Float> mTimeArray;
-  Vec<mat4> mKeyFrames;
-
-public:
-  ;
+struct Transform {
+  vec3 scale;
+  vec3 position;
+  quaternion rotation;
 };
+
+class Animation : public Core::Object {
+private:
+  Vec<Transform> mKeyFrames;
+  Vec<Float> mKeyTimes;
+};
+
 } // namespace Animation
 } // namespace TerreateCore
 
