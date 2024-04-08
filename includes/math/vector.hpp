@@ -42,17 +42,17 @@ public:
   explicit VectorBase(const std::vector<T> &data) {
     this->Allocate();
     size_t copysize = sizeof(T) * (mSize <= data.size() ? mSize : data.size());
-    M_GM_MEMCPY(mArray, &data[0], copysize);
+    std::memcpy(mArray, &data[0], copysize);
   }
   VectorBase(const T *data, const size_t &comps) {
     this->Allocate();
     size_t copysize = sizeof(T) * (mSize < comps ? mSize : comps);
-    M_GM_MEMCPY(mArray, data, copysize);
+    std::memcpy(mArray, data, copysize);
   }
   VectorBase(const VectorBase &data) {
     if (data.mSelfAlloc) {
       this->Allocate();
-      M_GM_MEMCPY(mArray, (const T *)data, sizeof(T) * mSize);
+      std::memcpy(mArray, (const T *)data, sizeof(T) * mSize);
     } else {
       mSelfAlloc = false;
       mArray = data.mArray;
@@ -74,7 +74,7 @@ public:
   }
 
   VectorBase<T, Comp> &operator=(const VectorBase<T, Comp> &vec) {
-    M_GM_MEMCPY(mArray, (const T *)vec, sizeof(T) * Comp);
+    std::memcpy(mArray, (const T *)vec, sizeof(T) * Comp);
     return *this;
   }
 

@@ -9,15 +9,19 @@ message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
 add_library(
   ${PROJECT_NAME} STATIC
+  animation.cpp
   buffer.cpp
   core.cpp
   event.cpp
   font.cpp
   gl.cpp
   job.cpp
+  model.cpp
   object.cpp
+  scene.cpp
   screen.cpp
   shader.cpp
+  skeleton.cpp
   texture.cpp
   window.cpp)
 

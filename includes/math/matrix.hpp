@@ -43,7 +43,7 @@ private:
   void Flatten(const std::vector<std::vector<T>> &data) {
     for (int i = 0; i < (Row < data.size() ? Row : data.size()); i++) {
       T *ptr = &mArray[i * Column];
-      M_GM_MEMCPY(ptr, &data[i][0],
+      std::memcpy(ptr, &data[i][0],
                   sizeof(T) *
                       (Column < data[i].size() ? Column : data[i].size()));
     }
@@ -57,24 +57,24 @@ public:
   }
   MatrixBase(const std::vector<T> &data) {
     this->Allocate();
-    M_GM_MEMCPY(mArray, &data[0],
+    std::memcpy(mArray, &data[0],
                 sizeof(T) * (mSize < data.size() ? mSize : data.size()));
   }
   MatrixBase(const std::vector<VectorCore::VectorBase<T, Column>> &data) {
     this->Allocate();
     for (int i = 0; i < (Row < data.size() ? Row : data.size()); i++) {
-      M_GM_MEMCPY(&mArray[i * Column], (const T *)data[i],
+      std::memcpy(&mArray[i * Column], (const T *)data[i],
                   sizeof(T) * (Column < data[i].GetSize() ? Column
                                                           : data[i].GetSize()));
     }
   };
   MatrixBase(const T *data, const size_t &comps) {
     this->Allocate();
-    M_GM_MEMCPY(mArray, data, sizeof(T) * (mSize < comps ? mSize : comps));
+    std::memcpy(mArray, data, sizeof(T) * (mSize < comps ? mSize : comps));
   }
   MatrixBase(const MatrixBase &data) {
     this->Allocate();
-    M_GM_MEMCPY(mArray, (const T *)data, sizeof(T) * mSize);
+    std::memcpy(mArray, (const T *)data, sizeof(T) * mSize);
   }
   ~MatrixBase() { this->Free(); }
 
@@ -92,7 +92,7 @@ public:
   }
 
   MatrixBase &operator=(const MatrixBase &other) {
-    M_GM_MEMCPY(mArray, (const T *)other, sizeof(T) * mSize);
+    std::memcpy(mArray, (const T *)other, sizeof(T) * mSize);
     return *this;
   }
 
