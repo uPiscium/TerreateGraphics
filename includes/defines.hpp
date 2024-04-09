@@ -217,6 +217,9 @@ enum class BlendingFuntion {
   SRC_ALPHA_SATURATE = GL_SRC_ALPHA_SATURATE
 };
 
+// Use to select material color property.
+enum class ColorProperty { AMBIENT, DIFFUSE, SPECULAR, EMISSIVE };
+
 // Use to select opengl cube map face direction.
 enum class CubeFace {
   RIGHT = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -279,6 +282,14 @@ enum class FilterType {
   LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,   // MIN_FILTER only
   NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,   // MIN_FILTER only
   LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR      // MIN_FILTER only
+};
+
+// Use to select material float property.
+enum class FloatProperty {
+  SHININESS,
+  TRANSPARENCY,
+  REFLECTIVITY,
+  REFRACTIVITY
 };
 
 // Use to select opengl feature.
@@ -428,6 +439,17 @@ enum class Keyboard {
   K_LAST = GLFW_KEY_LAST
 };
 
+// Use to select data type included in buffer.
+enum class ModelFlag {
+  NORMAL = 1,
+  UV = 1 << 1,
+  COLOR = 1 << 2,
+  JOINT = 1 << 3,
+  WEIGHT = 1 << 4,
+  MATERIAL = 1 << 5,
+  MORPH = 1 << 6
+};
+
 // Use to select mouse button input.
 enum class MousebuttonInput {
   BUTTON1 = GLFW_MOUSE_BUTTON_1,
@@ -465,6 +487,19 @@ enum class StencilOperation {
   DECR = GL_DECR,
   DECR_WRAP = GL_DECR_WRAP,
   INVERT = GL_INVERT
+};
+
+// Use to select material texture property.
+enum class TextureProperty {
+  NORMAL,
+  AMBIENT,
+  DIFFUSE,
+  SPECULAR,
+  EMISSIVE,
+  DISSOLVE,
+  SHININESS,
+  REFLECTION,
+  REFRACTION
 };
 
 // Use to select opengl texture target to activate.

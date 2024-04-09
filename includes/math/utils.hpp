@@ -340,6 +340,49 @@ mat4<T> GetOrthographic(T left, T right, T bottom, T top) {
   m[3][1] = -(top + bottom) / (top - bottom);
   return m;
 }
+
+template <typename T> vec2<T> Lerp(const vec2<T> &v0, const vec2<T> &v1, T t) {
+  vec2<T> v;
+  v = v0 * (1 - t) + v1 * t;
+  return v;
+}
+
+template <typename T> vec3<T> Lerp(const vec3<T> &v0, const vec3<T> &v1, T t) {
+  vec3<T> v;
+  v = v0 * (1 - t) + v1 * t;
+  return v;
+}
+
+template <typename T> vec4<T> Lerp(const vec4<T> &v0, const vec4<T> &v1, T t) {
+  vec4<T> v;
+  v = v0 * (1 - t) + v1 * t;
+  return v;
+}
+
+template <typename T>
+Quaternion<T> Lerp(const Quaternion<T> &q0, const Quaternion<T> &q1, T t) {
+  Quaternion<T> q;
+  q = q0 * (1 - t) + q1 * t;
+  return q;
+}
+
+template <typename T> mat2<T> Lerp(const mat2<T> &m0, const mat2<T> &m1, T t) {
+  mat2<T> m;
+  m = m0 * (1 - t) + m1 * t;
+  return m;
+}
+
+template <typename T> mat3<T> Lerp(const mat3<T> &m0, const mat3<T> &m1, T t) {
+  mat3<T> m;
+  m = m0 * (1 - t) + m1 * t;
+  return m;
+}
+
+template <typename T> mat4<T> Lerp(const mat4<T> &m0, const mat4<T> &m1, T t) {
+  mat4<T> m;
+  m = m0 * (1 - t) + m1 * t;
+  return m;
+}
 } // namespace Math
 } // namespace TerreateCore
 
