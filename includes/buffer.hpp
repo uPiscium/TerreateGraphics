@@ -1,9 +1,13 @@
-#pragma once
+#ifndef __TC_BUFFER_HPP__
+#define __TC_BUFFER_HPP__
+
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
+using namespace TerreateCore::Defines;
+
 class Attribute {
 private:
   Ulong mIndex = 0;
@@ -57,7 +61,7 @@ public:
                                            Vec<Ulong> const &strides);
 };
 
-class Buffer final : public Geobject {
+class Buffer final : public Object {
 private:
   ID mVAO = 0;
   ID mVBO = 0;
@@ -70,10 +74,7 @@ private:
   Bool mSetIBO = false;
 
 public:
-  static ObjectID const sOID;
-
-public:
-  M_DISABLE_COPY_AND_ASSIGN(Buffer);
+  TC_DISABLE_COPY_AND_ASSIGN(Buffer);
 
 public:
   /*
@@ -145,4 +146,6 @@ public:
   operator Bool() const override { return mVAO != 0 && mVBO != 0 && mIBO != 0; }
 };
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore
+
+#endif // __TC_BUFFER_HPP__

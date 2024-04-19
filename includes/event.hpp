@@ -1,12 +1,17 @@
-#pragma once
+#ifndef __TC_EVENT_HPP__
+#define __TC_EVENT_HPP__
+
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace GeoFrame {
-namespace Utils {
+namespace TerreateCore {
+namespace Event {
+using namespace TerreateCore::Core;
+using namespace TerreateCore::Defines;
+
 using EventCallback = Function<void(Str const &)>;
 
-class EventSystem : public Geobject {
+class EventSystem : public Object {
 private:
   Queue<Str> mEventQueue;
   Mutex mQueueMutex;
@@ -14,24 +19,12 @@ private:
   Map<Str, Queue<EventCallback>> mTriggers;
 
 public:
-  static ObjectID const sOID;
-
-public:
   /*
    * @brief: Eventsystem is a event driven system that allows for
    * callbacks to be registered to events and for events
    * to be published to the system.
    */
-  EventSystem() : Geobject(EventSystem::sOID) {}
-  /*
-   * @brief: Eventsystem is a event driven system that allows for
-   * callbacks to be registered to events and for events
-   * to be published to the system.
-   * @param: id: the id of the object
-   * @note: This constructor is used in derived classes to set the id
-   * of the object.
-   */
-  EventSystem(ObjectID const &id) : Geobject(id) {}
+  EventSystem() {}
   virtual ~EventSystem() override = default;
 
   /*
@@ -58,5 +51,7 @@ public:
    */
   void PublishEvent(Str const &event);
 };
-} // namespace Utils
-} // namespace GeoFrame
+} // namespace Event
+} // namespace TerreateCore
+
+#endif // __TC_EVENT_HPP__

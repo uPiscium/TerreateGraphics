@@ -1,28 +1,20 @@
-#pragma once
+#ifndef __TC_EXCEPTIONS_HPP__
+#define __TC_EXCEPTIONS_HPP__
+
 #include <exception>
 
-#include "defines.hpp"
-
-namespace GeoFrame {
-class GeoException : public std::exception {
+namespace TerreateCore {
+namespace Exception {
+class CoreException : public std::exception {
 private:
   char const *mMessage;
 
 public:
-  GeoException(char const *message) : mMessage(message) {}
+  CoreException(char const *message) : mMessage(message) {}
 
   char const *what() const noexcept override { return mMessage; }
 };
+} // namespace Exception
+} // namespace TerreateCore
 
-struct APIError : public GeoException {
-  APIError(char const *message) : GeoException(message) {}
-};
-
-struct KernelError : public GeoException {
-  KernelError(char const *message) : GeoException(message) {}
-};
-
-struct InterfaceError : public GeoException {
-  InterfaceError(char const *message) : GeoException(message) {}
-};
-} // namespace GeoFrame
+#endif // __TC_EXCEPTIONS_HPP__

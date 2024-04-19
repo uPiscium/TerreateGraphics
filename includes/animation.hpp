@@ -1,119 +1,79 @@
-#pragma once
+#ifndef __TC_ANIMATION_HPP__
+#define __TC_ANIMATION_HPP__
+
 #include "defines.hpp"
+#include "math/math.hpp"
 #include "object.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Animation {
-class Joint final : public Geobject {
-private:
-  Vec<Shared<Joint>> mSibling;
-  Shared<Joint> mChild;
-  Uint mIndex;
+using namespace TerreateCore::Defines;
 
-  mat4 mOffset;
-  mat4 mInverseOffset;
-  mat4 mTransform;
-
-public:
-  static ObjectID const sOID;
-
-public:
-  Joint(Uint const &index)
-      : Geobject(Joint::sOID), mChild(nullptr), mIndex(index),
-        mInverseOffset(Eye4<Float>()), mOffset(Eye4<Float>()) {}
-  Joint(Uint const &index, vec3 const &position, Quaternion const &rotation);
-  Joint(Uint const &index, mat4 const &offsetMatrix)
-      : Geobject(Joint::sOID), mChild(nullptr), mIndex(index),
-        mOffset(offsetMatrix) {
-    mInverseOffset = GeoMath::Inverse(mOffset);
-  }
-  ~Joint() {}
-
-  mat4 const &GetOffsetMatrix() const { return mOffset; }
-  mat4 const &GetInverseOffsetMatrix() const { return mInverseOffset; }
-  mat4 const &GetTransformMatrix() const { return mTransform; }
-  Uint const &GetIndex() const { return mIndex; }
-
-  void SetOffsetMatrix(mat4 const &offsetMatrix);
-  void SetChild(Shared<Joint> const &child) { mChild = child; }
-  void SetTransformMatrix(mat4 const &transformMatrix) {
-    mTransform = transformMatrix;
-  }
-  void SetIndex(Uint const &index) { mIndex = index; }
-
-  void Initialize(mat4 const &parentOffsetMatrix);
-  void AddSibling(Shared<Joint> const &sibling) { mSibling.push_back(sibling); }
-  void Update(mat4 const &parentTransformMatrix, Vec<mat4> *boneTransforms);
+struct Transform {
+  vec3 scale;
+  vec3 position;
+  quaternion rotation;
 };
 
-class Skeleton final : public Geobject {
-private:
-  Shared<Joint> mRoot;
-  Vec<Shared<Joint>> mJoints;
-  Vec<mat4> mBoneTransforms;
-  Uint mIndex;
-
-public:
-  static ObjectID const sOID;
-
-public:
-  Skeleton(Uint const &index)
-      : Geobject(Skeleton::sOID), mIndex(index), mRoot(nullptr) {}
-  ~Skeleton() {}
-
-  Uint const &GetIndex() const { return mIndex; }
-
-  Vec<Float> AcquireBoneTransforms() const;
-
-  Shared<Joint> CreateJoint();
-  Shared<Joint> CreateJoint(vec3 const &position, Quaternion const &rotation);
-  Shared<Joint> CreateJoint(mat4 const &offsetMatrix);
-
-  void Initialize();
-  void Update(Vec<mat4> const &boneTransforms);
-};
-
-class Animator : public Geobject {
-public:
-  struct Frame {
-    Float time;
-    mat4 transform;
-  };
-
+class Animation : public Core::Object {
 private:
   Str mName;
-  Vec<Frame> mKeyFrames;
-  Uint mFrameCount;
+  Vec<Transform> mKeyFrames;
+  Vec<Float> mKeyTimes;
 
 public:
-  static ObjectID const sOID;
+  Animation() {}
+  ~Animation() {}
 
-public:
-  Animator(Str const &name)
-      : Geobject(Animator::sOID), mName(name), mFrameCount(0) {}
-  Animator(ObjectID const &oid, Str const &name)
-      : Geobject(oid), mName(name), mFrameCount(0) {}
-  Animator(Str const &name, Vec<Float> const &timeArray,
-           Vec<mat4> const &keyFrames);
-  Animator(ObjectID const &oid, Str const &name, Vec<Float> const &timeArray,
-           Vec<mat4> const &keyFrames);
-  ~Animator() {}
+  /*
+   * @brief Get the name of the animation
+   * @return The name of the animation
+   */
+  Str const &GetName() const;
+  /*
+   * @brief Get the key frames of the animation
+   * @return The key frames of the animation
+   */
+  Vec<Transform> const &GetKeyFrames() const;
 
-  Str const &GetName() const { return mName; }
-  virtual Uint const &GetFrameCount() const { return mFrameCount; }
+  /*
+   * @brief Set the name of the animation
+   * @param name The name of the animation
+   */
+  void SetName(Str const &name) { mName = name; }
 
-  virtual Vec<Float> AcquireTimeArray() const;
-  virtual Vec<mat4> AcquireKeyFrames() const;
+  /*
+   * @brief Add a key frame to the animation
+   * @param keyFrame The key frame to add
+   * @param time The time of the key frame
+   */
+  void AddKeyFrame(Transform const &keyFrame, Float const &time);
+  /*
+   * @brief Remove a key frame from the animation
+   * @param index The index of the key frame to remove
+   */
+  void RemoveKeyFrame(Uint const &index);
+  /*
+   * @brief Get the key frame at a specific index
+   * @param index The index of the key frame to get
+   * @return The key frame at the specified index
+   */
+  Transform Interpolate(Float const &time) const;
 
-  virtual void SetTimeArray(Vec<Float> const &timeArray);
-  virtual void SetKeyFrames(Vec<mat4> const &keyFrames);
-  virtual void SetFrameCount(Uint const &frameCount) {
-    mFrameCount = frameCount;
+  Transform const &operator[](Uint const &index) const {
+    return mKeyFrames[index];
   }
+  Transform operator[](Float const &time) const { return Interpolate(time); }
 
-  virtual mat4 Interpolate(Float const &time) const;
-
-  virtual mat4 operator[](Float const &time) const { return Interpolate(time); }
+public:
+  /*
+   * @brief Convert a transform to a matrix
+   * @param transform The transform to convert
+   * @return The matrix representation of the transform
+   */
+  static mat4 TransformToMatrix(Transform const &transform);
 };
 } // namespace Animation
-} // namespace GeoFrame
+} // namespace TerreateCore
+
+#endif // __TC_ANIMATION_HPP__

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(GeoFrame)
+project(TerreateCore)
 message(STATUS "Project name : " ${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 20)
@@ -11,22 +11,19 @@ add_library(
   ${PROJECT_NAME} STATIC
   animation.cpp
   buffer.cpp
-  context.cpp
   core.cpp
   event.cpp
   font.cpp
   gl.cpp
   job.cpp
   model.cpp
-  network.cpp
   object.cpp
+  scene.cpp
   screen.cpp
   shader.cpp
+  skeleton.cpp
   texture.cpp
-  window.cpp
-  parser/base.cpp
-  parser/json.cpp
-  parser/glb.cpp)
+  window.cpp)
 
 target_link_directories(${PROJECT_NAME} PUBLIC ../libs)
 if(WIN32)
@@ -38,8 +35,8 @@ elseif(UNIX)
   target_link_libraries(${PROJECT_NAME} PUBLIC freetype)
 endif()
 
-target_include_directories(${PROJECT_NAME} PUBLIC ../includes/headers)
+target_include_directories(${PROJECT_NAME} PUBLIC ../includes/deps)
+target_include_directories(${PROJECT_NAME} PUBLIC ../includes/math)
 target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
-target_include_directories(${PROJECT_NAME} PUBLIC ../includes/parser)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION 1.0.0)

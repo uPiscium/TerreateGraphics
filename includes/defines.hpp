@@ -1,102 +1,93 @@
-#pragma once
-#include <arpa/inet.h>
+#ifndef __TC_DEFINES_HPP__
+#define __TC_DEFINES_HPP__
+
 #include <atomic>
 #include <condition_variable>
 #include <cstdint>
-#include <cstring>
 #include <deque>
 #include <fstream>
 #include <functional>
-#include <iomanip>
 #include <iostream>
 #include <memory>
 #include <mutex>
-#include <netdb.h>
-#include <netinet/in.h>
 #include <queue>
 #include <sstream>
 #include <string>
-#include <sys/socket.h>
-#include <sys/types.h>
 #include <thread>
-#include <unistd.h>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
-#include <GeoMath/matrix.hpp>
-#include <GeoMath/transformer.hpp>
-
 // Defines
-#ifdef GEOFRAME_IGNORE_EXCEPTIONS
-#define M_GEO_THROW(exception, message)                                        \
-  std::cerr << __FILE__ << ":" << __LINE__ << " " << message << std::endl;
-#else
-#define M_GEO_THROW(exception, message)                                        \
-  std::cerr << __FILE__ << ":" << __LINE__ << " " << message << std::endl;     \
-  throw exception(message)
-#endif // GEOFRAME_IGNORE_EXCEPTIONS
-
-#define M_DISABLE_COPY_AND_ASSIGN(Type)                                        \
+#define TC_DISABLE_COPY_AND_ASSIGN(Type)                                       \
   Type(Type const &) = delete;                                                 \
   Type &operator=(Type const &) = delete
 
-#ifdef __linux__
-#define M_MEMCPY(dest, src, size) memcpy(dest, src, size)
-#define M_MEMCMP(dest, src, size) memcmp(dest, src, size)
-#else
-#define M_MEMCPY(dest, src, size) std::memcpy(dest, src, size)
-#define M_MEMCMP(dest, src, size) std::memcmp(dest, src, size)
-#endif // __linux__
+// Constants
+#define GLAD_H <glad/gl.h>
+#define GLFW_H <GLFW/glfw3.h>
 
-#define D_GLAD <glad/gl.h>
-#define D_GLFW <GLFW/glfw3.h>
+#ifndef TC_UNICODE_HALF_SPACE
+#define TC_UNICODE_HALF_SPACE 32
+#endif // TC_UNICODE_HALF_SPACE
 
-#ifndef D_HALF_WIDTH_SPACE
-#define D_HALF_WIDTH_SPACE 32
-#endif // D_HALF_WIDTH_SPACE
-#ifndef D_FULL_WIDTH_SPACE
-#define D_FULL_WIDTH_SPACE 32306
-#endif // D_FULL_WIDTH_SPACE
-#define D_MAX_COLOR_ATTACHMENT 32
+#ifndef TC_UNICODE_FULL_SPACE
+#define TC_UNICODE_FULL_SPACE 32306
+#endif // TC_UNICODE_FULL_SPACE
 
-#include D_GLAD
-#include D_GLFW
+#include GLAD_H
+#include GLFW_H
 #include "exceptions.hpp"
 
-namespace GeoFrame {
-// Typedefs
-// Basic types
-using GFbool = bool;
-using GFi8 = int8_t;
-using GFu8 = uint8_t;
-using GFi16 = int16_t;
-using GFu16 = uint16_t;
-using GFi32 = int32_t;
-using GFu32 = uint32_t;
-using GFi64 = int64_t;
-using GFu64 = uint64_t;
-using GFfloat = float;
-using GFdouble = double;
+#ifndef TC_THROW
+#define TC_THROW(message)                                                      \
+  std::cerr << "Error: " << __FILE__ << ":" << __LINE__ << " / " << message    \
+            << std::endl;                                                      \
+  throw TerreateCore::Exception::CoreException(message)
+#endif // TC_THROW
 
-using Bool = GFbool;
-using Byte = GFi8;
-using Ubyte = GFu8;
-using Short = GFi16;
-using Ushort = GFu16;
-using Int = GFi32;
-using Uint = GFu32;
-using Long = GFi64;
-using Ulong = GFu64;
-using Float = GFfloat;
-using Double = GFdouble;
+namespace TerreateCore {
+namespace Defines {
+// Type aliases
+// TC types (TerreateCore types)
+typedef bool TCbool;
+typedef int8_t TCi8;
+typedef uint8_t TCu8;
+typedef int16_t TCi16;
+typedef uint16_t TCu16;
+typedef int32_t TCi32;
+typedef uint32_t TCu32;
+typedef int64_t TCi64;
+typedef uint64_t TCu64;
+typedef float TCfloat;
+typedef double TCdouble;
 
-using BYTE = GFi8;
-using WORD = GFi16;
-using DWORD = GFi32;
-using QWORD = GFi64;
+// Standard types
+typedef TCbool Bool;
+typedef TCi8 Byte;
+typedef TCu8 Ubyte;
+typedef TCi16 Short;
+typedef TCu16 Ushort;
+typedef TCi32 Int;
+typedef TCu32 Uint;
+typedef TCi64 Long;
+typedef TCu64 Ulong;
+typedef TCfloat Float;
+typedef TCdouble Double;
 
-// std types
+typedef std::mutex Mutex;
+typedef std::condition_variable CondVar;
+typedef std::thread Thread;
+typedef TCu32 ID;
+typedef TCu64 Index;
+typedef TCu64 EventID;
+typedef TCu64 Size;
+typedef std::string Str;
+typedef std::wstring WStr;
+typedef std::stringstream Stream;
+typedef std::ifstream InputFileStream;
+
+// template aliases
 template <typename S, typename T> using Map = std::unordered_map<S, T>;
 template <typename T> using Pair = std::pair<T, T>;
 template <typename T> using Set = std::unordered_set<T>;
@@ -109,96 +100,22 @@ template <typename T> using Atomic = std::atomic<T>;
 template <typename T> using Vec = std::vector<T>;
 template <typename T> using Function = std::function<T>;
 
-using Mutex = std::mutex;
-using Thread = std::thread;
-using CondVar = std::condition_variable;
-using ID = GFu32;
-using Index = GFu64;
-using EventID = GFu64;
-using Size = GFu64;
-using Str = std::string;
-using WStr = std::wstring;
-using Stream = std::stringstream;
-using Endpoint = sockaddr;
-using IPv4Endpoint = sockaddr_in;
-using IPv6Endpoint = sockaddr_in6;
-using IP = Str;
-using Port = GFu16;
-
-// GeoMath types
-template <typename T> using vec2T = GeoMath::vec2<T>;
-template <typename T> using vec3T = GeoMath::vec3<T>;
-template <typename T> using vec4T = GeoMath::vec4<T>;
-template <typename T> using mat2T = GeoMath::mat2<T>;
-template <typename T> using mat2x3T = GeoMath::mat2x3<T>;
-template <typename T> using mat2x4T = GeoMath::mat2x4<T>;
-template <typename T> using mat3x2T = GeoMath::mat3x2<T>;
-template <typename T> using mat3T = GeoMath::mat3<T>;
-template <typename T> using mat3x4T = GeoMath::mat3x4<T>;
-template <typename T> using mat4x2T = GeoMath::mat4x2<T>;
-template <typename T> using mat4x3T = GeoMath::mat4x3<T>;
-template <typename T> using mat4T = GeoMath::mat4<T>;
-template <typename T> using QuaternionT = GeoMath::Quaternion<T>;
-using vec2 = vec2T<GFfloat>;
-using vec3 = vec3T<GFfloat>;
-using vec4 = vec4T<GFfloat>;
-using mat2 = mat2T<GFfloat>;
-using mat2x3 = mat2x3T<GFfloat>;
-using mat2x4 = mat2x4T<GFfloat>;
-using mat3x2 = mat3x2T<GFfloat>;
-using mat3 = mat3T<GFfloat>;
-using mat3x4 = mat3x4T<GFfloat>;
-using mat4x2 = mat4x2T<GFfloat>;
-using mat4x3 = mat4x3T<GFfloat>;
-using mat4 = mat4T<GFfloat>;
-using Quaternion = QuaternionT<GFfloat>;
-
 // Callbacks
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;
 using MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>;
 using JoystickCallback = std::function<void(int joystickID, int event)>;
 
-// Functions
-template <typename T> mat2T<T> Eye2() {
-  Vec<Vec<T>> data = {{1, 0}, {0, 1}};
-  return mat2T<T>(data);
-}
-
-template <typename T> mat2T<T> Zero2() {
-  Vec<Vec<T>> data = {{0, 0}, {0, 0}};
-  return mat2T<T>(data);
-}
-
-template <typename T> mat3T<T> Eye3() {
-  Vec<Vec<T>> data = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
-  return mat3T<T>(data);
-}
-
-template <typename T> mat3T<T> Zero3() {
-  Vec<Vec<T>> data = {{0, 0, 0}, {0, 0, 0}, {0, 0, 0}};
-  return mat3T<T>(data);
-}
-
-template <typename T> mat4T<T> Eye4() {
-  Vec<Vec<T>> data = {{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}};
-  return mat4T<T>(data);
-}
-
-template <typename T> mat4T<T> Zero4() {
-  Vec<Vec<T>> data = {{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}};
-  return mat4T<T>(data);
-}
-
 // Concepts
 template <typename Derived, typename Base>
 concept extends = std::derived_from<Derived, Base>;
 
+// Structs
 struct Modifier {
 public:
-  GFbool shift = false;
-  GFbool control = false;
-  GFbool alt = false;
-  GFbool numLock = false;
+  TCbool shift = false;
+  TCbool control = false;
+  TCbool alt = false;
+  TCbool numLock = false;
 
 public:
   Modifier(int mods_)
@@ -208,9 +125,9 @@ public:
 
 struct Key {
 public:
-  GFi32 key = 0;
-  GFi32 scancode = 0;
-  GFi32 action = 0;
+  TCi32 key = 0;
+  TCi32 scancode = 0;
+  TCi32 action = 0;
   Modifier mods = 0;
 
 public:
@@ -218,6 +135,7 @@ public:
       : key(key_), scancode(scancode_), action(action_), mods(mods_) {}
 };
 
+// Enums
 // Use to select opengl color frame buffer attachement.
 enum class Attachment {
   COLOR0 = GL_COLOR_ATTACHMENT0,
@@ -299,6 +217,9 @@ enum class BlendingFuntion {
   SRC_ALPHA_SATURATE = GL_SRC_ALPHA_SATURATE
 };
 
+// Use to select material color property.
+enum class ColorProperty { AMBIENT, DIFFUSE, SPECULAR, EMISSIVE };
+
 // Use to select opengl cube map face direction.
 enum class CubeFace {
   RIGHT = GL_TEXTURE_CUBE_MAP_POSITIVE_X,
@@ -361,6 +282,14 @@ enum class FilterType {
   LINEAR_MIPMAP_NEAREST = GL_LINEAR_MIPMAP_NEAREST,   // MIN_FILTER only
   NEAREST_MIPMAP_LINEAR = GL_NEAREST_MIPMAP_LINEAR,   // MIN_FILTER only
   LINEAR_MIPMAP_LINEAR = GL_LINEAR_MIPMAP_LINEAR      // MIN_FILTER only
+};
+
+// Use to select material float property.
+enum class FloatProperty {
+  SHININESS,
+  TRANSPARENCY,
+  REFLECTIVITY,
+  REFRACTIVITY
 };
 
 // Use to select opengl feature.
@@ -510,23 +439,15 @@ enum class Keyboard {
   K_LAST = GLFW_KEY_LAST
 };
 
-// Use to select material color type.
-enum class MaterialColor { AMBIENT, DIFFUSE, SPECULAR, EMISSION };
-
-// Use to select material constant type.
-enum class MaterialConstant { SHININESS, DISSOLVE, REFLECTION, REFRACTION };
-
-// Use to select material texture type.
-enum class MaterialTexture {
-  AMBIENT,
-  DIFFUSE,
-  SPECULAR,
-  EMISSION,
-  NORMAL,
-  SHININESS,
-  DISSOLVE,
-  REFLECTION,
-  REFRACTION
+// Use to select data type included in buffer.
+enum class ModelFlag {
+  NORMAL = 1,
+  UV = 1 << 1,
+  COLOR = 1 << 2,
+  JOINT = 1 << 3,
+  WEIGHT = 1 << 4,
+  MATERIAL = 1 << 5,
+  MORPH = 1 << 6
 };
 
 // Use to select mouse button input.
@@ -543,12 +464,6 @@ enum class MousebuttonInput {
   BUTTON7 = GLFW_MOUSE_BUTTON_7,
   BUTTON8 = GLFW_MOUSE_BUTTON_8
 };
-
-// Use to select socket protocol.
-enum class SocketProtocol { IPV4 = AF_INET, IPV6 = AF_INET6 };
-
-// Use to select socket type.
-enum class SocketType { TCP = SOCK_STREAM, UDP = SOCK_DGRAM };
 
 // Use to select opengl stencil function.
 enum class StencilFunction {
@@ -572,6 +487,19 @@ enum class StencilOperation {
   DECR = GL_DECR,
   DECR_WRAP = GL_DECR_WRAP,
   INVERT = GL_INVERT
+};
+
+// Use to select material texture property.
+enum class TextureProperty {
+  NORMAL,
+  AMBIENT,
+  DIFFUSE,
+  SPECULAR,
+  EMISSIVE,
+  DISSOLVE,
+  SHININESS,
+  REFLECTION,
+  REFRACTION
 };
 
 // Use to select opengl texture target to activate.
@@ -635,4 +563,7 @@ static unsigned COLOR_BUFFERS[] = {
     (GLenum)Attachment::COLOR26, (GLenum)Attachment::COLOR27,
     (GLenum)Attachment::COLOR28, (GLenum)Attachment::COLOR29,
     (GLenum)Attachment::COLOR30, (GLenum)Attachment::COLOR31};
-} // namespace GeoFrame
+} // namespace Defines
+} // namespace TerreateCore
+
+#endif // __TC_DEFINES_HPP__

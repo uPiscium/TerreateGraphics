@@ -1,56 +1,109 @@
 #include "../includes/model.hpp"
+#include <memory>
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Model {
-ObjectID const Material::sOID = ObjectID("MATERIAL");
-ObjectID const BufferData::sOID = ObjectID("BUFFER_DATA");
-ObjectID const Mesh::sOID = ObjectID("MESH");
-ObjectID const Model::sOID = ObjectID("MODEL");
+using namespace TerreateCore::Defines;
 
-Str const &Material::GetTexture(MaterialTexture const &type) const {
-  if (mTextures.find(type) == mTextures.end()) {
-    M_GEO_THROW(InterfaceError, "Texture not found");
-  }
-  return mTextures.at(type);
-}
-
-vec4 const &Material::GetColor(MaterialColor const &type) const {
-  if (mColors.find(type) == mColors.end()) {
-    M_GEO_THROW(InterfaceError, "Color not found");
-  }
-  return mColors.at(type);
-}
-
-Float const &Material::GetConstant(MaterialConstant const &type) const {
-  if (mConstants.find(type) == mConstants.end()) {
-    M_GEO_THROW(InterfaceError, "Constant not found");
-  }
-  return mConstants.at(type);
-}
-
-void Material::SetTexture(MaterialTexture const &type, Str const &texture) {
-  if (mTextures.find(type) != mTextures.end()) {
-    mTextures[type] = texture;
+void MaterialData::SetColorProperty(ColorProperty const &property,
+                                    vec4 const &value) {
+  if (this->HasColorProperty(property)) {
+    mColorProperties[property] = value;
   } else {
-    mTextures.insert({type, texture});
+    mColorProperties.insert({property, value});
   }
 }
 
-void Material::SetColor(MaterialColor const &type, vec4 const &color) {
-  if (mColors.find(type) != mColors.end()) {
-    mColors[type] = color;
+void MaterialData::SetFloatProperty(FloatProperty const &property,
+                                    Float const &value) {
+  if (this->HasFloatProperty(property)) {
+    mFloatProperties[property] = value;
   } else {
-    mColors.insert({type, color});
+    mFloatProperties.insert({property, value});
   }
 }
 
-void Material::SetConstant(MaterialConstant const &type,
-                           Float const &constant) {
-  if (mConstants.find(type) != mConstants.end()) {
-    mConstants[type] = constant;
+void MaterialData::SetTextureProperty(TextureProperty const &property,
+                                      TexMap value) {
+  if (this->HasTextureProperty(property)) {
+    mTextureProperties[property] = value;
   } else {
-    mConstants.insert({type, constant});
+    mTextureProperties.insert({property, value});
   }
+}
+
+void MaterialData::RemoveColorProperty(ColorProperty const &property) {
+  if (this->HasColorProperty(property)) {
+    mColorProperties.erase(property);
+  } else {
+    TC_THROW("Color property not found");
+  }
+}
+
+void MaterialData::RemoveFloatProperty(FloatProperty const &property) {
+  if (this->HasFloatProperty(property)) {
+    mFloatProperties.erase(property);
+  } else {
+    TC_THROW("Float property not found");
+  }
+}
+
+void MaterialData::RemoveTextureProperty(TextureProperty const &property) {
+  if (this->HasTextureProperty(property)) {
+    mTextureProperties.erase(property);
+  } else {
+    TC_THROW("Texture property not found");
+  }
+}
+
+Mesh::Mesh(MeshData const &data) : mMaterial(data.GetMaterial()) {
+  mBuffer = std::make_shared<Core::Buffer>(BufferUsage::STATIC_DRAW);
+  mBuffer->LoadVertices(data.GetVertices());
+  mBuffer->LoadAttributes(Mesh::GetAttributes(data.GetFlag()));
+  mBuffer->LoadIndices(data.GetIndices());
+}
+
+Mesh &Mesh::operator=(Mesh const &other) {
+  mBuffer = other.mBuffer;
+  mMaterial = other.mMaterial;
+  return *this;
+}
+
+Vec<Core::Attribute> GetAttributes(ModelFlag const &flag) {
+  Vec<Ulong> attributes;
+  attributes.push_back(3); // Position
+
+  if ((int)flag & (int)ModelFlag::NORMAL) {
+    attributes.push_back(3); // Normals
+  }
+  if ((int)flag & (int)ModelFlag::UV) {
+    attributes.push_back(2); // UVs
+  }
+  if ((int)flag & (int)ModelFlag::COLOR) {
+    attributes.push_back(4); // Color
+  }
+  if ((int)flag & (int)ModelFlag::JOINT) {
+    attributes.push_back(4); // Joint
+  }
+  if ((int)flag & (int)ModelFlag::WEIGHT) {
+    attributes.push_back(4); // Weight
+  }
+  if ((int)flag & (int)ModelFlag::MORPH) {
+    attributes.push_back(3); // Morph
+  }
+
+  return Core::Attribute::GenerateAttributes(attributes);
+}
+
+void Model::Draw() const {
+  for (auto &mesh : mMeshes) {
+    mesh.Draw();
+  }
+}
+
+Model &Model::operator=(Model const &other) {
+  mMeshes = other.mMeshes;
+  return *this;
 }
 } // namespace Model
-} // namespace GeoFrame
+} // namespace TerreateCore

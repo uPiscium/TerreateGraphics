@@ -1,28 +1,26 @@
-#pragma once
-#include "core.hpp"
+#ifndef __TC_WINDOW_HPP__
+#define __TC_WINDOW_HPP__
+
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
-extern Bool S_GLAD_INITIALIZED;
+using namespace TerreateCore::Defines;
 
-class Icon final : public Geobject {
+class Icon final : public Object {
 private:
   Vec<GLFWimage> mImages;
   Vec<Ubyte *> mPointers;
 
 private:
-  M_DISABLE_COPY_AND_ASSIGN(Icon);
-
-public:
-  static ObjectID const sOID;
+  TC_DISABLE_COPY_AND_ASSIGN(Icon);
 
 public:
   /*
    * @brief: This function creates a glfw icon.
    */
-  Icon() : Geobject(Icon::sOID) {}
+  Icon() {}
   ~Icon() override;
 
   size_t GetSize() const { return mImages.size(); }
@@ -42,7 +40,7 @@ public:
   operator Bool() const override { return mImages.size() > 0; }
 };
 
-class Cursor final : public Geobject {
+class Cursor final : public Object {
 private:
   GLFWcursor *mCursor = nullptr;
   GLFWimage mImage = GLFWimage();
@@ -51,10 +49,7 @@ private:
   int mYHot = 0;
 
 private:
-  M_DISABLE_COPY_AND_ASSIGN(Cursor);
-
-public:
-  static ObjectID const sOID;
+  TC_DISABLE_COPY_AND_ASSIGN(Cursor);
 
 public:
   /*
@@ -62,8 +57,7 @@ public:
    * @param: xHot: The x-coordinate of the cursor's hot spot.
    * @param: yHot: The y-coordinate of the cursor's hot spot.
    */
-  Cursor(int const &xHot = 0, int const &yHot = 0)
-      : Geobject(Cursor::sOID), mXHot(xHot), mYHot(yHot) {}
+  Cursor(int const &xHot = 0, int const &yHot = 0) : mXHot(xHot), mYHot(yHot) {}
   ~Cursor() override;
 
   /*
@@ -80,19 +74,16 @@ public:
   operator Bool() const override { return mCursor != nullptr; }
 };
 
-class StandardCursor : public Geobject {
+class StandardCursor : public Object {
 private:
   GLFWcursor *mCursor = nullptr;
-
-public:
-  static ObjectID const sOID;
 
 public:
   /*
    * @brief: This function creates a glfw standard cursor.
    * @param: shape: Cursor shape.
    */
-  StandardCursor(CursorShape const &shape) : Geobject(StandardCursor::sOID) {
+  StandardCursor(CursorShape const &shape) {
     mCursor = glfwCreateStandardCursor((Uint)shape);
   }
   ~StandardCursor() override { glfwDestroyCursor(mCursor); }
@@ -252,7 +243,7 @@ public:
   virtual void OnFrame(Window *window) = 0;
 };
 
-class Window final : public Geobject {
+class Window final : public Object {
 private:
   GLFWwindow *mWindow = nullptr;
   void *mUserPointer = nullptr;
@@ -295,10 +286,7 @@ private:
                                              const char **paths);
 
 private:
-  M_DISABLE_COPY_AND_ASSIGN(Window);
-
-public:
-  static ObjectID const sOID;
+  TC_DISABLE_COPY_AND_ASSIGN(Window);
 
 public:
   /*
@@ -695,4 +683,6 @@ public:
   operator Bool() const override { return mWindow != nullptr; }
 };
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore
+
+#endif // __TC_WINDOW_HPP__

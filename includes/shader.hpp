@@ -1,13 +1,14 @@
-#pragma once
-#include <GeoMath/matrix.hpp>
-#include <GeoMath/vector.hpp>
+#ifndef __TC_SHADER_HPP__
+#define __TC_SHADER_HPP__
 
-#include "core.hpp"
 #include "defines.hpp"
+#include "math/math.hpp"
 #include "object.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
+using namespace TerreateCore::Defines;
+
 struct ShaderOption {
   Bool blending = true;
   Bool culling = false;
@@ -27,7 +28,7 @@ struct ShaderOption {
   StencilOperation dpPass = StencilOperation::KEEP;
 };
 
-class Shader final : public Geobject {
+class Shader final : public Object {
 private:
   ID mShaderID = 0;
   Str mVertexShaderSource = "";
@@ -36,14 +37,11 @@ private:
   ShaderOption mOption;
 
 public:
-  static ObjectID const sOID;
-
-public:
   /*
    * @brief: OpenGL shader wrapper class. This class handles vertex, fragment,
    * and geometry shaders.
    */
-  Shader() : Geobject(Shader::sOID) { mShaderID = glCreateProgram(); }
+  Shader() { mShaderID = glCreateProgram(); }
   ~Shader() override { glDeleteProgram(mShaderID); }
 
   /*
@@ -324,4 +322,6 @@ public:
   static Str LoadShaderSource(Str const &path);
 };
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore
+
+#endif // __TC_SHADER_HPP__

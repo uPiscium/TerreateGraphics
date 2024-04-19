@@ -1,12 +1,9 @@
 #include "../includes/window.hpp"
+#include "../includes/core.hpp"
 
-namespace GeoFrame {
+namespace TerreateCore {
 namespace Core {
-bool S_GLAD_INITIALIZED = false;
-ObjectID const Icon::sOID = ObjectID("ICON");
-ObjectID const Cursor::sOID = ObjectID("CURSOR");
-ObjectID const StandardCursor::sOID = ObjectID("STANDARD_CURSOR");
-ObjectID const Window::sOID = ObjectID("WINDOW");
+using namespace TerreateCore::Defines;
 
 Icon::~Icon() {
   for (auto &pointer : mPointers) {
@@ -139,8 +136,7 @@ void DropCallbackWrapper(GLFWwindow *window, int count, const char **paths) {
 } // namespace Callbacks
 
 Window::Window(Uint const &width, Uint const &height, Str const &title,
-               WindowSettings const &settings)
-    : Geobject(Window::sOID) {
+               WindowSettings const &settings) {
   glfwWindowHint(GLFW_RESIZABLE, settings.resizable);
   glfwWindowHint(GLFW_VISIBLE, settings.visible);
   glfwWindowHint(GLFW_DECORATED, settings.decorated);
@@ -157,11 +153,11 @@ Window::Window(Uint const &width, Uint const &height, Str const &title,
 
   glfwMakeContextCurrent(mWindow);
 
-  if (!S_GLAD_INITIALIZED) {
+  if (!GLAD_INITIALIZED) {
     if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress)) {
-      M_GEO_THROW(APIError, "Failed to initialize GLAD");
+      TC_THROW("Failed to initialize GLAD");
     }
-    S_GLAD_INITIALIZED = true;
+    GLAD_INITIALIZED = true;
   }
 
   glfwSetWindowPosCallback(mWindow, Callbacks::WindowPositionCallbackWrapper);
@@ -205,4 +201,4 @@ void Window::Frame() {
   mController->OnFrame(this);
 }
 } // namespace Core
-} // namespace GeoFrame
+} // namespace TerreateCore
