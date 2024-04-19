@@ -10,11 +10,11 @@
 - [Contact](#contact)
 
 # How to use
-`TerreateCore` supports `Windows` and `Linux`.
-## Windows
-1. Run `compile.bat`.
-2. `TerreateCore.lib` will be created in `build/Debug` folder.
-Then copy `TerreateCore.lib` to your project folder.
+`TerreateCore` supports ~~`Windows`~~ and `Linux`. Temporally, `Windows` is not supported.
+## ~~Windows~~
+1. ~~Run `compile.bat`.~~
+2. ~~`GeoFrame.lib` will be created in `build/Debug` folder.~~
+~~Then copy `TerreateCore.lib` to your project folder.~~
 
 ## Linux
 1. Run `compile.sh`.
