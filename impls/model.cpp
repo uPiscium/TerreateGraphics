@@ -1,8 +1,7 @@
 #include "../includes/model.hpp"
 #include <memory>
 
-namespace TerreateCore {
-namespace Model {
+namespace TerreateCore::Model {
 using namespace TerreateCore::Defines;
 
 void MaterialData::SetColorProperty(ColorProperty const &property,
@@ -105,5 +104,4 @@ Model &Model::operator=(Model const &other) {
   mMeshes = other.mMeshes;
   return *this;
 }
-} // namespace Model
-} // namespace TerreateCore
+} // namespace TerreateCore::Model

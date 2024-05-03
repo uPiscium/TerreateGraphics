@@ -1,7 +1,6 @@
 #include "../includes/buffer.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Vec<Attribute> Attribute::GenerateAttributes(Vec<Ulong> const &comps) {
@@ -106,5 +105,4 @@ void Buffer::DrawInstances(size_t const &numInstances,
                           numInstances);
   glBindVertexArray(0);
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core

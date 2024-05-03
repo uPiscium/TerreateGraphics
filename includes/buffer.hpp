@@ -4,8 +4,7 @@
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 class Attribute {
@@ -145,7 +144,6 @@ public:
 
   operator Bool() const override { return mVAO != 0 && mVBO != 0 && mIBO != 0; }
 };
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core
 
 #endif // __TC_BUFFER_HPP__

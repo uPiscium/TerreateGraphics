@@ -1,8 +1,7 @@
 #include "../includes/window.hpp"
 #include "../includes/core.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Icon::~Icon() {
@@ -200,5 +199,4 @@ void Window::Frame() {
 
   mController->OnFrame(this);
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core

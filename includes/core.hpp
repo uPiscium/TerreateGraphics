@@ -4,8 +4,7 @@
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 extern Bool GLFW_INITIALIZED;
 extern Bool GLAD_INITIALIZED;
@@ -26,7 +25,6 @@ public:
 
 void Initialize();
 void Terminate();
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core
 
 #endif // __TC_CORE_HPP__

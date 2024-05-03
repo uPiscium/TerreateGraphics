@@ -1,3 +1,3 @@
 cd tests/samples
-./$1Test
+./TCTest
 cd ../../

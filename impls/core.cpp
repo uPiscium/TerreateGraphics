@@ -1,7 +1,6 @@
 #include "../includes/core.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 Bool GLFW_INITIALIZED = false;
 Bool GLAD_INITIALIZED = false;
@@ -40,5 +39,4 @@ void Terminate() {
 
   glfwTerminate();
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core

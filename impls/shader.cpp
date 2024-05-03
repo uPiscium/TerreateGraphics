@@ -1,7 +1,6 @@
 #include "../includes/shader.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Str GetShaderLog(Uint const &id) {
@@ -177,5 +176,4 @@ void Shader::Use() const {
     glDisable(GL_CULL_FACE);
   }
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core

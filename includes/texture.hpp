@@ -8,8 +8,7 @@
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 struct TextureData {
@@ -179,7 +178,6 @@ public:
 
   operator Bool() const override { return mTexture != 0; }
 };
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core
 
 #endif // __TC_TEXTURE_HPP__

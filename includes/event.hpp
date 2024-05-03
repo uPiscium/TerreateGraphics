@@ -4,8 +4,7 @@
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Event {
+namespace TerreateCore::Event {
 using namespace TerreateCore::Core;
 using namespace TerreateCore::Defines;
 
@@ -51,7 +50,6 @@ public:
    */
   void PublishEvent(Str const &event);
 };
-} // namespace Event
-} // namespace TerreateCore
+} // namespace TerreateCore::Event
 
 #endif // __TC_EVENT_HPP__

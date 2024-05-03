@@ -18,6 +18,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "exceptions.hpp"
+
 // Defines
 #define TC_DISABLE_COPY_AND_ASSIGN(Type)                                       \
   Type(Type const &) = delete;                                                 \
@@ -46,8 +48,7 @@
   throw TerreateCore::Exception::CoreException(message)
 #endif // TC_THROW
 
-namespace TerreateCore {
-namespace Defines {
+namespace TerreateCore::Defines {
 // Type aliases
 // TC types (TerreateCore types)
 typedef bool TCbool;
@@ -108,6 +109,15 @@ using JoystickCallback = std::function<void(int joystickID, int event)>;
 // Concepts
 template <typename Derived, typename Base>
 concept extends = std::derived_from<Derived, Base>;
+template <typename Number>
+concept number = requires(Number a, Number b) {
+  { +a } -> std::convertible_to<Number>;
+  { -a } -> std::convertible_to<Number>;
+  { a + b } -> std::convertible_to<Number>;
+  { a - b } -> std::convertible_to<Number>;
+  { a *b } -> std::convertible_to<Number>;
+  { a / b } -> std::convertible_to<Number>;
+};
 
 // Structs
 struct Modifier {
@@ -563,7 +573,6 @@ static unsigned COLOR_BUFFERS[] = {
     (GLenum)Attachment::COLOR26, (GLenum)Attachment::COLOR27,
     (GLenum)Attachment::COLOR28, (GLenum)Attachment::COLOR29,
     (GLenum)Attachment::COLOR30, (GLenum)Attachment::COLOR31};
-} // namespace Defines
-} // namespace TerreateCore
+} // namespace TerreateCore::Defines
 
 #endif // __TC_DEFINES_HPP__

@@ -5,8 +5,7 @@
 #include "object.hpp"
 #include "texture.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 class Screen final : public Object {
@@ -94,7 +93,6 @@ public:
   /* } */
   operator Bool() const override { return mFrameBuffer != 0; }
 };
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core
 
 #endif // __TC_SCREEN_HPP__

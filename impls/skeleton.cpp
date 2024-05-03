@@ -1,7 +1,6 @@
 #include "../includes/skeleton.hpp"
 
-namespace TerreateCore {
-namespace Skeleton {
+namespace TerreateCore::Animation {
 void Joint::Initialize(mat4 const &parentOffset) {
   if (mChild) {
     mChild->Initialize(mOffset);
@@ -28,14 +27,13 @@ void Joint::Transform(mat4 const &parentTransform,
 
 void Skeleton::Initialize() {
   if (mRoot) {
-    mRoot->Initialize(Math::Eye<Float>());
+    mRoot->Initialize(Math::Eye<Float>(4));
   }
 }
 
 void Skeleton::ApplyTransforms(Vec<mat4> const &transforms) {
   if (mRoot) {
-    mRoot->Transform(Math::Eye<Float>(), transforms, mJointTransformMatrices);
+    mRoot->Transform(Math::Eye<Float>(4), transforms, mJointTransformMatrices);
   }
 }
-} // namespace Skeleton
-} // namespace TerreateCore
+} // namespace TerreateCore::Animation

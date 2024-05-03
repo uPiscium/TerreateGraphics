@@ -4,8 +4,7 @@
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 class Icon final : public Object {
@@ -682,7 +681,6 @@ public:
 
   operator Bool() const override { return mWindow != nullptr; }
 };
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core
 
 #endif // __TC_WINDOW_HPP__

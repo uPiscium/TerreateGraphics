@@ -7,8 +7,7 @@
 #include "object.hpp"
 #include "texture.hpp"
 
-namespace TerreateCore {
-namespace Model {
+namespace TerreateCore::Model {
 using namespace TerreateCore::Defines;
 
 using TexMap = Shared<Core::Texture>;
@@ -334,7 +333,6 @@ public:
 
   Model &operator=(Model const &other);
 };
-} // namespace Model
-} // namespace TerreateCore
+} // namespace TerreateCore::Model
 
 #endif // __TC_MODEL_HPP__
