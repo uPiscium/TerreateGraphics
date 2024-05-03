@@ -3,387 +3,171 @@
 
 #include <cmath>
 
+#include "../defines.hpp"
 #include "matrix.hpp"
 #include "quaternion.hpp"
 #include "vector.hpp"
 
-#define PI 3.14159265358979
-#define DEG PI / 180
-#define RAD 180 / PI
+namespace TerreateCore::Math {
+using namespace TerreateCore::Defines;
 
-namespace TerreateCore {
-namespace Math {
-/*
- * Get identity matrix.
- */
-template <typename T> mat4<T> Eye() {
-  mat4<T> eye;
-  eye[0][0] = static_cast<T>(1);
-  eye[1][1] = static_cast<T>(1);
-  eye[2][2] = static_cast<T>(1);
-  eye[3][3] = static_cast<T>(1);
-  return eye;
+template <number T> Matrix4x4<T> Scale(T const &x, T const &y, T const &z);
+template <number T> Matrix4x4<T> Scale(RowVector3D<T> const &scale) {
+  return Scale(scale[0], scale[1], scale[2]);
+}
+template <number T> Matrix4x4<T> Scale(ColumnVector3D<T> const &scale) {
+  return Scale(scale[0], scale[1], scale[2]);
+}
+template <number T> Matrix4x4<T> Scale(T const &scale) {
+  return Scale(scale, scale, scale);
 }
 
-/*
- * Get identity matrix.
- */
-template <typename T> mat2<T> Eye2() {
-  mat2<T> eye;
-  eye[0][0] = static_cast<T>(1);
-  eye[1][1] = static_cast<T>(1);
-  return eye;
+template <number T> Matrix4x4<T> Translate(T const &x, T const &y, T const &z);
+template <number T> Matrix4x4<T> Translate(RowVector3D<T> const &position) {
+  return Translate(position[0], position[1], position[2]);
+}
+template <number T> Matrix4x4<T> Translate(ColumnVector3D<T> const &position) {
+  return Translate(position[0], position[1], position[2]);
 }
 
-/*
- * Get identity matrix.
- */
-template <typename T> mat3<T> Eye3() {
-  mat3<T> eye;
-  eye[0][0] = static_cast<T>(1);
-  eye[1][1] = static_cast<T>(1);
-  eye[2][2] = static_cast<T>(1);
-  return eye;
+template <number T>
+Quaternion<T> Rotate(T const &angle, T const &x, T const &y, T const &z);
+template <number T>
+Quaternion<T> Rotate(T const &angle, RowVector3D<T> const &axis) {
+  return Rotate(angle, axis[0], axis[1], axis[2]);
+}
+template <number T>
+Quaternion<T> Rotate(T const &angle, ColumnVector3D<T> const &axis) {
+  return Rotate(angle, axis[0], axis[1], axis[2]);
+}
+template <number T>
+Quaternion<T> Rotate(T const &angX, T const &angY, T const &angZ) {
+  return RotateX(angX) * RotateY(angY) * RotateZ(angZ);
 }
 
-/*
- * Get identity matrix.
- */
-template <typename T> mat4<T> Eye4() {
-  mat4<T> eye;
-  eye[0][0] = static_cast<T>(1);
-  eye[1][1] = static_cast<T>(1);
-  eye[2][2] = static_cast<T>(1);
-  eye[3][3] = static_cast<T>(1);
-  return eye;
+template <number T> Quaternion<T> RotateX(T const &angle) {
+  return Rotate(angle, 1, 0, 0);
+}
+template <number T> Quaternion<T> RotateY(T const &angle) {
+  return Rotate(angle, 0, 1, 0);
+}
+template <number T> Quaternion<T> RotateZ(T const &angle) {
+  return Rotate(angle, 0, 0, 1);
 }
 
-/*
- * Get scale matrix
- * @param sx : scale factor in x axis
- * @param sy : scale factor in y axis
- * @param sz : scale factor in z axis
- * @return scale matrix
- */
-template <typename T> mat4<T> GetScale(T sx, T sy, T sz) {
-  mat4<T> scale;
-  scale[0][0] = sx;
-  scale[1][1] = sy;
-  scale[2][2] = sz;
-  scale[3][3] = 1;
-  return scale;
+template <number T>
+Matrix4x4<T> LookAt(RowVector3D<T> const &eye, RowVector3D<T> const &center,
+                    RowVector3D<T> const &up);
+template <number T>
+Matrix4x4<T> LookAt(ColumnVector3D<T> const &eye,
+                    ColumnVector3D<T> const &center,
+                    ColumnVector3D<T> const &up) {
+  return LookAt(eye.AcquireTransposed(), center.AcquireTransposed(),
+                up.AcquireTransposed());
+}
+template <number T>
+Matrix4x4<T> LookAt(T const &eyeX, T const &eyeY, T const &eyeZ,
+                    T const &centerX, T const &centerY, T const &centerZ,
+                    T const &upX, T const &upY, T const &upZ) {
+  return LookAt(RowVector3D<T>(eyeX, eyeY, eyeZ),
+                RowVector3D<T>(centerX, centerY, centerZ),
+                RowVector3D<T>(upX, upY, upZ));
 }
 
-/*
- * Get scale matrix
- * @param scale : scale factor in x, y, z axis
- * @return scale matrix
- */
-template <typename T> mat4<T> GetScale(const vec3<T> &scale) {
-  return GetScale(scale[0], scale[1], scale[2]);
+template <number T>
+Matrix4x4<T> Perspective(T const &fov, T const &aspect, T const &near,
+                         T const &far);
+template <number T>
+Matrix4x4<T> Orthographic(T const &left, T const &right, T const &bottom,
+                          T const &top, T const &near, T const &far);
+template <number T>
+Matrix4x4<T> Orthographic(T const &left, T const &right, T const &top,
+                          T const &bottom) {
+  return Orthographic(left, right, top, bottom, -1, 1);
 }
 
-/*
- * Get rotate quaternion
- * @param angle : rotate angle
- * @param axis : rotate axis
- * @return rotate quaternion
- */
-template <typename T> Quaternion<T> GetRotate(T angle, const vec3<T> &axis) {
-  T rad = angle * DEG;
-  T s = sin(rad / 2);
-  T c = cos(rad / 2);
-  return Quaternion<T>(c, axis[0] * s, axis[1] * s, axis[2] * s);
+template <number T>
+MatrixBase<T> Lerp(MatrixBase<T> const &a, MatrixBase<T> const &b, T const &t) {
+  return a * (static_cast<T>(1) - t) + b * t;
+}
+template <number T>
+Quaternion<T> Lerp(Quaternion<T> const &a, Quaternion<T> const &b, T const &t) {
+  return a * (static_cast<T>(1) - t) + b * t;
+}
+} // namespace TerreateCore::Math
+
+// Implementation
+namespace TerreateCore::Math {
+template <number T> Matrix4x4<T> Scale(T const &x, T const &y, T const &z) {
+  Matrix4x4<T> result = Eye<T>(4);
+  result(0, 0) = x;
+  result(1, 1) = y;
+  result(2, 2) = z;
+  return result;
 }
 
-/*
- * Get rotate quaternion
- * @param angle : rotate angle
- * @param x : rotate angle for axis x
- * @param y : rotate angle for axis y
- * @param z : rotate angle for axis z
- * @return rotate quaternion
- */
-template <typename T> Quaternion<T> GetRotate(T angle, T x, T y, T z) {
-  return GetRotate(angle, vec3<T>(x, y, z));
+template <number T> Matrix4x4<T> Translate(T const &x, T const &y, T const &z) {
+  Matrix4x4<T> result = Eye<T>(4);
+  result(3, 0) = x;
+  result(3, 1) = y;
+  result(3, 2) = z;
+  return result;
 }
 
-/*
- * Get rotate quaternion
- * @param from : rotate from
- * @param to : rotate to
- * @return rotate quaternion
- */
-template <typename T>
-Quaternion<T> GetRotate(const vec3<T> &from, const vec3<T> &to) {
-  vec3<T> axis = cross(from, to);
-  T c = dot(from, to) / (from.length() * to.length());
-  T s = sqrt(1 - c * c);
-  return Quaternion<T>(c, axis[0] * s, axis[1] * s, axis[2] * s);
+template <number T>
+Quaternion<T> Rotate(T const &angle, T const &x, T const &y, T const &z) {
+  T const halfAngle = angle / static_cast<T>(2);
+  T const s = sin(halfAngle);
+  return Quaternion<T>(cos(halfAngle), x * s, y * s, z * s);
 }
 
-/*
- * Get x axis rotate quaternion
- * @param angle : rotate angle
- * @return rotate quaternion
- */
-template <typename T> Quaternion<T> GetRotateX(T angle) {
-  return GetRotate(angle, vec3<T>(1, 0, 0));
+template <number T>
+Matrix4x4<T> LookAt(RowVector3D<T> const &eye, RowVector3D<T> const &center,
+                    RowVector3D<T> const &up) {
+  RowVector3D<T> f = Normalize(center - eye);
+  RowVector3D<T> r = Normalize(Cross(f, up));
+  RowVector3D<T> u = Cross(r, f);
+
+  Matrix4x4<T> result = Eye<T>(4);
+  result(0, 0) = r[0];
+  result(0, 1) = r[1];
+  result(0, 2) = r[2];
+  result(1, 0) = u[0];
+  result(1, 1) = u[1];
+  result(1, 2) = u[2];
+  result(2, 0) = f[0];
+  result(2, 1) = f[1];
+  result(2, 2) = f[2];
+  result(3, 0) = -eye[0];
+  result(3, 1) = -eye[1];
+  result(3, 2) = -eye[2];
+  return result;
 }
 
-/*
- * Get y axis rotate quaternion
- * @param angle : rotate angle
- * @return rotate quaternion
- */
-template <typename T> Quaternion<T> GetRotateY(T angle) {
-  return GetRotate(angle, vec3<T>(0, 1, 0));
+template <number T>
+Matrix4x4<T> Perspective(T const &fov, T const &aspect, T const &near,
+                         T const &far) {
+  T const f = static_cast<T>(1) / tan(fov / static_cast<T>(2));
+  Matrix4x4<T> result = Eye<T>(4);
+  result(0, 0) = f / aspect;
+  result(1, 1) = f;
+  result(2, 2) = (far + near) / (near - far);
+  result(2, 3) = static_cast<T>(-1);
+  result(3, 2) = (static_cast<T>(2) * far * near) / (near - far);
+  result(3, 3) = static_cast<T>(0);
+  return result;
 }
 
-/*
- * Get z axis rotate quaternion
- * @param angle : rotate angle
- * @return rotate quaternion
- */
-template <typename T> Quaternion<T> GetRotateZ(T angle) {
-  return GetRotate(angle, vec3<T>(0, 0, 1));
+template <number T>
+Matrix4x4<T> Orthographic(T const &left, T const &right, T const &bottom,
+                          T const &top, T const &near, T const &far) {
+  Matrix4x4<T> result = Eye<T>(4);
+  result(0, 0) = static_cast<T>(2) / (right - left);
+  result(1, 1) = static_cast<T>(2) / (top - bottom);
+  result(2, 2) = static_cast<T>(2) / (near - far);
+  result(3, 0) = -(right + left) / (right - left);
+  result(3, 1) = -(top + bottom) / (top - bottom);
+  result(3, 2) = -(far + near) / (far - near);
 }
-
-/*
- * Get eular rotate quaternion
- * @param x : rotate angle for axis x
- * @param y : rotate angle for axis y
- * @param z : rotate angle for axis z
- * @return rotate quaternion
- */
-template <typename T>
-Quaternion<T> GetRotate(const T &x, const T &y, const T &z) {
-  Quaternion<T> qx = GetRotateX(x);
-  Quaternion<T> qy = GetRotateY(y);
-  Quaternion<T> qz = GetRotateZ(z);
-  return qz * qy * qx;
-}
-
-/*
- * Get translate matrix
- * @param tx : translate factor in x axis
- * @param ty : translate factor in y axis
- * @param tz : translate factor in z axis
- * @return translate matrix
- */
-template <typename T> mat4<T> GetTranslate(T tx, T ty, T tz) {
-  mat4<T> translate;
-  translate[0][0] = 1;
-  translate[1][1] = 1;
-  translate[2][2] = 1;
-  translate[3][3] = 1;
-  translate[3][0] = tx;
-  translate[3][1] = ty;
-  translate[3][2] = tz;
-  return translate;
-}
-
-/*
- * Get translate matrix
- * @param translate : translate factor in x, y, z axis
- * @return translate matrix
- */
-template <typename T> mat4<T> GetTranslate(const vec3<T> &translate) {
-  return GetTranslate(translate[0], translate[1], translate[2]);
-}
-
-/*
- * Convert quaternion to matrix
- * @param q : quaternion
- * @return matrix
- */
-template <typename T> mat4<T> ToMatrix(const Quaternion<T> &q) {
-  mat4<T> m;
-  T w = q.GetReal();
-  const vec3<T> &v = q.GetImaginary();
-  T x = v[0];
-  T y = v[1];
-  T z = v[2];
-  m[0][0] = 2 * w * w + 2 * x * x - 1;
-  m[0][1] = 2 * x * y - 2 * w * z;
-  m[0][2] = 2 * x * z + 2 * w * y;
-  m[1][0] = 2 * x * y + 2 * w * z;
-  m[1][1] = 2 * w * w + 2 * y * y - 1;
-  m[1][2] = 2 * y * z - 2 * w * x;
-  m[2][0] = 2 * x * z - 2 * w * y;
-  m[2][1] = 2 * y * z + 2 * w * x;
-  m[2][2] = 2 * w * w + 2 * z * z - 1;
-  m[3][3] = 1;
-  return m;
-}
-
-/*
- * Convert matrix to quaternion
- * @param m : matrix
- * @return quaternion
- */
-template <typename T> Quaternion<T> ToQuaternion(const mat4<T> &m) {
-  T w = sqrt(1 + m[0][0] + m[1][1] + m[2][2]) / 2;
-  T x = (m[2][1] - m[1][2]) / (4 * w);
-  T y = (m[0][2] - m[2][0]) / (4 * w);
-  T z = (m[1][0] - m[0][1]) / (4 * w);
-  return Quaternion<T>(w, x, y, z);
-}
-
-/*
- * Get lookat matrix
- * @param eye : eye position
- * @param looking : looking position
- * @param up : up vector
- * @return lookat matrix
- */
-template <typename T>
-mat4<T> GetLookAt(const vec3<T> &eye, const vec3<T> &looking,
-                  const vec3<T> &up) {
-  vec3<T> f = normalize(looking - eye);
-  vec3<T> s = normalize(cross(up, f));
-  vec3<T> u = cross(f, s);
-  mat4<T> m;
-  m[0][0] = s[0];
-  m[0][1] = s[1];
-  m[0][2] = s[2];
-  m[1][0] = u[0];
-  m[1][1] = u[1];
-  m[1][2] = u[2];
-  m[2][0] = f[0];
-  m[2][1] = f[1];
-  m[2][2] = f[2];
-  m[3][0] = -eye[0];
-  m[3][1] = -eye[1];
-  m[3][2] = -eye[2];
-  m[3][3] = 1;
-  return m;
-}
-
-/*
- * Get lookat matrix
- * @param ex : eye position x
- * @param ey : eye position y
- * @param ez : eye position z
- * @param lx : looking position x
- * @param ly : looking position y
- * @param lz : looking position z
- * @param ux : up vector x
- * @param uy : up vector y
- * @param uz : up vector z
- * @return lookat matrix
- */
-template <typename T>
-mat4<T> GetLookAt(T ex, T ey, T ez, T lx, T ly, T lz, T ux, T uy, T uz) {
-  return GetLookAt(vec3<T>(ex, ey, ez), vec3<T>(lx, ly, lz),
-                   vec3<T>(ux, uy, uz));
-}
-
-/*
- * Get perspective matrix
- * @param fovy : field of view angle in y axis
- * @param width : viewport width
- * @param height : viewport height
- * @param zNear : near plane
- * @param zFar : far plane
- * @return perspective matrix
- */
-template <typename T>
-mat4<T> GetPerspective(T fovy, T width, T height, T zNear, T zFar) {
-  T cot = 1 / tan(fovy * DEG / 2);
-  mat4<T> m;
-  m[0][0] = cot;
-  m[1][1] = cot;
-  m[2][2] = (zFar + zNear) / (zNear - zFar);
-  m[2][3] = -1;
-  m[3][2] = 2 * zFar * zNear / (zNear - zFar);
-  m[3][3] = 0;
-  return m;
-}
-
-/*
- * Get orthographic matrix
- * @param left : left plane
- * @param right : right plane
- * @param bottom : bottom plane
- * @param top : top plane
- * @param zNear : near plane
- * @param zFar : far plane
- * @return orthographic matrix
- */
-template <typename T>
-mat4<T> GetOrthographic(T left, T right, T bottom, T top, T zNear, T zFar) {
-  mat4<T> m;
-  m[0][0] = 2 / (right - left);
-  m[1][1] = 2 / (top - bottom);
-  m[2][2] = 2 / (zNear - zFar);
-  m[3][0] = -(right + left) / (right - left);
-  m[3][1] = -(top + bottom) / (top - bottom);
-  m[3][2] = -(zFar + zNear) / (zFar - zNear);
-}
-
-/*
- * Get orthographic matrix
- * @param left : left plane
- * @param right : right plane
- * @param bottom : bottom plane
- * @param top : top plane
- * @return orthographic matrix
- */
-template <typename T>
-mat4<T> GetOrthographic(T left, T right, T bottom, T top) {
-  mat4<T> m;
-  m[0][0] = 2 / (right - left);
-  m[1][1] = 2 / (top - bottom);
-  m[2][2] = -1;
-  m[3][0] = -(right + left) / (right - left);
-  m[3][1] = -(top + bottom) / (top - bottom);
-  return m;
-}
-
-template <typename T> vec2<T> Lerp(const vec2<T> &v0, const vec2<T> &v1, T t) {
-  vec2<T> v;
-  v = v0 * (1 - t) + v1 * t;
-  return v;
-}
-
-template <typename T> vec3<T> Lerp(const vec3<T> &v0, const vec3<T> &v1, T t) {
-  vec3<T> v;
-  v = v0 * (1 - t) + v1 * t;
-  return v;
-}
-
-template <typename T> vec4<T> Lerp(const vec4<T> &v0, const vec4<T> &v1, T t) {
-  vec4<T> v;
-  v = v0 * (1 - t) + v1 * t;
-  return v;
-}
-
-template <typename T>
-Quaternion<T> Lerp(const Quaternion<T> &q0, const Quaternion<T> &q1, T t) {
-  Quaternion<T> q;
-  q = q0 * (1 - t) + q1 * t;
-  return q;
-}
-
-template <typename T> mat2<T> Lerp(const mat2<T> &m0, const mat2<T> &m1, T t) {
-  mat2<T> m;
-  m = m0 * (1 - t) + m1 * t;
-  return m;
-}
-
-template <typename T> mat3<T> Lerp(const mat3<T> &m0, const mat3<T> &m1, T t) {
-  mat3<T> m;
-  m = m0 * (1 - t) + m1 * t;
-  return m;
-}
-
-template <typename T> mat4<T> Lerp(const mat4<T> &m0, const mat4<T> &m1, T t) {
-  mat4<T> m;
-  m = m0 * (1 - t) + m1 * t;
-  return m;
-}
-} // namespace Math
-} // namespace TerreateCore
-
+} // namespace TerreateCore::Math
 #endif // __TC_MATH_UTILS_HPP__
