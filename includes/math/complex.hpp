@@ -5,7 +5,6 @@
 
 #include "../defines.hpp"
 #include "core.hpp"
-#include "fraction.hpp"
 
 namespace TerreateCore::Math {
 using namespace TerreateCore::Defines;
@@ -185,7 +184,7 @@ Complex<T> operator/(T const &scalar, Complex<T> const &rhs) {
 
 template <typename T> T Abs(Complex<T> const &c) { return c.AcquireLength(); }
 
-template <number T> struct MatrixTypeTraits<Complex<T>> {
+template <typename T> struct MatrixTypeTraits<Complex<T>> {
   static Str ToString(Complex<T> const &c) {
     if (c.GetImaginary() >= static_cast<T>(0)) {
       return std::to_string(c.GetReal()) + " + " +

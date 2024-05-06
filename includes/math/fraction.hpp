@@ -9,10 +9,7 @@
 namespace TerreateCore::Math {
 using namespace TerreateCore::Defines;
 
-template <typename Number>
-concept fractionable = std::integral<Number>;
-
-template <fractionable T> class Fraction {
+template <typename T> class Fraction {
 private:
   T mNumerator;
   T mDenominator;
@@ -66,90 +63,86 @@ public:
   }
 };
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator+(Fraction<T> const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator-(Fraction<T> const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator*(Fraction<T> const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator/(Fraction<T> const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator+(Fraction<T> const &lhs, T const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator-(Fraction<T> const &lhs, T const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator*(Fraction<T> const &lhs, T const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator/(Fraction<T> const &lhs, T const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator+(T const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator-(T const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator*(T const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Fraction<T> operator/(T const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Bool operator==(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   return lhs.GetNumerator() == rhs.GetNumerator() &&
          lhs.GetDenominator() == rhs.GetDenominator();
 }
-template <fractionable T>
+template <typename T>
 Bool operator!=(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   return !(lhs == rhs);
 }
-template <fractionable T>
+template <typename T>
 Bool operator<(Fraction<T> const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Bool operator>(Fraction<T> const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Bool operator<=(Fraction<T> const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
+template <typename T>
 Bool operator>=(Fraction<T> const &lhs, Fraction<T> const &rhs);
-template <fractionable T>
-Bool operator==(Fraction<T> const &lhs, T const &rhs) {
+template <typename T> Bool operator==(Fraction<T> const &lhs, T const &rhs) {
   return lhs.GetDenominator() == 1 && lhs.GetNumerator() == rhs;
 }
-template <fractionable T>
-Bool operator!=(Fraction<T> const &lhs, T const &rhs) {
+template <typename T> Bool operator!=(Fraction<T> const &lhs, T const &rhs) {
   return !(lhs == rhs);
 }
-template <fractionable T> Bool operator<(Fraction<T> const &lhs, T const &rhs) {
+template <typename T> Bool operator<(Fraction<T> const &lhs, T const &rhs) {
   return lhs.GetNumerator() < lhs.GetDenominator() * rhs;
 }
-template <fractionable T> Bool operator>(Fraction<T> const &lhs, T const &rhs) {
+template <typename T> Bool operator>(Fraction<T> const &lhs, T const &rhs) {
   return lhs.GetNumerator() > lhs.GetDenominator() * rhs;
 }
-template <fractionable T>
-Bool operator<=(Fraction<T> const &lhs, T const &rhs) {
+template <typename T> Bool operator<=(Fraction<T> const &lhs, T const &rhs) {
   return lhs.GetNumerator() <= lhs.GetDenominator() * rhs;
 }
-template <fractionable T>
-Bool operator>=(Fraction<T> const &lhs, T const &rhs) {
+template <typename T> Bool operator>=(Fraction<T> const &lhs, T const &rhs) {
   return lhs.GetNumerator() >= lhs.GetDenominator() * rhs;
 }
-template <fractionable T, number U>
+template <typename T, typename U>
 Bool operator==(Fraction<T> const &lhs, U const &rhs) {
   return lhs.GetDenominator() == 1 && lhs.GetNumerator() == rhs;
 }
-template <fractionable T, number U>
+template <typename T, typename U>
 Bool operator!=(Fraction<T> const &lhs, U const &rhs) {
   return !(lhs == rhs);
 }
-template <fractionable T, number U>
+template <typename T, typename U>
 Bool operator<(Fraction<T> const &lhs, U const &rhs) {
   return lhs.GetNumerator() < lhs.GetDenominator() * rhs;
 }
-template <fractionable T, number U>
+template <typename T, typename U>
 Bool operator>(Fraction<T> const &lhs, U const &rhs) {
   return lhs.GetNumerator() > lhs.GetDenominator() * rhs;
 }
-template <fractionable T, number U>
+template <typename T, typename U>
 Bool operator<=(Fraction<T> const &lhs, U const &rhs) {
   return lhs.GetNumerator() <= lhs.GetDenominator() * rhs;
 }
-template <fractionable T, number U>
+template <typename T, typename U>
 Bool operator>=(Fraction<T> const &lhs, U const &rhs) {
   return lhs.GetNumerator() >= lhs.GetDenominator() * rhs;
 }
@@ -159,13 +152,13 @@ Bool operator>=(Fraction<T> const &lhs, U const &rhs) {
 namespace TerreateCore::Math {
 using namespace TerreateCore::Defines;
 
-template <fractionable T> Fraction<T> &Fraction<T>::operator=(T const &value) {
+template <typename T> Fraction<T> &Fraction<T>::operator=(T const &value) {
   mNumerator = value;
   mDenominator = 1;
   return *this;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> &Fraction<T>::operator=(Fraction<T> const &other) {
   mNumerator = other.mNumerator;
   mDenominator = other.mDenominator;
@@ -178,7 +171,7 @@ Fraction<T> &Fraction<T>::operator=(Fraction<T> const &other) {
   return *this;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> &Fraction<T>::operator=(Fraction<T> &&other) noexcept {
   mNumerator = other.mNumerator;
   mDenominator = other.mDenominator;
@@ -191,7 +184,7 @@ Fraction<T> &Fraction<T>::operator=(Fraction<T> &&other) noexcept {
   return *this;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> &Fraction<T>::operator+=(Fraction<T> const &other) {
   mNumerator =
       mNumerator * other.mDenominator + other.mNumerator * mDenominator;
@@ -208,7 +201,7 @@ Fraction<T> &Fraction<T>::operator+=(Fraction<T> const &other) {
   return *this;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> &Fraction<T>::operator-=(Fraction<T> const &other) {
   mNumerator =
       mNumerator * other.mDenominator - other.mNumerator * mDenominator;
@@ -225,7 +218,7 @@ Fraction<T> &Fraction<T>::operator-=(Fraction<T> const &other) {
   return *this;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> &Fraction<T>::operator*=(Fraction<T> const &other) {
   mNumerator *= other.mNumerator;
   mDenominator *= other.mDenominator;
@@ -241,7 +234,7 @@ Fraction<T> &Fraction<T>::operator*=(Fraction<T> const &other) {
   return *this;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> &Fraction<T>::operator/=(Fraction<T> const &other) {
   mNumerator *= other.mDenominator;
   mDenominator *= other.mNumerator;
@@ -257,7 +250,7 @@ Fraction<T> &Fraction<T>::operator/=(Fraction<T> const &other) {
   return *this;
 }
 
-template <fractionable T> Fraction<T> &Fraction<T>::operator+=(T const &other) {
+template <typename T> Fraction<T> &Fraction<T>::operator+=(T const &other) {
   mNumerator += other * mDenominator;
 
   if (mDenominator < 0) {
@@ -271,7 +264,7 @@ template <fractionable T> Fraction<T> &Fraction<T>::operator+=(T const &other) {
   return *this;
 }
 
-template <fractionable T> Fraction<T> &Fraction<T>::operator-=(T const &other) {
+template <typename T> Fraction<T> &Fraction<T>::operator-=(T const &other) {
   mNumerator -= other * mDenominator;
 
   if (mDenominator < 0) {
@@ -285,7 +278,7 @@ template <fractionable T> Fraction<T> &Fraction<T>::operator-=(T const &other) {
   return *this;
 }
 
-template <fractionable T> Fraction<T> &Fraction<T>::operator*=(T const &other) {
+template <typename T> Fraction<T> &Fraction<T>::operator*=(T const &other) {
   mNumerator *= other;
 
   if (mDenominator < 0) {
@@ -299,7 +292,7 @@ template <fractionable T> Fraction<T> &Fraction<T>::operator*=(T const &other) {
   return *this;
 }
 
-template <fractionable T> Fraction<T> &Fraction<T>::operator/=(T const &other) {
+template <typename T> Fraction<T> &Fraction<T>::operator/=(T const &other) {
   mDenominator *= other;
 
   if (mDenominator < 0) {
@@ -313,119 +306,119 @@ template <fractionable T> Fraction<T> &Fraction<T>::operator/=(T const &other) {
   return *this;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator+(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   Fraction<T> result(lhs);
   result += rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator-(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   Fraction<T> result(lhs);
   result -= rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator*(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   Fraction<T> result(lhs);
   result *= rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator/(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   Fraction<T> result(lhs);
   result /= rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator+(Fraction<T> const &lhs, T const &rhs) {
   Fraction<T> result(lhs);
   result += rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator-(Fraction<T> const &lhs, T const &rhs) {
   Fraction<T> result(lhs);
   result -= rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator*(Fraction<T> const &lhs, T const &rhs) {
   Fraction<T> result(lhs);
   result *= rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator/(Fraction<T> const &lhs, T const &rhs) {
   Fraction<T> result(lhs);
   result /= rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator+(T const &lhs, Fraction<T> const &rhs) {
   Fraction<T> result(lhs);
   result += rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator-(T const &lhs, Fraction<T> const &rhs) {
   Fraction<T> result(lhs);
   result -= rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator*(T const &lhs, Fraction<T> const &rhs) {
   Fraction<T> result(lhs);
   result *= rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Fraction<T> operator/(T const &lhs, Fraction<T> const &rhs) {
   Fraction<T> result(lhs);
   result /= rhs;
   return result;
 }
 
-template <fractionable T>
+template <typename T>
 Bool operator<(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   T mul = lhs.GetDenominator() * rhs.GetDenominator();
   return lhs.GetNumerator() * mul < rhs.GetNumerator() * mul;
 }
 
-template <fractionable T>
+template <typename T>
 Bool operator>(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   T mul = lhs.GetDenominator() * rhs.GetDenominator();
   return lhs.GetNumerator() * mul > rhs.GetNumerator() * mul;
 }
 
-template <fractionable T>
+template <typename T>
 Bool operator<=(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   T mul = lhs.GetDenominator() * rhs.GetDenominator();
   return lhs.GetNumerator() * mul <= rhs.GetNumerator() * mul;
 }
 
-template <fractionable T>
+template <typename T>
 Bool operator>=(Fraction<T> const &lhs, Fraction<T> const &rhs) {
   T mul = lhs.GetDenominator() * rhs.GetDenominator();
   return lhs.GetNumerator() * mul >= rhs.GetNumerator() * mul;
 }
 
-template <fractionable T> Fraction<T> Abs(Fraction<T> const &f) {
+template <typename T> Fraction<T> Abs(Fraction<T> const &f) {
   return Fraction<T>(Abs<T>(f.GetNumerator()), Abs<T>(f.GetDenominator()));
 }
 
-template <fractionable T> struct MatrixTypeTraits<Fraction<T>> {
+template <typename T> struct MatrixTypeTraits<Fraction<T>> {
   static Str ToString(Fraction<T> const &f) {
     return std::to_string(f.GetNumerator()) + "/" +
            std::to_string(f.GetDenominator());
@@ -433,7 +426,7 @@ template <fractionable T> struct MatrixTypeTraits<Fraction<T>> {
 };
 } // namespace TerreateCore::Math
 
-template <TerreateCore::Math::fractionable T>
+template <typename T>
 std::ostream &operator<<(std::ostream &os,
                          TerreateCore::Math::Fraction<T> const &f) {
   os << f.GetNumerator() << "/" << f.GetDenominator();

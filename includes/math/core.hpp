@@ -14,15 +14,15 @@
 namespace TerreateCore::Math {
 using namespace TerreateCore::Defines;
 
-template <number T> inline T Abs(T const &value) {
+template <typename T> inline T Abs(T const &value) {
   return static_cast<T>(fabs(static_cast<double>(value)));
 }
 
-template <number T> struct MatrixTypeTraits {
+template <typename T> struct MatrixTypeTraits {
   static Str ToString(T const &value) { return std::to_string(value); }
 };
 
-template <number T> class MatrixBase {
+template <typename T> class MatrixBase {
 private:
   T *mArray = nullptr;
   Uint mRow = 0;
@@ -37,14 +37,14 @@ public:
   MatrixBase(Vec<Vec<T>> const &value);
   MatrixBase(MatrixBase<T> const &other);
   MatrixBase(MatrixBase<T> &&other);
-  template <number U>
+  template <typename U>
   MatrixBase(Uint const &row, Uint const &column, U const *array);
-  template <number U>
+  template <typename U>
   MatrixBase(Uint const &row, Uint const &column, U const &value);
-  template <number U>
+  template <typename U>
   MatrixBase(Uint const &row, Uint const &column, Vec<U> const &value);
-  template <number U> MatrixBase(Vec<Vec<U>> const &value);
-  template <number U> MatrixBase(MatrixBase<U> const &other);
+  template <typename U> MatrixBase(Vec<Vec<U>> const &value);
+  template <typename U> MatrixBase(MatrixBase<U> const &other);
   ~MatrixBase();
 
   Uint GetSize() const { return mRow * mColumn; }
@@ -116,58 +116,59 @@ public:
   operator T const *() const { return mArray; }
 };
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> Dot(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> Hadamard(MatrixBase<T> const &lhs,
                               MatrixBase<T> const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> Transpose(MatrixBase<T> const &matrix) {
   return matrix.AcquireTransposed();
 }
-template <number T>
+template <typename T>
 inline MatrixBase<T> UpperTriangulate(MatrixBase<T> const &matrix) {
   return matrix.AcquireUpperTriangular();
 }
-template <number T> inline MatrixBase<T> Inverse(MatrixBase<T> const &matrix) {
+template <typename T>
+inline MatrixBase<T> Inverse(MatrixBase<T> const &matrix) {
   return matrix.AcquireInversed();
 }
-template <number T> inline MatrixBase<T> Eye(Uint const &size);
+template <typename T> inline MatrixBase<T> Eye(Uint const &size);
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator+(MatrixBase<T> const &lhs,
                                MatrixBase<T> const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator-(MatrixBase<T> const &lhs,
                                MatrixBase<T> const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator*(MatrixBase<T> const &lhs,
                                MatrixBase<T> const &rhs) {
   return Dot(lhs, rhs);
 }
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator+(MatrixBase<T> const &lhs, T const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator-(MatrixBase<T> const &lhs, T const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator*(MatrixBase<T> const &lhs, T const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator/(MatrixBase<T> const &lhs, T const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator+(T const &lhs, MatrixBase<T> const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator-(T const &lhs, MatrixBase<T> const &rhs);
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator*(T const &lhs, MatrixBase<T> const &rhs);
 
-template <number T>
-inline bool operator==(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs);
-template <number T>
-inline bool operator!=(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs) {
+template <typename T>
+inline Bool operator==(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs);
+template <typename T>
+inline Bool operator!=(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs) {
   return !(lhs == rhs);
 }
 } // namespace TerreateCore::Math
-template <TerreateCore::Defines::number T>
+template <typename T>
 inline std::ostream &
 operator<<(std::ostream &os, TerreateCore::Math::MatrixBase<T> const &matrix);
 
@@ -175,7 +176,7 @@ operator<<(std::ostream &os, TerreateCore::Math::MatrixBase<T> const &matrix);
 namespace TerreateCore::Math {
 using namespace TerreateCore::Defines;
 
-template <number T>
+template <typename T>
 MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column)
     : mRow(row), mColumn(column) {
   mArray = new T[mRow * mColumn];
@@ -184,14 +185,14 @@ MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column)
   }
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column, T const *array)
     : mRow(row), mColumn(column) {
   mArray = new T[mRow * mColumn];
   memcpy(mArray, array, sizeof(T) * mRow * mColumn);
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column, T const &value)
     : mRow(row), mColumn(column) {
   mArray = new T[mRow * mColumn];
@@ -200,7 +201,7 @@ MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column, T const &value)
   }
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column,
                           Vec<T> const &value)
     : mRow(row), mColumn(column) {
@@ -212,7 +213,7 @@ MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column,
   }
 }
 
-template <number T> MatrixBase<T>::MatrixBase(Vec<Vec<T>> const &value) {
+template <typename T> MatrixBase<T>::MatrixBase(Vec<Vec<T>> const &value) {
   mRow = value.size();
   mColumn = value[0].size();
   mArray = new T[mRow * mColumn];
@@ -223,14 +224,14 @@ template <number T> MatrixBase<T>::MatrixBase(Vec<Vec<T>> const &value) {
   }
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T>::MatrixBase(MatrixBase<T> const &other)
     : mRow(other.mRow), mColumn(other.mColumn) {
   mArray = new T[mRow * mColumn];
   memcpy(mArray, other.mArray, sizeof(T) * mRow * mColumn);
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T>::MatrixBase(MatrixBase<T> &&other)
     : mRow(other.mRow), mColumn(other.mColumn) {
   mArray = other.mArray;
@@ -239,8 +240,8 @@ MatrixBase<T>::MatrixBase(MatrixBase<T> &&other)
   other.mArray = nullptr;
 }
 
-template <number T>
-template <number U>
+template <typename T>
+template <typename U>
 MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column, U const *array)
     : mRow(row), mColumn(column) {
   mArray = new T[mRow * mColumn];
@@ -249,8 +250,8 @@ MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column, U const *array)
   }
 }
 
-template <number T>
-template <number U>
+template <typename T>
+template <typename U>
 MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column, U const &value)
     : mRow(row), mColumn(column) {
   mArray = new T[mRow * mColumn];
@@ -259,8 +260,8 @@ MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column, U const &value)
   }
 }
 
-template <number T>
-template <number U>
+template <typename T>
+template <typename U>
 MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column,
                           Vec<U> const &value)
     : mRow(row), mColumn(column) {
@@ -272,8 +273,8 @@ MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column,
   }
 }
 
-template <number T>
-template <number U>
+template <typename T>
+template <typename U>
 MatrixBase<T>::MatrixBase(Vec<Vec<U>> const &value) {
   mRow = value.size();
   mColumn = value[0].size();
@@ -285,8 +286,8 @@ MatrixBase<T>::MatrixBase(Vec<Vec<U>> const &value) {
   }
 }
 
-template <number T>
-template <number U>
+template <typename T>
+template <typename U>
 MatrixBase<T>::MatrixBase(MatrixBase<U> const &other)
     : mRow(other.GetRow()), mColumn(other.GetColumn()) {
   mArray = new T[mRow * mColumn];
@@ -295,14 +296,14 @@ MatrixBase<T>::MatrixBase(MatrixBase<U> const &other)
   }
 }
 
-template <number T> MatrixBase<T>::~MatrixBase() {
+template <typename T> MatrixBase<T>::~MatrixBase() {
   if (mArray != nullptr) {
     delete[] mArray;
     mArray = nullptr;
   }
 }
 
-template <number T> Uint MatrixBase<T>::AcquireMaxDigit() const {
+template <typename T> Uint MatrixBase<T>::AcquireMaxDigit() const {
   Uint maxDigit = 0;
   for (Uint i = 0; i < mRow * mColumn; ++i) {
     Str str = MatrixTypeTraits<T>::ToString(mArray[i]);
@@ -314,7 +315,7 @@ template <number T> Uint MatrixBase<T>::AcquireMaxDigit() const {
   return maxDigit;
 }
 
-template <number T> T MatrixBase<T>::AcquireMaxValue() const {
+template <typename T> T MatrixBase<T>::AcquireMaxValue() const {
   T max = mArray[0];
   for (Uint i = 1; i < mRow * mColumn; ++i) {
     if (max < mArray[i]) {
@@ -324,7 +325,7 @@ template <number T> T MatrixBase<T>::AcquireMaxValue() const {
   return max;
 }
 
-template <number T> T MatrixBase<T>::AcquireMinValue() const {
+template <typename T> T MatrixBase<T>::AcquireMinValue() const {
   T min = mArray[0];
   for (Uint i = 1; i < mRow * mColumn; ++i) {
     if (min > mArray[i]) {
@@ -334,7 +335,7 @@ template <number T> T MatrixBase<T>::AcquireMinValue() const {
   return min;
 }
 
-template <number T> Uint MatrixBase<T>::AcquireRank() const {
+template <typename T> Uint MatrixBase<T>::AcquireRank() const {
   MatrixBase<T> upper = AcquireUpperTriangular();
   Uint rank = 0;
   for (Uint i = 0; i < mRow; ++i) {
@@ -345,7 +346,7 @@ template <number T> Uint MatrixBase<T>::AcquireRank() const {
   return rank;
 }
 
-template <number T> T MatrixBase<T>::AcquireDeterminant() const {
+template <typename T> T MatrixBase<T>::AcquireDeterminant() const {
   if (mRow != mColumn) {
     TC_THROW("Matrix is not square.");
   }
@@ -368,7 +369,7 @@ template <number T> T MatrixBase<T>::AcquireDeterminant() const {
   return c * det;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> MatrixBase<T>::AcquireRow(Uint const &row) const {
   MatrixBase<T> rowMatrix(1, mColumn);
   for (Uint i = 0; i < mColumn; ++i) {
@@ -377,7 +378,7 @@ MatrixBase<T> MatrixBase<T>::AcquireRow(Uint const &row) const {
   return rowMatrix;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> MatrixBase<T>::AcquireColumn(Uint const &column) const {
   MatrixBase<T> columnMatrix(mRow, 1);
   for (Uint i = 0; i < mRow; ++i) {
@@ -386,7 +387,7 @@ MatrixBase<T> MatrixBase<T>::AcquireColumn(Uint const &column) const {
   return columnMatrix;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> MatrixBase<T>::AcquireCofactor(Uint const &row,
                                              Uint const &column) const {
   MatrixBase<T> cofactor(mRow - 1, mColumn - 1);
@@ -406,7 +407,7 @@ MatrixBase<T> MatrixBase<T>::AcquireCofactor(Uint const &row,
   return cofactor;
 }
 
-template <number T> MatrixBase<T> MatrixBase<T>::AcquireTransposed() const {
+template <typename T> MatrixBase<T> MatrixBase<T>::AcquireTransposed() const {
   MatrixBase<T> transposed(mColumn, mRow);
   for (Uint i = 0; i < mRow; ++i) {
     for (Uint j = 0; j < mColumn; ++j) {
@@ -416,7 +417,7 @@ template <number T> MatrixBase<T> MatrixBase<T>::AcquireTransposed() const {
   return transposed;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> MatrixBase<T>::AcquireUpperTriangular(int *c) const {
   MatrixBase<T> upper = *this;
   if (c) {
@@ -443,7 +444,7 @@ MatrixBase<T> MatrixBase<T>::AcquireUpperTriangular(int *c) const {
   return upper;
 }
 
-template <number T> MatrixBase<T> MatrixBase<T>::AcquireInversed() const {
+template <typename T> MatrixBase<T> MatrixBase<T>::AcquireInversed() const {
   if (mRow != mColumn) {
     TC_THROW("Matrix is not square.");
   }
@@ -479,7 +480,7 @@ template <number T> MatrixBase<T> MatrixBase<T>::AcquireInversed() const {
   return inverse;
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::SetRow(Uint const &row, T const *value) {
   if (row < 0 || mRow <= row) {
     TC_THROW("Index out of range.");
@@ -490,7 +491,7 @@ void MatrixBase<T>::SetRow(Uint const &row, T const *value) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::SetRow(Uint const &row, Vec<T> const &value) {
   if (row < 0 || mRow <= row) {
     TC_THROW("Index out of range.");
@@ -501,7 +502,7 @@ void MatrixBase<T>::SetRow(Uint const &row, Vec<T> const &value) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::SetRow(Uint const &row, MatrixBase<T> const &value) {
   if (row < 0 || mRow <= row) {
     TC_THROW("Index out of range.");
@@ -512,7 +513,7 @@ void MatrixBase<T>::SetRow(Uint const &row, MatrixBase<T> const &value) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::SetColumn(Uint const &column, T const *value) {
   if (column < 0 || mColumn <= column) {
     TC_THROW("Index out of range.");
@@ -523,7 +524,7 @@ void MatrixBase<T>::SetColumn(Uint const &column, T const *value) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::SetColumn(Uint const &column, Vec<T> const &value) {
   if (column < 0 || mColumn <= column) {
     TC_THROW("Index out of range.");
@@ -534,7 +535,7 @@ void MatrixBase<T>::SetColumn(Uint const &column, Vec<T> const &value) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::SetColumn(Uint const &column, MatrixBase<T> const &value) {
   if (column < 0 || mColumn <= column) {
     TC_THROW("Index out of range.");
@@ -545,7 +546,7 @@ void MatrixBase<T>::SetColumn(Uint const &column, MatrixBase<T> const &value) {
   }
 }
 
-template <number T>
+template <typename T>
 Uint MatrixBase<T>::SearchNonZeroRow(Uint const &row, Uint const &start) const {
   for (Uint i = (0 <= start || start < mColumn) ? start : 0; i < mColumn; ++i) {
     if (Abs((*this)(row, i)) > EPSILON) {
@@ -555,7 +556,7 @@ Uint MatrixBase<T>::SearchNonZeroRow(Uint const &row, Uint const &start) const {
   return mColumn;
 }
 
-template <number T>
+template <typename T>
 Uint MatrixBase<T>::SearchNonZeroColumn(Uint const &column,
                                         Uint const &start) const {
   for (Uint i = (0 <= start || start < mRow) ? start : 0; i < mRow; ++i) {
@@ -566,7 +567,7 @@ Uint MatrixBase<T>::SearchNonZeroColumn(Uint const &column,
   return mRow;
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::SwapRow(Uint const &row1, Uint const &row2) {
   if (row1 < 0 || mRow <= row1 || row2 < 0 || mRow <= row2) {
     TC_THROW("Index out of range.");
@@ -579,7 +580,7 @@ void MatrixBase<T>::SwapRow(Uint const &row1, Uint const &row2) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::SwapColumn(Uint const &column1, Uint const &column2) {
   if (column1 < 0 || mColumn <= column1 || column2 < 0 || mColumn <= column2) {
     TC_THROW("Index out of range");
@@ -592,7 +593,7 @@ void MatrixBase<T>::SwapColumn(Uint const &column1, Uint const &column2) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::MultiplyRow(Uint const &row, T const &value) {
   if (row < 0 || mRow <= row) {
     TC_THROW("Index out of range.");
@@ -603,7 +604,7 @@ void MatrixBase<T>::MultiplyRow(Uint const &row, T const &value) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::MultiplyColumn(Uint const &column, T const &value) {
   if (column < 0 || mColumn <= column) {
     TC_THROW("Index out of range.");
@@ -614,7 +615,7 @@ void MatrixBase<T>::MultiplyColumn(Uint const &column, T const &value) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::AddRow(Uint const &row1, Uint const &row2, T const &value) {
   if (row1 < 0 || mRow <= row1 || row2 < 0 || mRow <= row2) {
     TC_THROW("Index out of range.");
@@ -625,7 +626,7 @@ void MatrixBase<T>::AddRow(Uint const &row1, Uint const &row2, T const &value) {
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::AddColumn(Uint const &column1, Uint const &column2,
                               T const &value) {
   if (column1 < 0 || mColumn <= column1 || column2 < 0 || mColumn <= column2) {
@@ -637,7 +638,7 @@ void MatrixBase<T>::AddColumn(Uint const &column1, Uint const &column2,
   }
 }
 
-template <number T>
+template <typename T>
 void MatrixBase<T>::LU(MatrixBase<T> &L, MatrixBase<T> &U) const {
   if (mRow != mColumn) {
     TC_THROW("Matrix is not square.");
@@ -674,24 +675,24 @@ void MatrixBase<T>::LU(MatrixBase<T> &L, MatrixBase<T> &U) const {
   L(mRow - 1, mRow - 1) = current(0, 0);
 }
 
-template <number T> void MatrixBase<T>::Transpose() {
+template <typename T> void MatrixBase<T>::Transpose() {
   MatrixBase<T> transposed = this->AcquireTransposed();
   mRow = transposed.GetRow();
   mColumn = transposed.GetColumn();
   memcpy(mArray, transposed.GetArray(), sizeof(T) * mRow * mColumn);
 }
 
-template <number T> void MatrixBase<T>::UpperTriangulate(int *c) {
+template <typename T> void MatrixBase<T>::UpperTriangulate(int *c) {
   MatrixBase<T> upper = this->AcquireUpperTriangular(c);
   memcpy(mArray, upper.GetArray(), sizeof(T) * mRow * mColumn);
 }
 
-template <number T> void MatrixBase<T>::Inverse() {
+template <typename T> void MatrixBase<T>::Inverse() {
   MatrixBase<T> inverse = this->AcquireInversed();
   memcpy(mArray, inverse.GetArray(), sizeof(T) * mRow * mColumn);
 }
 
-template <number T> MatrixBase<T> MatrixBase<T>::operator-() const {
+template <typename T> MatrixBase<T> MatrixBase<T>::operator-() const {
   MatrixBase<T> result = this->GetCopy();
   for (Uint i = 0; i < mRow * mColumn; ++i) {
     result[i] = -mArray[i];
@@ -699,14 +700,14 @@ template <number T> MatrixBase<T> MatrixBase<T>::operator-() const {
   return *this;
 }
 
-template <number T> MatrixBase<T> &MatrixBase<T>::operator=(T const &value) {
+template <typename T> MatrixBase<T> &MatrixBase<T>::operator=(T const &value) {
   for (Uint i = 0; i < mRow * mColumn; ++i) {
     mArray[i] = value;
   }
   return *this;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> &MatrixBase<T>::operator=(Vec<T> const &value) {
   if (mRow * mColumn != value.size()) {
     TC_THROW("Data size is not matched.");
@@ -720,7 +721,7 @@ MatrixBase<T> &MatrixBase<T>::operator=(Vec<T> const &value) {
   return *this;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> &MatrixBase<T>::operator=(Vec<Vec<T>> const &value) {
   if (mRow != value.size() || mColumn != value[0].size()) {
     TC_THROW("Data size is not matched.");
@@ -734,7 +735,7 @@ MatrixBase<T> &MatrixBase<T>::operator=(Vec<Vec<T>> const &value) {
   return *this;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> &MatrixBase<T>::operator=(MatrixBase<T> const &other) {
   if (mRow != other.mRow || mColumn != other.mColumn) {
     if (mArray != nullptr) {
@@ -748,7 +749,7 @@ MatrixBase<T> &MatrixBase<T>::operator=(MatrixBase<T> const &other) {
   return *this;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> &MatrixBase<T>::operator=(MatrixBase<T> &&other) {
   if (mArray != nullptr) {
     delete[] mArray;
@@ -762,7 +763,7 @@ MatrixBase<T> &MatrixBase<T>::operator=(MatrixBase<T> &&other) {
   return *this;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> MatrixBase<T>::operator+=(MatrixBase<T> const &other) {
   if (mRow != other.GetRow() || mColumn != other.GetColumn()) {
     TC_THROW("Incompatible matrix size.");
@@ -774,7 +775,7 @@ MatrixBase<T> MatrixBase<T>::operator+=(MatrixBase<T> const &other) {
   return *this;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> MatrixBase<T>::operator-=(MatrixBase<T> const &other) {
   if (mRow != other.GetRow() || mColumn != other.GetColumn()) {
     TC_THROW("Incompatible matrix size.");
@@ -786,7 +787,7 @@ MatrixBase<T> MatrixBase<T>::operator-=(MatrixBase<T> const &other) {
   return *this;
 }
 
-template <number T>
+template <typename T>
 MatrixBase<T> MatrixBase<T>::operator*=(MatrixBase<T> const &other) {
   if (mColumn != other.mRow) {
     TC_THROW("Incompatible matrix size");
@@ -804,35 +805,35 @@ MatrixBase<T> MatrixBase<T>::operator*=(MatrixBase<T> const &other) {
   return *this;
 }
 
-template <number T> MatrixBase<T> MatrixBase<T>::operator+=(T const &value) {
+template <typename T> MatrixBase<T> MatrixBase<T>::operator+=(T const &value) {
   for (Uint i = 0; i < mRow * mColumn; ++i) {
     mArray[i] += value;
   }
   return *this;
 }
 
-template <number T> MatrixBase<T> MatrixBase<T>::operator-=(T const &value) {
+template <typename T> MatrixBase<T> MatrixBase<T>::operator-=(T const &value) {
   for (Uint i = 0; i < mRow * mColumn; ++i) {
     mArray[i] -= value;
   }
   return *this;
 }
 
-template <number T> MatrixBase<T> MatrixBase<T>::operator*=(T const &value) {
+template <typename T> MatrixBase<T> MatrixBase<T>::operator*=(T const &value) {
   for (Uint i = 0; i < mRow * mColumn; ++i) {
     mArray[i] *= value;
   }
   return *this;
 }
 
-template <number T> MatrixBase<T> MatrixBase<T>::operator/=(T const &value) {
+template <typename T> MatrixBase<T> MatrixBase<T>::operator/=(T const &value) {
   for (Uint i = 0; i < mRow * mColumn; ++i) {
     mArray[i] /= value;
   }
   return *this;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> Dot(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs) {
   if (lhs.GetColumn() != rhs.GetRow()) {
     TC_THROW("Incompatible matrix size");
@@ -851,7 +852,7 @@ inline MatrixBase<T> Dot(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs) {
   return result;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> Hadamard(MatrixBase<T> const &lhs,
                               MatrixBase<T> const &rhs) {
   if (lhs.GetRow() != rhs.GetRow() || lhs.GetColumn() != rhs.GetColumn()) {
@@ -867,7 +868,7 @@ inline MatrixBase<T> Hadamard(MatrixBase<T> const &lhs,
   return MatrixBase<T>(lhs.GetRow(), rhs.GetColumn(), data);
 }
 
-template <number T> inline MatrixBase<T> Eye(Uint const &size) {
+template <typename T> inline MatrixBase<T> Eye(Uint const &size) {
   MatrixBase<T> eye(size, size, 0);
   for (Uint i = 0; i < size; ++i) {
     eye(i, i) = 1;
@@ -875,7 +876,7 @@ template <number T> inline MatrixBase<T> Eye(Uint const &size) {
   return eye;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator+(MatrixBase<T> const &lhs,
                                MatrixBase<T> const &rhs) {
   if (lhs.GetRow() != rhs.GetRow() || lhs.GetColumn() != rhs.GetColumn()) {
@@ -887,7 +888,7 @@ inline MatrixBase<T> operator+(MatrixBase<T> const &lhs,
   return copy;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator-(MatrixBase<T> const &lhs,
                                MatrixBase<T> const &rhs) {
   if (lhs.GetRow() != rhs.GetRow() || lhs.GetColumn() != rhs.GetColumn()) {
@@ -899,56 +900,56 @@ inline MatrixBase<T> operator-(MatrixBase<T> const &lhs,
   return copy;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator+(MatrixBase<T> const &lhs, T const &rhs) {
   MatrixBase<T> copy = lhs.GetCopy();
   copy += rhs;
   return copy;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator-(MatrixBase<T> const &lhs, T const &rhs) {
   MatrixBase<T> copy = lhs.GetCopy();
   copy -= rhs;
   return rhs;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator*(MatrixBase<T> const &lhs, T const &rhs) {
   MatrixBase<T> copy = lhs.GetCopy();
   copy *= rhs;
   return copy;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator/(MatrixBase<T> const &lhs, T const &rhs) {
   MatrixBase<T> copy = lhs.GetCopy();
   copy /= rhs;
   return copy;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator+(T const &lhs, MatrixBase<T> const &rhs) {
   MatrixBase<T> result(rhs.GetRow(), rhs.GetColumn(), lhs);
   result += rhs;
   return result;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator-(T const &lhs, MatrixBase<T> const &rhs) {
   MatrixBase<T> result(rhs.GetRow(), rhs.GetColumn());
   result -= rhs;
   return result;
 }
 
-template <number T>
+template <typename T>
 inline MatrixBase<T> operator*(T const &lhs, MatrixBase<T> const &rhs) {
   MatrixBase<T> copy = rhs.GetCopy();
   copy *= lhs;
   return copy;
 }
 
-template <number T>
+template <typename T>
 inline bool operator==(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs) {
   if (lhs.GetRow() != rhs.GetRow() || lhs.GetColumn() != rhs.GetColumn()) {
     return false;
@@ -964,7 +965,7 @@ inline bool operator==(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs) {
 }
 } // namespace TerreateCore::Math
 
-template <TerreateCore::Defines::number T>
+template <typename T>
 inline std::ostream &
 operator<<(std::ostream &os, TerreateCore::Math::MatrixBase<T> const &matrix) {
   using namespace TerreateCore::Math;

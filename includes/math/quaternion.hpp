@@ -2,13 +2,14 @@
 #define __TC_MATH_QUATERNION_HPP__
 
 #include "core.hpp"
-#include "matrix.hpp"
-#include "vector.hpp"
+#include "matrixNxM.hpp"
+#include "vectorColumn.hpp"
+#include "vectorRow.hpp"
 
 namespace TerreateCore::Math {
 using namespace TerreateCore::Defines;
 
-template <number T> class Quaternion {
+template <typename T> class Quaternion {
 private:
   RowVector3D<T> mImaginary;
   T mReal;
@@ -54,80 +55,80 @@ public:
   Quaternion<T> &operator/=(T const &scalar);
 };
 
-template <number T> Matrix4x4<T> ToMatrix(Quaternion<T> const &q);
-template <number T> Quaternion<T> FromMatrix(Matrix4x4<T> const &m);
+template <typename T> Matrix4x4<T> ToMatrix(Quaternion<T> const &q);
+template <typename T> Quaternion<T> FromMatrix(Matrix4x4<T> const &m);
 
-template <number T>
+template <typename T>
 Quaternion<T> operator+(Quaternion<T> const &lhs, Quaternion<T> const &rhs);
-template <number T>
+template <typename T>
 Quaternion<T> operator-(Quaternion<T> const &lhs, Quaternion<T> const &rhs);
-template <number T>
+template <typename T>
 Quaternion<T> operator*(Quaternion<T> const &lhs, Quaternion<T> const &rhs);
-template <number T>
+template <typename T>
 Quaternion<T> operator/(Quaternion<T> const &lhs, Quaternion<T> const &rhs);
-template <number T>
+template <typename T>
 Quaternion<T> operator*(Quaternion<T> const &lhs, T const &scalar);
-template <number T>
+template <typename T>
 Quaternion<T> operator*(T const &scalar, Quaternion<T> const &rhs);
-template <number T>
+template <typename T>
 Quaternion<T> operator/(Quaternion<T> const &lhs, T const &scalar);
-template <number T>
+template <typename T>
 Quaternion<T> operator/(T const &scalar, Quaternion<T> const &rhs);
 } // namespace TerreateCore::Math
 
 // Implementation
 namespace TerreateCore::Math {
-template <number T> Quaternion<T> Quaternion<T>::AcquireNormalized() const {
+template <typename T> Quaternion<T> Quaternion<T>::AcquireNormalized() const {
   T const length = AcquireLength();
   return Quaternion<T>(mImaginary / length, mReal / length);
 }
 
-template <number T> Quaternion<T> Quaternion<T>::AcquireInversed() const {
+template <typename T> Quaternion<T> Quaternion<T>::AcquireInversed() const {
   T const length = AcquireLength();
   return Quaternion<T>(-mImaginary / length, mReal / length);
 }
 
-template <number T> void Quaternion<T>::Normalize() {
+template <typename T> void Quaternion<T>::Normalize() {
   T const length = AcquireLength();
   mImaginary /= length;
   mReal /= length;
 }
 
-template <number T> void Quaternion<T>::Inverse() {
+template <typename T> void Quaternion<T>::Inverse() {
   T const length = AcquireLength();
   mImaginary = -mImaginary / length;
   mReal /= length;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> &Quaternion<T>::operator=(Quaternion<T> const &other) {
   mImaginary = other.mImaginary;
   mReal = other.mReal;
   return *this;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> &Quaternion<T>::operator=(Quaternion<T> &&other) noexcept {
   mImaginary = std::move(other.mImaginary);
   mReal = std::move(other.mReal);
   return *this;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> &Quaternion<T>::operator+=(Quaternion<T> const &other) {
   mImaginary += other.mImaginary;
   mReal += other.mReal;
   return *this;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> &Quaternion<T>::operator-=(Quaternion<T> const &other) {
   mImaginary -= other.mImaginary;
   mReal -= other.mReal;
   return *this;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> &Quaternion<T>::operator*=(Quaternion<T> const &other) {
   T const real = mReal * other.mReal - dot(mImaginary, other.mImaginary);
   RowVector3D<T> const imaginary = mReal * other.mImaginary +
@@ -138,7 +139,7 @@ Quaternion<T> &Quaternion<T>::operator*=(Quaternion<T> const &other) {
   return *this;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> &Quaternion<T>::operator/=(Quaternion<T> const &other) {
   Quaternion<T> const inverse = other.AcquireInverse();
   T const real = mReal * inverse.mReal + dot(mImaginary, inverse.mImaginary);
@@ -150,19 +151,21 @@ Quaternion<T> &Quaternion<T>::operator/=(Quaternion<T> const &other) {
   return *this;
 }
 
-template <number T> Quaternion<T> &Quaternion<T>::operator*=(T const &scalar) {
+template <typename T>
+Quaternion<T> &Quaternion<T>::operator*=(T const &scalar) {
   mImaginary *= scalar;
   mReal *= scalar;
   return *this;
 }
 
-template <number T> Quaternion<T> &Quaternion<T>::operator/=(T const &scalar) {
+template <typename T>
+Quaternion<T> &Quaternion<T>::operator/=(T const &scalar) {
   mImaginary /= scalar;
   mReal /= scalar;
   return *this;
 }
 
-template <number T> Matrix4x4<T> ToMatrix(Quaternion<T> const &q) {
+template <typename T> Matrix4x4<T> ToMatrix(Quaternion<T> const &q) {
   Matrix4x4<T> result = Eye<T>(4);
   T const w = q.GetReal();
   RowVector3D<T> const &v = q.GetImaginary();
@@ -182,7 +185,7 @@ template <number T> Matrix4x4<T> ToMatrix(Quaternion<T> const &q) {
   return result;
 }
 
-template <number T> Quaternion<T> FromMatrix(Matrix4x4<T> const &m) {
+template <typename T> Quaternion<T> FromMatrix(Matrix4x4<T> const &m) {
   T const w = std::sqrt(1 + m(0, 0) + m(1, 1) + m(2, 2)) / 2;
   T const x = (m(2, 1) - m(1, 2)) / (4 * w);
   T const y = (m(0, 2) - m(2, 0)) / (4 * w);
@@ -190,63 +193,65 @@ template <number T> Quaternion<T> FromMatrix(Matrix4x4<T> const &m) {
   return Quaternion<T>(x, y, z, w);
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> operator+(Quaternion<T> const &lhs, Quaternion<T> const &rhs) {
   Quaternion<T> result(lhs);
   result += rhs;
   return result;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> operator-(Quaternion<T> const &lhs, Quaternion<T> const &rhs) {
   Quaternion<T> result(lhs);
   result -= rhs;
   return result;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> operator*(Quaternion<T> const &lhs, Quaternion<T> const &rhs) {
   Quaternion<T> result(lhs);
   result *= rhs;
   return result;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> operator/(Quaternion<T> const &lhs, Quaternion<T> const &rhs) {
   Quaternion<T> result(lhs);
   result /= rhs;
   return result;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> operator*(Quaternion<T> const &lhs, T const &scalar) {
   Quaternion<T> result(lhs);
   result *= scalar;
   return result;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> operator*(T const &scalar, Quaternion<T> const &rhs) {
   Quaternion<T> result(rhs);
   result *= scalar;
   return result;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> operator/(Quaternion<T> const &lhs, T const &scalar) {
   Quaternion<T> result(lhs);
   result /= scalar;
   return result;
 }
 
-template <number T>
+template <typename T>
 Quaternion<T> operator/(T const &scalar, Quaternion<T> const &rhs) {
   Quaternion<T> result(rhs);
   result /= scalar;
   return result;
 }
 
-template <number T> T Abs(Quaternion<T> const &q) { return q.AcquireLength(); }
+template <typename T> T Abs(Quaternion<T> const &q) {
+  return q.AcquireLength();
+}
 } // namespace TerreateCore::Math
 
 #endif // __TC_MATH_QUATERNION_HPP__
