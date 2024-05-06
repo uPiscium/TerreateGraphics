@@ -29,9 +29,9 @@ endfunction()
 function(Build)
   add_library(
     ${PROJECT_NAME} STATIC
+    TerreateCore.cpp
     animation.cpp
     buffer.cpp
-    core.cpp
     event.cpp
     font.cpp
     gl.cpp

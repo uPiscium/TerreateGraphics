@@ -3,6 +3,7 @@
 
 namespace TerreateCore::Model {
 using namespace TerreateCore::Defines;
+using namespace TerreateCore::Core;
 
 void MaterialData::SetColorProperty(ColorProperty const &property,
                                     vec4 const &value) {
@@ -58,6 +59,7 @@ void MaterialData::RemoveTextureProperty(TextureProperty const &property) {
 Mesh::Mesh(MeshData const &data) : mMaterial(data.GetMaterial()) {
   mBuffer = std::make_shared<Core::Buffer>(BufferUsage::STATIC_DRAW);
   mBuffer->LoadVertices(data.GetVertices());
+  auto attributes = Mesh::GetAttributes(data.GetFlag());
   mBuffer->LoadAttributes(Mesh::GetAttributes(data.GetFlag()));
   mBuffer->LoadIndices(data.GetIndices());
 }
@@ -68,27 +70,27 @@ Mesh &Mesh::operator=(Mesh const &other) {
   return *this;
 }
 
-Vec<Core::Attribute> GetAttributes(ModelFlag const &flag) {
+Vec<Core::Attribute> Mesh::GetAttributes(ModelFlag const &flag) {
   Vec<Ulong> attributes;
-  attributes.push_back(3); // Position
+  attributes.push_back(3); // Position (x, y, z)
 
-  if ((int)flag & (int)ModelFlag::NORMAL) {
-    attributes.push_back(3); // Normals
+  if (flag & ModelFlag::NORMAL) {
+    attributes.push_back(3); // Normals (x, y, z)
   }
-  if ((int)flag & (int)ModelFlag::UV) {
-    attributes.push_back(2); // UVs
+  if (flag & ModelFlag::UV) {
+    attributes.push_back(2); // UVs (u, v)
   }
-  if ((int)flag & (int)ModelFlag::COLOR) {
-    attributes.push_back(4); // Color
+  if (flag & ModelFlag::COLOR) {
+    attributes.push_back(4); // Color (r, g, b, a)
   }
-  if ((int)flag & (int)ModelFlag::JOINT) {
-    attributes.push_back(4); // Joint
+  if (flag & ModelFlag::JOINT) {
+    attributes.push_back(4); // Joint (j1, j2, j3, j4)
   }
-  if ((int)flag & (int)ModelFlag::WEIGHT) {
-    attributes.push_back(4); // Weight
+  if (flag & ModelFlag::WEIGHT) {
+    attributes.push_back(4); // Weight (w1, w2, w3, w4)
   }
-  if ((int)flag & (int)ModelFlag::MORPH) {
-    attributes.push_back(3); // Morph
+  if (flag & ModelFlag::MORPH) {
+    attributes.push_back(3); // Morph (m1, m2, m3)
   }
 
   return Core::Attribute::GenerateAttributes(attributes);

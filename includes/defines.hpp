@@ -49,6 +49,10 @@
 #endif // TC_THROW
 
 namespace TerreateCore::Defines {
+// Core variables
+extern bool GLFW_INITIALIZED;
+extern bool GLAD_INITIALIZED;
+
 // Type aliases
 // TC types (TerreateCore types)
 typedef bool TCbool;
@@ -109,15 +113,8 @@ using JoystickCallback = std::function<void(int joystickID, int event)>;
 // Concepts
 template <typename Derived, typename Base>
 concept extends = std::derived_from<Derived, Base>;
-template <typename Number>
-concept number = requires(Number a, Number b) {
-  { +a } -> std::convertible_to<Number>;
-  { -a } -> std::convertible_to<Number>;
-  { a + b } -> std::convertible_to<Number>;
-  { a - b } -> std::convertible_to<Number>;
-  { a *b } -> std::convertible_to<Number>;
-  { a / b } -> std::convertible_to<Number>;
-};
+template <typename Enum>
+concept enumtype = std::is_enum_v<Enum>;
 
 // Structs
 struct Modifier {
@@ -450,7 +447,7 @@ enum class Keyboard {
 };
 
 // Use to select data type included in buffer.
-enum class ModelFlag {
+enum class ModelFlag : TCu8 {
   NORMAL = 1,
   UV = 1 << 1,
   COLOR = 1 << 2,

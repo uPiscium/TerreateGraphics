@@ -1,6 +1,7 @@
 #ifndef __TC_MODEL_HPP__
 #define __TC_MODEL_HPP__
 
+#include "bitflag.hpp"
 #include "buffer.hpp"
 #include "defines.hpp"
 #include "math/math.hpp"
@@ -157,7 +158,7 @@ public:
 
 class MeshData {
 private:
-  ModelFlag mFlag;
+  Core::BitFlag<ModelFlag> mFlag;
   Vec<Float> mVertices;
   Vec<Uint> mIndices;
   Int mMaterial;
@@ -170,7 +171,7 @@ public:
    * @brief: Get the flag of the mesh data.
    * @return: Flag of the mesh data.
    */
-  ModelFlag const &GetFlag() const { return mFlag; }
+  ModelFlag GetFlag() const { return (ModelFlag)mFlag; }
   /*
    * @brief: Get the vertices of the mesh data.
    * @return: Vertices of the mesh data.
@@ -191,7 +192,7 @@ public:
    * @brief: Set the flag of the mesh data.
    * @param: flag: Flag to set.
    */
-  void SetFlag(ModelFlag const &flag) { mFlag = flag; }
+  void SetFlag(ModelFlag const &flag) { mFlag.Set(flag); }
   /*
    * @brief: Set the vertices of the mesh data.
    * @param: vertices: Vertices to set.
@@ -212,43 +213,37 @@ public:
    * @brief: Check if the mesh data has normals.
    * @return: True if the mesh data has normals, false otherwise.
    */
-  Bool HasNormals() const {
-    return ((Uint)mFlag & (Uint)ModelFlag::NORMAL) != 0;
-  }
+  Bool HasNormals() const { return mFlag & ModelFlag::NORMAL; }
   /*
    * @brief: Check if the mesh data has UVs.
    * @return: True if the mesh data has UVs, false otherwise.
    */
-  Bool HasUVs() const { return ((Uint)mFlag & (Uint)ModelFlag::UV) != 0; }
+  Bool HasUVs() const { return mFlag & ModelFlag::UV; }
   /*
    * @brief: Check if the mesh data has colors.
    * @return: True if the mesh data has colors, false otherwise.
    */
-  Bool HasColors() const { return ((Uint)mFlag & (Uint)ModelFlag::COLOR) != 0; }
+  Bool HasColors() const { return mFlag & ModelFlag::COLOR; }
   /*
    * @brief: Check if the mesh data has joints.
    * @return: True if the mesh data has joints, false otherwise.
    */
-  Bool HasJoint() const { return ((Uint)mFlag & (Uint)ModelFlag::JOINT) != 0; }
+  Bool HasJoint() const { return mFlag & ModelFlag::JOINT; }
   /*
    * @brief: Check if the mesh data has weights.
    * @return: True if the mesh data has weights, false otherwise.
    */
-  Bool HasWeight() const {
-    return ((Uint)mFlag & (Uint)ModelFlag::WEIGHT) != 0;
-  }
+  Bool HasWeight() const { return mFlag & ModelFlag::WEIGHT; }
   /*
    * @brief: Check if the mesh data has material.
    * @return: True if the mesh data has material, false otherwise.
    */
-  Bool HasMaterial() const {
-    return ((Uint)mFlag & (Uint)ModelFlag::MATERIAL) != 0;
-  }
+  Bool HasMaterial() const { return mFlag & ModelFlag::MATERIAL; }
   /*
    * @brief: Check if the mesh data has morph.
    * @return: True if the mesh data has morph, false otherwise.
    */
-  Bool HasMorph() const { return ((Uint)mFlag & (Uint)ModelFlag::MORPH) != 0; }
+  Bool HasMorph() const { return mFlag & ModelFlag::MORPH; }
 };
 
 class Mesh : public Core::Object {

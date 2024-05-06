@@ -1,9 +1,12 @@
-#include "../includes/core.hpp"
+#include "../includes/TerreateCore.hpp"
+
+namespace TerreateCore::Defines {
+bool GLFW_INITIALIZED = false;
+bool GLAD_INITIALIZED = false;
+} // namespace TerreateCore::Defines
 
 namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
-Bool GLFW_INITIALIZED = false;
-Bool GLAD_INITIALIZED = false;
 
 Bool Clock::IsElapsed(Float const &time) {
   Float const now = glfwGetTime();
@@ -14,6 +17,13 @@ Bool Clock::IsElapsed(Float const &time) {
     return true;
   }
   return false;
+}
+
+void Clock::Frame(Uint const &fps) {
+  Float const frameTime = 1.0f / fps;
+  while (!IsElapsed(frameTime)) {
+    // Do nothing
+  }
 }
 
 void Initialize() {

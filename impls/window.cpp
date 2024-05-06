@@ -1,5 +1,4 @@
 #include "../includes/window.hpp"
-#include "../includes/core.hpp"
 
 namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;

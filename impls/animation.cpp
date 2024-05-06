@@ -53,7 +53,7 @@ Transform Animation::Interpolate(Float const &time) const {
 }
 
 mat4 Animation::TransformToMatrix(Transform const &transform) {
-  mat4 result;
+  mat4 result = Eye<Float>(4);
   result = Math::Scale(transform.scale) * result;
   result = Math::ToMatrix(transform.rotation) * result;
   result = Math::Translate(transform.position) * result;

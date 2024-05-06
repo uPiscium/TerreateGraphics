@@ -679,7 +679,7 @@ public:
    */
   void Frame();
 
-  operator Bool() const override { return mWindow != nullptr; }
+  operator Bool() const override { return !this->IsClosed(); }
 };
 } // namespace TerreateCore::Core
 
