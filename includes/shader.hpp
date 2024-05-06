@@ -5,8 +5,7 @@
 #include "math/math.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 struct ShaderOption {
@@ -321,7 +320,6 @@ public:
    */
   static Str LoadShaderSource(Str const &path);
 };
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core
 
 #endif // __TC_SHADER_HPP__

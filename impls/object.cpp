@@ -2,8 +2,7 @@
 
 #include <iomanip>
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 std::mt19937 UUID::sRandomEngine = std::mt19937(std::random_device()());
 
@@ -30,8 +29,7 @@ Str UUID::ToString() const {
   }
   return ss.str();
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core
 
 std::ostream &operator<<(std::ostream &stream,
                          TerreateCore::Core::UUID const &uuid) {

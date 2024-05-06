@@ -1,27 +1,57 @@
-#ifndef __TC_MATH_HPP__
-#define __TC_MATH_HPP__
+#ifndef __TC_MATH_MATH_HPP__
+#define __TC_MATH_MATH_HPP__
 
-#include "matrix.hpp"
+#include "complex.hpp"
+#include "core.hpp"
+#include "fraction.hpp"
+#include "matrixNxM.hpp"
 #include "quaternion.hpp"
 #include "utils.hpp"
-#include "vector.hpp"
+#include "vectorColumn.hpp"
+#include "vectorRow.hpp"
 
-namespace TerreateCore {
-namespace Defines {
-using vec2 = Math::vec2<Float>;
-using vec3 = Math::vec3<Float>;
-using vec4 = Math::vec4<Float>;
-using mat2 = Math::mat2<Float>;
-using mat2x3 = Math::mat2x3<Float>;
-using mat2x4 = Math::mat2x4<Float>;
-using mat3x2 = Math::mat3x2<Float>;
-using mat3 = Math::mat3<Float>;
-using mat3x4 = Math::mat3x4<Float>;
-using mat4x2 = Math::mat4x2<Float>;
-using mat4x3 = Math::mat4x3<Float>;
-using mat4 = Math::mat4<Float>;
-using quaternion = Math::Quaternion<Float>;
-} // namespace Defines
-} // namespace TerreateCore
+namespace TerreateCore::Defines {
+using namespace TerreateCore::Math;
 
-#endif // __TC_MATH_HPP__
+template <typename T> using complexT = Complex<T>;
+template <typename T> using fractionT = Fraction<T>;
+template <typename T> using matrixT = MatrixBase<T>;
+
+template <typename T> using vec2T = RowVector2D<T>;
+template <typename T> using vec3T = RowVector3D<T>;
+template <typename T> using vec4T = RowVector4D<T>;
+
+template <typename T> using mat2T = Matrix2x2<T>;
+template <typename T> using mat2x3T = Matrix2x3<T>;
+template <typename T> using mat2x4T = Matrix2x4<T>;
+template <typename T> using mat3x2T = Matrix3x2<T>;
+template <typename T> using mat3T = Matrix3x3<T>;
+template <typename T> using mat3x4T = Matrix3x4<T>;
+template <typename T> using mat4x2T = Matrix4x2<T>;
+template <typename T> using mat4x3T = Matrix4x3<T>;
+template <typename T> using mat4T = Matrix4x4<T>;
+
+template <typename T> using quaternionT = Quaternion<T>;
+
+using complex = complexT<Float>;
+using fraction = fractionT<Int>;
+using matrix = matrixT<Float>;
+
+using vec2 = vec2T<Float>;
+using vec3 = vec3T<Float>;
+using vec4 = vec4T<Float>;
+
+using mat2 = mat2T<Float>;
+using mat2x3 = mat2x3T<Float>;
+using mat2x4 = mat2x4T<Float>;
+using mat3x2 = mat3x2T<Float>;
+using mat3 = mat3T<Float>;
+using mat3x4 = mat3x4T<Float>;
+using mat4x2 = mat4x2T<Float>;
+using mat4x3 = mat4x3T<Float>;
+using mat4 = mat4T<Float>;
+
+using quaternion = quaternionT<Float>;
+} // namespace TerreateCore::Defines
+
+#endif // __TC_MATH_MATH_HPP__

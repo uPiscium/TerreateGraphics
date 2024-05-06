@@ -1,7 +1,6 @@
 #include "../includes/event.hpp"
 
-namespace TerreateCore {
-namespace Event {
+namespace TerreateCore::Event {
 using namespace TerreateCore::Defines;
 
 void EventSystem::Register(Str const &event, EventCallback const &callback) {
@@ -45,5 +44,4 @@ void EventSystem::PublishEvent(Str const &event) {
   LockGuard<Mutex> lock(mQueueMutex);
   mEventQueue.push(event);
 }
-} // namespace Event
-} // namespace TerreateCore
+} // namespace TerreateCore::Event

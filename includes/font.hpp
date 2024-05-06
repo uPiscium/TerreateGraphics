@@ -8,8 +8,7 @@
 #include "object.hpp"
 #include "texture.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 struct Character {
@@ -85,7 +84,6 @@ public:
 
   operator Bool() const override { return mFace != nullptr; }
 };
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core
 
 #endif // __TC_FONT_HPP__

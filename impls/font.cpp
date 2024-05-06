@@ -1,7 +1,6 @@
 #include "../includes/font.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Font::Font(Str const &path, Uint const &size) : mSize(size) {
@@ -89,5 +88,4 @@ void Font::LoadCharacter(wchar_t const &character) {
 
   mCharacters.insert({character, c});
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core

@@ -11,7 +11,8 @@ uniform mat4 uTransform;
 uniform mat4 uModel;
 
 void main() {
-  gl_Position = uTransform * uModel * vec4(iPosition, 1.0f);
+  // gl_Position = uTransform * uModel * vec4(iPosition, 1.0f);
+  gl_Position = uModel * vec4(iPosition, 1.0f);
   vNormal = uNormalTransform * iNormal;
   vUV = iUV;
 }

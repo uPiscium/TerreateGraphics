@@ -1,7 +1,14 @@
 cd tests
+if [ $1 = "c" ]; then
+    echo "Clean option selected."
+    echo "Cleaning build directory..."
+    rm -rf build
+    rm -f ../samples/TCTest
+    echo "Build directory cleaned."
+fi
 mkdir -p build
 cd build
-cmake ../.. -DTARGET=$1
+cmake ../..
 cmake --build .
-cp ./tests/impls/$1Test ../samples/
+cp ./tests/impls/TCTest ../samples/
 cd ../..

@@ -3,8 +3,7 @@
 
 #include <exception>
 
-namespace TerreateCore {
-namespace Exception {
+namespace TerreateCore::Exception {
 class CoreException : public std::exception {
 private:
   char const *mMessage;
@@ -14,7 +13,6 @@ public:
 
   char const *what() const noexcept override { return mMessage; }
 };
-} // namespace Exception
-} // namespace TerreateCore
+} // namespace TerreateCore::Exception
 
 #endif // __TC_EXCEPTIONS_HPP__

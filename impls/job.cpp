@@ -1,7 +1,6 @@
 #include "../includes/job.hpp"
 
-namespace TerreateCore {
-namespace Job {
+namespace TerreateCore::Job {
 using namespace TerreateCore::Defines;
 
 void JobBase::Run() {
@@ -94,5 +93,4 @@ void JobSystem::Schedule(JobBase *job) {
 
   mCondition.notify_one();
 }
-} // namespace Job
-} // namespace TerreateCore
+} // namespace TerreateCore::Job

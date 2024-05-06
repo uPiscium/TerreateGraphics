@@ -5,10 +5,8 @@
 #include "math/math.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Scene {
+namespace TerreateCore::Scene {
 ;
 }
-} // namespace TerreateCore
 
 #endif // __TC_SCENE_HPP__
