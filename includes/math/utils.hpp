@@ -12,6 +12,13 @@
 namespace TerreateCore::Math {
 using namespace TerreateCore::Defines;
 
+template <typename T> T Radian(T const &degree) {
+  return degree * static_cast<T>(M_PI) / static_cast<T>(180);
+}
+template <typename T> T Degree(T const &radian) {
+  return radian * static_cast<T>(180) / static_cast<T>(M_PI);
+}
+
 template <typename T> Matrix4x4<T> Scale(T const &x, T const &y, T const &z);
 template <typename T> Matrix4x4<T> Scale(RowVector3D<T> const &scale) {
   return Scale(scale[0], scale[1], scale[2]);
@@ -43,28 +50,29 @@ template <typename T>
 Quaternion<T> Rotate(T const &angle, ColumnVector3D<T> const &axis) {
   return Rotate(angle, axis[0], axis[1], axis[2]);
 }
+
+template <typename T> Quaternion<T> RotateX(T const &angle) {
+  return Rotate(angle, static_cast<T>(1), static_cast<T>(0), static_cast<T>(0));
+}
+template <typename T> Quaternion<T> RotateY(T const &angle) {
+  return Rotate(angle, static_cast<T>(0), static_cast<T>(1), static_cast<T>(0));
+}
+template <typename T> Quaternion<T> RotateZ(T const &angle) {
+  return Rotate(angle, static_cast<T>(0), static_cast<T>(0), static_cast<T>(1));
+}
+
 template <typename T>
 Quaternion<T> Rotate(T const &angX, T const &angY, T const &angZ) {
   return RotateX(angX) * RotateY(angY) * RotateZ(angZ);
 }
 
-template <typename T> Quaternion<T> RotateX(T const &angle) {
-  return Rotate(angle, 1, 0, 0);
-}
-template <typename T> Quaternion<T> RotateY(T const &angle) {
-  return Rotate(angle, 0, 1, 0);
-}
-template <typename T> Quaternion<T> RotateZ(T const &angle) {
-  return Rotate(angle, 0, 0, 1);
-}
-
-template <typename T>
-Matrix4x4<T> LookAt(RowVector3D<T> const &eye, RowVector3D<T> const &center,
-                    RowVector3D<T> const &up);
 template <typename T>
 Matrix4x4<T> LookAt(ColumnVector3D<T> const &eye,
                     ColumnVector3D<T> const &center,
-                    ColumnVector3D<T> const &up) {
+                    ColumnVector3D<T> const &up);
+template <typename T>
+Matrix4x4<T> LookAt(RowVector3D<T> const &eye, RowVector3D<T> const &center,
+                    RowVector3D<T> const &up) {
   return LookAt(eye.AcquireTransposed(), center.AcquireTransposed(),
                 up.AcquireTransposed());
 }
@@ -112,9 +120,9 @@ template <typename T> Matrix4x4<T> Scale(T const &x, T const &y, T const &z) {
 template <typename T>
 Matrix4x4<T> Translate(T const &x, T const &y, T const &z) {
   Matrix4x4<T> result = Eye<T>(4);
-  result(3, 0) = x;
-  result(3, 1) = y;
-  result(3, 2) = z;
+  result(0, 3) = x;
+  result(1, 3) = y;
+  result(2, 3) = z;
   return result;
 }
 
@@ -122,43 +130,47 @@ template <typename T>
 Quaternion<T> Rotate(T const &angle, T const &x, T const &y, T const &z) {
   T const halfAngle = angle / static_cast<T>(2);
   T const s = sin(halfAngle);
-  return Quaternion<T>(cos(halfAngle), x * s, y * s, z * s);
+  return Quaternion<T>(x * s, y * s, z * s, cos(halfAngle));
 }
 
 template <typename T>
-Matrix4x4<T> LookAt(RowVector3D<T> const &eye, RowVector3D<T> const &center,
-                    RowVector3D<T> const &up) {
-  RowVector3D<T> f = Normalize(center - eye);
-  RowVector3D<T> r = Normalize(Cross(f, up));
-  RowVector3D<T> u = Cross(r, f);
+Matrix4x4<T> LookAt(ColumnVector3D<T> const &eye,
+                    ColumnVector3D<T> const &center,
+                    ColumnVector3D<T> const &up) {
+  ColumnVector3D<T> front = Normalize(center - eye);
+  ColumnVector3D<T> right = Normalize(Cross(front, up));
+  ColumnVector3D<T> upper = Cross(right, front);
 
   Matrix4x4<T> result = Eye<T>(4);
-  result(0, 0) = r[0];
-  result(0, 1) = r[1];
-  result(0, 2) = r[2];
-  result(1, 0) = u[0];
-  result(1, 1) = u[1];
-  result(1, 2) = u[2];
-  result(2, 0) = f[0];
-  result(2, 1) = f[1];
-  result(2, 2) = f[2];
-  result(3, 0) = -eye[0];
-  result(3, 1) = -eye[1];
-  result(3, 2) = -eye[2];
+  result(0, 0) = right[0];
+  result(0, 1) = right[1];
+  result(0, 2) = right[2];
+  result(1, 0) = upper[0];
+  result(1, 1) = upper[1];
+  result(1, 2) = upper[2];
+  result(2, 0) = front[0];
+  result(2, 1) = front[1];
+  result(2, 2) = front[2];
+  result(0, 3) = -(eye * right);
+  result(1, 3) = -(eye * upper);
+  result(2, 3) = -(eye * front);
   return result;
 }
 
 template <typename T>
 Matrix4x4<T> Perspective(T const &fov, T const &aspect, T const &near,
                          T const &far) {
-  T const f = static_cast<T>(1) / tan(fov / static_cast<T>(2));
+  T const cot = static_cast<T>(1) / tan(fov / static_cast<T>(2));
   Matrix4x4<T> result = Eye<T>(4);
-  result(0, 0) = f / aspect;
-  result(1, 1) = f;
-  result(2, 2) = (far + near) / (near - far);
-  result(2, 3) = static_cast<T>(-1);
-  result(3, 2) = (static_cast<T>(2) * far * near) / (near - far);
-  result(3, 3) = static_cast<T>(0);
+  result(0, 0) = cot * aspect;
+  result(1, 1) = cot;
+  /* result(2, 2) = (far + near) / (near - far); */
+  /* result(2, 3) = static_cast<T>(-1); */
+  /* result(3, 2) = (static_cast<T>(2) * far * near) / (near - far); */
+  /* result(3, 3) = static_cast<T>(0); */
+  result(2, 2) = far / (far - near);
+  result(2, 3) = -far * near / (far - near);
+  result(3, 2) = static_cast<T>(1);
   return result;
 }
 

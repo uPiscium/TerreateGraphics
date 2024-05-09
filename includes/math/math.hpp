@@ -17,9 +17,9 @@ template <typename T> using complexT = Complex<T>;
 template <typename T> using fractionT = Fraction<T>;
 template <typename T> using matrixT = MatrixBase<T>;
 
-template <typename T> using vec2T = RowVector2D<T>;
-template <typename T> using vec3T = RowVector3D<T>;
-template <typename T> using vec4T = RowVector4D<T>;
+template <typename T> using vec2T = ColumnVector2D<T>;
+template <typename T> using vec3T = ColumnVector3D<T>;
+template <typename T> using vec4T = ColumnVector4D<T>;
 
 template <typename T> using mat2T = Matrix2x2<T>;
 template <typename T> using mat2x3T = Matrix2x3<T>;

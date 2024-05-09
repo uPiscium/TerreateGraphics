@@ -170,8 +170,8 @@ ColumnVectorBase<T> operator-(ColumnVectorBase<T> const &lhs,
 }
 template <typename T>
 T operator*(ColumnVectorBase<T> const &lhs, ColumnVectorBase<T> const &rhs) {
-  return (static_cast<MatrixBase<T>>(lhs) * static_cast<MatrixBase<T>>(rhs))(0,
-                                                                             0);
+  return (static_cast<MatrixBase<T>>(Transpose(lhs)) *
+          static_cast<MatrixBase<T>>(rhs))(0, 0);
 }
 template <typename T>
 ColumnVectorBase<T> operator+(ColumnVectorBase<T> const &lhs, T const &rhs) {
@@ -242,8 +242,8 @@ ColumnVector2D<T> operator-(ColumnVector2D<T> const &lhs,
 }
 template <typename T>
 T operator*(ColumnVector2D<T> const &lhs, ColumnVector2D<T> const &rhs) {
-  return (static_cast<MatrixBase<T>>(lhs) * static_cast<MatrixBase<T>>(rhs))(0,
-                                                                             0);
+  return (static_cast<MatrixBase<T>>(Transpose(lhs)) *
+          static_cast<MatrixBase<T>>(rhs))(0, 0);
 }
 template <typename T>
 ColumnVector2D<T> operator+(ColumnVector2D<T> const &lhs, T const &rhs) {
@@ -288,8 +288,8 @@ ColumnVector3D<T> operator-(ColumnVector3D<T> const &lhs,
 }
 template <typename T>
 T operator*(ColumnVector3D<T> const &lhs, ColumnVector3D<T> const &rhs) {
-  return (static_cast<MatrixBase<T>>(lhs) * static_cast<MatrixBase<T>>(rhs))(0,
-                                                                             0);
+  return (static_cast<MatrixBase<T>>(Transpose(lhs)) *
+          static_cast<MatrixBase<T>>(rhs))(0, 0);
 }
 template <typename T>
 ColumnVector3D<T> operator+(ColumnVector3D<T> const &lhs, T const &rhs) {
@@ -318,6 +318,52 @@ ColumnVector3D<T> operator-(T const &lhs, ColumnVector3D<T> const &rhs) {
 template <typename T>
 ColumnVector3D<T> operator*(T const &lhs, ColumnVector3D<T> const &rhs) {
   return ColumnVector3D<T>(lhs * static_cast<MatrixBase<T>>(rhs));
+}
+
+template <typename T>
+ColumnVector4D<T> operator+(ColumnVector4D<T> const &lhs,
+                            ColumnVector4D<T> const &rhs) {
+  return ColumnVector4D<T>(static_cast<MatrixBase<T>>(lhs) +
+                           static_cast<MatrixBase<T>>(rhs));
+}
+template <typename T>
+ColumnVector4D<T> operator-(ColumnVector4D<T> const &lhs,
+                            ColumnVector4D<T> const &rhs) {
+  return ColumnVector4D<T>(static_cast<MatrixBase<T>>(lhs) -
+                           static_cast<MatrixBase<T>>(rhs));
+}
+template <typename T>
+T operator*(ColumnVector4D<T> const &lhs, ColumnVector4D<T> const &rhs) {
+  return (static_cast<MatrixBase<T>>(Transpose(lhs)) *
+          static_cast<MatrixBase<T>>(rhs))(0, 0);
+}
+template <typename T>
+ColumnVector4D<T> operator+(ColumnVector4D<T> const &lhs, T const &rhs) {
+  return ColumnVector4D<T>(static_cast<MatrixBase<T>>(lhs) + rhs);
+}
+template <typename T>
+ColumnVector4D<T> operator-(ColumnVector4D<T> const &lhs, T const &rhs) {
+  return ColumnVector4D<T>(static_cast<MatrixBase<T>>(lhs) - rhs);
+}
+template <typename T>
+ColumnVector4D<T> operator*(ColumnVector4D<T> const &lhs, T const &rhs) {
+  return ColumnVector4D<T>(static_cast<MatrixBase<T>>(lhs) * rhs);
+}
+template <typename T>
+ColumnVector4D<T> operator/(ColumnVector4D<T> const &lhs, T const &rhs) {
+  return ColumnVector4D<T>(static_cast<MatrixBase<T>>(lhs) / rhs);
+}
+template <typename T>
+ColumnVector4D<T> operator+(T const &lhs, ColumnVector4D<T> const &rhs) {
+  return ColumnVector4D<T>(lhs + static_cast<MatrixBase<T>>(rhs));
+}
+template <typename T>
+ColumnVector4D<T> operator-(T const &lhs, ColumnVector4D<T> const &rhs) {
+  return ColumnVector4D<T>(lhs - static_cast<MatrixBase<T>>(rhs));
+}
+template <typename T>
+ColumnVector4D<T> operator*(T const &lhs, ColumnVector4D<T> const &rhs) {
+  return ColumnVector4D<T>(lhs * static_cast<MatrixBase<T>>(rhs));
 }
 } // namespace TerreateCore::Math
 
@@ -528,8 +574,8 @@ ColumnVector3D<T> Cross(ColumnVectorBase<T> const &lhs,
     TC_THROW("Incompatible vector size.");
   }
 
-  ColumnVector3D<T> v1(3);
-  ColumnVector3D<T> v2(3);
+  ColumnVector3D<T> v1;
+  ColumnVector3D<T> v2;
   memcpy(v1.GetArray(), lhs.GetArray(), sizeof(T) * lhs.GetSize());
   memcpy(v2.GetArray(), rhs.GetArray(), sizeof(T) * rhs.GetSize());
 

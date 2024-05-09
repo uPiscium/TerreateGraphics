@@ -175,8 +175,8 @@ RowVectorBase<T> operator-(RowVectorBase<T> const &lhs,
 }
 template <typename T>
 T operator*(RowVectorBase<T> const &lhs, RowVectorBase<T> const &rhs) {
-  return (static_cast<MatrixBase<T>>(lhs) * static_cast<MatrixBase<T>>(rhs))(0,
-                                                                             0);
+  return (static_cast<MatrixBase<T>>(lhs) *
+          static_cast<MatrixBase<T>>(Transpose(rhs)))(0, 0);
 }
 template <typename T>
 RowVectorBase<T> operator+(RowVectorBase<T> const &lhs, T const &rhs) {
@@ -239,8 +239,8 @@ RowVector2D<T> operator-(RowVector2D<T> const &lhs, RowVector2D<T> const &rhs) {
 }
 template <typename T>
 T operator*(RowVector2D<T> const &lhs, RowVector2D<T> const &rhs) {
-  return (static_cast<MatrixBase<T>>(lhs) * static_cast<MatrixBase<T>>(rhs))(0,
-                                                                             0);
+  return (static_cast<MatrixBase<T>>(lhs) *
+          static_cast<MatrixBase<T>>(Transpose(rhs)))(0, 0);
 }
 template <typename T>
 RowVector2D<T> operator+(RowVector2D<T> const &lhs, T const &rhs) {
@@ -283,8 +283,8 @@ RowVector3D<T> operator-(RowVector3D<T> const &lhs, RowVector3D<T> const &rhs) {
 }
 template <typename T>
 T operator*(RowVector3D<T> const &lhs, RowVector3D<T> const &rhs) {
-  return (static_cast<MatrixBase<T>>(lhs) * static_cast<MatrixBase<T>>(rhs))(0,
-                                                                             0);
+  return (static_cast<MatrixBase<T>>(lhs) *
+          static_cast<MatrixBase<T>>(Transpose(rhs)))(0, 0);
 }
 template <typename T>
 RowVector3D<T> operator+(RowVector3D<T> const &lhs, T const &rhs) {
@@ -327,8 +327,8 @@ RowVector4D<T> operator-(RowVector4D<T> const &lhs, RowVector4D<T> const &rhs) {
 }
 template <typename T>
 T operator*(RowVector4D<T> const &lhs, RowVector4D<T> const &rhs) {
-  return (static_cast<MatrixBase<T>>(lhs) * static_cast<MatrixBase<T>>(rhs))(0,
-                                                                             0);
+  return (static_cast<MatrixBase<T>>(lhs) *
+          static_cast<MatrixBase<T>>(Transpose(rhs)))(0, 0);
 }
 template <typename T>
 RowVector4D<T> operator+(RowVector4D<T> const &lhs, T const &rhs) {

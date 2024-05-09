@@ -130,10 +130,10 @@ Quaternion<T> &Quaternion<T>::operator-=(Quaternion<T> const &other) {
 
 template <typename T>
 Quaternion<T> &Quaternion<T>::operator*=(Quaternion<T> const &other) {
-  T const real = mReal * other.mReal - dot(mImaginary, other.mImaginary);
+  T const real = mReal * other.mReal - mImaginary * other.mImaginary;
   RowVector3D<T> const imaginary = mReal * other.mImaginary +
                                    other.mReal * mImaginary +
-                                   cross(mImaginary, other.mImaginary);
+                                   Cross(mImaginary, other.mImaginary);
   mReal = real;
   mImaginary = imaginary;
   return *this;
@@ -142,10 +142,10 @@ Quaternion<T> &Quaternion<T>::operator*=(Quaternion<T> const &other) {
 template <typename T>
 Quaternion<T> &Quaternion<T>::operator/=(Quaternion<T> const &other) {
   Quaternion<T> const inverse = other.AcquireInverse();
-  T const real = mReal * inverse.mReal + dot(mImaginary, inverse.mImaginary);
+  T const real = mReal * inverse.mReal + mImaginary * inverse.mImaginary;
   RowVector3D<T> const imaginary = mReal * inverse.mImaginary +
                                    inverse.mReal * mImaginary +
-                                   cross(mImaginary, inverse.mImaginary);
+                                   Cross(mImaginary, inverse.mImaginary);
   mReal = real;
   mImaginary = imaginary;
   return *this;
