@@ -10,6 +10,7 @@ private:
   Shader mShader;
   Model mModel;
   mat4 mView;
+  Font mFont;
 
 public:
   void SizeCallback(int const &width, int const &height) override {
@@ -20,7 +21,7 @@ public:
   }
 
 public:
-  TestApp() {
+  TestApp() : mFont("../resources/AsebuMin-Light.ttf", 48) {
     MeshData meshData;
     meshData.SetVertices({
         -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,
@@ -56,15 +57,6 @@ public:
     meshData.SetIndices({0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4,
                          8,  9,  10, 10, 11, 8,  12, 13, 14, 14, 15, 12,
                          16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20});
-    /* meshData.SetVertices({-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-     */
-    /*                       0.5f,  -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-     */
-    /*                       0.5f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-     */
-    /*                       -0.5f, 0.5f,  0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f});
-     */
-    /* meshData.SetIndices({0, 1, 2, 2, 3, 0}); */
     meshData.SetFlag(ModelFlag::NORMAL);
     meshData.SetFlag(ModelFlag::UV);
 
@@ -91,7 +83,7 @@ public:
 
     Float angle = Radian(10.0f * mClock.GetCurrentRuntime());
     mat4 model = ToMatrix(Rotate(0.0f, angle, 0.0f));
-    model = Translate(0.0f, 0.0f, -1.0f) * model;
+    model = Translate(0.0f, 0.0f, -0.0f) * model;
     mShader.SetMat4("uModel", model);
     mShader.SetMat4("uNormalTransform", Transpose(Inverse(model)));
 
