@@ -448,13 +448,15 @@ enum class Keyboard {
 
 // Use to select data type included in buffer.
 enum class ModelFlag : TCu8 {
-  NORMAL = 1,
-  UV = 1 << 1,
-  COLOR = 1 << 2,
-  JOINT = 1 << 3,
-  WEIGHT = 1 << 4,
-  MATERIAL = 1 << 5,
-  MORPH = 1 << 6
+  EMPTY = 0,
+  POSITION = 1,
+  NORMAL = 1 << 1,
+  UV = 1 << 2,
+  COLOR = 1 << 3,
+  JOINT = 1 << 4,
+  WEIGHT = 1 << 5,
+  MATERIAL = 1 << 6,
+  MORPH = 1 << 7
 };
 
 // Use to select mouse button input.
