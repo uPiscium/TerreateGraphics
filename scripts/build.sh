@@ -1,5 +1,5 @@
 cd tests
-if [ $1 = "c" ]; then
+if [ $1 == 'c' ]; then
     echo "Clean option selected."
     echo "Cleaning build directory..."
     rm -rf build
