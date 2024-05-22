@@ -150,7 +150,11 @@ Mesh::Mesh(MeshData &data) : mMaterial(data.GetMaterial()) {
 }
 
 void Mesh::LoadData(MeshData &data) {
-  if (mFlag != ModelFlag::EMPTY && data.GetFlag() != mFlag) {
+  if (mFlag == ModelFlag::EMPTY) {
+    mFlag = data.GetFlag();
+  }
+
+  if (data.GetFlag() != mFlag) {
     TC_THROW("Flag does not match");
   }
 

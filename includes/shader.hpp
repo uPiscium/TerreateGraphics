@@ -29,6 +29,7 @@ struct ShaderOption {
 
 class Shader final : public Object {
 private:
+  Bool mCompiled = false;
   ID mShaderID = 0;
   Str mVertexShaderSource = "";
   Str mFragmentShaderSource = "";
@@ -308,6 +309,10 @@ public:
    * @detail: This function should be called after shader is compiled.
    */
   void Use() const;
+  /*
+   * @brief: Unuse shader.
+   */
+  void Unuse() const { glUseProgram(0); }
 
   operator Bool() const override { return mShaderID != 0; }
 
