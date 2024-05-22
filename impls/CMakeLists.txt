@@ -7,6 +7,31 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
+include(FetchContent)
+
+function(CloneGLFW)
+  message(STATUS "Cloning GLFW...")
+  set(GLFW_BUILD_EXAMPLES OFF)
+  set(GLFW_BUILD_TESTS OFF)
+  set(GLFW_BUILD_DOCS OFF)
+  FetchContent_Declare(
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw.git
+    GIT_TAG 3.3.8)
+  FetchContent_MakeAvailable(glfw)
+  message(STATUS "GLFW cloned.")
+endfunction()
+
+function(CloneFreetype)
+  message(STATUS "Cloning Freetype...")
+  FetchContent_Declare(
+    freetype
+    GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
+    GIT_TAG VER-2-13-1)
+  FetchContent_MakeAvailable(freetype)
+  message(STATUS "Freetype cloned.")
+endfunction()
+
 function(SetIncludes)
   target_include_directories(${PROJECT_NAME} PUBLIC ../includes/deps)
   target_include_directories(${PROJECT_NAME} PUBLIC ../includes/math)
@@ -15,12 +40,12 @@ function(SetIncludes)
 endfunction()
 
 function(SetLibs)
-  target_link_directories(${PROJECT_NAME} PUBLIC ../libs)
   if(WIN32)
     target_link_libraries(${PROJECT_NAME} PUBLIC glfw3)
     target_link_libraries(${PROJECT_NAME} PUBLIC freetyped)
   elseif(UNIX)
-    find_package(glfw3 REQUIRED)
+    cloneglfw()
+    clonefreetype()
     target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
     target_link_libraries(${PROJECT_NAME} PUBLIC freetype)
   endif()
