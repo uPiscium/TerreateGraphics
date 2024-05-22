@@ -9,27 +9,41 @@ private:
   Clock mClock;
   Shader mShader;
   Model mModel;
-  mat4 mView;
+  mat4 mTransform;
+  Float mWidth = 1500.0f;
+  Float mHeight = 750.0f;
+  Float mDepth = 100.0f / 0.01f;
+
+  Shared<Font> mFont;
+  Texture mTexture;
+  Text mText;
 
 public:
   void SizeCallback(int const &width, int const &height) override {
     glViewport(0, 0, width, height);
-    mat4 proj = Perspective(45.0f, (Float)height / width, 0.01f, 100.0f);
+    mWidth = (Float)width;
+    mHeight = (Float)height;
     mShader.Use();
-    mShader.SetMat4("uTransform", proj * mView);
+    mShader.SetMat4("uTransform",
+                    mTransform *
+                        Scale(1.0f / mWidth, 1.0f / mHeight, 1.0f / mDepth));
   }
 
 public:
   TestApp() {
+    mFont = std::make_shared<Font>("../resources/AsebiMin-Light.otf", 200);
+    mText.LoadText(L"日本語テスト", mFont);
+    mTexture.LoadData(Texture::LoadTexture("../resources/testImage.png"));
+
     MeshData data;
-    data.LoadPosition({{-0.5f, -0.5f, 0.5f},
-                       {0.5f, -0.5f, 0.5f},
-                       {0.5f, -0.5f, -0.5f},
-                       {-0.5f, -0.5f, -0.5f},
-                       {-0.5f, 0.5f, 0.5f},
-                       {0.5f, 0.5f, 0.5f},
-                       {0.5f, 0.5f, -0.5f},
-                       {-0.5f, 0.5f, -0.5f}});
+    data.LoadPosition({{-200.0f, -200.0f, 200.0f},
+                       {200.0f, -200.0f, 200.0f},
+                       {200.0f, -200.0f, -200.0f},
+                       {-200.0f, -200.0f, -200.0f},
+                       {-200.0f, 200.0f, 200.0f},
+                       {200.0f, 200.0f, 200.0f},
+                       {200.0f, 200.0f, -200.0f},
+                       {-200.0f, 200.0f, -200.0f}});
     data.LoadNormal({{1.0f, 0.0f, 0.0f},
                      {-1.0f, 0.0f, 0.0f},
                      {0.0f, 1.0f, 0.0f},
@@ -46,63 +60,28 @@ public:
                       8,  9,  10, 10, 11, 8,  12, 13, 14, 14, 15, 12,
                       16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20});
 
-    /* MeshData meshData; */
-    /* meshData.SetVertices({ */
-    /*     -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f, */
-    /*     0.5f,  -0.5f, 0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 0.0f, */
-    /*     0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f, 1.0f, */
-    /*     -0.5f, 0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 1.0f, */
-
-    /*     0.5f,  -0.5f, 0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f, */
-    /*     0.5f,  -0.5f, -0.5f, 1.0f,  0.0f,  0.0f,  1.0f, 0.0f, */
-    /*     0.5f,  0.5f,  -0.5f, 1.0f,  0.0f,  0.0f,  1.0f, 1.0f, */
-    /*     0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f, */
-
-    /*     0.5f,  -0.5f, -0.5f, 0.0f,  0.0f,  -1.0f, 0.0f, 0.0f, */
-    /*     -0.5f, -0.5f, -0.5f, 0.0f,  0.0f,  -1.0f, 1.0f, 0.0f, */
-    /*     -0.5f, 0.5f,  -0.5f, 0.0f,  0.0f,  -1.0f, 1.0f, 1.0f, */
-    /*     0.5f,  0.5f,  -0.5f, 0.0f,  0.0f,  -1.0f, 0.0f, 1.0f, */
-
-    /*     -0.5f, -0.5f, -0.5f, -1.0f, 0.0f,  0.0f,  0.0f, 0.0f, */
-    /*     -0.5f, -0.5f, 0.5f,  -1.0f, 0.0f,  0.0f,  1.0f, 0.0f, */
-    /*     -0.5f, 0.5f,  0.5f,  -1.0f, 0.0f,  0.0f,  1.0f, 1.0f, */
-    /*     -0.5f, 0.5f,  -0.5f, -1.0f, 0.0f,  0.0f,  0.0f, 1.0f, */
-
-    /*     -0.5f, 0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f, */
-    /*     0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f, */
-    /*     0.5f,  0.5f,  -0.5f, 0.0f,  1.0f,  0.0f,  1.0f, 1.0f, */
-    /*     -0.5f, 0.5f,  -0.5f, 0.0f,  1.0f,  0.0f,  0.0f, 1.0f, */
-
-    /*     -0.5f, -0.5f, -0.5f, 0.0f,  -1.0f, 0.0f,  0.0f, 0.0f, */
-    /*     0.5f,  -0.5f, -0.5f, 0.0f,  -1.0f, 0.0f,  1.0f, 0.0f, */
-    /*     0.5f,  -0.5f, 0.5f,  0.0f,  -1.0f, 0.0f,  1.0f, 1.0f, */
-    /*     -0.5f, -0.5f, 0.5f,  0.0f,  -1.0f, 0.0f,  0.0f, 1.0f, */
-    /* }); */
-    /* meshData.SetIndices({0,  1,  2,  2,  3,  0,  4,  5,  6,  6,  7,  4, */
-    /*                      8,  9,  10, 10, 11, 8,  12, 13, 14, 14, 15, 12, */
-    /*                      16, 17, 18, 18, 19, 16, 20, 21, 22, 22, 23, 20}); */
-    /* meshData.SetFlag(ModelFlag::NORMAL); */
-    /* meshData.SetFlag(ModelFlag::UV); */
-
-    /* mModel.AddMesh(Mesh(meshData)); */
-
     Mesh mesh;
     mesh.LoadData(data);
     mModel.AddMesh(mesh);
 
-    mView = LookAt(vec3(0, 0, 1), vec3(0, 0, 0), vec3(0, 1, 0));
-    mat4 proj = Perspective(45.0f, 750.0f / 1500.0f, 0.01f, 100.0f);
+    mat4 view = LookAt(vec3(0, 0, 1), vec3(0, 0, 0), vec3(0, 1, 0));
+    mat4 proj = Perspective(45.0f, 0.01f, 100.0f);
+    mTransform = proj * view;
 
     mShader.AddVertexShaderSource(
         Shader::LoadShaderSource("../resources/vertex.glsl"));
     mShader.AddFragmentShaderSource(
         Shader::LoadShaderSource("../resources/fragment.glsl"));
     mShader.Compile();
-    // mShader.UseDepth(false);
+    // Uncomment if you want to break your brain...
+    /* mShader.UseDepth(false); */
 
     mShader.Use();
-    mShader.SetMat4("uTransform", proj * mView);
-    /* mShader.SetMat4("uTransform", Eye<Float>(4)); */
+    mShader.SetInt("uTexture", 0);
+    mShader.ActiveTexture(TextureTargets::TEX_0);
+    mShader.SetMat4("uTransform",
+                    mTransform *
+                        Scale(1.0f / mWidth, 1.0f / mHeight, 1.0f / mDepth));
   }
 
   void OnFrame(Window *window) override {
@@ -112,16 +91,21 @@ public:
 
     Float angle = Radian(10.0f * mClock.GetCurrentRuntime());
     mat4 model = ToMatrix(Rotate(0.0f, angle, 0.0f));
-    model = Translate(0.0f, 0.0f, -1.0f) * model;
-    mShader.SetMat4("uModel", model);
-    mShader.SetMat4("uNormalTransform", Transpose(Inverse(model)));
-    /* mShader.SetMat4("uModel", Eye<Float>(4)); */
+    model = Translate(0.0f, 0.0f, -100.0f) * model;
 
     mShader.Use();
+    mShader.SetMat4("uModel", model);
+    mShader.SetMat4("uNormalTransform", Transpose(Inverse(model)));
+
+    mTexture.Bind();
     mModel.Draw();
+    mTexture.Unbind();
+    mShader.Unuse();
+
+    mText.Render(50, 50, mWidth, mHeight);
 
     window->Swap();
-    mClock.Frame(60);
+    mClock.Frame(80);
   }
 };
 

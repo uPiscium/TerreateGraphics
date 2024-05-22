@@ -86,15 +86,15 @@ Matrix4x4<T> LookAt(T const &eyeX, T const &eyeY, T const &eyeZ,
 }
 
 template <typename T>
-Matrix4x4<T> Perspective(T const &fov, T const &aspect, T const &near,
-                         T const &far);
+Matrix4x4<T> Perspective(T const &fov, T const &near, T const &far);
 template <typename T>
 Matrix4x4<T> Orthographic(T const &left, T const &right, T const &bottom,
                           T const &top, T const &near, T const &far);
 template <typename T>
 Matrix4x4<T> Orthographic(T const &left, T const &right, T const &top,
                           T const &bottom) {
-  return Orthographic(left, right, top, bottom, -1, 1);
+  return Orthographic(left, right, top, bottom, static_cast<T>(-1),
+                      static_cast<T>(1));
 }
 
 template <typename T>
@@ -158,16 +158,11 @@ Matrix4x4<T> LookAt(ColumnVector3D<T> const &eye,
 }
 
 template <typename T>
-Matrix4x4<T> Perspective(T const &fov, T const &aspect, T const &near,
-                         T const &far) {
+Matrix4x4<T> Perspective(T const &fov, T const &near, T const &far) {
   T const cot = static_cast<T>(1) / tan(fov / static_cast<T>(2));
   Matrix4x4<T> result = Eye<T>(4);
-  result(0, 0) = cot * aspect;
+  result(0, 0) = cot;
   result(1, 1) = cot;
-  /* result(2, 2) = (far + near) / (near - far); */
-  /* result(2, 3) = static_cast<T>(-1); */
-  /* result(3, 2) = (static_cast<T>(2) * far * near) / (near - far); */
-  /* result(3, 3) = static_cast<T>(0); */
   result(2, 2) = far / (far - near);
   result(2, 3) = -far * near / (far - near);
   result(3, 2) = static_cast<T>(1);
@@ -181,9 +176,10 @@ Matrix4x4<T> Orthographic(T const &left, T const &right, T const &bottom,
   result(0, 0) = static_cast<T>(2) / (right - left);
   result(1, 1) = static_cast<T>(2) / (top - bottom);
   result(2, 2) = static_cast<T>(2) / (near - far);
-  result(3, 0) = -(right + left) / (right - left);
-  result(3, 1) = -(top + bottom) / (top - bottom);
-  result(3, 2) = -(far + near) / (far - near);
+  result(0, 3) = -(right + left) / (right - left);
+  result(1, 3) = -(top + bottom) / (top - bottom);
+  result(2, 3) = -(far + near) / (far - near);
+  return result;
 }
 } // namespace TerreateCore::Math
 #endif // __TC_MATH_UTILS_HPP__

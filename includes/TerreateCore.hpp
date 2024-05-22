@@ -14,6 +14,7 @@
 #include "screen.hpp"
 #include "shader.hpp"
 #include "skeleton.hpp"
+#include "text.hpp"
 #include "texture.hpp"
 #include "window.hpp"
 
