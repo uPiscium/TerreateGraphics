@@ -42,6 +42,7 @@ function(Build)
     screen.cpp
     shader.cpp
     skeleton.cpp
+    text.cpp
     texture.cpp
     window.cpp)
   setincludes()

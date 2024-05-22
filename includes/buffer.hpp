@@ -114,7 +114,7 @@ public:
    * @param: data: Vector of index buffer data to be loaded.
    */
   void LoadIndices(Vec<Uint> const &data) {
-    this->LoadIndices(data.data(), data.size() * sizeof(Index));
+    this->LoadIndices(data.data(), data.size() * sizeof(Uint));
   }
   /*
    * @brief: Load vertex attributes.

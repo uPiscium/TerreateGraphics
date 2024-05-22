@@ -112,6 +112,8 @@ void Shader::Compile() {
 
   glLinkProgram(mShaderID);
   CheckLinkStatus(mShaderID);
+
+  mCompiled = true;
 }
 
 Str Shader::LoadShaderSource(const Str &path) {
@@ -136,6 +138,11 @@ void Shader::ActiveTexture(TextureTargets const &target) const {
 }
 
 void Shader::Use() const {
+  if (!mCompiled) {
+    TC_THROW("Shader is not compiled");
+    return;
+  }
+
   glUseProgram(mShaderID);
 
   if (mOption.blending) {
