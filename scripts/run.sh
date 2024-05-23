@@ -10,9 +10,10 @@ mkdir -p build
 cd build
 cmake ../..
 cmake --build .
-cp ./tests/impls/TCTest ../samples/
+pwd
+cp tests/impls/TCTest ../
 cd ../
-cd samples
+pwd
 echo "Running TCTest..."
 ./TCTest
-cd ../../
+cd ../..
