@@ -5,8 +5,7 @@
 #include "math/math.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Skeleton {
+namespace TerreateCore::Animation {
 using namespace TerreateCore::Defines;
 
 class Joint : public Core::Object {
@@ -151,7 +150,6 @@ public:
    */
   void ApplyTransforms(Vec<mat4> const &transforms);
 };
-} // namespace Skeleton
-} // namespace TerreateCore
+} // namespace TerreateCore::Animation
 
 #endif // __TC_SKELETON_HPP__

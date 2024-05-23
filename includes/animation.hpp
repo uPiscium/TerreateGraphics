@@ -5,8 +5,7 @@
 #include "math/math.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Animation {
+namespace TerreateCore::Animation {
 using namespace TerreateCore::Defines;
 
 struct Transform {
@@ -73,7 +72,6 @@ public:
    */
   static mat4 TransformToMatrix(Transform const &transform);
 };
-} // namespace Animation
-} // namespace TerreateCore
+} // namespace TerreateCore::Animation
 
 #endif // __TC_ANIMATION_HPP__

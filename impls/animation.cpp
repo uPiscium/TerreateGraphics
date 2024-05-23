@@ -1,7 +1,6 @@
 #include "../includes/animation.hpp"
 
-namespace TerreateCore {
-namespace Animation {
+namespace TerreateCore::Animation {
 using namespace TerreateCore::Defines;
 
 void Animation::AddKeyFrame(Transform const &keyFrame, Float const &time) {
@@ -48,17 +47,16 @@ Transform Animation::Interpolate(Float const &time) const {
   Transform result;
   result.scale = Math::Lerp(k0.scale, k1.scale, t);
   result.position = Math::Lerp(k0.position, k1.position, t);
-  result.rotation = Math::Lerp(k0.rotation, k1.rotation, t);
+  // result.rotation = Math::Lerp(k0.rotation, k1.rotation, t);
 
   return result;
 }
 
 mat4 Animation::TransformToMatrix(Transform const &transform) {
-  mat4 result;
-  result = Math::Dot(Math::GetScale(transform.scale), result);
-  result = Math::Dot(Math::ToMatrix(transform.rotation), result);
-  result = Math::Dot(Math::GetTranslate(transform.position), result);
+  mat4 result = Eye<Float>(4);
+  result = Math::Scale(transform.scale) * result;
+  result = Math::ToMatrix(transform.rotation) * result;
+  result = Math::Translate(transform.position) * result;
   return result;
 }
-} // namespace Animation
-} // namespace TerreateCore
+} // namespace TerreateCore::Animation

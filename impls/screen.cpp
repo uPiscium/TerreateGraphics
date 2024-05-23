@@ -1,8 +1,7 @@
 #include "../includes/screen.hpp"
 #include <memory>
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Screen::Screen(Uint const &width, Uint const &height)
@@ -72,5 +71,4 @@ void Screen::Unbind() const {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDrawBuffer(GL_BACK);
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core

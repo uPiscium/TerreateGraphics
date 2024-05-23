@@ -1,7 +1,6 @@
 #include "../includes/buffer.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Vec<Attribute> Attribute::GenerateAttributes(Vec<Ulong> const &comps) {
@@ -55,7 +54,7 @@ void Buffer::LoadVertices(Float const *data, Size const &size) {
 }
 
 void Buffer::LoadIndices(Uint const *data, Size const &size) {
-  mNumIndices = size / sizeof(Index);
+  mNumIndices = size / sizeof(Uint);
   glBindVertexArray(mVAO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
   if (mSetIBO) {
@@ -99,12 +98,10 @@ void Buffer::DrawInstances(size_t const &numInstances,
 
   if (mNumIndices == 0) {
     TC_THROW("No indices loaded.");
-    return;
   }
 
   glDrawElementsInstanced((GLenum)drawMode, mNumIndices, GL_UNSIGNED_INT, 0,
                           numInstances);
   glBindVertexArray(0);
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core

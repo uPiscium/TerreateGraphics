@@ -1,7 +1,6 @@
 #include "../includes/shader.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Str GetShaderLog(Uint const &id) {
@@ -113,6 +112,8 @@ void Shader::Compile() {
 
   glLinkProgram(mShaderID);
   CheckLinkStatus(mShaderID);
+
+  mCompiled = true;
 }
 
 Str Shader::LoadShaderSource(const Str &path) {
@@ -137,6 +138,11 @@ void Shader::ActiveTexture(TextureTargets const &target) const {
 }
 
 void Shader::Use() const {
+  if (!mCompiled) {
+    TC_THROW("Shader is not compiled");
+    return;
+  }
+
   glUseProgram(mShaderID);
 
   if (mOption.blending) {
@@ -177,5 +183,4 @@ void Shader::Use() const {
     glDisable(GL_CULL_FACE);
   }
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core

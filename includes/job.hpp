@@ -4,8 +4,7 @@
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace TerreateCore {
-namespace Job {
+namespace TerreateCore::Job {
 using namespace TerreateCore::Core;
 using namespace TerreateCore::Defines;
 
@@ -158,7 +157,6 @@ public:
 
   virtual operator Bool() const override { return mComplete; }
 };
-} // namespace Job
-} // namespace TerreateCore
+} // namespace TerreateCore::Job
 
 #endif // __TC_JOB_HPP__

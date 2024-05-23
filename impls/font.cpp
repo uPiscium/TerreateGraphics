@@ -1,7 +1,6 @@
 #include "../includes/font.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Font::Font(Str const &path, Uint const &size) : mSize(size) {
@@ -66,7 +65,7 @@ void Font::LoadCharacter(wchar_t const &character) {
     c->texture = nullptr;
     c->size = {width, mSize};
     c->bearing = {0, 0};
-    c->advance = width;
+    c->advance = width << 6;
 
     mCharacters.insert({character, c});
     return;
@@ -89,5 +88,10 @@ void Font::LoadCharacter(wchar_t const &character) {
 
   mCharacters.insert({character, c});
 }
-} // namespace Core
-} // namespace TerreateCore
+
+void Font::LoadText(WStr const &text) {
+  for (wchar_t const &character : text) {
+    LoadCharacter(character);
+  }
+}
+} // namespace TerreateCore::Core

@@ -18,6 +18,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "exceptions.hpp"
+
 // Defines
 #define TC_DISABLE_COPY_AND_ASSIGN(Type)                                       \
   Type(Type const &) = delete;                                                 \
@@ -46,8 +48,11 @@
   throw TerreateCore::Exception::CoreException(message)
 #endif // TC_THROW
 
-namespace TerreateCore {
-namespace Defines {
+namespace TerreateCore::Defines {
+// Core variables
+extern bool GLFW_INITIALIZED;
+extern bool GLAD_INITIALIZED;
+
 // Type aliases
 // TC types (TerreateCore types)
 typedef bool TCbool;
@@ -108,6 +113,8 @@ using JoystickCallback = std::function<void(int joystickID, int event)>;
 // Concepts
 template <typename Derived, typename Base>
 concept extends = std::derived_from<Derived, Base>;
+template <typename Enum>
+concept enumtype = std::is_enum_v<Enum>;
 
 // Structs
 struct Modifier {
@@ -440,14 +447,16 @@ enum class Keyboard {
 };
 
 // Use to select data type included in buffer.
-enum class ModelFlag {
-  NORMAL = 1,
-  UV = 1 << 1,
-  COLOR = 1 << 2,
-  JOINT = 1 << 3,
-  WEIGHT = 1 << 4,
-  MATERIAL = 1 << 5,
-  MORPH = 1 << 6
+enum class ModelFlag : TCu8 {
+  EMPTY = 0,
+  POSITION = 1,
+  NORMAL = 1 << 1,
+  UV = 1 << 2,
+  COLOR = 1 << 3,
+  JOINT = 1 << 4,
+  WEIGHT = 1 << 5,
+  MATERIAL = 1 << 6,
+  MORPH = 1 << 7
 };
 
 // Use to select mouse button input.
@@ -563,7 +572,6 @@ static unsigned COLOR_BUFFERS[] = {
     (GLenum)Attachment::COLOR26, (GLenum)Attachment::COLOR27,
     (GLenum)Attachment::COLOR28, (GLenum)Attachment::COLOR29,
     (GLenum)Attachment::COLOR30, (GLenum)Attachment::COLOR31};
-} // namespace Defines
-} // namespace TerreateCore
+} // namespace TerreateCore::Defines
 
 #endif // __TC_DEFINES_HPP__

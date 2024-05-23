@@ -1,7 +1,6 @@
 #include "../includes/texture.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 void Texture::SetFilter(FilterType const &filter) {
@@ -143,5 +142,4 @@ void CubeTexture::LoadDatas(Vec<TextureData> const &datas) {
     this->LoadData((CubeFace)((GLenum)CubeFace::RIGHT + i), datas[i]);
   }
 }
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core

@@ -1,24 +1,25 @@
 #ifndef __TC_MODEL_HPP__
 #define __TC_MODEL_HPP__
 
+#include "bitflag.hpp"
 #include "buffer.hpp"
 #include "defines.hpp"
 #include "math/math.hpp"
 #include "object.hpp"
 #include "texture.hpp"
 
-namespace TerreateCore {
-namespace Model {
+namespace TerreateCore::Model {
 using namespace TerreateCore::Defines;
+using namespace TerreateCore::Math;
 
-using TexMap = Shared<Core::Texture>;
+using TextureMap = Shared<Core::Texture>;
 
 class MaterialData : public Core::Object {
 private:
   Str mName;
   Map<ColorProperty, vec4> mColorProperties;
   Map<FloatProperty, Float> mFloatProperties;
-  Map<TextureProperty, TexMap> mTextureProperties;
+  Map<TextureProperty, TextureMap> mTextureProperties;
 
 public:
   /*
@@ -59,7 +60,7 @@ public:
    * error.
    * @return: The texture property.
    */
-  TexMap GetTextureProperty(TextureProperty const &property) const {
+  TextureMap GetTextureProperty(TextureProperty const &property) const {
     return mTextureProperties.at(property);
   }
 
@@ -85,7 +86,7 @@ public:
    * @param: property: The texture property to set.
    * @param: value: The texture property.
    */
-  void SetTextureProperty(TextureProperty const &property, TexMap value);
+  void SetTextureProperty(TextureProperty const &property, TextureMap value);
 
   /*
    * @brief: Check if the material has a color property.
@@ -151,133 +152,213 @@ public:
   Float const &operator[](FloatProperty const &property) const {
     return this->GetFloatProperty(property);
   }
-  TexMap operator[](TextureProperty const &property) const {
+  TextureMap operator[](TextureProperty const &property) const {
     return this->GetTextureProperty(property);
   }
 };
 
 class MeshData {
 private:
-  ModelFlag mFlag;
+  BufferUsage mUsage;
+  Core::BitFlag<ModelFlag> mFlag;
+  Map<ModelFlag, Vec<Vec<Float>>> mVertexProperties;
+  Vec<Vec<Uint>> mVertexSet;
   Vec<Float> mVertices;
   Vec<Uint> mIndices;
   Int mMaterial;
 
 public:
-  MeshData() {}
+  /*
+   * @brief: This class stores mesh data of a model. Stored datas are buffer
+   * usage, flags, vertex properties(or vertices), indices, and material index.
+   * @param: usage: Buffer usage.
+   */
+  MeshData(BufferUsage const &usage = BufferUsage::STATIC_DRAW)
+      : mUsage(usage), mMaterial(-1) {}
   ~MeshData() {}
 
   /*
    * @brief: Get the flag of the mesh data.
    * @return: Flag of the mesh data.
    */
-  ModelFlag const &GetFlag() const { return mFlag; }
+  BufferUsage const &GetUsage() const { return mUsage; }
   /*
-   * @brief: Get the vertices of the mesh data.
-   * @return: Vertices of the mesh data.
+   * @brief: Get the flag of the mesh data.
+   * @return: Flag of the mesh data.
    */
-  Vec<Float> const &GetVertices() const { return mVertices; }
+  ModelFlag GetFlag() const { return (ModelFlag)mFlag; }
+  /*
+   * @brief: Get the material index of the mesh data.
+   * @return: Material index of the mesh data.
+   */
+  Int const &GetMaterial() const { return mMaterial; }
   /*
    * @brief: Get the indices of the mesh data.
    * @return: Indices of the mesh data.
    */
   Vec<Uint> const &GetIndices() const { return mIndices; }
   /*
-   * @brief: Get the material index of the mesh data.
-   * @return: Material index of the mesh data.
+   * @brief: Get the vertices of the mesh data.
+   * @return: Vertices of the mesh data.
    */
-  Int const &GetMaterial() const { return mMaterial; }
+  Vec<Float> const &AcquireVertices();
 
   /*
    * @brief: Set the flag of the mesh data.
    * @param: flag: Flag to set.
    */
-  void SetFlag(ModelFlag const &flag) { mFlag = flag; }
-  /*
-   * @brief: Set the vertices of the mesh data.
-   * @param: vertices: Vertices to set.
-   */
-  void SetVertices(Vec<Float> const &vertices) { mVertices = vertices; }
-  /*
-   * @brief: Set the indices of the mesh data.
-   * @param: indices: Indices to set.
-   */
-  void SetIndices(Vec<Uint> const &indices) { mIndices = indices; }
-  /*
-   * @brief: Set the material index of the mesh data.
-   * @param: material: Material index to set.
-   */
-  void SetMaterial(Uint const &material) { mMaterial = material; }
+  void SetFlag(ModelFlag const &flag) { mFlag.Set(flag); }
 
   /*
    * @brief: Check if the mesh data has normals.
    * @return: True if the mesh data has normals, false otherwise.
    */
-  Bool HasNormals() const {
-    return ((Uint)mFlag & (Uint)ModelFlag::NORMAL) != 0;
-  }
+  Bool HasNormals() const { return mFlag & ModelFlag::NORMAL; }
   /*
    * @brief: Check if the mesh data has UVs.
    * @return: True if the mesh data has UVs, false otherwise.
    */
-  Bool HasUVs() const { return ((Uint)mFlag & (Uint)ModelFlag::UV) != 0; }
+  Bool HasUVs() const { return mFlag & ModelFlag::UV; }
   /*
    * @brief: Check if the mesh data has colors.
    * @return: True if the mesh data has colors, false otherwise.
    */
-  Bool HasColors() const { return ((Uint)mFlag & (Uint)ModelFlag::COLOR) != 0; }
+  Bool HasColors() const { return mFlag & ModelFlag::COLOR; }
   /*
    * @brief: Check if the mesh data has joints.
    * @return: True if the mesh data has joints, false otherwise.
    */
-  Bool HasJoint() const { return ((Uint)mFlag & (Uint)ModelFlag::JOINT) != 0; }
+  Bool HasJoint() const { return mFlag & ModelFlag::JOINT; }
   /*
    * @brief: Check if the mesh data has weights.
    * @return: True if the mesh data has weights, false otherwise.
    */
-  Bool HasWeight() const {
-    return ((Uint)mFlag & (Uint)ModelFlag::WEIGHT) != 0;
-  }
+  Bool HasWeight() const { return mFlag & ModelFlag::WEIGHT; }
   /*
    * @brief: Check if the mesh data has material.
    * @return: True if the mesh data has material, false otherwise.
    */
-  Bool HasMaterial() const {
-    return ((Uint)mFlag & (Uint)ModelFlag::MATERIAL) != 0;
-  }
+  Bool HasMaterial() const { return mFlag & ModelFlag::MATERIAL; }
   /*
    * @brief: Check if the mesh data has morph.
    * @return: True if the mesh data has morph, false otherwise.
    */
-  Bool HasMorph() const { return ((Uint)mFlag & (Uint)ModelFlag::MORPH) != 0; }
+  Bool HasMorph() const { return mFlag & ModelFlag::MORPH; }
+
+  /*
+   * @brief: Load the flags of the mesh data.
+   * @param: flags: Flags to load.
+   */
+  void LoadFlag(ModelFlag const &flags) { mFlag.Set(flags); }
+  /*
+   * @brief: Load the vertices of the mesh data.
+   * @param: vertices: Vertices to load.
+   */
+  void LoadVertices(Vec<Float> const &vertices) { mVertices = vertices; }
+  /*
+   * @brief: Load the indices of the mesh data.
+   * @param: indices: Indices to load.
+   */
+  void LoadIndices(Vec<Uint> const &indices) { mIndices = indices; }
+  /*
+   * @brief: Load the material index of the mesh data.
+   * @param: material: Material index to load.
+   */
+  void LoadMaterial(Int const &material) { mMaterial = material; }
+
+  /*
+   * @brief: Load the vertex set data of the mesh data.
+   * @param: sets: Face data to load.
+   */
+  void LoadVertexSet(Vec<Vec<Uint>> const &sets) { mVertexSet = sets; }
+  /*
+   * @brief: Load the position data of the mesh data.
+   * @param: position: Position data to load.
+   */
+  void LoadPosition(Vec<Vec<Float>> const &position) {
+    mVertexProperties[ModelFlag::POSITION] = position;
+  }
+  /*
+   * @brief: Load the normal data of the mesh data.
+   * @param: normal: Normal data to load.
+   */
+  void LoadNormal(Vec<Vec<Float>> const &normal);
+  /*
+   * @brief: Load the UV data of the mesh data.
+   * @param: uv: UV data to load.
+   */
+  void LoadUV(Vec<Vec<Float>> const &uv);
+  /*
+   * @brief: Load the color data of the mesh data.
+   * @param: color: Color data to load.
+   */
+  void LoadColor(Vec<Vec<Float>> const &color);
+  /*
+   * @brief: Load the joint data of the mesh data.
+   * @param: joint: Joint data to load.
+   */
+  void LoadJoint(Vec<Vec<Float>> const &joint);
+  /*
+   * @brief: Load the weight data of the mesh data.
+   * @param: weight: Weight data to load.
+   */
+  void LoadWeight(Vec<Vec<Float>> const &weight);
+  /*
+   * @brief: Load the morph data of the mesh data.
+   * @param: morph: Morph data to load.
+   */
+  void LoadMorph(Vec<Vec<Float>> const &morph);
+
+  /*
+   * @brief: Construct buffer data of the mesh from the loaded vertex
+   * properties.
+   */
+  void Construct();
 };
 
 class Mesh : public Core::Object {
 private:
+  BufferUsage mUsage;
+  Core::BitFlag<ModelFlag> mFlag;
   Shared<Core::Buffer> mBuffer;
   Uint mMaterial;
 
 public:
   /*
    * @brief: This class draws a mesh with material.
+   */
+  Mesh() : mBuffer(nullptr), mFlag(ModelFlag::EMPTY) {}
+  /*
+   * @brief: This class draws a mesh with material.
    * @param: data: Mesh data to draw.
    */
-  Mesh(MeshData const &data);
+  Mesh(MeshData &data);
   Mesh(Mesh const &other)
-      : mBuffer(other.mBuffer), mMaterial(other.mMaterial) {}
+      : mUsage(other.mUsage), mFlag(other.mFlag), mBuffer(other.mBuffer),
+        mMaterial(other.mMaterial) {}
   ~Mesh() {}
 
   /*
-   * @brief: Get the raw buffer of the mesh.
-   * @return: Raw buffer data of the mesh.
+   * @brief: Get the buffer usage.
+   * @return: Buffer usage.
    */
-  Shared<Core::Buffer> GetBuffer() const { return mBuffer; }
+  BufferUsage const &GetUsage() const { return mUsage; }
   /*
-   * @brief: Get the material index of the mesh.
+   * @brief: Get material index of the mesh.
    * @return: Material index of the mesh.
    */
   Uint const &GetMaterial() const { return mMaterial; }
+  /*
+   * @brief: Get the flag of the mesh.
+   * @return: Flag of the mesh.
+   */
+  ModelFlag GetFlag() const { return (ModelFlag)mFlag; }
 
+  /*
+   * @brief: Load the data of the mesh.
+   * @param: data: Mesh data to load.
+   */
+  void LoadData(MeshData &data);
   /*
    * @brief: Draw the mesh.
    * @note: Mesh data is assumed to be organized in triangles.
@@ -287,7 +368,12 @@ public:
   Mesh &operator=(Mesh const &other);
 
 public:
-  static Vec<Core::Attribute> GetAttributes(ModelFlag const &flag);
+  /*
+   * @brief: Generate the attributes of the mesh from the flag.
+   * @param: flag: Flag of the mesh.
+   * @return: Attributes of the mesh.
+   */
+  static Vec<Core::Attribute> GenerateAttributes(ModelFlag const &flag);
 };
 
 class Model : public Core::Object {
@@ -334,7 +420,6 @@ public:
 
   Model &operator=(Model const &other);
 };
-} // namespace Model
-} // namespace TerreateCore
+} // namespace TerreateCore::Model
 
 #endif // __TC_MODEL_HPP__

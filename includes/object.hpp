@@ -6,8 +6,7 @@
 
 #include "defines.hpp"
 
-namespace TerreateCore {
-namespace Core {
+namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 class UUID {
@@ -55,8 +54,7 @@ public:
 
   virtual operator Bool() const { return true; }
 };
-} // namespace Core
-} // namespace TerreateCore
+} // namespace TerreateCore::Core
 
 std::ostream &operator<<(std::ostream &stream,
                          const TerreateCore::Core::UUID &uuid);
