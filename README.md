@@ -27,6 +27,11 @@ cmake --build .
 ```
 Then `TerreateCore.lib` will be created in `build` folder.
 
+** If you have `***\r~~` error, you can use the command below.
+```bash
+dos2unix build.sh
+```
+
 ## Linux
 1. Make `build` folder in the root folder and go to the `build` folder.
 2. Run `cmake ..` in the `build` folder.
