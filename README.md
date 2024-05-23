@@ -1,31 +1,47 @@
-# About TerreateCore `TerreateCore` is a basic `OpenGL` handler for `C++`. This framework is using `glfw` and `glad` for handling `OpenGL`. You can get more information about `OpenGL` in `glfw` [homepage](https://www.glfw.org/docs/latest/) The license is BSD3(BSD 3-Clause "New" or "Revised" License). # Sections
+# About TerreateCore
+`TerreateCore` is a basic `OpenGL` handler for `C++`. This framework is using `glfw` and `glad` for handling `OpenGL`. You can get more information about `OpenGL` in `glfw` [homepage](https://www.glfw.org/docs/latest/) The license is BSD3(BSD 3-Clause "New" or "Revised" License). `cmake` is needed to build this project, so you have to install `cmake` before building this project.
+
+# Sections
 - [How to use](#how-to-use)
   - [Windows](#windows)
   - [Linux](#linux)
-  - [Test codes](#test-codes)
-- [Examples](#examples)
 - [Contact](#contact)
 
 # How to use
-`TerreateCore` supports `Windows` and `Linux`. Temporally, `Windows` is not supported.
+`TerreateCore` supports `Windows` and `Linux`.
+You can use `TerreateCore` by following the steps below.
+**Be sure to install `cmake` before building this project.**
+
 ## Windows
-1. Run `compile.bat`.
-2. `GeoFrame.lib` will be created in `build/Debug` folder.
-Then copy `TerreateCore.lib` to your project folder.
+1. Make `build` folder in the root folder and go to the `build` folder.
+2. Run `cmake ..` in the `build` folder.
+3. Run `cmake --build .` in the `build` folder.
+
+Here is the example of the steps above.
+```bash
+# C:/Users/username/.../TerreateCore
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+Then `TerreateCore.lib` will be created in `build` folder.
 
 ## Linux
-1. Run `compile.sh`.
-2. `libTerreateCore.a` will be created in `build` folder.
-Then copy `libTerreateCore.a` to your project folder.
+1. Make `build` folder in the root folder and go to the `build` folder.
+2. Run `cmake ..` in the `build` folder.
+3. Run `cmake --build .` in the `build` folder.
 
-## Test codes
-You can test `TerreateCore` with `testBuild.bat` or `testBuild.sh`. Then run `runTest.bat` or `runTest.sh` file.
-
-# Examples
-## Window example
-```cpp
-#include "TerreateCore.hpp"
+Here is the example of the steps above.
+```bash
+# /home/username/.../TerreateCore
+mkdir build
+cd build
+cmake ..
+cmake --build .
 ```
+Then `libTerreateCore.a` will be created in `build` folder.
+
 
 # Contact
 If you have any questions, please contact me by email.
