@@ -17,68 +17,98 @@
 -----
 
 # 型エイリアス一覧
+## 基本型
+- `bool -> TCbool`
+- `int8_t -> TCi8`
+- `uint8_t -> TCu8`
+- `int16_t -> TCi16`
+- `uint16_t -> TCu16`
+- `int32_t -> TCi32`
+- `uint32_t -> TCu32`
+- `int64_t -> TCi64`
+- `uint64_t -> TCu64`
+- `float -> TCfloat`
+- `double -> TCdouble`
 
-## `基本型`の型エイリアス
-- `ID = unsigned`
-- `Index = unsigned long long`
-- `EventID = unsigned long long`
+- `TCbool -> Bool`
+- `TCi8 -> Byte`
+- `TCu8 -> Ubyte`
+- `TCi16 -> Short`
+- `TCu16 -> Ushort`
+- `TCi32 -> Int`
+- `TCu32 -> Uint`
+- `TCi64 -> Long`
+- `TCu64 -> Ulong`
+- `TCfloat -> Float`
+- `TCdouble -> Double`
 
-## `std`の型エイリアス
-- `Map = std::unordered_map`
-- `Pair = std::pair`
-- `Set = std::unordered_set`
-- `Shared = std::shared_ptr`
-- `Queue = std::queue`
-- `UniqueLock = std::unique_lock`
-- `LockGuard = std::lock_guard`
-- `Atomic = std::atomic`
-- `Vec = std::vector`
-- `Function = std::function`
-- `Mutex = std::mutex`
-- `Thread = std::thread`
-- `CondVar = std::condition_variable`
-- `Str = std::string`
-- `WStr = std::wstring`
+- `std::mutex -> Mutex`
+- `std::condition_variable -> CondVar`
+- `std::thread -> Thread`
+- `TCu32 -> ID`
+- `TCu64 -> Index`
+- `TCu64 -> EventID`
+- `TCu64 -> Size`
+- `std::string -> Str`
+- `std::wstring -> WStr`
+- `std::stringstream -> Stream`
+- `std::ifstream -> InputFileStream`
 
-## `GeoMath`の型エイリアス
-- `vec2T = GeoMath::vec2`
-- `vec3T = GeoMath::vec3`
-- `vec4T = GeoMath::vec4`
-- `mat2T = GeoMath::mat2`
-- `mat2x3T = GeoMath::mat2x3`
-- `mat2x4T = GeoMath::mat2x4`
-- `mat3x2T = GeoMath::mat3x2`
-- `mat3T = GeoMath::mat3`
-- `mat3x4T = GeoMath::mat3x4`
-- `mat4x2T = GeoMath::mat4x2`
-- `mat4x3T = GeoMath::mat4x3`
-- `mat4T = GeoMath::mat4`
-- `QuaternionT = GeoMath::Quaternion`
-- `vec2 = vec2T`
-- `vec3 = vec3T`
-- `vec4 = vec4T`
-- `mat2 = mat2T`
-- `mat2x3 = mat2x3T`
-- `mat2x4 = mat2x4T`
-- `mat3x2 = mat3x2T`
-- `mat3 = mat3T`
-- `mat3x4 = mat3x4T`
-- `mat4x2 = mat4x2T`
-- `mat4x3 = mat4x3T`
-- `mat4 = mat4T`
-- `Quaternion = QuaternionT`
+- `Map = std::unordered_map<S, T>`
+- `Pair = std::pair<T, T>`
+- `Set = std::unordered_set<T>`
+- `Shared = std::shared_ptr<T>`
+- `Queue = std::queue<T, Container>`
+- `UniqueLock = std::unique_lock<T>`
+- `LockGuard = std::lock_guard<T>`
+- `Atomic = std::atomic<T>`
+- `Vec = std::vector<T>`
+- `Function = std::function<T>`
+
+- `ErrorCallback = std::function<void(int errorCode, char const *message)>`
+- `MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>`
+- `JoystickCallback = std::function<void(int joystickID, int event)>`
+
+## `math`モジュール
+- `complexT = Complex<T>`
+- `fractionT = Fraction<T>`
+- `matrixT = MatrixBase<T>`
+- `vec2T = ColumnVector2D<T>`
+- `vec3T = ColumnVector3D<T>`
+- `vec4T = ColumnVector4D<T>`
+- `mat2T = Matrix2x2<T>`
+- `mat2x3T = Matrix2x3<T>`
+- `mat2x4T = Matrix2x4<T>`
+- `mat3x2T = Matrix3x2<T>`
+- `mat3T = Matrix3x3<T>`
+- `mat3x4T = Matrix3x4<T>`
+- `mat4x2T = Matrix4x2<T>`
+- `mat4x3T = Matrix4x3<T>`
+- `mat4T = Matrix4x4<T>`
+- `quaternionT = Quaternion<T>`
+
+- `complex = complexT<Float>`
+- `fraction = fractionT<Int>`
+- `matrix = matrixT<Float>`
+- `vec2 = vec2T<Float>`
+- `vec3 = vec3T<Float>`
+- `vec4 = vec4T<Float>`
+- `mat2 = mat2T<Float>`
+- `mat2x3 = mat2x3T<Float>`
+- `mat2x4 = mat2x4T<Float>`
+- `mat3x2 = mat3x2T<Float>`
+- `mat3 = mat3T<Float>`
+- `mat3x4 = mat3x4T<Float>`
+- `mat4x2 = mat4x2T<Float>`
+- `mat4x3 = mat4x3T<Float>`
+- `mat4 = mat4T<Float>`
+- `quaternion = quaternionT<Float>`
 
 -----
 
-# 例外一覧
-## APIError
-このエラーは`OpenGL`のAPIライブラリである`glad`もしくは`glfw`が実行に失敗した場合に発生します。また、このエラーは`glad`、`glfw`もしくは`freetype`の初期化が失敗した場合にも発生します。
-
-## KernelError
-このエラーは`GeoFrame`内部のクラスが何らかの理由で正常な動作を行えなかった場合に発生します。その原因は様々であるため、エラーメッセージを参照してください。
-
-## InterfaceError
-このエラーは`GeoFrame`のオブジェクトに対して不正な引数を渡した場合や、不正な操作を行った場合に発生します。
+# 例外
+## CoreError
+このエラーは`GeoFrame`の内部で発生したエラーを示します。このエラーは`GeoFrame`内部で発生するエラー全てで使用されます。
 
 -----
 
