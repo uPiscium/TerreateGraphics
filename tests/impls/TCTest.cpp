@@ -31,9 +31,10 @@ public:
 
 public:
   TestApp() {
-    mFont = std::make_shared<Font>("../resources/AsebiMin-Light.otf", 200);
+    mFont = std::make_shared<Font>("resources/AsebiMin-Light.otf", 200);
     mText.LoadText(L"日本語テスト", mFont);
-    mTexture.LoadData(Texture::LoadTexture("../resources/testImage.png"));
+    mText.LoadShader("resources/textVert.glsl", "resources/textFrag.glsl");
+    mTexture.LoadData(Texture::LoadTexture("resources/testImage.png"));
 
     MeshData data;
     data.LoadPosition({{-200.0f, -200.0f, 200.0f},
@@ -69,9 +70,9 @@ public:
     mTransform = proj * view;
 
     mShader.AddVertexShaderSource(
-        Shader::LoadShaderSource("../resources/vertex.glsl"));
+        Shader::LoadShaderSource("resources/vertex.glsl"));
     mShader.AddFragmentShaderSource(
-        Shader::LoadShaderSource("../resources/fragment.glsl"));
+        Shader::LoadShaderSource("resources/fragment.glsl"));
     mShader.Compile();
     // Uncomment if you want to break your brain...
     /* mShader.UseDepth(false); */
