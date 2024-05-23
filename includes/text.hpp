@@ -14,6 +14,7 @@ using namespace TerreateCore::Math;
 
 class Text : public Core::Object {
 private:
+  Bool mShaderLoaded = false;
   WStr mText;
   Model::MeshData mTextMeshData;
   Vec<Vec<Float>> mPositions;
@@ -30,6 +31,7 @@ public:
   Text(WStr const &text, Shared<Core::Font> const &font);
   ~Text() = default;
 
+  void LoadShader(Str const &vertexPath, Str const &fragmentPath);
   void LoadText(Str const &text, Shared<Core::Font> const &font) {
     this->LoadText(WStr(text.begin(), text.end()), font);
   }

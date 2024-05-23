@@ -30,22 +30,12 @@ void Text::LoadText() {
 
 Text::Text() {
   mTextMeshData.SetFlag(ModelFlag::UV);
-  mShader.AddVertexShaderSource(
-      Shader::LoadShaderSource("../resources/textVert.glsl"));
-  mShader.AddFragmentShaderSource(
-      Shader::LoadShaderSource("../resources/textFrag.glsl"));
-  mShader.Compile();
   mText = L"";
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
 }
 
 Text::Text(Str const &text, Shared<Core::Font> const &font) : mFont(font) {
   mTextMeshData.SetFlag(ModelFlag::UV);
-  mShader.AddVertexShaderSource(
-      Shader::LoadShaderSource("../resources/textVert.glsl"));
-  mShader.AddFragmentShaderSource(
-      Shader::LoadShaderSource("../resources/textFrag.glsl"));
-  mShader.Compile();
   mText = WStr(text.begin(), text.end());
   this->LoadText();
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
@@ -54,13 +44,15 @@ Text::Text(Str const &text, Shared<Core::Font> const &font) : mFont(font) {
 Text::Text(WStr const &text, Shared<Core::Font> const &font)
     : mFont(font), mText(text) {
   mTextMeshData.SetFlag(ModelFlag::UV);
-  mShader.AddVertexShaderSource(
-      Shader::LoadShaderSource("../resources/textVert.glsl"));
-  mShader.AddFragmentShaderSource(
-      Shader::LoadShaderSource("../resources/textFrag.glsl"));
-  mShader.Compile();
   this->LoadText();
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
+}
+
+void Text::LoadShader(Str const &vertexPath, Str const &fragmentPath) {
+  mShader.AddVertexShaderSource(Shader::LoadShaderSource(vertexPath));
+  mShader.AddFragmentShaderSource(Shader::LoadShaderSource(fragmentPath));
+  mShader.Compile();
+  mShaderLoaded = true;
 }
 
 void Text::LoadText(WStr const &text, Shared<Core::Font> const &font) {
@@ -71,6 +63,10 @@ void Text::LoadText(WStr const &text, Shared<Core::Font> const &font) {
 
 void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
                   Float const &windowHeight) {
+  if (!mShaderLoaded) {
+    TC_THROW("Shader not loaded");
+  }
+
   for (int i = 0; i < mText.size(); ++i) {
     auto &position = mPositions[i];
     auto &chr = mFont->GetCharacter(mText[i]);
