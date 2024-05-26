@@ -165,7 +165,7 @@ private:
   Vec<Vec<Uint>> mVertexSet;
   Vec<Float> mVertices;
   Vec<Uint> mIndices;
-  Int mMaterial;
+  Shared<MaterialData> mMaterial;
 
 public:
   /*
@@ -174,7 +174,7 @@ public:
    * @param: usage: Buffer usage.
    */
   MeshData(BufferUsage const &usage = BufferUsage::STATIC_DRAW)
-      : mUsage(usage), mMaterial(-1) {}
+      : mUsage(usage), mMaterial(nullptr) {}
   ~MeshData() {}
 
   /*
@@ -189,9 +189,9 @@ public:
   ModelFlag GetFlag() const { return (ModelFlag)mFlag; }
   /*
    * @brief: Get the material index of the mesh data.
-   * @return: Material index of the mesh data.
+   * @return: Material data of the mesh data.
    */
-  Int const &GetMaterial() const { return mMaterial; }
+  Shared<MaterialData> const &GetMaterial() const { return mMaterial; }
   /*
    * @brief: Get the indices of the mesh data.
    * @return: Indices of the mesh data.
@@ -262,9 +262,11 @@ public:
   void LoadIndices(Vec<Uint> const &indices) { mIndices = indices; }
   /*
    * @brief: Load the material index of the mesh data.
-   * @param: material: Material index to load.
+   * @param: material: Material data to load.
    */
-  void LoadMaterial(Int const &material) { mMaterial = material; }
+  void LoadMaterial(Shared<MaterialData> const &material) {
+    mMaterial = material;
+  }
 
   /*
    * @brief: Load the vertex set data of the mesh data.
@@ -321,7 +323,7 @@ private:
   BufferUsage mUsage;
   Core::BitFlag<ModelFlag> mFlag;
   Shared<Core::Buffer> mBuffer;
-  Uint mMaterial;
+  Shared<MaterialData> mMaterial;
 
 public:
   /*
@@ -345,9 +347,9 @@ public:
   BufferUsage const &GetUsage() const { return mUsage; }
   /*
    * @brief: Get material index of the mesh.
-   * @return: Material index of the mesh.
+   * @return: Material data of the mesh.
    */
-  Uint const &GetMaterial() const { return mMaterial; }
+  Shared<MaterialData> const &GetMaterial() const { return mMaterial; }
   /*
    * @brief: Get the flag of the mesh.
    * @return: Flag of the mesh.
@@ -379,7 +381,7 @@ public:
 class Model : public Core::Object {
 private:
   Vec<Mesh> mMeshes;
-  Vec<MaterialData> mMaterials;
+  Vec<Shared<MaterialData>> mMaterials;
 
 public:
   /*
@@ -397,7 +399,7 @@ public:
    * @brief: Get the material datas of the model.
    * @return: Material datas of the model.
    */
-  Vec<MaterialData> const &GetMaterials() const { return mMaterials; }
+  Vec<Shared<MaterialData>> const &GetMaterials() const { return mMaterials; }
 
   /*
    * @brief: Add mesh data to the model.
@@ -408,7 +410,7 @@ public:
    * @brief: Add mateiral data to the model.
    * @return: material: Material data to add.
    */
-  void AddMaterial(MaterialData const &material) {
+  void AddMaterial(Shared<MaterialData> const &material) {
     mMaterials.push_back(material);
   }
 
