@@ -120,10 +120,69 @@
 -----
 
 # Animation関連のクラス
+## 内容
+- [Transformクラス](#Transformクラス)
+- [Animationクラス(WIP)](#Animationクラス(WIP))
+
+## Transformクラス
+このクラスはアニメーションのキーフレーム情報を管理します。このクラスのインスタンスはアニメーションの対象となるオブジェクトに対して適用されます。\
+主なメンバは以下の通りです。
+- `scale` : スケールを示す`vec3`型の変数です。
+- `position` : 位置を示す`vec3`型の変数です。
+- `rotation` : 回転を示す`quaternion`型の変数です。
+
+## Animationクラス(WIP)
+このクラスはアニメーションを管理します。アニメーションの制御はこのクラスのメンバ関数を利用して行ってください。\
+**このクラスは現在開発中です。アニメーションの再生や計算が正しく行われない可能性があります。バグ等が発生した場合は`upiscium@gmail.com`までご連絡ください。**\
+主なメンバ関数は以下の通りです。
+- `Animation()`
+アニメーション管理用オブジェクトを生成します。
+- `Str const &GetName() const`
+アニメーションの名前を取得します。
+- `Vec<Transform> const &GetKeyFrames() const`
+アニメーションのキーフレームを取得します。
+- `void SetName(Str const &name)`
+アニメーションの名前を設定します。
+- `void AddKeyFrame(Transform const &keyFrame, Float const &time)`
+アニメーションにキーフレームを追加します。キーフレームの時間は`float`型で指定してください。
+- `void RemoveKeyFrame(Uint const &index)`
+アニメーションから指定したインデックスのキーフレームを削除します。
+- `Transform Interpolate(Float const &time) const`
+アニメーションの指定した時間のキーフレームを取得します。
+- `Transform const &operator[](Uint const &index) const`
+アニメーションの指定したインデックスのキーフレームを取得します。
+- `Transform operator[](Float const &time) const`
+アニメーションの指定した時間のキーフレームを取得します。
+- `static mat4 TransformToMatrix(Transform const &transform)`
+キーフレームデータを行列に変換します。
 
 -----
 
 # BitFlag関連のクラス
+## 内容
+- [BitFlagクラス](#BitFlagクラス)
+
+## BitFlagクラス
+このクラスはビットフラグを管理します。ビットフラグは`enum`型に対してビット演算を行ったときに自動変換されます。このクラスはビットフラグの操作を行うためのメンバ関数を提供します。\
+主なメンバ関数は以下の通りです。(`T`は`enum`型)
+- `void Set(T const &flag)`
+ビットフラグを設定します。
+- `void Set(Flag const &flag)`
+ビットフラグを設定します。
+- `void Unset(T const &flag)`
+ビットフラグを解除します。
+- `void Unset(Flag const &flag)`
+ビットフラグを解除します。
+- `void Toggle(T const &flag)`
+ビットフラグを反転します。
+- `void Toggle(Flag const &flag)`
+ビットフラグを反転します。
+- `Bool IsSet(T const &flag) const`
+ビットフラグが設定されているかを取得します。
+- `Bool IsSet(Flag const &flag) const`
+ビットフラグが設定されているかを取得します。
+- `void Clear()`
+ビットフラグを全て解除します。
 
 -----
 
@@ -136,7 +195,7 @@
 - [頂点属性](#頂点属性)
 
 ## Attributeクラス
-このクラスは`OpenGL`の頂点属性に対する各設定値を保持します。各設定値の詳細は[頂点属性](#頂点属性)を参照してください。\
+このクラスは`OpenGL`の頂点属性に対する各設定値を保持します。各設定値の詳細は[頂点属性](#頂点属性)を参照してください。
 
 - `Attribute(Ulong const &index, Ulong const &comps, Ulong const &stride, Ulong const &offset)`
 頂点属性を生成します。
@@ -156,7 +215,7 @@
 ## Bufferクラス
 このクラスは`OpenGL`のバッファオブジェクトを制御します。バッファの`GPU`メモリへの送信及びバッファ内容の更新はこのクラスのメンバ関数を利用して行ってください。\
 主なメンバ関数は以下の通りです。
-- Buffer(BufferUsage usage)
+- `Buffer(BufferUsage usage)`
 OpenGLのバッファオブジェクトを生成します。バッファの使用方法は[BufferUsage](#BufferUsage列挙体)列挙体のメンバを指定してください。
 - `BufferUsage const &GetUsage() const`
 バッファのOpenGL上での使用方法を取得します。
@@ -336,7 +395,6 @@ OpenGL上での描画モードを指定するための列挙体です。列挙�
 - `virtual void WaitForAll()`
 ジョブシステムが実行中のジョブが全て完了するまで待機します。この関数を呼び出すとジョブシステムは全てのジョブが完了するまで待機します。
 
-
 ## Job対応関数フォーマット
 `SimpleJob`クラスで実行可能な関数のフォーマットは以下の通りです。
 - `Function<void()>`\
@@ -354,6 +412,120 @@ SimpleJob job(func);
 -----
 
 # Model関連のクラス
+## 内容
+- [ColorProperty列挙体](#ColorProperty列挙体)
+- [FloatProperty列挙体](#FloatProperty列挙体)
+- [TextureProperty列挙体](#TextureProperty列挙体)
+- [MaterialDataクラス](#MaterialDataクラス)
+- [MeshDataクラス](#MeshDataクラス)
+- [Meshクラス](#Meshクラス)
+- [Modelクラス](#Modelクラス)
+
+## ColorProperty列挙体
+この列挙体はマテリアルのカラープロパティを示すための列挙体です。\
+列挙体のメンバは以下の通りです。
+| メンバ | 用途 |
+|:---:|-----|
+| `AMBIENT` | 環境光の色 |
+| `DIFFUSE` | 拡散光の色 |
+| `SPECULAR` | 鏡面反射光の色 |
+| `EMISSIVE` | 放射光の色 |
+
+## FloatProperty列挙体
+この列挙体はマテリアルの定数プロパティを示すための列挙体です。\
+列挙体のメンバは以下の通りです。
+| メンバ | 用途 |
+|:---:|-----|
+| `SHININESS` | 光沢度 |
+| `TRANSPARENCY` | 透明度 |
+| `REFLECTIVITY` | 反射率 |
+| `REFRACTIVITY` | 屈折率 |
+
+## TextureProperty列挙体
+この列挙体はマテリアルのテクスチャプロパティを示すための列挙体です。\
+列挙体のメンバは以下の通りです。
+| メンバ | 用途 |
+|:---:|-----|
+| `NORMAL` | 法線マップ |
+| `AMBIENT` | 環境光マップ |
+| `DIFFUSE` | 拡散光マップ |
+| `SPECULAR` | 鏡面反射光マップ |
+| `EMISSIVE` | 放射光マップ |
+| `DISSOLVE` | 透明度マップ |
+| `SHININESS` | 光沢度マップ |
+| `REFLECTION` | 反射マップ |
+| `REFRACTION` | 屈折マップ |
+
+## MaterialDataクラス
+このクラスはマテリアルの情報を保持します。マテリアルの情報は`OpenGL`のシェーダに送信するためのデータを保持します。\
+主なメンバ関数は以下の通りです。
+- `MaterialData()`
+マテリアルデータを保持するオブジェクトを生成します。
+- `Str const &GetName() const`
+マテリアルの名前を取得します。
+- `vec4 const &GetColorProperty(ColorProperty const &property) const`
+マテリアルのカラープロパティを取得します。
+- `Float const &GetFloatProperty(FloatProperty const &property) const`
+マテリアルのフロートプロパティを取得します。
+- `TextureMap GetTextureProperty(TextureProperty const &property) const`
+マテリアルのテクスチャプロパティを取得します。
+- `void SetName(Str const &name)`
+マテリアルの名前を設定します。
+- `void SetColorProperty(ColorProperty const &property, vec4 const &value)`
+マテリアルのカラープロパティを設定します。
+- `void SetFloatProperty(FloatProperty const &property, Float const &value)`
+マテリアルの定数プロパティを設定します。
+- `void SetTextureProperty(TextureProperty const &property, TextureMap value)`
+マテリアルのテクスチャプロパティを設定します。
+- `bool HasColorProperty(ColorProperty const &property) const`
+マテリアルが指定したカラープロパティを持っているかを取得します。
+- `bool HasFloatProperty(FloatProperty const &property) const`
+マテリアルが指定したフロートプロパティを持っているかを取得します。
+- `bool HasTextureProperty(TextureProperty const &property) const`
+マテリアルが指定したテクスチャプロパティを持っているかを取得します。
+- `void RemoveColorProperty(ColorProperty const &property)`
+マテリアルのカラープロパティを削除します。
+- `void RemoveFloatProperty(FloatProperty const &property)`
+マテリアルのフロートプロパティを削除します。
+- `void RemoveTextureProperty(TextureProperty const &property)`
+マテリアルのテクスチャプロパティを削除します。
+- `void ClearColorProperties()`
+マテリアルのカラープロパティを全て削除します。
+- `void ClearFloatProperties()`
+マテリアルのフロートプロパティを全て削除します。
+- `void ClearTextureProperties()`
+マテリアルのテクスチャプロパティを全て削除します。
+
+## MeshDataクラス
+このクラスはメッシュの情報を保持します。メッシュの情報は`OpenGL`のシェーダに送信するためのデータを保持します。\
+主なメンバ関数は以下の通りです。
+- `MeshData(BufferUsage const &usage = BufferUsage::STATIC_DRAW)`
+- `BufferUsage const &GetUsage() const`
+- `ModelFlag GetFlag() const`
+- `Int const &GetMaterial() const`
+- `Vec<Uint> const &GetIndices() const`
+- `Vec<Float> const &AcquireVertices()`
+- `void SetFlag(ModelFlag const &flag)`
+- `Bool HasNormals() const`
+- `Bool HasUVs() const`
+- `Bool HasColors() const`
+- `Bool HasJoint() const`
+- `Bool HasWeight() const`
+- `Bool HasMaterial() const`
+- `Bool HasMorph() const`
+- `void LoadFlag(ModelFlag const &flags)`
+- `void LoadVertices(Vec<Float> const &vertices)`
+- `void LoadIndices(Vec<Uint> const &indices)`
+- `void LoadMaterial(Int const &material)`
+- `void LoadVertexSet(Vec<Vec<Uint>> const &sets)`
+- `void LoadPosition(Vec<Vec<Float>> const &position)`
+- `void LoadNormal(Vec<Vec<Float>> const &normal)`
+- `void LoadUV(Vec<Vec<Float>> const &uv)`
+- `void LoadColor(Vec<Vec<Float>> const &color)`
+- `void LoadJoint(Vec<Vec<Float>> const &joint)`
+- `void LoadWeight(Vec<Vec<Float>> const &weight)`
+- `void LoadMorph(Vec<Vec<Float>> const &morph)`
+- `void Construct()`
 
 -----
 

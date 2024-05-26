@@ -21,6 +21,10 @@ private:
   Vec<Float> mKeyTimes;
 
 public:
+  /*
+   * @brief Animation class is a collection of key frames.
+   * This class holds the name of the animation and the key frames.
+   */
   Animation() {}
   ~Animation() {}
 
