@@ -135,25 +135,25 @@
 このクラスはアニメーションを管理します。アニメーションの制御はこのクラスのメンバ関数を利用して行ってください。\
 **このクラスは現在開発中です。アニメーションの再生や計算が正しく行われない可能性があります。バグ等が発生した場合は`upiscium@gmail.com`までご連絡ください。**\
 主なメンバ関数は以下の通りです。
-- `Animation()`
+- `Animation()`\
 アニメーション管理用オブジェクトを生成します。
-- `Str const &GetName() const`
+- `Str const &GetName() const`\
 アニメーションの名前を取得します。
-- `Vec<Transform> const &GetKeyFrames() const`
+- `Vec<Transform> const &GetKeyFrames() const`\
 アニメーションのキーフレームを取得します。
-- `void SetName(Str const &name)`
+- `void SetName(Str const &name)`\
 アニメーションの名前を設定します。
-- `void AddKeyFrame(Transform const &keyFrame, Float const &time)`
+- `void AddKeyFrame(Transform const &keyFrame, Float const &time)`\
 アニメーションにキーフレームを追加します。キーフレームの時間は`float`型で指定してください。
-- `void RemoveKeyFrame(Uint const &index)`
+- `void RemoveKeyFrame(Uint const &index)`\
 アニメーションから指定したインデックスのキーフレームを削除します。
-- `Transform Interpolate(Float const &time) const`
+- `Transform Interpolate(Float const &time) const`\
 アニメーションの指定した時間のキーフレームを取得します。
-- `Transform const &operator[](Uint const &index) const`
+- `Transform const &operator[](Uint const &index) const`\
 アニメーションの指定したインデックスのキーフレームを取得します。
-- `Transform operator[](Float const &time) const`
+- `Transform operator[](Float const &time) const`\
 アニメーションの指定した時間のキーフレームを取得します。
-- `static mat4 TransformToMatrix(Transform const &transform)`
+- `static mat4 TransformToMatrix(Transform const &transform)`\
 キーフレームデータを行列に変換します。
 
 -----
@@ -165,23 +165,23 @@
 ## BitFlagクラス
 このクラスはビットフラグを管理します。ビットフラグは`enum`型に対してビット演算を行ったときに自動変換されます。このクラスはビットフラグの操作を行うためのメンバ関数を提供します。\
 主なメンバ関数は以下の通りです。(`T`は`enum`型)
-- `void Set(T const &flag)`
+- `void Set(T const &flag)`\
 ビットフラグを設定します。
-- `void Set(Flag const &flag)`
+- `void Set(Flag const &flag)`\
 ビットフラグを設定します。
-- `void Unset(T const &flag)`
+- `void Unset(T const &flag)`\
 ビットフラグを解除します。
-- `void Unset(Flag const &flag)`
+- `void Unset(Flag const &flag)`\
 ビットフラグを解除します。
-- `void Toggle(T const &flag)`
+- `void Toggle(T const &flag)`\
 ビットフラグを反転します。
-- `void Toggle(Flag const &flag)`
+- `void Toggle(Flag const &flag)`\
 ビットフラグを反転します。
-- `Bool IsSet(T const &flag) const`
+- `Bool IsSet(T const &flag) const`\
 ビットフラグが設定されているかを取得します。
-- `Bool IsSet(Flag const &flag) const`
+- `Bool IsSet(Flag const &flag) const`\
 ビットフラグが設定されているかを取得します。
-- `void Clear()`
+- `void Clear()`\
 ビットフラグを全て解除します。
 
 -----
@@ -197,43 +197,43 @@
 ## Attributeクラス
 このクラスは`OpenGL`の頂点属性に対する各設定値を保持します。各設定値の詳細は[頂点属性](#頂点属性)を参照してください。
 
-- `Attribute(Ulong const &index, Ulong const &comps, Ulong const &stride, Ulong const &offset)`
+- `Attribute(Ulong const &index, Ulong const &comps, Ulong const &stride, Ulong const &offset)`\
 頂点属性を生成します。
-- `Ulong const &GetIndex() const`
+- `Ulong const &GetIndex() const`\
 頂点属性のインデックスを取得します。
-- `Ulong const &GetComps() const`
+- `Ulong const &GetComps() const`\
 頂点属性の要素数を取得します。
-- `Ulong const &GetStride() const`
+- `Ulong const &GetStride() const`\
 頂点属性のストライドを取得します。
-- `Ulong const &GetOffset() const`
+- `Ulong const &GetOffset() const`\
 頂点属性のオフセットを取得します。
-- `static Vec<Attribute> GenerateAttributes(Vec<Ulong> const &comps)`
+- `static Vec<Attribute> GenerateAttributes(Vec<Ulong> const &comps)`\
 各頂点属性の要素数から頂点属性を生成します。
-- `static Vec<Attribute> GenerateAttributes(Vec<Ulong> const &comps, Vec<Ulong> const &offsets, Vec<Ulong> const &strides)`
+- `static Vec<Attribute> GenerateAttributes(Vec<Ulong> const &comps, Vec<Ulong> const &offsets, Vec<Ulong> const &strides)`\
 各頂点属性の要素数、オフセット、ストライドから頂点属性を生成します。
 
 ## Bufferクラス
 このクラスは`OpenGL`のバッファオブジェクトを制御します。バッファの`GPU`メモリへの送信及びバッファ内容の更新はこのクラスのメンバ関数を利用して行ってください。\
 主なメンバ関数は以下の通りです。
-- `Buffer(BufferUsage usage)`
+- `Buffer(BufferUsage usage)`\
 OpenGLのバッファオブジェクトを生成します。バッファの使用方法は[BufferUsage](#BufferUsage列挙体)列挙体のメンバを指定してください。
-- `BufferUsage const &GetUsage() const`
+- `BufferUsage const &GetUsage() const`\
 バッファのOpenGL上での使用方法を取得します。
-- `void LoadVertices(Float const *data, Size const &size)`
+- `void LoadVertices(Float const *data, Size const &size)`\
 バッファに頂点座標をロードします。頂点座標のデータは`float`型の配列で、配列のサイズを`Size`型で指定してください。
-- `void LoadVertices(Vec<Float> const &data)`
+- `void LoadVertices(Vec<Float> const &data)`\
 バッファに頂点座標をロードします。頂点座標のデータは`float`型の`Vec`で指定してください。
-- `void LoadIndices(Uint const *data, Size const &size)`
+- `void LoadIndices(Uint const *data, Size const &size)`\
 バッファにインデックスをロードします。インデックスのデータは`unsigned int`型の配列で、配列のサイズを`Size`型で指定してください。
-- `void LoadIndices(Vec<Uint> const &data)`
+- `void LoadIndices(Vec<Uint> const &data)`\
 バッファにインデックスをロードします。インデックスのデータは`unsigned int`型の`Vec`で指定してください。
-- `void LoadAttributes(Attribute const *data, Size const &size)`
+- `void LoadAttributes(Attribute const *data, Size const &size)`\
 バッファに頂点属性をロードします。頂点属性のデータは`Attribute`型の配列で、配列のサイズを`Size`型で指定してください。
-- `void LoadAttributes(Vec<Attribute> const &data)`
+- `void LoadAttributes(Vec<Attribute> const &data)`\
 バッファに頂点属性をロードします。頂点属性のデータは`Attribute`型の`Vec`で指定してください。
-- `void Draw(DrawMode const &drawMode)`
+- `void Draw(DrawMode const &drawMode)`\
 バッファにロードされたデータを描画します。描画モードは`DrawMode`列挙体のメンバを指定してください。
-- `void DrawInstances(Size const &numInstances, DrawMode const &drawMode)`
+- `void DrawInstances(Size const &numInstances, DrawMode const &drawMode)`\
 バッファにロードされたデータを複数回描画します。描画回数は`Size`型で指定してください。描画モードは`DrawMode`列挙体のメンバを指定してください。
 
 ## BufferUsage列挙体
@@ -281,15 +281,15 @@ OpenGL上での描画モードを指定するための列挙体です。列挙�
 ## EventSystemクラス
 このクラスはイベントの登録、管理及びコールバックの呼び出しを行います。このクラスの関数は全てスレッドセーフであり、複数スレッドから安全にアクセスできます。また、このクラスはトリガ関数の管理も行います。トリガ関数はコールバック関数型とは異なり、特定のイベントが最初に発生した一回のみ呼び出されます。イベントのフォーマット及びコールバック関数、トリガ関数のフォーマットの詳細は[イベントのフォーマット](#イベントのフォーマット)を参照してください。\
 主なメンバ関数は以下の通りです。
-- `EventSystem()`
+- `EventSystem()`\
 イベントシステムを初期化します。
-- `void Register(Str const &event, EventCallback const &callback)`
+- `void Register(Str const &event, EventCallback const &callback)`\
 イベントに対するコールバック関数を登録します。コールバックはイベントが発生するたびに呼び出されます。
-- `void AddTrigger(Str const &event, EventCallback const &callback)`
+- `void AddTrigger(Str const &event, EventCallback const &callback)`\
 イベントに対するトリガ関数を登録します。トリガ関数はイベントが発生した最初の一回のみ呼び出されます。
-- `void ProcessEvents()`
+- `void ProcessEvents()`\
 登録されたイベントを処理します。この関数はイベントの発行を待機し、発行されたイベントに対して登録されたコールバック関数及びトリガ関数を呼び出します。
-- `void PublishEvent(Str const &event)`
+- `void PublishEvent(Str const &event)`\
 イベントを発行します。発行されたイベントに対して登録されたコールバック関数及びトリガ関数が呼び出すには`ProcessEvents()`関数を呼び出してください。
 
 ## イベントのフォーマット
@@ -325,21 +325,21 @@ OpenGL上での描画モードを指定するための列挙体です。列挙�
 ## Fontクラス
 このクラスは外部からフォントファイルを読み込み、文字情報を管理します。フォントの制御はこのクラスのメンバ関数を利用して行ってください。\
 主なメンバ関数は以下の通りです。
-- `Font(Str const &path, Uint const &size)`
+- `Font(Str const &path, Uint const &size)`\
 フォントファイルを読み込みます。フォントファイルのパスとフォントのサイズを指定してください。
-- `Uint GetFontSize() const`
+- `Uint GetFontSize() const`\
 フォントのサイズを取得します。
-- `Shared<Character> const &GetCharacter(wchar_t const &character)`
+- `Shared<Character> const &GetCharacter(wchar_t const &character)`\
 指定した文字の情報を取得します。取得しようとした文字が存在しない場合の動作は保証されません。
-- `Shared<Character> const &AcquireCharacter(wchar_t const &character) const`
+- `Shared<Character> const &AcquireCharacter(wchar_t const &character) const`\
 指定した文字の情報を取得します。取得しようとした文字が存在しない場合はエラーが発生します。
-- `Pair<Uint> AcquireTextSize(WStr const &text) const`
+- `Pair<Uint> AcquireTextSize(WStr const &text) const`\
 指定したテキストの描画サイズを取得します。(Width, Height)の順で格納されます。
-- `Vec<Shared<Character>> AcquireCharacters(WStr const &text) const`
+- `Vec<Shared<Character>> AcquireCharacters(WStr const &text) const`\
 指定したテキストの各文字の情報を取得します。
-- `void LoadCharacter(wchar_t const &character)`
+- `void LoadCharacter(wchar_t const &character)`\
 指定した文字の情報を読み込みます。
-- `void LoadText(WStr const &text)`
+- `void LoadText(WStr const &text)`\
 指定したテキストの各文字の情報を読み込みます。
 
 -----
@@ -354,45 +354,45 @@ OpenGL上での描画モードを指定するための列挙体です。列挙�
 ## IJobクラス
 このクラスは`JobSystem`にジョブとして登録するための基底クラスです。このクラスを継承して`Execute`メソッドを実装することでジョブを作成してください。`JobSystem`はこのクラスを継承したクラスのインスタンスをジョブとして扱います。また、ジョブ同士の依存関係を設定したい場合は依存関係を設定したいジョブのインスタンスをコンストラクタに渡してください。コンストラクタ以外から依存関係を定義することはできません。\
 主なメンバ関数は以下の通りです。
-- `JobBase()`
+- `JobBase()`\
 ジョブを生成します。
-- `JobBase(JobBase *dependency)`
+- `JobBase(JobBase *dependency)`\
 依存関係を設定してジョブを生成します。このジョブは指定したジョブの完了後に実行されます。
-- `JobBase(Vec<JobBase *> const &dependencies)`
+- `JobBase(Vec<JobBase *> const &dependencies)`\
 依存関係を設定してジョブを生成します。このジョブは指定したジョブの全ての完了後に実行されます。
-- `Bool IsExecutable() const`
+- `Bool IsExecutable() const`\
 このジョブが実行可能かを取得します。このジョブが依存するジョブが全て完了している場合に`true`を返します。
-- `Bool IsFinished() const`
+- `Bool IsFinished() const`\
 このジョブが完了しているかを取得します。このジョブが実行された後に`true`を返します。
-- `virtual void Execute()`
+- `virtual void Execute()`\
 このジョブの実行内容を記述します。この関数は`operator()`を通して`JobSystem`によって呼び出されます。
 
 ## SimpleJobクラス
 このクラスは`IJob`クラスを継承したジョブクラスです。このクラスは渡された関数オブジェクトをジョブとして実行します。このクラスのインスタンスを作成する際には関数オブジェクトを渡してください。実行可能な関数のフォーマットは[Job対応関数フォーマット](#job対応関数フォーマット)を参照してください。\
 主なメンバ関数は以下の通りです。
-- `SimpleJob()`
+- `SimpleJob()`\
 関数オブジェクトを持たないジョブを生成します。
-- `SimpleJob(Function<void()> const &target)`
+- `SimpleJob(Function<void()> const &target)`\
 関数オブジェクトを持つジョブを生成します。
-- `SimpleJob(Function<void()> const &target, JobBase *const dependency)`
+- `SimpleJob(Function<void()> const &target, JobBase *const dependency)`\
 依存関係を設定して関数オブジェクトを持つジョブを生成します。このジョブは指定したジョブの完了後に実行されます。
-- `SimpleJob(Function<void()> const &target, Vec<JobBase *> const &dependencies)`
+- `SimpleJob(Function<void()> const &target, Vec<JobBase *> const &dependencies)`\
 依存関係を設定して関数オブジェクトを持つジョブを生成します。このジョブは指定したジョブの全ての完了後に実行されます。
-- `virtual void Execute() override`
+- `virtual void Execute() override`\
 関数オブジェクトを実行します。
 
 ## JobSystemクラス
 このクラスはマルチスレッド実行をサポートするためのクラスです。このクラスの関数は全てスレッドセーフであり、複数スレッドから安全にアクセスできます。特定の関数のマルチスレッド実行を行いたい場合はこのクラスを利用してください。また、関数をデーモン化したい場合もこのクラスを利用してください。\
 主なメンバ関数は以下の通りです。
-- `JobSystem(Uint const &numThreads = std::thread::hardware_concurrency())`
+- `JobSystem(Uint const &numThreads = std::thread::hardware_concurrency())`\
 ジョブシステムを初期化します。スレッド数を指定しない場合はハードウェアのスレッド数が使用されます。
-- `virtual void Stop()`
+- `virtual void Stop()`\
 ジョブシステムを停止します。この関数を呼び出すとジョブシステムは停止し、新しいジョブの実行を停止します。既に実行中のジョブは完了するまで実行を続けます。
-- `virtual void Schedule(JobBase *job)`
+- `virtual void Schedule(JobBase *job)`\
 ジョブをスケジュールします。この関数を呼び出すとジョブシステムは指定したジョブをキューに追加し順次実行します。
-- `virtual void Daemonize(JobBase *job))`
+- `virtual void Daemonize(JobBase *job))`\
 ジョブをデーモン化します。この関数を呼び出すとジョブシステムは指定したジョブを即時にデーモンスレッドを生成し実行します。
-- `virtual void WaitForAll()`
+- `virtual void WaitForAll()`\
 ジョブシステムが実行中のジョブが全て完了するまで待機します。この関数を呼び出すとジョブシステムは全てのジョブが完了するまで待機します。
 
 ## Job対応関数フォーマット
@@ -459,73 +459,101 @@ SimpleJob job(func);
 ## MaterialDataクラス
 このクラスはマテリアルの情報を保持します。マテリアルの情報は`OpenGL`のシェーダに送信するためのデータを保持します。\
 主なメンバ関数は以下の通りです。
-- `MaterialData()`
+- `MaterialData()`\
 マテリアルデータを保持するオブジェクトを生成します。
-- `Str const &GetName() const`
+- `Str const &GetName() const`\
 マテリアルの名前を取得します。
-- `vec4 const &GetColorProperty(ColorProperty const &property) const`
+- `vec4 const &GetColorProperty(ColorProperty const &property) const`\
 マテリアルのカラープロパティを取得します。
-- `Float const &GetFloatProperty(FloatProperty const &property) const`
+- `Float const &GetFloatProperty(FloatProperty const &property) const`\
 マテリアルのフロートプロパティを取得します。
-- `TextureMap GetTextureProperty(TextureProperty const &property) const`
+- `TextureMap GetTextureProperty(TextureProperty const &property) const`\
 マテリアルのテクスチャプロパティを取得します。
-- `void SetName(Str const &name)`
+- `void SetName(Str const &name)`\
 マテリアルの名前を設定します。
-- `void SetColorProperty(ColorProperty const &property, vec4 const &value)`
+- `void SetColorProperty(ColorProperty const &property, vec4 const &value)`\
 マテリアルのカラープロパティを設定します。
-- `void SetFloatProperty(FloatProperty const &property, Float const &value)`
+- `void SetFloatProperty(FloatProperty const &property, Float const &value)`\
 マテリアルの定数プロパティを設定します。
-- `void SetTextureProperty(TextureProperty const &property, TextureMap value)`
+- `void SetTextureProperty(TextureProperty const &property, TextureMap value)`\
 マテリアルのテクスチャプロパティを設定します。
-- `bool HasColorProperty(ColorProperty const &property) const`
+- `bool HasColorProperty(ColorProperty const &property) const`\
 マテリアルが指定したカラープロパティを持っているかを取得します。
-- `bool HasFloatProperty(FloatProperty const &property) const`
+- `bool HasFloatProperty(FloatProperty const &property) const`\
 マテリアルが指定したフロートプロパティを持っているかを取得します。
-- `bool HasTextureProperty(TextureProperty const &property) const`
+- `bool HasTextureProperty(TextureProperty const &property) const`\
 マテリアルが指定したテクスチャプロパティを持っているかを取得します。
-- `void RemoveColorProperty(ColorProperty const &property)`
+- `void RemoveColorProperty(ColorProperty const &property)`\
 マテリアルのカラープロパティを削除します。
-- `void RemoveFloatProperty(FloatProperty const &property)`
+- `void RemoveFloatProperty(FloatProperty const &property)`\
 マテリアルのフロートプロパティを削除します。
-- `void RemoveTextureProperty(TextureProperty const &property)`
+- `void RemoveTextureProperty(TextureProperty const &property)`\
 マテリアルのテクスチャプロパティを削除します。
-- `void ClearColorProperties()`
+- `void ClearColorProperties()`\
 マテリアルのカラープロパティを全て削除します。
-- `void ClearFloatProperties()`
+- `void ClearFloatProperties()`\
 マテリアルのフロートプロパティを全て削除します。
-- `void ClearTextureProperties()`
+- `void ClearTextureProperties()`\
 マテリアルのテクスチャプロパティを全て削除します。
 
 ## MeshDataクラス
 このクラスはメッシュの情報を保持します。メッシュの情報は`OpenGL`のシェーダに送信するためのデータを保持します。\
 主なメンバ関数は以下の通りです。
-- `MeshData(BufferUsage const &usage = BufferUsage::STATIC_DRAW)`
-- `BufferUsage const &GetUsage() const`
-- `ModelFlag GetFlag() const`
-- `Int const &GetMaterial() const`
-- `Vec<Uint> const &GetIndices() const`
-- `Vec<Float> const &AcquireVertices()`
-- `void SetFlag(ModelFlag const &flag)`
-- `Bool HasNormals() const`
-- `Bool HasUVs() const`
-- `Bool HasColors() const`
-- `Bool HasJoint() const`
-- `Bool HasWeight() const`
-- `Bool HasMaterial() const`
-- `Bool HasMorph() const`
-- `void LoadFlag(ModelFlag const &flags)`
-- `void LoadVertices(Vec<Float> const &vertices)`
-- `void LoadIndices(Vec<Uint> const &indices)`
-- `void LoadMaterial(Int const &material)`
-- `void LoadVertexSet(Vec<Vec<Uint>> const &sets)`
-- `void LoadPosition(Vec<Vec<Float>> const &position)`
-- `void LoadNormal(Vec<Vec<Float>> const &normal)`
-- `void LoadUV(Vec<Vec<Float>> const &uv)`
-- `void LoadColor(Vec<Vec<Float>> const &color)`
-- `void LoadJoint(Vec<Vec<Float>> const &joint)`
-- `void LoadWeight(Vec<Vec<Float>> const &weight)`
-- `void LoadMorph(Vec<Vec<Float>> const &morph)`
-- `void Construct()`
+- `MeshData(BufferUsage const &usage = BufferUsage::STATIC_DRAW)`\
+メッシュデータを保持するオブジェクトを生成します。バッファの使用方法は[BufferUsage](#BufferUsage列挙体)列挙体のメンバを指定してください。
+- `BufferUsage const &GetUsage() const`\
+メッシュデータのバッファの使用方法を取得します。
+- `ModelFlag GetFlag() const`\
+メッシュデータのフラグを取得します。
+- `Int const &GetMaterial() const`\
+メッシュデータのマテリアルインデックスを取得します。
+- `Vec<Uint> const &GetIndices() const`\
+メッシュデータのインデックスを取得します。
+- `Vec<Float> const &AcquireVertices()`\
+メッシュデータの頂点座標を取得します。
+- `void SetFlag(ModelFlag const &flag)`\
+メッシュデータのフラグを設定します。
+- `Bool HasNormals() const`\
+メッシュデータが法線を持っているかを取得します。
+- `Bool HasUVs() const`\
+メッシュデータがUV座標を持っているかを取得します。
+- `Bool HasColors() const`\
+メッシュデータが色情報を持っているかを取得します。
+- `Bool HasJoint() const`\
+メッシュデータがジョイント情報を持っているかを取得します。
+- `Bool HasWeight() const`\
+メッシュデータがウェイト情報を持っているかを取得します。
+- `Bool HasMaterial() const`\
+メッシュデータがマテリアル情報を持っているかを取得します。
+- `Bool HasMorph() const`\
+メッシュデータがモーフ情報を持っているかを取得します。
+- `void LoadFlag(ModelFlag const &flags)`\
+メッシュデータのフラグを設定します。
+- `void LoadVertices(Vec<Float> const &vertices)`\
+メッシュデータの頂点座標を設定します。
+- `void LoadIndices(Vec<Uint> const &indices)`\
+メッシュデータのインデックスを設定します。
+- `void LoadMaterial(Int const &material)`\
+メッシュデータのマテリアルインデックスを設定します。
+- `void LoadVertexSet(Vec<Vec<Uint>> const &sets)`\
+メッシュデータの頂点セットを設定します。
+- `void LoadPosition(Vec<Vec<Float>> const &position)`\
+メッシュデータの頂点座標を設定します。
+- `void LoadNormal(Vec<Vec<Float>> const &normal)`\
+メッシュデータの法線を設定します。
+- `void LoadUV(Vec<Vec<Float>> const &uv)`\
+メッシュデータのUV座標を設定します。
+- `void LoadColor(Vec<Vec<Float>> const &color)`\
+メッシュデータの色情報を設定します。
+- `void LoadJoint(Vec<Vec<Float>> const &joint)`\
+メッシュデータのジョイント情報を設定します。
+- `void LoadWeight(Vec<Vec<Float>> const &weight)`\
+メッシュデータのウェイト情報を設定します。
+- `void LoadMorph(Vec<Vec<Float>> const &morph)`\
+メッシュデータのモーフ情報を設定します。
+- `void Construct()`\
+メッシュデータを構築します。`LoadVertices()`関数を利用した場合は実行の必要はありません。\
+また、この関数を実行する前に最低でも`LoadPosition()`、`LoadVertexSet()`関数を実行してください。
 
 -----
 
