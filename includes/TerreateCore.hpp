@@ -10,6 +10,7 @@
 #include "job.hpp"
 #include "model.hpp"
 #include "object.hpp"
+#include "scene.hpp"
 #include "screen.hpp"
 #include "shader.hpp"
 #include "skeleton.hpp"

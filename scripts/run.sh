@@ -1,3 +1,4 @@
+cd tests
 if [ $1 == 'c' ]; then
     echo "Clean option selected."
     echo "Cleaning build directory..."
@@ -7,10 +8,12 @@ if [ $1 == 'c' ]; then
 fi
 mkdir -p build
 cd build
-cmake ..
+cmake ../..
 cmake --build .
-cp ./tests/impls/TCTest ../tests/test
-cd ../tests
+pwd
+cp tests/impls/TCTest ../
+cd ../
+pwd
 echo "Running TCTest..."
-./test
-cd ..
+./TCTest
+cd ../..
