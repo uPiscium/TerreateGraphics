@@ -134,7 +134,7 @@ class Window;
 
 class WindowProperty {
 private:
-  Str mTitle = "GeoFrame";
+  Str mTitle = "TerreateCore Window";
   Pair<double> mScrollOffset;
   Vec<Uint> mCodePoints;
   Vec<Key> mKeys;

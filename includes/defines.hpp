@@ -122,12 +122,16 @@ public:
   TCbool shift = false;
   TCbool control = false;
   TCbool alt = false;
+  TCbool super = false;
+  TCbool capsLock = false;
   TCbool numLock = false;
 
 public:
   Modifier(int mods_)
       : shift(mods_ & GLFW_MOD_SHIFT), control(mods_ & GLFW_MOD_CONTROL),
-        alt(mods_ & GLFW_MOD_ALT), numLock(mods_ & GLFW_MOD_SUPER) {}
+        alt(mods_ & GLFW_MOD_ALT), super(mods_ & GLFW_MOD_SUPER),
+        capsLock(mods_ & GLFW_MOD_CAPS_LOCK),
+        numLock(mods_ & GLFW_MOD_NUM_LOCK) {}
 };
 
 struct Key {
