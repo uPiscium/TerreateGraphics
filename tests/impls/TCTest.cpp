@@ -34,17 +34,19 @@ public:
     mFont = std::make_shared<Font>("resources/AsebiMin-Light.otf", 200);
     mText.LoadText(L"日本語テスト", mFont);
     mText.LoadShader("resources/textVert.glsl", "resources/textFrag.glsl");
-    mTexture.LoadData(Texture::LoadTexture("resources/testImage.png"));
+    mTexture.LoadData(Texture::LoadTexture(
+        "/home/uPiscium/Downloads/"
+        "360_F_276598639_Pv8HJcZrGxbWzjqhWGKH3lTmkGp1NoOc.jpg"));
 
     MeshData data;
-    data.LoadPosition({{-200.0f, -200.0f, 200.0f},
-                       {200.0f, -200.0f, 200.0f},
-                       {200.0f, -200.0f, -200.0f},
-                       {-200.0f, -200.0f, -200.0f},
-                       {-200.0f, 200.0f, 200.0f},
-                       {200.0f, 200.0f, 200.0f},
-                       {200.0f, 200.0f, -200.0f},
-                       {-200.0f, 200.0f, -200.0f}});
+    data.LoadPosition({{-600.0f, -600.0f, 600.0f},
+                       {600.0f, -600.0f, 600.0f},
+                       {600.0f, -600.0f, -600.0f},
+                       {-600.0f, -600.0f, -600.0f},
+                       {-600.0f, 600.0f, 600.0f},
+                       {600.0f, 600.0f, 600.0f},
+                       {600.0f, 600.0f, -600.0f},
+                       {-600.0f, 600.0f, -600.0f}});
     data.LoadNormal({{1.0f, 0.0f, 0.0f},
                      {-1.0f, 0.0f, 0.0f},
                      {0.0f, 1.0f, 0.0f},

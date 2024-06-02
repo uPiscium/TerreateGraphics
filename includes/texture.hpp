@@ -108,7 +108,11 @@ private:
 private:
   TC_DISABLE_COPY_AND_ASSIGN(CubeTexture);
 
-private:
+public:
+  /*
+   * @brief: This function creates a opengl cube texture.
+   */
+  CubeTexture() { glGenTextures(1, &mTexture); }
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be created by CubeScreen.
@@ -121,12 +125,6 @@ private:
               Uint const &channels)
       : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
   }
-
-public:
-  /*
-   * @brief: This function creates a opengl cube texture.
-   */
-  CubeTexture() { glGenTextures(1, &mTexture); }
   ~CubeTexture() override { glDeleteTextures(1, &mTexture); }
 
   /*
