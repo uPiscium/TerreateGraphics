@@ -12,12 +12,15 @@
 - [Event関連のクラス](#event関連のクラス)
 - [Font関連のクラス](#font関連のクラス)
 - [Job関連のクラス](#job関連のクラス)
+- [Model関連のクラス](#model関連のクラス)
+- [Object関連のクラス](#object関連のクラス)
 - [Screen関連のクラス(WIP)](#screen関連のクラス)
 - [Shader関連のクラス](#shader関連のクラス)
 - [Skeleton関連のクラス](#skeleton関連のクラス)
 - [Text関連のクラス](#text関連のクラス)
 - [Texture関連のクラス](#texture関連のクラス)
 - [Window関連のクラス](#window関連のクラス)
+- [Math関連のクラス](#math関連のクラス)
 
 -----
 
