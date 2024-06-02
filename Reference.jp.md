@@ -1525,5 +1525,110 @@ OpenGLのバインドID,幅,高さ,色チャンネル数が指定された空の
 -----
 
 # Math関連のクラス
+## 内容
+- [Complexクラス](#Complexクラス)
+- [Fractionクラス](#Fractionクラス)
+- [MatrixBaseクラス](#MatrixBaseクラス)
+- [Quaternionクラス](#Quaternionクラス)
+- [Utility関数](#Utility関数)
+
+## Complexクラス
+このクラスは複素数を表します.複素数の演算はこのクラスのメンバ関数を利用して行ってください.\
+主なメンバ関数は以下の通りです.
+- `Complex()`\
+実部,虚部がともに0の複素数を生成します.
+- `Complex(T real,T imaginary)`\
+実部,虚部を指定して複素数を生成します.
+- `Complex(Complex<T> const &other)`\
+他の複素数をコピーして複素数を生成します.
+- `Complex(Complex<T> &&other)`\
+他の複素数をムーブして複素数を生成します.
+- `Complex(Complex<U> const &other)`\
+他の型の複素数をコピーして複素数を生成します.
+- `Complex(Complex<U> &&other)`\
+他の型の複素数をムーブして複素数を生成します.
+- `T const &GetReal() const`\
+実部を取得します.
+- `T const &GetImaginary() const`\
+虚部を取得します.
+- `T AcquireLength() const`\
+複素数の絶対値を取得します.
+- `T AcquireArg() const`\
+複素数の偏角を取得します.
+
+## Fractionクラス
+このクラスは分数を表します.分数の演算はこのクラスのメンバ関数を利用して行ってください.\
+主なメンバ関数は以下の通りです.
+- `Fraction()`\
+分子が0,分母が1の分数を生成します.
+- `Fraction(T const &numerator)`\
+分子を指定して分数を生成します.
+- `Fraction(T const &numerator,T const &denominator)`\
+分子,分母を指定して分数を生成します.
+- `Fraction(Fraction<T> const &other)`\
+他の分数をコピーして分数を生成します.
+- `Fraction(Fraction<T> &&other) noexcept`\
+他の分数をムーブして分数を生成します.
+- `T const &GetNumerator() const`\
+分子を取得します.
+- `T const &GetDenominator() const`\
+分母を取得します.
+- `Fraction<T> &SetNumerator(T const &numerator)`\
+分子を設定します.
+- `Fraction<T> &SetDenominator(T const &denominator)`\
+分母を設定します.
+
+## MatrixBaseクラス
+このクラスは行列を表します.行列の演算はこのクラスのメンバ関数を利用して行ってください.\
+主なメンバ関数は以下の通りです.
+- `MatrixBase()`
+
+- `MatrixBase(Uint const &row,Uint const &column)`
+- `MatrixBase(Uint const &row,Uint const &column,T const *array)`
+- `MatrixBase(Uint const &row,Uint const &column,T const &value)`
+- `MatrixBase(Uint const &row,Uint const &column,Vec<T> const &value)`
+- `MatrixBase(Vec<Vec<T>> const &value)`
+- `MatrixBase(MatrixBase<T> const &other)`
+- `MatrixBase(MatrixBase<T> &&other)`
+- `MatrixBase(Uint const &row,Uint const &column,U const *array)`
+- `MatrixBase(Uint const &row,Uint const &column,U const &value)`
+- `MatrixBase(Uint const &row,Uint const &column,Vec<U> const &value)`
+- `MatrixBase(Vec<Vec<U>> const &value)`
+- `MatrixBase(MatrixBase<U> const &other)`
+- `Uint GetSize() const`
+- `Uint GetRow() const`
+- `Uint GetColumn() const`
+- `T *GetArray()`
+- `T const *GetArray() const`
+- `MatrixBase<T> GetCopy() const`
+- `Uint AcquireMaxDigit() const`
+- `T AcquireMaxValue() const`
+- `T AcquireMinValue() const`
+- `Uint AcquireRank() const`
+- `T AcquireDeterminant() const`
+- `MatrixBase<T> AcquireRow(Uint const &row) const`
+- `MatrixBase<T> AcquireColumn(Uint const &column) const`
+- `MatrixBase<T> AcquireCofactor(Uint const &row,Uint const &column) const`
+- `MatrixBase<T> AcquireTransposed() const`
+- `MatrixBase<T> AcquireUpperTriangular(int *c = nullptr) const`
+- `MatrixBase<T> AcquireInversed() const`
+- `void SetRow(Uint const &row,T const *value)`
+- `void SetRow(Uint const &row,Vec<T> const &value)`
+- `void SetRow(Uint const &row,MatrixBase<T> const &value)`
+- `void SetColumn(Uint const &column,T const *value)`
+- `void SetColumn(Uint const &column,Vec<T> const &value)`
+- `void SetColumn(Uint const &column,MatrixBase<T> const &value)`
+- `Uint SearchNonZeroRow(Uint const &row,Uint const &start = 0) const`
+- `Uint SearchNonZeroColumn(Uint const &column,Uint const &start = 0) const`
+- `void SwapRow(Uint const &row1,Uint const &row2)`
+- `void SwapColumn(Uint const &column1,Uint const &column2)`
+- `void MultiplyRow(Uint const &row,T const &value)`
+- `void MultiplyColumn(Uint const &column,T const &value)`
+- `void AddRow(Uint const &row1,Uint const &row2,T const &value)`
+- `void AddColumn(Uint const &column1,Uint const &column2,T const &value)`
+- `void LU(MatrixBase<T> &L,MatrixBase<T> &U) const`
+- `void Transpose()`
+- `void UpperTriangulate(int *c = nullptr)`
+- `void Inverse()`
 
 -----
