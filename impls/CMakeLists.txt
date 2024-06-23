@@ -4,8 +4,6 @@ message(STATUS "Project name : " ${PROJECT_NAME})
 
 function(Configure)
   include(FetchContent)
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
   set(CMAKE_CXX_STANDARD 20)
   set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -82,8 +80,12 @@ function(Build)
     text.cpp
     texture.cpp
     window.cpp)
+  set_target_properties(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
+                                                   ${CMAKE_BINARY_DIR}/lib)
+
   setincludes()
   setlibs()
 endfunction()
 
+configure()
 build()
