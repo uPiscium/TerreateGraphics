@@ -2,17 +2,16 @@ cmake_minimum_required(VERSION 3.20)
 project(TerreateCore)
 message(STATUS "Project name : " ${PROJECT_NAME})
 
-function(Configure)
-  include(FetchContent)
+include(FetchContent)
 
-  set(CMAKE_CXX_STANDARD 20)
-  set(CMAKE_CXX_STANDARD_REQUIRED ON)
-  set(CMAKE_CXX_EXTENSIONS OFF)
-  message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
-endfunction()
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
 function(CloneTerreateLogger)
   message(STATUS "Cloning TerreateLogger...")
+  set(TERREATE_LOGGER_BUILD_TESTS OFF)
   FetchContent_Declare(
     terreate_logger
     GIT_REPOSITORY https://github.com/uPiscium/TerreateLogger.git
@@ -80,12 +79,12 @@ function(Build)
     text.cpp
     texture.cpp
     window.cpp)
-  set_target_properties(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY
-                                                   ${CMAKE_BINARY_DIR}/lib)
+  set_target_properties(
+    ${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+                               LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
   setincludes()
   setlibs()
 endfunction()
 
-configure()
 build()
