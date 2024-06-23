@@ -2,12 +2,23 @@ cmake_minimum_required(VERSION 3.20)
 project(TerreateCore)
 message(STATUS "Project name : " ${PROJECT_NAME})
 
+include(FetchContent)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
-include(FetchContent)
+function(CloneTerreateLogger)
+  message(STATUS "Cloning TerreateLogger...")
+  set(TERREATE_LOGGER_BUILD_TESTS OFF)
+  FetchContent_Declare(
+    terreate_logger
+    GIT_REPOSITORY https://github.com/uPiscium/TerreateLogger.git
+    GIT_TAG main)
+  FetchContent_MakeAvailable(terreate_logger)
+  message(STATUS "TerreateLogger cloned.")
+endfunction()
 
 function(CloneGLFW)
   message(STATUS "Cloning GLFW...")
@@ -24,6 +35,7 @@ endfunction()
 
 function(CloneFreetype)
   message(STATUS "Cloning Freetype...")
+  message(STATUS "This may take a while.")
   FetchContent_Declare(
     freetype
     GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
@@ -40,8 +52,10 @@ function(SetIncludes)
 endfunction()
 
 function(SetLibs)
+  cloneterreatelogger()
   cloneglfw()
   clonefreetype()
+  target_link_libraries(${PROJECT_NAME} PUBLIC TerreateLogger)
   target_link_libraries(${PROJECT_NAME} PUBLIC glfw)
   target_link_libraries(${PROJECT_NAME} PUBLIC freetype)
 endfunction()
@@ -65,6 +79,10 @@ function(Build)
     text.cpp
     texture.cpp
     window.cpp)
+  set_target_properties(
+    ${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+                               LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+
   setincludes()
   setlibs()
 endfunction()

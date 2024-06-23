@@ -31,12 +31,11 @@ public:
 
 public:
   TestApp() {
-    mFont = std::make_shared<Font>("resources/AsebiMin-Light.otf", 200);
+    mFont = std::make_shared<Font>("tests/resources/AsebiMin-Light.otf", 200);
     mText.LoadText(L"日本語テスト", mFont);
-    mText.LoadShader("resources/textVert.glsl", "resources/textFrag.glsl");
+    mText.LoadShader("tests/resources/textVert.glsl", "tests/resources/textFrag.glsl");
     mTexture.LoadData(Texture::LoadTexture(
-        "/home/uPiscium/Downloads/"
-        "360_F_276598639_Pv8HJcZrGxbWzjqhWGKH3lTmkGp1NoOc.jpg"));
+"tests/resources/testImage.png"));
 
     MeshData data;
     data.LoadPosition({{-600.0f, -600.0f, 600.0f},
@@ -72,9 +71,9 @@ public:
     mTransform = proj * view;
 
     mShader.AddVertexShaderSource(
-        Shader::LoadShaderSource("resources/vertex.glsl"));
+        Shader::LoadShaderSource("tests/resources/vertex.glsl"));
     mShader.AddFragmentShaderSource(
-        Shader::LoadShaderSource("resources/fragment.glsl"));
+        Shader::LoadShaderSource("tests/resources/fragment.glsl"));
     mShader.Compile();
     // Uncomment if you want to break your brain...
     /* mShader.UseDepth(false); */
