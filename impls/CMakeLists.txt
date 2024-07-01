@@ -72,7 +72,6 @@ function(Build)
     job.cpp
     model.cpp
     object.cpp
-    scene.cpp
     screen.cpp
     shader.cpp
     skeleton.cpp

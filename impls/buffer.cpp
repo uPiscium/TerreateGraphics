@@ -9,6 +9,7 @@ Vec<Attribute> Attribute::GenerateAttributes(Vec<Ulong> const &comps) {
   for (Ulong i = 0; i < comps.size(); ++i) {
     stride += comps[i] * sizeof(Float);
   }
+
   Ulong offset = 0;
   for (Ulong i = 0; i < comps.size(); ++i) {
     attributes.push_back(Attribute(i, comps[i], stride, offset));

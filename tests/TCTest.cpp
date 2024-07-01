@@ -33,9 +33,9 @@ public:
   TestApp() {
     mFont = std::make_shared<Font>("tests/resources/AsebiMin-Light.otf", 200);
     mText.LoadText(L"日本語テスト", mFont);
-    mText.LoadShader("tests/resources/textVert.glsl", "tests/resources/textFrag.glsl");
-    mTexture.LoadData(Texture::LoadTexture(
-"tests/resources/testImage.png"));
+    mText.LoadShader("tests/resources/textVert.glsl",
+                     "tests/resources/textFrag.glsl");
+    mTexture.LoadData(Texture::LoadTexture("tests/resources/testImage.png"));
 
     MeshData data;
     data.LoadPosition({{-600.0f, -600.0f, 600.0f},

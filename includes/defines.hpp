@@ -2,6 +2,7 @@
 #define __TC_DEFINES_HPP__
 
 #include <atomic>
+#include <chrono>
 #include <condition_variable>
 #include <cstdint>
 #include <deque>
@@ -18,6 +19,9 @@
 #include <unordered_set>
 #include <vector>
 
+#include <TerreateLogger/TerreateLogger.hpp>
+
+#include "TerreateLogger/ILogger.hpp"
 #include "exceptions.hpp"
 
 // Defines
@@ -67,6 +71,12 @@ typedef uint64_t TCu64;
 typedef float TCfloat;
 typedef double TCdouble;
 
+// TL types (TerreateLogger types)
+typedef TerreateLogger::Interface::ILogger ILogger;
+typedef TerreateLogger::Loggers::ConsoleLogger ConsoleLogger;
+typedef TerreateLogger::Loggers::FileLogger FileLogger;
+typedef TerreateLogger::Manager::LoggerManager LoggerManager;
+
 // Standard types
 typedef TCbool Bool;
 typedef TCi8 Byte;
@@ -91,8 +101,8 @@ typedef std::string Str;
 typedef std::wstring WStr;
 typedef std::stringstream Stream;
 typedef std::ifstream InputFileStream;
+typedef std::ofstream OutputFileStream;
 
-// template aliases
 template <typename S, typename T> using Map = std::unordered_map<S, T>;
 template <typename T> using Pair = std::pair<T, T>;
 template <typename T> using Set = std::unordered_set<T>;
@@ -105,6 +115,14 @@ template <typename T> using Atomic = std::atomic<T>;
 template <typename T> using Vec = std::vector<T>;
 template <typename T> using Function = std::function<T>;
 
+// Chrono types
+namespace chrono = std::chrono;
+typedef chrono::nanoseconds NanoSec;
+typedef chrono::system_clock SystemClock;
+typedef chrono::steady_clock SteadyClock;
+template <typename T> using ZonedTimeT = chrono::zoned_time<T>;
+using ZonedTime = ZonedTimeT<NanoSec>;
+
 // Callbacks
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;
 using MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>;
@@ -115,6 +133,26 @@ template <typename Derived, typename Base>
 concept extends = std::derived_from<Derived, Base>;
 template <typename Enum>
 concept enumtype = std::is_enum_v<Enum>;
+
+// Functions
+template <typename T> inline Str ToStr(T const &val) {
+  Stream stream;
+  stream << val;
+  return stream.str();
+}
+template <typename S, typename T> inline S DurationCast(T const &time) {
+  return chrono::duration_cast<S>(time);
+}
+inline SteadyClock::duration SinceEpoch() {
+  return SteadyClock::now().time_since_epoch();
+}
+inline Double GetNanoSec() {
+  return static_cast<Double>(DurationCast<NanoSec>(SinceEpoch()).count()) /
+         1000000000;
+}
+inline ZonedTime GetCurrentTime() {
+  return ZonedTime{chrono::current_zone(), SystemClock::now()};
+}
 
 // Structs
 struct Modifier {

@@ -27,6 +27,9 @@ void Clock::Frame(Uint const &fps) {
 }
 
 void Initialize() {
+  LoggerManager::Register(new ConsoleLogger());
+  LoggerManager::Register(new FileLogger("build/log.txt"));
+
   if (!glfwInit()) {
     TC_THROW("Failed to initialize GLFW");
   }
