@@ -2,6 +2,7 @@
 #define __TC_BUFFER_HPP__
 
 #include "defines.hpp"
+#include "logger.hpp"
 #include "object.hpp"
 
 namespace TerreateCore::Core {
@@ -22,25 +23,24 @@ public:
    * @param offset: Offset of this attribute.
    */
   Attribute(Ulong const &index, Ulong const &comps, Ulong const &stride,
-            Ulong const &offset)
-      : mIndex(index), mComps(comps), mStride(stride), mOffset(offset) {}
+            Ulong const &offset);
 
   /*
    * @return: Index of this attribute.
    */
-  Ulong const &GetIndex() const { return mIndex; }
+  Ulong const &GetIndex() const;
   /*
    * @return: Number of components of this attribute.
    */
-  Ulong const &GetComps() const { return mComps; }
+  Ulong const &GetComps() const;
   /*
    * @return: Size of stride of this attribute.
    */
-  Ulong const &GetStride() const { return mStride; }
+  Ulong const &GetStride() const;
   /*
    * @return: Offset from the beginning of this attributes.
    */
-  Ulong const &GetOffset() const { return mOffset; }
+  Ulong const &GetOffset() const;
 
 public:
   /*
@@ -88,7 +88,7 @@ public:
    * @brief: Get buffer usage on opengl.
    * @return: Buffer usage
    */
-  BufferUsage const &GetUsage() const { return mUsage; }
+  BufferUsage const &GetUsage() const;
 
   /*
    * @brief: Load vertex buffer data.

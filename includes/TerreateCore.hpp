@@ -5,7 +5,6 @@
 #include "buffer.hpp"
 #include "defines.hpp"
 #include "event.hpp"
-#include "exceptions.hpp"
 #include "font.hpp"
 #include "job.hpp"
 #include "logger.hpp"
@@ -37,7 +36,7 @@ public:
   static Float GetCurrentRuntime() { return glfwGetTime(); }
 };
 
-void Initialize();
+void Initialize(Bool const &enableConsoleLog = false);
 void Terminate();
 } // namespace TerreateCore::Core
 #endif // __TC_TERREATECORE_HPP__

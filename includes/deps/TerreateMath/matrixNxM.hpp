@@ -1,12 +1,14 @@
 #ifndef __TC_MATH_MATRIXNXM_HPP__
 #define __TC_MATH_MATRIXNXM_HPP__
 
-#include "../defines.hpp"
 #include "core.hpp"
+#include "defines.hpp"
 #include "matrixNxN.hpp"
 
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Matrix {
+using namespace TerreateMath::Defines;
+using namespace TerreateMath::Core;
+using namespace TerreateMath::Vector;
 
 template <typename T> class MatrixNxM : public MatrixBase<T> {
 public:
@@ -793,11 +795,11 @@ template <typename T>
 Matrix4x3<T> operator*(T const &lhs, Matrix4x3<T> const &rhs) {
   return Matrix4x3<T>(lhs * static_cast<MatrixBase<T>>(rhs));
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Matrix
 
 // Implementation
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Matrix {
+using namespace TerreateMath::Defines;
 
 template <typename T> MatrixNxM<T> &MatrixNxM<T>::operator=(T const &value) {
   MatrixBase<T>::operator=(value);
@@ -1085,6 +1087,6 @@ Matrix4x3<T> &Matrix4x3<T>::operator=(MatrixBase<T> &&other) {
   MatrixNxM<T>::operator=(std::move(other));
   return *this;
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Matrix
 
 #endif // __TC_MATH_MATRIXNXM_HPP__

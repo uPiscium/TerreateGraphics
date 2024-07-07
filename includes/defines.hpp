@@ -20,9 +20,7 @@
 #include <vector>
 
 #include <TerreateLogger/TerreateLogger.hpp>
-
-#include "TerreateLogger/ILogger.hpp"
-#include "exceptions.hpp"
+#include <TerreateMath/TerreateMath.hpp>
 
 // Defines
 #define TC_DISABLE_COPY_AND_ASSIGN(Type)                                       \
@@ -43,14 +41,6 @@
 
 #include GLAD_H
 #include GLFW_H
-#include "exceptions.hpp"
-
-#ifndef TC_THROW
-#define TC_THROW(message)                                                      \
-  std::cerr << "Error: " << __FILE__ << ":" << __LINE__ << " / " << message    \
-            << std::endl;                                                      \
-  throw TerreateCore::Exception::CoreException(message)
-#endif // TC_THROW
 
 namespace TerreateCore::Defines {
 // Core variables
@@ -76,6 +66,27 @@ typedef TerreateLogger::Interface::ILogger ILogger;
 typedef TerreateLogger::Loggers::ConsoleLogger ConsoleLogger;
 typedef TerreateLogger::Loggers::FileLogger FileLogger;
 typedef TerreateLogger::Manager::LoggerManager LoggerManager;
+
+// TM types (TerreateMath types)
+typedef TerreateMath::Math::complex complex;
+typedef TerreateMath::Math::fraction fraction;
+typedef TerreateMath::Math::matrix matrix;
+
+typedef TerreateMath::Math::vec2 vec2;
+typedef TerreateMath::Math::vec3 vec3;
+typedef TerreateMath::Math::vec4 vec4;
+
+typedef TerreateMath::Math::mat2 mat2;
+typedef TerreateMath::Math::mat2x3 mat2x3;
+typedef TerreateMath::Math::mat2x4 mat2x4;
+typedef TerreateMath::Math::mat3x2 mat3x2;
+typedef TerreateMath::Math::mat3 mat3;
+typedef TerreateMath::Math::mat3x4 mat3x4;
+typedef TerreateMath::Math::mat4x2 mat4x2;
+typedef TerreateMath::Math::mat4x3 mat4x3;
+typedef TerreateMath::Math::mat4 mat4;
+
+typedef TerreateMath::Math::quat quat;
 
 // Standard types
 typedef TCbool Bool;
@@ -289,6 +300,13 @@ enum class CullingFace {
 // Use to select opengl culling mode.
 enum class CullingMode { CW = GL_CW, CCW = GL_CCW };
 
+// Use to select opengl cursor mode.
+enum class CursorMode {
+  NORMAL = GLFW_CURSOR_NORMAL,
+  HIDDEN = GLFW_CURSOR_HIDDEN,
+  DISABLED = GLFW_CURSOR_DISABLED
+};
+
 // Use to select opengl standard cursor shape.
 enum class CursorShape {
   ARROW = GLFW_ARROW_CURSOR,
@@ -356,7 +374,6 @@ enum class GLFeature {
 
 // Use to select input mode.
 enum class InputType {
-  CURSOR = GLFW_CURSOR,
   STICKY_KEYS = GLFW_STICKY_KEYS,
   STICKY_MOUSE_BUTTONS = GLFW_STICKY_MOUSE_BUTTONS,
   LOCK_KEY_MODS = GLFW_LOCK_KEY_MODS,

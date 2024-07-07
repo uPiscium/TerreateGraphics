@@ -1,16 +1,36 @@
 #include "../includes/window.hpp"
+#include "GLFW/glfw3.h"
 
 namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
+Icon::Icon() {
+  TC_TRACE_CALL(LOCATION(Icon));
+
+  mImages = Vec<GLFWimage>();
+  mPointers = Vec<Ubyte *>();
+  TC_DEBUG_CALL("Icon is created.");
+}
+
 Icon::~Icon() {
+  TC_TRACE_CALL(LOCATION(Icon));
+
   for (auto &pointer : mPointers) {
     delete[] pointer;
   }
+  TC_DEBUG_CALL("Icon is deleted.");
+}
+
+Uint Icon::GetSize() const {
+  TC_TRACE_CALL(LOCATION(Icon));
+
+  return mImages.size();
 }
 
 void Icon::AddImage(Uint const &width, Uint const &height,
                     Ubyte const *pixels) {
+  TC_TRACE_CALL(LOCATION(Icon));
+
   GLFWimage image;
   image.width = width;
   image.height = height;
@@ -21,8 +41,23 @@ void Icon::AddImage(Uint const &width, Uint const &height,
   mImages.push_back(image);
 }
 
+Cursor::Cursor(Int const &xhot, Int const &yhot) : mXHot(xhot), mYHot(yhot) {
+  TC_TRACE_CALL(LOCATION(Icon));
+  TC_DEBUG_CALL("Cursor is created.");
+}
+
+Cursor::~Cursor() {
+  TC_TRACE_CALL(LOCATION(Icon));
+
+  glfwDestroyCursor(mCursor);
+  delete[] mPixels;
+  TC_DEBUG_CALL("Cursor is deleted.");
+}
+
 void Cursor::SetImage(Uint const &width, Uint const &height,
                       Ubyte const *pixels) {
+  TC_TRACE_CALL(LOCATION(Icon));
+
   GLFWimage image;
   image.width = width;
   image.height = height;
@@ -32,21 +67,30 @@ void Cursor::SetImage(Uint const &width, Uint const &height,
   mCursor = glfwCreateCursor(&image, mXHot, mYHot);
 }
 
-Cursor::~Cursor() {
+StandardCursor::StandardCursor(CursorShape const &shape) {
+  TC_TRACE_CALL(LOCATION(StandardCursor));
+
+  mCursor = glfwCreateStandardCursor((int)shape);
+  TC_DEBUG_CALL("StandardCursor is created.");
+}
+
+StandardCursor::~StandardCursor() {
+  TC_TRACE_CALL(LOCATION(StandardCursor));
+
   glfwDestroyCursor(mCursor);
-  delete[] mPixels;
+  TC_DEBUG_CALL("StandardCursor is deleted.");
 }
 
 namespace Callbacks {
 void WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mProperty.mPosition = Pair<int>(xpos, ypos);
+  ptr->mProperty.mPosition = Pair<Int>(xpos, ypos);
   ptr->mController->PositionCallback(xpos, ypos);
 }
 
 void WindowSizeCallbackWrapper(GLFWwindow *window, int width, int height) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mProperty.mSize = Pair<int>(width, height);
+  ptr->mProperty.mSize = Pair<Uint>(width, height);
   ptr->mController->SizeCallback(width, height);
 }
 
@@ -96,7 +140,7 @@ void MousebuttonCallbackWrapper(GLFWwindow *window, int button, int action,
 void CursorPositionCallbackWrapper(GLFWwindow *window, double xpos,
                                    double ypos) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mProperty.mCursorPosition = Pair<double>(xpos, ypos);
+  ptr->mProperty.mCursorPosition = Pair<Double>(xpos, ypos);
   ptr->mController->CursorPositionCallback(xpos, ypos);
 }
 
@@ -107,7 +151,7 @@ void CursorEnterCallbackWrapper(GLFWwindow *window, int entered) {
 
 void ScrollCallbackWrapper(GLFWwindow *window, double xoffset, double yoffset) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mProperty.mScrollOffset = Pair<double>(xoffset, yoffset);
+  ptr->mProperty.mScrollOffset = Pair<Double>(xoffset, yoffset);
   ptr->mController->ScrollCallback(xoffset, yoffset);
 }
 
@@ -133,8 +177,58 @@ void DropCallbackWrapper(GLFWwindow *window, int count, const char **paths) {
 }
 } // namespace Callbacks
 
+Str const &WindowProperty::GetTitle() const {
+  TC_TRACE_CALL(LOCATION(WindowProperty));
+
+  return mTitle;
+}
+
+Pair<Double> const &WindowProperty::GetScrollOffset() const {
+  TC_TRACE_CALL(LOCATION(WindowProperty));
+
+  return mScrollOffset;
+}
+
+Vec<Uint> const &WindowProperty::GetCodePoints() const {
+  TC_TRACE_CALL(LOCATION(WindowProperty));
+
+  return mCodePoints;
+}
+
+Vec<Key> const &WindowProperty::GetKeys() const {
+  TC_TRACE_CALL(LOCATION(WindowProperty));
+
+  return mKeys;
+}
+
+Vec<Str> const &WindowProperty::GetDroppedFiles() const {
+  TC_TRACE_CALL(LOCATION(WindowProperty));
+
+  return mDroppedFiles;
+}
+
+Pair<Uint> const &WindowProperty::GetSize() const {
+  TC_TRACE_CALL(LOCATION(WindowProperty));
+
+  return mSize;
+}
+
+Pair<Int> const &WindowProperty::GetPosition() const {
+  TC_TRACE_CALL(LOCATION(WindowProperty));
+
+  return mPosition;
+}
+
+Pair<Double> const &WindowProperty::GetCursorPosition() const {
+  TC_TRACE_CALL(LOCATION(WindowProperty));
+
+  return mCursorPosition;
+}
+
 Window::Window(Uint const &width, Uint const &height, Str const &title,
                WindowSettings const &settings) {
+  TC_TRACE_CALL(LOCATION(Window));
+
   glfwWindowHint(GLFW_RESIZABLE, settings.resizable);
   glfwWindowHint(GLFW_VISIBLE, settings.visible);
   glfwWindowHint(GLFW_DECORATED, settings.decorated);
@@ -153,7 +247,7 @@ Window::Window(Uint const &width, Uint const &height, Str const &title,
 
   if (!GLAD_INITIALIZED) {
     if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress)) {
-      TC_THROW("Failed to initialize GLAD");
+      TC_CRITICAL_CALL("Failed to initialize GLAD");
     }
     GLAD_INITIALIZED = true;
   }
@@ -179,6 +273,146 @@ Window::Window(Uint const &width, Uint const &height, Str const &title,
   glfwSetKeyCallback(mWindow, Callbacks::KeyCallbackWrapper);
   glfwSetCharCallback(mWindow, Callbacks::CharCallbackWrapper);
   glfwSetDropCallback(mWindow, Callbacks::DropCallbackWrapper);
+  TC_DEBUG_CALL("Window is generated.");
+}
+
+Window::~Window() {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  this->Close();
+  TC_DEBUG_CALL("Window is deleted.");
+}
+
+Pair<Uint> const &Window::GetSize() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return mProperty.GetSize();
+}
+
+Pair<Int> const &Window::GetPosition() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return mProperty.GetPosition();
+}
+
+Pair<Double> const &Window::GetCursorPosition() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return mProperty.GetCursorPosition();
+}
+
+Pair<Double> const &Window::GetScrollOffset() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return mProperty.GetScrollOffset();
+}
+
+Str Window::GetClipboardString() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return glfwGetClipboardString(mWindow);
+}
+
+Str const &Window::GetTitle() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return mProperty.GetTitle();
+}
+
+Vec<Uint> const &Window::GetCodePoints() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return mProperty.GetCodePoints();
+}
+
+Vec<Key> const &Window::GetKeys() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return mProperty.GetKeys();
+}
+
+Vec<Str> const &Window::GetDroppedFiles() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return mProperty.GetDroppedFiles();
+}
+
+Float Window::GetOpacity() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return glfwGetWindowOpacity(mWindow);
+}
+
+Bool Window::GetMousebutton(MousebuttonInput const &button) const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return glfwGetMouseButton(mWindow, (int)button);
+}
+
+Bool Window::GetInputTypeState(InputType const &mode) const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return glfwGetInputMode(mWindow, (int)mode);
+}
+
+CursorMode Window::GetCursorMode() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  return (CursorMode)glfwGetInputMode(mWindow, GLFW_CURSOR);
+}
+
+void Window::SetCurrentContext() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwMakeContextCurrent(mWindow);
+}
+
+void Window::SetIcon(Icon const &icon) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetWindowIcon(mWindow, icon.GetSize(), (GLFWimage const *)icon);
+}
+
+void Window::SetCursor(Cursor const &cursor) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetCursor(mWindow, (GLFWcursor *)cursor);
+}
+
+void Window::SetCursor(StandardCursor const &cursor) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetCursor(mWindow, (GLFWcursor *)cursor);
+}
+
+void Window::SetDefaultCursor() {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetCursor(mWindow, nullptr);
+}
+
+void Window::SetSize(Pair<Uint> const &size) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetWindowSize(mWindow, size.first, size.second);
+}
+
+void Window::SetPosition(Pair<Int> const &position) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetWindowPos(mWindow, position.first, position.second);
+}
+
+void Window::SetCursorPosition(Pair<Double> const &position) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetCursorPos(mWindow, position.first, position.second);
+}
+
+void Window::SetClipboardString(Str const &string) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetClipboardString(mWindow, string.c_str());
 }
 
 void Window::SetTitle(Str const &title) {
@@ -186,9 +420,125 @@ void Window::SetTitle(Str const &title) {
   mProperty.mTitle = title;
 }
 
+void Window::SetOpacity(Float const &opacity) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetWindowOpacity(mWindow, opacity);
+}
+
+void Window::SetInputTypeState(InputType const &mode, Bool const &value) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetInputMode(mWindow, (int)mode, value);
+}
+
+void Window::SetCursorMode(CursorMode const &mode) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSetInputMode(mWindow, GLFW_CURSOR, (int)mode);
+}
+
+void Window::SetWindowController(WindowController *controller) {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  mController = controller;
+}
+
 void Window::Close() {
+  TC_TRACE_CALL(LOCATION(Window));
+
   glfwDestroyWindow(mWindow);
   mWindow = nullptr;
+}
+
+void Window::Iconify() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwIconifyWindow(mWindow);
+}
+
+void Window::Maximize() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwMaximizeWindow(mWindow);
+}
+
+void Window::Show() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwShowWindow(mWindow);
+}
+
+void Window::Hide() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwHideWindow(mWindow);
+}
+
+void Window::Focus() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwFocusWindow(mWindow);
+}
+
+void Window::Restore() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwRestoreWindow(mWindow);
+}
+
+void Window::RequestAttention() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwRequestWindowAttention(mWindow);
+}
+
+void Window::Fill(Vec<Float> const &color) const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glClearColor(color[0], color[1], color[2], 0.0f);
+}
+
+void Window::Clear() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+}
+
+void Window::ClearColor() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Window::ClearDepth() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+void Window::ClearStencil() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glClear(GL_STENCIL_BUFFER_BIT);
+}
+
+void Window::Swap() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwSwapBuffers(mWindow);
+}
+
+void Window::PollEvents() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  glfwPollEvents();
+}
+
+void Window::Bind() const {
+  TC_TRACE_CALL(LOCATION(Window));
+
+  this->SetCurrentContext();
 }
 
 void Window::Frame() {

@@ -2,6 +2,7 @@
 #define __TC_JOB_HPP__
 
 #include "defines.hpp"
+#include "logger.hpp"
 #include "object.hpp"
 
 namespace TerreateCore::Job {
@@ -25,22 +26,22 @@ public:
    * @brief: JobBase is an interface for a job that can be executed by the
    * JobSystem.
    */
-  JobBase() {}
+  JobBase();
   /*
    * @brief: JobBase is an interface for a job that can be executed by the
    * JobSystem.
    * @param: dependency: The job that must be finished before this job can be
    * executed.
    */
-  JobBase(JobBase *dependency) { mDependencies.push_back(dependency); }
+  JobBase(JobBase *dependency);
   /*
    * @brief: JobBase is an interface for a job that can be executed by the
    * JobSystem.
    * @param: dependencies: The jobs that must be finished before this job can be
    * executed.
    */
-  JobBase(Vec<JobBase *> const &dependencies) : mDependencies(dependencies) {}
-  virtual ~JobBase() override = default;
+  JobBase(Vec<JobBase *> const &dependencies);
+  virtual ~JobBase() override;
 
   /*
    * @brief: Returns true if the job is ready to be executed.
@@ -51,7 +52,7 @@ public:
    * @brief: Returns true if the job has finished executing.
    * @return: True if the job has finished executing.
    */
-  Bool IsFinished() const { return mFinished; }
+  Bool IsFinished() const;
   /*
    * @brief: Overload this function to execute the job.
    */
@@ -70,14 +71,14 @@ public:
    * JobSystem. It can be used to execute a function asynchronously, or to
    * execute a function after a dependency has finished.
    */
-  SimpleJob() {}
+  SimpleJob();
   /*
    * @brief: SimpleJob is a wrapper for a function that can be executed by the
    * JobSystem. It can be used to execute a function asynchronously, or to
    * execute a function after a dependency has finished.
    * @param: target: The function to be executed.
    */
-  SimpleJob(Function<void()> const &target) : mFunction(target) {}
+  SimpleJob(Function<void()> const &target);
   /*
    * @brief: SimpleJob is a wrapper for a function that can be executed by the
    * JobSystem. It can be used to execute a function asynchronously, or to
@@ -86,8 +87,7 @@ public:
    * @param: dependency: The job that must be finished before this job can be
    * executed.
    */
-  SimpleJob(Function<void()> const &target, JobBase *const dependency)
-      : mFunction(target) {}
+  SimpleJob(Function<void()> const &target, JobBase *const dependency);
   /*
    * @brief: SimpleJob is a wrapper for a function that can be executed by the
    * JobSystem. It can be used to execute a function asynchronously, or to
@@ -96,14 +96,13 @@ public:
    * @param: dependencies: The jobs that must be finished before this job can be
    * executed.
    */
-  SimpleJob(Function<void()> const &target, Vec<JobBase *> const &dependencies)
-      : mFunction(target) {}
-  virtual ~SimpleJob() override = default;
+  SimpleJob(Function<void()> const &target, Vec<JobBase *> const &dependencies);
+  virtual ~SimpleJob() override;
 
   /*
    * @brief: Executes the target function.
    */
-  virtual void Execute() override { mFunction(); }
+  virtual void Execute() override;
 
   SimpleJob &operator=(Function<void()> const &target);
   virtual operator Bool() const override { return this->IsFinished(); }
@@ -131,7 +130,7 @@ public:
    * @param: numThreads: The number of threads to be used by the JobSystem.
    */
   JobSystem(Uint const &numThreads = std::thread::hardware_concurrency());
-  virtual ~JobSystem() override { this->Stop(); }
+  virtual ~JobSystem() override;
 
   /*
    * @brief: Stop the JobSystem and stop all job executions.
@@ -147,13 +146,11 @@ public:
    * asynchronously and does not block the JobSystem from stopping.
    * @param: job: The job to be executed.
    */
-  virtual void Daemonize(JobBase *job) {
-    mDaemons.emplace_back(Thread([this, job] { this->DaemonThread(job); }));
-  }
+  virtual void Daemonize(JobBase *job);
   /*
    * @brief: Wait for all jobs to finish executing.
    */
-  virtual void WaitForAll() { mComplete.wait(false); }
+  virtual void WaitForAll();
 
   virtual operator Bool() const override { return mComplete; }
 };

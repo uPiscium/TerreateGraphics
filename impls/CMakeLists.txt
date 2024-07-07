@@ -9,6 +9,79 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
+set(NONE -1)
+set(CRITICAL 0)
+set(ERROR 1)
+set(WARNING 2)
+set(INFO 3)
+set(DEBUG 4)
+set(TRACE 5)
+
+set(LOGLEVEL
+    "WARNING"
+    CACHE STRING "Log level")
+set(ERRORLEVEL
+    "CRITICAL"
+    CACHE STRING "Error level")
+message(STATUS "Log level : " ${LOGLEVEL})
+message(STATUS "Error level : " ${ERRORLEVEL})
+
+function(SetLogLevel)
+  if(${${LOGLEVEL}} GREATER_EQUAL CRITICAL)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_CRITICAL=1)
+  else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_CRITICAL=0)
+  endif()
+
+  if(${${LOGLEVEL}} GREATER_EQUAL ERROR)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_ERROR=1)
+  else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_ERROR=0)
+  endif()
+
+  if(${${LOGLEVEL}} GREATER_EQUAL WARNING)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_WARNING=1)
+  else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_WARNING=0)
+  endif()
+
+  if(${${LOGLEVEL}} GREATER_EQUAL INFO)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_INFO=1)
+  else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_INFO=0)
+  endif()
+
+  if(${${LOGLEVEL}} GREATER_EQUAL DEBUG)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_DEBUG=1)
+  else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_DEBUG=0)
+  endif()
+
+  if(${${LOGLEVEL}} GREATER_EQUAL TRACE)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_TRACE=1)
+  else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_LOG_TRACE=0)
+  endif()
+
+  if(${${ERRORLEVEL}} GREATER_EQUAL CRITICAL)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_THROW_CRITICAL=1)
+  else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_THROW_CRITICAL=0)
+  endif()
+
+  if(${${ERRORLEVEL}} GREATER_EQUAL ERROR)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_THROW_ERROR=1)
+  else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_THROW_ERROR=0)
+  endif()
+
+  if(${${ERRORLEVEL}} GREATER_EQUAL WARNING)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_THROW_WARNING=1)
+  else()
+    target_compile_definitions(${PROJECT_NAME} PRIVATE TC_THROW_WARNING=0)
+  endif()
+endfunction()
+
 function(CloneTerreateLogger)
   message(STATUS "Cloning TerreateLogger...")
   set(TERREATE_LOGGER_BUILD_TESTS OFF)
@@ -81,7 +154,7 @@ function(Build)
   set_target_properties(
     ${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
                                LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-
+  setloglevel()
   setincludes()
   setlibs()
 endfunction()

@@ -1,8 +1,8 @@
 #include "../../includes/TerreateCore.hpp"
 
 using namespace TerreateCore::Core;
-using namespace TerreateCore::Math;
 using namespace TerreateCore::Model;
+using namespace TerreateMath::Utils;
 
 class TestApp : public WindowController {
 private:
@@ -108,11 +108,14 @@ public:
 
     window->Swap();
     mClock.Frame(80);
+    TC_WARNING_CALL("Frame");
   }
 };
 
 int main() {
   Initialize();
+  TC_INFO_CALL("Initialize");
+
   {
     Window window(1500, 750, "Test Window", WindowSettings());
 
