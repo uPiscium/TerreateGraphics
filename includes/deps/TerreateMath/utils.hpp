@@ -3,20 +3,23 @@
 
 #include <cmath>
 
-#include "../defines.hpp"
+#include "defines.hpp"
 #include "matrixNxM.hpp"
 #include "quaternion.hpp"
 #include "vectorColumn.hpp"
 #include "vectorRow.hpp"
 
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Utils {
+using namespace TerreateMath::Defines;
+using namespace TerreateMath::Core;
+using namespace TerreateMath::Vector;
+using namespace TerreateMath::Matrix;
 
 template <typename T> T Radian(T const &degree) {
-  return degree * static_cast<T>(TC_PI) / static_cast<T>(180);
+  return degree * static_cast<T>(TM_PI) / static_cast<T>(180);
 }
 template <typename T> T Degree(T const &radian) {
-  return radian * static_cast<T>(180) / static_cast<T>(TC_PI);
+  return radian * static_cast<T>(180) / static_cast<T>(TM_PI);
 }
 
 template <typename T> Matrix4x4<T> Scale(T const &x, T const &y, T const &z);
@@ -41,28 +44,30 @@ Matrix4x4<T> Translate(ColumnVector3D<T> const &position) {
 }
 
 template <typename T>
-Quaternion<T> Rotate(T const &angle, T const &x, T const &y, T const &z);
+Quaternion::Quaternion<T> Rotate(T const &angle, T const &x, T const &y,
+                                 T const &z);
 template <typename T>
-Quaternion<T> Rotate(T const &angle, RowVector3D<T> const &axis) {
+Quaternion::Quaternion<T> Rotate(T const &angle, RowVector3D<T> const &axis) {
   return Rotate(angle, axis[0], axis[1], axis[2]);
 }
 template <typename T>
-Quaternion<T> Rotate(T const &angle, ColumnVector3D<T> const &axis) {
+Quaternion::Quaternion<T> Rotate(T const &angle,
+                                 ColumnVector3D<T> const &axis) {
   return Rotate(angle, axis[0], axis[1], axis[2]);
 }
 
-template <typename T> Quaternion<T> RotateX(T const &angle) {
+template <typename T> Quaternion::Quaternion<T> RotateX(T const &angle) {
   return Rotate(angle, static_cast<T>(1), static_cast<T>(0), static_cast<T>(0));
 }
-template <typename T> Quaternion<T> RotateY(T const &angle) {
+template <typename T> Quaternion::Quaternion<T> RotateY(T const &angle) {
   return Rotate(angle, static_cast<T>(0), static_cast<T>(1), static_cast<T>(0));
 }
-template <typename T> Quaternion<T> RotateZ(T const &angle) {
+template <typename T> Quaternion::Quaternion<T> RotateZ(T const &angle) {
   return Rotate(angle, static_cast<T>(0), static_cast<T>(0), static_cast<T>(1));
 }
 
 template <typename T>
-Quaternion<T> Rotate(T const &angX, T const &angY, T const &angZ) {
+Quaternion::Quaternion<T> Rotate(T const &angX, T const &angY, T const &angZ) {
   return RotateX(angX) * RotateY(angY) * RotateZ(angZ);
 }
 
@@ -102,13 +107,14 @@ MatrixBase<T> Lerp(MatrixBase<T> const &a, MatrixBase<T> const &b, T const &t) {
   return a * (static_cast<T>(1) - t) + b * t;
 }
 template <typename T>
-Quaternion<T> Lerp(Quaternion<T> const &a, Quaternion<T> const &b, T const &t) {
+Quaternion::Quaternion<T> Lerp(Quaternion::Quaternion<T> const &a,
+                               Quaternion::Quaternion<T> const &b, T const &t) {
   return a * (static_cast<T>(1) - t) + b * t;
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Utils
 
 // Implementation
-namespace TerreateCore::Math {
+namespace TerreateMath::Utils {
 template <typename T> Matrix4x4<T> Scale(T const &x, T const &y, T const &z) {
   Matrix4x4<T> result = Eye<T>(4);
   result(0, 0) = x;
@@ -127,10 +133,11 @@ Matrix4x4<T> Translate(T const &x, T const &y, T const &z) {
 }
 
 template <typename T>
-Quaternion<T> Rotate(T const &angle, T const &x, T const &y, T const &z) {
+Quaternion::Quaternion<T> Rotate(T const &angle, T const &x, T const &y,
+                                 T const &z) {
   T const halfAngle = angle / static_cast<T>(2);
   T const s = sin(halfAngle);
-  return Quaternion<T>(x * s, y * s, z * s, cos(halfAngle));
+  return Quaternion::Quaternion<T>(x * s, y * s, z * s, cos(halfAngle));
 }
 
 template <typename T>
@@ -181,5 +188,5 @@ Matrix4x4<T> Orthographic(T const &left, T const &right, T const &bottom,
   result(2, 3) = -(far + near) / (far - near);
   return result;
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Utils
 #endif // __TC_MATH_UTILS_HPP__

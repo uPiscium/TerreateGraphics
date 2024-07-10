@@ -3,11 +3,11 @@
 
 #include <numeric>
 
-#include "../defines.hpp"
 #include "core.hpp"
+#include "defines.hpp"
 
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Fraction {
+using namespace TerreateMath::Defines;
 
 template <typename T> class Fraction {
 private:
@@ -146,11 +146,11 @@ template <typename T, typename U>
 Bool operator>=(Fraction<T> const &lhs, U const &rhs) {
   return lhs.GetNumerator() >= lhs.GetDenominator() * rhs;
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Fraction
 
 // Implementation
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Fraction {
+using namespace TerreateMath::Defines;
 
 template <typename T> Fraction<T> &Fraction<T>::operator=(T const &value) {
   mNumerator = value;
@@ -418,17 +418,23 @@ template <typename T> Fraction<T> Abs(Fraction<T> const &f) {
   return Fraction<T>(Abs<T>(f.GetNumerator()), Abs<T>(f.GetDenominator()));
 }
 
-template <typename T> struct MatrixTypeTraits<Fraction<T>> {
-  static Str ToString(Fraction<T> const &f) {
+} // namespace TerreateMath::Fraction
+
+namespace TerreateMath::Core {
+using namespace TerreateMath::Defines;
+
+template <typename T>
+struct MatrixTypeTraits<TerreateMath::Fraction::Fraction<T>> {
+  static Str ToString(TerreateMath::Fraction::Fraction<T> const &f) {
     return std::to_string(f.GetNumerator()) + "/" +
            std::to_string(f.GetDenominator());
   }
 };
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Core
 
 template <typename T>
 std::ostream &operator<<(std::ostream &os,
-                         TerreateCore::Math::Fraction<T> const &f) {
+                         TerreateMath::Fraction::Fraction<T> const &f) {
   os << f.GetNumerator() << "/" << f.GetDenominator();
   return os;
 }

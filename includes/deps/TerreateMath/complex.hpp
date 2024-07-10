@@ -3,11 +3,11 @@
 
 #include <cmath>
 
-#include "../defines.hpp"
 #include "core.hpp"
+#include "defines.hpp"
 
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Complex {
+using namespace TerreateMath::Defines;
 
 template <typename T> class Complex {
 private:
@@ -86,11 +86,11 @@ Complex<T> operator/(Complex<T> const &lhs, T const &scalar) {
 }
 template <typename T>
 Complex<T> operator/(T const &scalar, Complex<T> const &rhs);
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Complex
 
 // Implementation
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Complex {
+using namespace TerreateMath::Defines;
 
 template <typename T>
 Complex<T> &Complex<T>::operator=(Complex<T> const &other) {
@@ -184,8 +184,12 @@ Complex<T> operator/(T const &scalar, Complex<T> const &rhs) {
 
 template <typename T> T Abs(Complex<T> const &c) { return c.AcquireLength(); }
 
-template <typename T> struct MatrixTypeTraits<Complex<T>> {
-  static Str ToString(Complex<T> const &c) {
+} // namespace TerreateMath::Complex
+
+namespace TerreateMath::Core {
+template <typename T>
+struct MatrixTypeTraits<TerreateMath::Complex::Complex<T>> {
+  static Str ToString(TerreateMath::Complex::Complex<T> const &c) {
     if (c.GetImaginary() >= static_cast<T>(0)) {
       return std::to_string(c.GetReal()) + " + " +
              std::to_string(c.GetImaginary()) + "i";
@@ -194,11 +198,11 @@ template <typename T> struct MatrixTypeTraits<Complex<T>> {
            std::to_string(-c.GetImaginary()) + "i";
   }
 };
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Core
 
 template <typename T>
 std::ostream &operator<<(std::ostream &os,
-                         TerreateCore::Math::Complex<T> const &c) {
+                         TerreateMath::Complex::Complex<T> const &c) {
   os << c.GetReal();
   if (c.GetImaginary() >= static_cast<T>(0)) {
     os << " + " << c.GetImaginary() << "i";

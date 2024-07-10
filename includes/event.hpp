@@ -2,6 +2,7 @@
 #define __TC_EVENT_HPP__
 
 #include "defines.hpp"
+#include "logger.hpp"
 #include "object.hpp"
 
 namespace TerreateCore::Event {
@@ -23,8 +24,8 @@ public:
    * callbacks to be registered to events and for events
    * to be published to the system.
    */
-  EventSystem() {}
-  virtual ~EventSystem() override = default;
+  EventSystem();
+  virtual ~EventSystem() override;
 
   /*
    * @brief: Register a callback to an event

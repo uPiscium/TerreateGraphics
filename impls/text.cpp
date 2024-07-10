@@ -2,9 +2,11 @@
 
 namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
-using namespace TerreateCore::Math;
+using namespace TerreateMath::Utils;
 
 void Text::LoadText() {
+  Logger::Trace(LOCATION(Text));
+
   mPositions.clear();
   mFont->LoadText(mText);
   auto chars = mFont->AcquireCharacters(mText);
@@ -29,26 +31,42 @@ void Text::LoadText() {
 }
 
 Text::Text() {
+  Logger::Trace(LOCATION(Text));
+
   mTextMeshData.SetFlag(ModelFlag::UV);
   mText = L"";
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
+  Logger::Debug("Text is created.");
 }
 
 Text::Text(Str const &text, Shared<Core::Font> const &font) : mFont(font) {
+  Logger::Trace(LOCATION(Text));
+
   mTextMeshData.SetFlag(ModelFlag::UV);
   mText = WStr(text.begin(), text.end());
   this->LoadText();
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
+  Logger::Debug("Text is created with char text and font.");
 }
 
 Text::Text(WStr const &text, Shared<Core::Font> const &font)
     : mFont(font), mText(text) {
+  Logger::Trace(LOCATION(Text));
+
   mTextMeshData.SetFlag(ModelFlag::UV);
   this->LoadText();
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
+  Logger::Debug("Text is created with wchar text and font.");
+}
+
+Text::~Text() {
+  Logger::Trace(LOCATION(Text));
+  Logger::Debug("Text is destroyed.");
 }
 
 void Text::LoadShader(Str const &vertexPath, Str const &fragmentPath) {
+  Logger::Trace(LOCATION(Text));
+
   mShader.AddVertexShaderSource(Shader::LoadShaderSource(vertexPath));
   mShader.AddFragmentShaderSource(Shader::LoadShaderSource(fragmentPath));
   mShader.Compile();
@@ -56,6 +74,8 @@ void Text::LoadShader(Str const &vertexPath, Str const &fragmentPath) {
 }
 
 void Text::LoadText(WStr const &text, Shared<Core::Font> const &font) {
+  Logger::Trace(LOCATION(Text));
+
   mFont = font;
   mText = text;
   this->LoadText();
@@ -63,8 +83,10 @@ void Text::LoadText(WStr const &text, Shared<Core::Font> const &font) {
 
 void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
                   Float const &windowHeight) {
+  Logger::Trace(LOCATION(Text));
+
   if (!mShaderLoaded) {
-    TC_THROW("Shader not loaded");
+    Logger::Error("Shader not loaded");
   }
 
   for (int i = 0; i < mText.size(); ++i) {

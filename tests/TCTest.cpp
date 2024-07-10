@@ -1,8 +1,11 @@
-﻿#include "../../includes/TerreateCore.hpp"
+﻿#define TC_LOG_LEVEL TC_DEBUG_LEVEL | TC_ERROR_LEVEL | TC_CRITICAL_LEVEL
+#define TC_THROW_LEVEL TC_DEBUG_LEVEL | TC_ERROR_LEVEL | TC_CRITICAL_LEVEL
+
+#include "../../includes/TerreateCore.hpp"
 
 using namespace TerreateCore::Core;
-using namespace TerreateCore::Math;
 using namespace TerreateCore::Model;
+using namespace TerreateMath::Utils;
 
 class TestApp : public WindowController {
 private:
@@ -32,10 +35,10 @@ public:
 public:
   TestApp() {
     mFont = std::make_shared<Font>("tests/resources/AsebiMin-Light.otf", 200);
-    mText.LoadText(WStr(L"日本語テスト"), mFont);
-    mText.LoadShader("tests/resources/textVert.glsl", "tests/resources/textFrag.glsl");
-    mTexture.LoadData(Texture::LoadTexture(
-"tests/resources/testImage.png"));
+    mText.LoadText(L"日本語テスト", mFont);
+    mText.LoadShader("tests/resources/textVert.glsl",
+                     "tests/resources/textFrag.glsl");
+    mTexture.LoadData(Texture::LoadTexture("tests/resources/testImage.png"));
 
     MeshData data;
     data.LoadPosition({{-600.0f, -600.0f, 600.0f},

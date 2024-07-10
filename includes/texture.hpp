@@ -6,6 +6,7 @@
 #include <stb/stb_image.h>
 
 #include "defines.hpp"
+#include "logger.hpp"
 #include "object.hpp"
 
 namespace TerreateCore::Core {
@@ -34,7 +35,7 @@ public:
   /*
    * @brief: This function creates a opengl texture.
    */
-  Texture() { glGenTextures(1, &mTexture); }
+  Texture();
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be created by Screen.
@@ -44,10 +45,8 @@ public:
    * @param: channels: number of channels in texture
    */
   Texture(Uint const &texture, Uint const &width, Uint const &height,
-          Uint const &channels)
-      : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
-  }
-  ~Texture() override { glDeleteTextures(1, &mTexture); }
+          Uint const &channels);
+  ~Texture() override;
 
   /*
    * @brief: Setter for texture filter.
@@ -79,11 +78,11 @@ public:
   /*
    * @brief: Binds texture to OpenGL.
    */
-  void Bind() const { glBindTexture(GL_TEXTURE_2D, mTexture); }
+  void Bind() const;
   /*
    * @brief: Unbinds texture from OpenGL.
    */
-  void Unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
+  void Unbind() const;
 
   operator bool() const override { return mTexture != 0; }
 
@@ -112,7 +111,7 @@ public:
   /*
    * @brief: This function creates a opengl cube texture.
    */
-  CubeTexture() { glGenTextures(1, &mTexture); }
+  CubeTexture();
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be created by CubeScreen.
@@ -122,10 +121,8 @@ public:
    * @param: channels: number of channels in texture
    */
   CubeTexture(Uint const &texture, Uint const &width, Uint const &height,
-              Uint const &channels)
-      : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
-  }
-  ~CubeTexture() override { glDeleteTextures(1, &mTexture); }
+              Uint const &channels);
+  ~CubeTexture() override;
 
   /*
    * @brief: Setter for texture filter.
@@ -168,11 +165,11 @@ public:
   /*
    * @brief: Binds texture to OpenGL.
    */
-  void Bind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, mTexture); }
+  void Bind() const;
   /*
    * @brief: Unbinds texture from OpenGL.
    */
-  void Unbind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
+  void Unbind() const;
 
   operator Bool() const override { return mTexture != 0; }
 };

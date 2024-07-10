@@ -2,7 +2,6 @@
 #define __TC_SKELETON_HPP__
 
 #include "defines.hpp"
-#include "math/math.hpp"
 #include "object.hpp"
 
 namespace TerreateCore::Animation {
