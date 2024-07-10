@@ -70,7 +70,7 @@ public:
   template <typename U>
   RowVector2D(U const *array) : RowVectorBase<T>(2, array) {}
   template <typename U>
-  RowVector2D(U const &x, U const &y) : RowVectorBase<T>(Vec<T>({x, y})) {}
+  RowVector2D(U const &x, U const &y) : RowVectorBase<T>(Vec<T>({static_cast<T>(x), static_cast<T>(y)})) {}
   template <typename U>
   RowVector2D(Vec<U> const &value) : RowVectorBase<T>(value) {}
   template <typename U>
@@ -103,7 +103,7 @@ public:
   RowVector3D(U const *array) : RowVectorBase<T>(3, array) {}
   template <typename U>
   RowVector3D(U const &x, U const &y, U const &z)
-      : RowVectorBase<T>(Vec<T>({x, y, z})) {}
+      : RowVectorBase<T>(Vec<T>({static_cast<T>(x), static_cast<T>(y), static_cast<T>(z)})) {}
   template <typename U>
   RowVector3D(Vec<U> const &value) : RowVectorBase<T>(value) {}
   template <typename U>
@@ -139,7 +139,7 @@ public:
   RowVector4D(U const *array) : RowVectorBase<T>(4, array) {}
   template <typename U>
   RowVector4D(U const &x, U const &y, U const &z, U const &w)
-      : RowVectorBase<T>(Vec<T>({x, y, z, w})) {}
+      : RowVectorBase<T>(Vec<T>({static_cast<T>(x), static_cast<T>(y), static_cast<T>(z), static_cast<T>(w)})) {}
   template <typename U>
   RowVector4D(Vec<U> const &value) : RowVectorBase<T>(value) {}
   template <typename U>

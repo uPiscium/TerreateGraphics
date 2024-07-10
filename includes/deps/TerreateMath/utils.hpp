@@ -16,10 +16,10 @@ using namespace TerreateMath::Vector;
 using namespace TerreateMath::Matrix;
 
 template <typename T> T Radian(T const &degree) {
-  return degree * static_cast<T>(M_PI) / static_cast<T>(180);
+  return degree * static_cast<T>(TM_PI) / static_cast<T>(180);
 }
 template <typename T> T Degree(T const &radian) {
-  return radian * static_cast<T>(180) / static_cast<T>(M_PI);
+  return radian * static_cast<T>(180) / static_cast<T>(TM_PI);
 }
 
 template <typename T> Matrix4x4<T> Scale(T const &x, T const &y, T const &z);

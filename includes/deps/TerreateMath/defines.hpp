@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#define TM_PI 3.14159265358979
+
 namespace TerreateMath::Defines {
 typedef bool Bool;
 typedef int32_t Int;
