@@ -28,6 +28,7 @@
 // Constants
 #define GLAD_H <glad/gl.h>
 #define GLFW_H <GLFW/glfw3.h>
+#define TC_PI 3.14159265358979
 
 #ifndef TC_UNICODE_HALF_SPACE
 #define TC_UNICODE_HALF_SPACE 32

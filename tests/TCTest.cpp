@@ -1,4 +1,4 @@
-#include "../../includes/TerreateCore.hpp"
+﻿#include "../../includes/TerreateCore.hpp"
 
 using namespace TerreateCore::Core;
 using namespace TerreateCore::Math;
@@ -32,7 +32,7 @@ public:
 public:
   TestApp() {
     mFont = std::make_shared<Font>("tests/resources/AsebiMin-Light.otf", 200);
-    mText.LoadText(L"日本語テスト", mFont);
+    mText.LoadText(WStr(L"日本語テスト"), mFont);
     mText.LoadShader("tests/resources/textVert.glsl", "tests/resources/textFrag.glsl");
     mTexture.LoadData(Texture::LoadTexture(
 "tests/resources/testImage.png"));

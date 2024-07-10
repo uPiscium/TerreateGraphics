@@ -72,7 +72,7 @@ public:
   ColumnVector2D(U const *array) : ColumnVectorBase<T>(2, array) {}
   template <typename U>
   ColumnVector2D(U const &x, U const &y)
-      : ColumnVectorBase<T>(Vec<T>({x, y})) {}
+      : ColumnVectorBase<T>(Vec<T>({static_cast<T>(x), static_cast<T>(y)})) {}
   template <typename U>
   ColumnVector2D(Vec<U> const &value) : ColumnVectorBase<T>(value) {}
   template <typename U>
@@ -103,7 +103,7 @@ public:
   ColumnVector3D(U const *array) : ColumnVectorBase<T>(3, array) {}
   template <typename U>
   ColumnVector3D(U const &x, U const &y, U const &z)
-      : ColumnVectorBase<T>(Vec<T>({x, y, z})) {}
+      : ColumnVectorBase<T>(Vec<T>({static_cast<T>(x), static_cast<T>(y), static_cast<T>(z)})) {}
   template <typename U>
   ColumnVector3D(Vec<U> const &value) : ColumnVectorBase<T>(value) {}
   template <typename U>
@@ -134,7 +134,7 @@ public:
   ColumnVector4D(U const *array) : ColumnVectorBase<T>(4, array) {}
   template <typename U>
   ColumnVector4D(U const &x, U const &y, U const &z, U const &w)
-      : ColumnVectorBase<T>(Vec<T>({x, y, z, w})) {}
+      : ColumnVectorBase<T>(Vec<T>({static_cast<T>(x), static_cast<T>(y), static_cast<T>(z), static_cast<T>(w)})) {}
   template <typename U>
   ColumnVector4D(Vec<U> const &value) : ColumnVectorBase<T>(value) {}
   template <typename U>
