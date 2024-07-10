@@ -5,6 +5,7 @@
 #include FT_FREETYPE_H
 
 #include "defines.hpp"
+#include "logger.hpp"
 #include "object.hpp"
 #include "texture.hpp"
 
@@ -29,6 +30,9 @@ private:
 private:
   TC_DISABLE_COPY_AND_ASSIGN(Font);
 
+private:
+  void LoadDummyCharacter();
+
 public:
   /*
    * @brief: Constructor for RawFont.
@@ -42,15 +46,13 @@ public:
    * @brief: Getter for font size.
    * @return: font size
    */
-  Uint GetFontSize() const { return mSize; }
+  Uint GetFontSize() const;
   /*
    * @brief: Getter for character.
    * @param: character: character to get
    * @return: character
    */
-  Shared<Character> const &GetCharacter(wchar_t const &character) {
-    return mCharacters[character];
-  }
+  Shared<Character> const &GetCharacter(wchar_t const &character);
 
   /*
    * @brief: Acquirer for character.

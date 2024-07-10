@@ -1,11 +1,12 @@
 #ifndef __TC_MATH_VECTOR_COLUMN_HPP__
 #define __TC_MATH_VECTOR_COLUMN_HPP__
 
-#include "../defines.hpp"
 #include "core.hpp"
+#include "defines.hpp"
 
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Vector {
+using namespace TerreateMath::Defines;
+using namespace TerreateMath::Core;
 
 template <typename T> class ColumnVectorBase : public MatrixBase<T> {
 public:
@@ -72,7 +73,7 @@ public:
   ColumnVector2D(U const *array) : ColumnVectorBase<T>(2, array) {}
   template <typename U>
   ColumnVector2D(U const &x, U const &y)
-      : ColumnVectorBase<T>(Vec<T>({x, y})) {}
+      : ColumnVectorBase<T>(Vec<T>({static_cast<T>(x), static_cast<T>(y)})) {}
   template <typename U>
   ColumnVector2D(Vec<U> const &value) : ColumnVectorBase<T>(value) {}
   template <typename U>
@@ -103,7 +104,7 @@ public:
   ColumnVector3D(U const *array) : ColumnVectorBase<T>(3, array) {}
   template <typename U>
   ColumnVector3D(U const &x, U const &y, U const &z)
-      : ColumnVectorBase<T>(Vec<T>({x, y, z})) {}
+      : ColumnVectorBase<T>(Vec<T>({static_cast<T>(x), static_cast<T>(y), static_cast<T>(z)})) {}
   template <typename U>
   ColumnVector3D(Vec<U> const &value) : ColumnVectorBase<T>(value) {}
   template <typename U>
@@ -134,7 +135,7 @@ public:
   ColumnVector4D(U const *array) : ColumnVectorBase<T>(4, array) {}
   template <typename U>
   ColumnVector4D(U const &x, U const &y, U const &z, U const &w)
-      : ColumnVectorBase<T>(Vec<T>({x, y, z, w})) {}
+      : ColumnVectorBase<T>(Vec<T>({static_cast<T>(x), static_cast<T>(y), static_cast<T>(z), static_cast<T>(w)})) {}
   template <typename U>
   ColumnVector4D(Vec<U> const &value) : ColumnVectorBase<T>(value) {}
   template <typename U>
@@ -365,10 +366,10 @@ template <typename T>
 ColumnVector4D<T> operator*(T const &lhs, ColumnVector4D<T> const &rhs) {
   return ColumnVector4D<T>(lhs * static_cast<MatrixBase<T>>(rhs));
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Vector
 
 // Implementation
-namespace TerreateCore::Math {
+namespace TerreateMath::Vector {
 template <typename T> T ColumnVectorBase<T>::AcquireLength() const {
   T sum = 0;
   for (Uint i = 0; i < this->GetRow(); i++) {
@@ -571,7 +572,7 @@ ColumnVector3D<T> Cross(ColumnVectorBase<T> const &lhs,
   Uint rComps = rhs.GetComps();
 
   if (lComps > 3 || rComps > 3) {
-    TC_THROW("Incompatible vector size.");
+    std::runtime_error("Incompatible vector size.");
   }
 
   ColumnVector3D<T> v1;
@@ -585,5 +586,5 @@ ColumnVector3D<T> Cross(ColumnVectorBase<T> const &lhs,
   result(2, 0) = v1(0, 0) * v2(1, 0) - v1(1, 0) * v2(0, 0);
   return result;
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Vector
 #endif // __TC_MATH_VECTOR_COLUMN_HPP__

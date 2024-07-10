@@ -2,7 +2,6 @@
 #define __TC_ANIMATION_HPP__
 
 #include "defines.hpp"
-#include "math/math.hpp"
 #include "object.hpp"
 
 namespace TerreateCore::Animation {
@@ -11,7 +10,7 @@ using namespace TerreateCore::Defines;
 struct Transform {
   vec3 scale;
   vec3 position;
-  quaternion rotation;
+  quat rotation;
 };
 
 class Animation : public Core::Object {

@@ -5,12 +5,11 @@
 #include "buffer.hpp"
 #include "defines.hpp"
 #include "event.hpp"
-#include "exceptions.hpp"
 #include "font.hpp"
 #include "job.hpp"
+#include "logger.hpp"
 #include "model.hpp"
 #include "object.hpp"
-#include "scene.hpp"
 #include "screen.hpp"
 #include "shader.hpp"
 #include "skeleton.hpp"
@@ -37,7 +36,7 @@ public:
   static Float GetCurrentRuntime() { return glfwGetTime(); }
 };
 
-void Initialize();
+void Initialize(Bool const &enableConsoleLog = false);
 void Terminate();
 } // namespace TerreateCore::Core
 #endif // __TC_TERREATECORE_HPP__

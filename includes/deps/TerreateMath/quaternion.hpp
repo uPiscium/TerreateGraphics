@@ -6,8 +6,11 @@
 #include "vectorColumn.hpp"
 #include "vectorRow.hpp"
 
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Quaternion {
+using namespace TerreateMath::Defines;
+using namespace TerreateMath::Core;
+using namespace TerreateMath::Vector;
+using namespace TerreateMath::Matrix;
 
 template <typename T> class Quaternion {
 private:
@@ -74,10 +77,10 @@ template <typename T>
 Quaternion<T> operator/(Quaternion<T> const &lhs, T const &scalar);
 template <typename T>
 Quaternion<T> operator/(T const &scalar, Quaternion<T> const &rhs);
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Quaternion
 
 // Implementation
-namespace TerreateCore::Math {
+namespace TerreateMath::Quaternion {
 template <typename T> Quaternion<T> Quaternion<T>::AcquireNormalized() const {
   T const length = AcquireLength();
   return Quaternion<T>(mImaginary / length, mReal / length);
@@ -252,6 +255,6 @@ Quaternion<T> operator/(T const &scalar, Quaternion<T> const &rhs) {
 template <typename T> T Abs(Quaternion<T> const &q) {
   return q.AcquireLength();
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Quaternion
 
 #endif // __TC_MATH_QUATERNION_HPP__

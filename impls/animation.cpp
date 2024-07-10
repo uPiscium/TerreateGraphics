@@ -2,6 +2,7 @@
 
 namespace TerreateCore::Animation {
 using namespace TerreateCore::Defines;
+using namespace TerreateMath::Utils;
 
 void Animation::AddKeyFrame(Transform const &keyFrame, Float const &time) {
   mKeyFrames.push_back(keyFrame);
@@ -45,8 +46,8 @@ Transform Animation::Interpolate(Float const &time) const {
   Transform const &k1 = mKeyFrames[index];
 
   Transform result;
-  result.scale = Math::Lerp(k0.scale, k1.scale, t);
-  result.position = Math::Lerp(k0.position, k1.position, t);
+  result.scale = Lerp(k0.scale, k1.scale, t);
+  result.position = Lerp(k0.position, k1.position, t);
   // result.rotation = Math::Lerp(k0.rotation, k1.rotation, t);
 
   return result;
@@ -54,9 +55,9 @@ Transform Animation::Interpolate(Float const &time) const {
 
 mat4 Animation::TransformToMatrix(Transform const &transform) {
   mat4 result = Eye<Float>(4);
-  result = Math::Scale(transform.scale) * result;
-  result = Math::ToMatrix(transform.rotation) * result;
-  result = Math::Translate(transform.position) * result;
+  result = Scale(transform.scale) * result;
+  result = ToMatrix(transform.rotation) * result;
+  result = Translate(transform.position) * result;
   return result;
 }
 } // namespace TerreateCore::Animation

@@ -3,14 +3,13 @@
 
 #include "defines.hpp"
 #include "font.hpp"
-#include "math/math.hpp"
+#include "logger.hpp"
 #include "model.hpp"
 #include "object.hpp"
 #include "shader.hpp"
 
 namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
-using namespace TerreateCore::Math;
 
 class Text : public Core::Object {
 private:
@@ -29,7 +28,7 @@ public:
   Text();
   Text(Str const &text, Shared<Core::Font> const &font);
   Text(WStr const &text, Shared<Core::Font> const &font);
-  ~Text() = default;
+  ~Text() override;
 
   void LoadShader(Str const &vertexPath, Str const &fragmentPath);
   void LoadText(Str const &text, Shared<Core::Font> const &font) {

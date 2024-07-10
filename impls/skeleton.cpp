@@ -1,6 +1,9 @@
 #include "../includes/skeleton.hpp"
 
 namespace TerreateCore::Animation {
+using namespace TerreateCore::Defines;
+using namespace TerreateMath::Utils;
+
 void Joint::Initialize(mat4 const &parentOffset) {
   if (mChild) {
     mChild->Initialize(mOffset);
@@ -14,9 +17,9 @@ void Joint::Initialize(mat4 const &parentOffset) {
 void Joint::Transform(mat4 const &parentTransform,
                       Vec<mat4> const &jointTransforms,
                       Vec<mat4> &jointMatrices) {
-  mTransform = Math::Dot(mInitialTransform, jointTransforms[mID]);
-  mTransform = Math::Dot(parentTransform, mTransform);
-  jointMatrices[mID] = Math::Dot(mTransform, mOffset);
+  mTransform = Dot(mInitialTransform, jointTransforms[mID]);
+  mTransform = Dot(parentTransform, mTransform);
+  jointMatrices[mID] = Dot(mTransform, mOffset);
   if (mChild) {
     mChild->Transform(mTransform, jointTransforms, jointMatrices);
   }
@@ -27,13 +30,13 @@ void Joint::Transform(mat4 const &parentTransform,
 
 void Skeleton::Initialize() {
   if (mRoot) {
-    mRoot->Initialize(Math::Eye<Float>(4));
+    mRoot->Initialize(Eye<Float>(4));
   }
 }
 
 void Skeleton::ApplyTransforms(Vec<mat4> const &transforms) {
   if (mRoot) {
-    mRoot->Transform(Math::Eye<Float>(4), transforms, mJointTransformMatrices);
+    mRoot->Transform(Eye<Float>(4), transforms, mJointTransformMatrices);
   }
 }
 } // namespace TerreateCore::Animation

@@ -1,6 +1,7 @@
 #ifndef __TC_MATH_CORE_HPP__
 #define __TC_MATH_CORE_HPP__
 
+#include <stdexcept>
 #ifndef EPSILON
 #define EPSILON 1e-6
 #endif // EPSILON
@@ -9,10 +10,10 @@
 #include <cstring>
 #include <iomanip>
 
-#include "../defines.hpp"
+#include "defines.hpp"
 
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Core {
+using namespace TerreateMath::Defines;
 
 template <typename T> inline T Abs(T const &value) {
   return static_cast<T>(fabs(static_cast<double>(value)));
@@ -167,14 +168,14 @@ template <typename T>
 inline Bool operator!=(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs) {
   return !(lhs == rhs);
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Core
 template <typename T>
 inline std::ostream &
-operator<<(std::ostream &os, TerreateCore::Math::MatrixBase<T> const &matrix);
+operator<<(std::ostream &os, TerreateMath::Core::MatrixBase<T> const &matrix);
 
 // Implementation
-namespace TerreateCore::Math {
-using namespace TerreateCore::Defines;
+namespace TerreateMath::Core {
+using namespace TerreateMath::Defines;
 
 template <typename T>
 MatrixBase<T>::MatrixBase(Uint const &row, Uint const &column)
@@ -348,7 +349,7 @@ template <typename T> Uint MatrixBase<T>::AcquireRank() const {
 
 template <typename T> T MatrixBase<T>::AcquireDeterminant() const {
   if (mRow != mColumn) {
-    TC_THROW("Matrix is not square.");
+    std::runtime_error("Matrix is not square.");
   }
   if (mRow == 1) {
     return mArray[0];
@@ -446,7 +447,7 @@ MatrixBase<T> MatrixBase<T>::AcquireUpperTriangular(int *c) const {
 
 template <typename T> MatrixBase<T> MatrixBase<T>::AcquireInversed() const {
   if (mRow != mColumn) {
-    TC_THROW("Matrix is not square.");
+    std::runtime_error("Matrix is not square.");
   }
 
   MatrixBase<T> inverse = Eye<T>(mRow);
@@ -455,7 +456,7 @@ template <typename T> MatrixBase<T> MatrixBase<T>::AcquireInversed() const {
   for (Uint i = 0; i < mRow; ++i) {
     Uint j = current.SearchNonZeroRow(i, i);
     if (j == mColumn) {
-      TC_THROW("Matrix is not inversable.");
+      std::runtime_error("Matrix is not inversable.");
     }
 
     if (j != i) {
@@ -483,7 +484,7 @@ template <typename T> MatrixBase<T> MatrixBase<T>::AcquireInversed() const {
 template <typename T>
 void MatrixBase<T>::SetRow(Uint const &row, T const *value) {
   if (row < 0 || mRow <= row) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mColumn; ++i) {
@@ -494,7 +495,7 @@ void MatrixBase<T>::SetRow(Uint const &row, T const *value) {
 template <typename T>
 void MatrixBase<T>::SetRow(Uint const &row, Vec<T> const &value) {
   if (row < 0 || mRow <= row) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mColumn; ++i) {
@@ -505,7 +506,7 @@ void MatrixBase<T>::SetRow(Uint const &row, Vec<T> const &value) {
 template <typename T>
 void MatrixBase<T>::SetRow(Uint const &row, MatrixBase<T> const &value) {
   if (row < 0 || mRow <= row) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mColumn; ++i) {
@@ -516,7 +517,7 @@ void MatrixBase<T>::SetRow(Uint const &row, MatrixBase<T> const &value) {
 template <typename T>
 void MatrixBase<T>::SetColumn(Uint const &column, T const *value) {
   if (column < 0 || mColumn <= column) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mRow; ++i) {
@@ -527,7 +528,7 @@ void MatrixBase<T>::SetColumn(Uint const &column, T const *value) {
 template <typename T>
 void MatrixBase<T>::SetColumn(Uint const &column, Vec<T> const &value) {
   if (column < 0 || mColumn <= column) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mRow; ++i) {
@@ -538,7 +539,7 @@ void MatrixBase<T>::SetColumn(Uint const &column, Vec<T> const &value) {
 template <typename T>
 void MatrixBase<T>::SetColumn(Uint const &column, MatrixBase<T> const &value) {
   if (column < 0 || mColumn <= column) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mRow; ++i) {
@@ -570,7 +571,7 @@ Uint MatrixBase<T>::SearchNonZeroColumn(Uint const &column,
 template <typename T>
 void MatrixBase<T>::SwapRow(Uint const &row1, Uint const &row2) {
   if (row1 < 0 || mRow <= row1 || row2 < 0 || mRow <= row2) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mColumn; ++i) {
@@ -583,7 +584,7 @@ void MatrixBase<T>::SwapRow(Uint const &row1, Uint const &row2) {
 template <typename T>
 void MatrixBase<T>::SwapColumn(Uint const &column1, Uint const &column2) {
   if (column1 < 0 || mColumn <= column1 || column2 < 0 || mColumn <= column2) {
-    TC_THROW("Index out of range");
+    std::runtime_error("Index out of range");
   }
 
   for (Uint i = 0; i < mRow; ++i) {
@@ -596,7 +597,7 @@ void MatrixBase<T>::SwapColumn(Uint const &column1, Uint const &column2) {
 template <typename T>
 void MatrixBase<T>::MultiplyRow(Uint const &row, T const &value) {
   if (row < 0 || mRow <= row) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mColumn; ++i) {
@@ -607,7 +608,7 @@ void MatrixBase<T>::MultiplyRow(Uint const &row, T const &value) {
 template <typename T>
 void MatrixBase<T>::MultiplyColumn(Uint const &column, T const &value) {
   if (column < 0 || mColumn <= column) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mRow; ++i) {
@@ -618,7 +619,7 @@ void MatrixBase<T>::MultiplyColumn(Uint const &column, T const &value) {
 template <typename T>
 void MatrixBase<T>::AddRow(Uint const &row1, Uint const &row2, T const &value) {
   if (row1 < 0 || mRow <= row1 || row2 < 0 || mRow <= row2) {
-    TC_THROW("Index out of range.");
+    std::runtime_error("Index out of range.");
   }
 
   for (Uint i = 0; i < mColumn; ++i) {
@@ -630,7 +631,7 @@ template <typename T>
 void MatrixBase<T>::AddColumn(Uint const &column1, Uint const &column2,
                               T const &value) {
   if (column1 < 0 || mColumn <= column1 || column2 < 0 || mColumn <= column2) {
-    TC_THROW("Index out of range");
+    std::runtime_error("Index out of range");
   }
 
   for (Uint i = 0; i < mRow; ++i) {
@@ -641,7 +642,7 @@ void MatrixBase<T>::AddColumn(Uint const &column1, Uint const &column2,
 template <typename T>
 void MatrixBase<T>::LU(MatrixBase<T> &L, MatrixBase<T> &U) const {
   if (mRow != mColumn) {
-    TC_THROW("Matrix is not square.");
+    std::runtime_error("Matrix is not square.");
   }
 
   MatrixBase<T> current = this->GetCopy();
@@ -710,7 +711,7 @@ template <typename T> MatrixBase<T> &MatrixBase<T>::operator=(T const &value) {
 template <typename T>
 MatrixBase<T> &MatrixBase<T>::operator=(Vec<T> const &value) {
   if (mRow * mColumn != value.size()) {
-    TC_THROW("Data size is not matched.");
+    std::runtime_error("Data size is not matched.");
   }
 
   for (Uint i = 0; i < mRow; ++i) {
@@ -724,7 +725,7 @@ MatrixBase<T> &MatrixBase<T>::operator=(Vec<T> const &value) {
 template <typename T>
 MatrixBase<T> &MatrixBase<T>::operator=(Vec<Vec<T>> const &value) {
   if (mRow != value.size() || mColumn != value[0].size()) {
-    TC_THROW("Data size is not matched.");
+    std::runtime_error("Data size is not matched.");
   }
 
   for (Uint i = 0; i < mRow; ++i) {
@@ -766,7 +767,7 @@ MatrixBase<T> &MatrixBase<T>::operator=(MatrixBase<T> &&other) {
 template <typename T>
 MatrixBase<T> MatrixBase<T>::operator+=(MatrixBase<T> const &other) {
   if (mRow != other.GetRow() || mColumn != other.GetColumn()) {
-    TC_THROW("Incompatible matrix size.");
+    std::runtime_error("Incompatible matrix size.");
   }
 
   for (Uint i = 0; i < mRow * mColumn; ++i) {
@@ -778,7 +779,7 @@ MatrixBase<T> MatrixBase<T>::operator+=(MatrixBase<T> const &other) {
 template <typename T>
 MatrixBase<T> MatrixBase<T>::operator-=(MatrixBase<T> const &other) {
   if (mRow != other.GetRow() || mColumn != other.GetColumn()) {
-    TC_THROW("Incompatible matrix size.");
+    std::runtime_error("Incompatible matrix size.");
   }
 
   for (Uint i = 0; i < mRow * mColumn; ++i) {
@@ -790,7 +791,7 @@ MatrixBase<T> MatrixBase<T>::operator-=(MatrixBase<T> const &other) {
 template <typename T>
 MatrixBase<T> MatrixBase<T>::operator*=(MatrixBase<T> const &other) {
   if (mColumn != other.mRow) {
-    TC_THROW("Incompatible matrix size");
+    std::runtime_error("Incompatible matrix size");
   }
 
   MatrixBase<T> result(mRow, other.mColumn);
@@ -836,7 +837,7 @@ template <typename T> MatrixBase<T> MatrixBase<T>::operator/=(T const &value) {
 template <typename T>
 inline MatrixBase<T> Dot(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs) {
   if (lhs.GetColumn() != rhs.GetRow()) {
-    TC_THROW("Incompatible matrix size");
+    std::runtime_error("Incompatible matrix size");
   }
 
   Uint row = lhs.GetRow();
@@ -856,7 +857,7 @@ template <typename T>
 inline MatrixBase<T> Hadamard(MatrixBase<T> const &lhs,
                               MatrixBase<T> const &rhs) {
   if (lhs.GetRow() != rhs.GetRow() || lhs.GetColumn() != rhs.GetColumn()) {
-    TC_THROW("Incompatible matrix size.");
+    std::runtime_error("Incompatible matrix size.");
   }
 
   Vec<T> data(lhs.GetSize());
@@ -880,7 +881,7 @@ template <typename T>
 inline MatrixBase<T> operator+(MatrixBase<T> const &lhs,
                                MatrixBase<T> const &rhs) {
   if (lhs.GetRow() != rhs.GetRow() || lhs.GetColumn() != rhs.GetColumn()) {
-    TC_THROW("Incompatible matrix size.");
+    std::runtime_error("Incompatible matrix size.");
   }
 
   MatrixBase<T> copy = lhs.GetCopy();
@@ -892,7 +893,7 @@ template <typename T>
 inline MatrixBase<T> operator-(MatrixBase<T> const &lhs,
                                MatrixBase<T> const &rhs) {
   if (lhs.GetRow() != rhs.GetRow() || lhs.GetColumn() != rhs.GetColumn()) {
-    TC_THROW("Incompatible matrix size.");
+    std::runtime_error("Incompatible matrix size.");
   }
 
   MatrixBase<T> copy = lhs.GetCopy();
@@ -963,12 +964,12 @@ inline bool operator==(MatrixBase<T> const &lhs, MatrixBase<T> const &rhs) {
     }
   }
 }
-} // namespace TerreateCore::Math
+} // namespace TerreateMath::Core
 
 template <typename T>
 inline std::ostream &
-operator<<(std::ostream &os, TerreateCore::Math::MatrixBase<T> const &matrix) {
-  using namespace TerreateCore::Math;
+operator<<(std::ostream &os, TerreateMath::Core::MatrixBase<T> const &matrix) {
+  using namespace TerreateMath::Defines;
   Uint digit = matrix.AcquireMaxDigit();
   digit = digit > 16 ? 16 : digit;
   for (Uint i = 0; i < matrix.GetRow(); ++i) {
@@ -979,7 +980,7 @@ operator<<(std::ostream &os, TerreateCore::Math::MatrixBase<T> const &matrix) {
         os << std::setw(digit) << 0 << " ";
       } else {
         os << std::setw(digit)
-           << TerreateCore::Math::MatrixTypeTraits<T>::ToString(value) << " ";
+           << TerreateMath::Core::MatrixTypeTraits<T>::ToString(value) << " ";
       }
     }
     os << "|" << std::endl;

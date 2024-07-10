@@ -26,9 +26,16 @@ void Clock::Frame(Uint const &fps) {
   }
 }
 
-void Initialize() {
+void Initialize(Bool const &enableConsoleLog) {
+  if (enableConsoleLog) {
+    LoggerManager::Register(new ConsoleLogger("TerrcateCore/ConsoleLogger"));
+  }
+  LoggerManager::Register(
+      new FileLogger("TerrcateCore/FileLogger", "build/log.txt"));
+
   if (!glfwInit()) {
-    TC_THROW("Failed to initialize GLFW");
+    Logger::Critical("Failed to initialize GLFW");
+    return;
   }
 
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

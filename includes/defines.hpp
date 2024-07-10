@@ -2,6 +2,7 @@
 #define __TC_DEFINES_HPP__
 
 #include <atomic>
+#include <chrono>
 #include <condition_variable>
 #include <cstdint>
 #include <deque>
@@ -18,7 +19,8 @@
 #include <unordered_set>
 #include <vector>
 
-#include "exceptions.hpp"
+#include <TerreateLogger/TerreateLogger.hpp>
+#include <TerreateMath/TerreateMath.hpp>
 
 // Defines
 #define TC_DISABLE_COPY_AND_ASSIGN(Type)                                       \
@@ -39,14 +41,6 @@
 
 #include GLAD_H
 #include GLFW_H
-#include "exceptions.hpp"
-
-#ifndef TC_THROW
-#define TC_THROW(message)                                                      \
-  std::cerr << "Error: " << __FILE__ << ":" << __LINE__ << " / " << message    \
-            << std::endl;                                                      \
-  throw TerreateCore::Exception::CoreException(message)
-#endif // TC_THROW
 
 namespace TerreateCore::Defines {
 // Core variables
@@ -66,6 +60,33 @@ typedef int64_t TCi64;
 typedef uint64_t TCu64;
 typedef float TCfloat;
 typedef double TCdouble;
+
+// TL types (TerreateLogger types)
+typedef TerreateLogger::Interface::ILogger ILogger;
+typedef TerreateLogger::Loggers::ConsoleLogger ConsoleLogger;
+typedef TerreateLogger::Loggers::FileLogger FileLogger;
+typedef TerreateLogger::Manager::LoggerManager LoggerManager;
+
+// TM types (TerreateMath types)
+typedef TerreateMath::Math::complex complex;
+typedef TerreateMath::Math::fraction fraction;
+typedef TerreateMath::Math::matrix matrix;
+
+typedef TerreateMath::Math::vec2 vec2;
+typedef TerreateMath::Math::vec3 vec3;
+typedef TerreateMath::Math::vec4 vec4;
+
+typedef TerreateMath::Math::mat2 mat2;
+typedef TerreateMath::Math::mat2x3 mat2x3;
+typedef TerreateMath::Math::mat2x4 mat2x4;
+typedef TerreateMath::Math::mat3x2 mat3x2;
+typedef TerreateMath::Math::mat3 mat3;
+typedef TerreateMath::Math::mat3x4 mat3x4;
+typedef TerreateMath::Math::mat4x2 mat4x2;
+typedef TerreateMath::Math::mat4x3 mat4x3;
+typedef TerreateMath::Math::mat4 mat4;
+
+typedef TerreateMath::Math::quat quat;
 
 // Standard types
 typedef TCbool Bool;
@@ -91,8 +112,8 @@ typedef std::string Str;
 typedef std::wstring WStr;
 typedef std::stringstream Stream;
 typedef std::ifstream InputFileStream;
+typedef std::ofstream OutputFileStream;
 
-// template aliases
 template <typename S, typename T> using Map = std::unordered_map<S, T>;
 template <typename T> using Pair = std::pair<T, T>;
 template <typename T> using Set = std::unordered_set<T>;
@@ -105,6 +126,14 @@ template <typename T> using Atomic = std::atomic<T>;
 template <typename T> using Vec = std::vector<T>;
 template <typename T> using Function = std::function<T>;
 
+// Chrono types
+namespace chrono = std::chrono;
+typedef chrono::nanoseconds NanoSec;
+typedef chrono::system_clock SystemClock;
+typedef chrono::steady_clock SteadyClock;
+template <typename T> using ZonedTimeT = chrono::zoned_time<T>;
+using ZonedTime = ZonedTimeT<NanoSec>;
+
 // Callbacks
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;
 using MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>;
@@ -115,6 +144,26 @@ template <typename Derived, typename Base>
 concept extends = std::derived_from<Derived, Base>;
 template <typename Enum>
 concept enumtype = std::is_enum_v<Enum>;
+
+// Functions
+template <typename T> inline Str ToStr(T const &val) {
+  Stream stream;
+  stream << val;
+  return stream.str();
+}
+template <typename S, typename T> inline S DurationCast(T const &time) {
+  return chrono::duration_cast<S>(time);
+}
+inline SteadyClock::duration SinceEpoch() {
+  return SteadyClock::now().time_since_epoch();
+}
+inline Double GetNanoSec() {
+  return static_cast<Double>(DurationCast<NanoSec>(SinceEpoch()).count()) /
+         1000000000;
+}
+inline ZonedTime GetCurrentTime() {
+  return ZonedTime{chrono::current_zone(), SystemClock::now()};
+}
 
 // Structs
 struct Modifier {
@@ -251,6 +300,13 @@ enum class CullingFace {
 // Use to select opengl culling mode.
 enum class CullingMode { CW = GL_CW, CCW = GL_CCW };
 
+// Use to select opengl cursor mode.
+enum class CursorMode {
+  NORMAL = GLFW_CURSOR_NORMAL,
+  HIDDEN = GLFW_CURSOR_HIDDEN,
+  DISABLED = GLFW_CURSOR_DISABLED
+};
+
 // Use to select opengl standard cursor shape.
 enum class CursorShape {
   ARROW = GLFW_ARROW_CURSOR,
@@ -318,7 +374,6 @@ enum class GLFeature {
 
 // Use to select input mode.
 enum class InputType {
-  CURSOR = GLFW_CURSOR,
   STICKY_KEYS = GLFW_STICKY_KEYS,
   STICKY_MOUSE_BUTTONS = GLFW_STICKY_MOUSE_BUTTONS,
   LOCK_KEY_MODS = GLFW_LOCK_KEY_MODS,

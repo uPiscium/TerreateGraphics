@@ -3,34 +3,78 @@
 namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
+void Font::LoadDummyCharacter() {
+  Logger::Trace(LOCATION(Font));
+
+  Shared<Character> chr = std::make_shared<Character>();
+  chr->codepoint = 0;
+  chr->texture = nullptr;
+  chr->size = {0, 0};
+  chr->bearing = {0, 0};
+  chr->advance = 0;
+
+  mCharacters.insert({0, chr});
+}
+
 Font::Font(Str const &path, Uint const &size) : mSize(size) {
+  Logger::Trace(LOCATION(Font));
+
   if (FT_Init_FreeType(&mLibrary)) {
-    TC_THROW("Failed to initialize FreeType library.");
+    Logger::Error("Failed to initialize FreeType library.");
+    return;
   }
 
   if (FT_New_Face(mLibrary, path.c_str(), 0, &mFace)) {
-    TC_THROW("Failed to load font.");
+    Logger::Error("Failed to load font.");
+    return;
   }
 
   FT_Set_Pixel_Sizes(mFace, 0, size);
+  this->LoadDummyCharacter();
+  Logger::Debug("Font is generated.");
 }
 
 Font::~Font() {
+  Logger::Trace(LOCATION(Font));
+
   FT_Done_Face(mFace);
   FT_Done_FreeType(mLibrary);
   mCharacters.clear();
+  Logger::Debug("Font is deleted.");
+}
+
+Uint Font::GetFontSize() const {
+  Logger::Trace(LOCATION(Font));
+
+  return mSize;
+}
+
+Shared<Character> const &Font::GetCharacter(wchar_t const &character) {
+  Logger::Trace(LOCATION(Font));
+
+  auto it = mCharacters.find(character);
+  if (it == mCharacters.end()) {
+    LoadCharacter(character);
+    it = mCharacters.find(character);
+  }
+  return it->second;
 }
 
 Shared<Character> const &
 Font::AcquireCharacter(wchar_t const &character) const {
+  Logger::Trace(LOCATION(Font));
+
   auto it = mCharacters.find(character);
   if (it == mCharacters.end()) {
-    TC_THROW("Character not found.");
+    Logger::Error("Character not found.");
+    return mCharacters.at(0);
   }
   return it->second;
 }
 
 Pair<Uint> Font::AcquireTextSize(WStr const &text) const {
+  Logger::Trace(LOCATION(Font));
+
   Uint width = 0;
   Uint height = 0;
   for (wchar_t const &character : text) {
@@ -44,6 +88,8 @@ Pair<Uint> Font::AcquireTextSize(WStr const &text) const {
 }
 
 Vec<Shared<Character>> Font::AcquireCharacters(WStr const &text) const {
+  Logger::Trace(LOCATION(Font));
+
   Vec<Shared<Character>> characters;
   for (wchar_t const &character : text) {
     Shared<Character> const &c = AcquireCharacter(character);
@@ -53,6 +99,8 @@ Vec<Shared<Character>> Font::AcquireCharacters(WStr const &text) const {
 }
 
 void Font::LoadCharacter(wchar_t const &character) {
+  Logger::Trace(LOCATION(Font));
+
   if (mCharacters.find(character) != mCharacters.end()) {
     return;
   }
@@ -72,7 +120,7 @@ void Font::LoadCharacter(wchar_t const &character) {
   }
 
   if (FT_Load_Char(mFace, character, FT_LOAD_RENDER)) {
-    TC_THROW("Failed to load glyph.");
+    Logger::Error("Failed to load glyph.");
     return;
   }
 
@@ -90,8 +138,10 @@ void Font::LoadCharacter(wchar_t const &character) {
 }
 
 void Font::LoadText(WStr const &text) {
+  Logger::Trace(LOCATION(Font));
+
   for (wchar_t const &character : text) {
-    LoadCharacter(character);
+    this->LoadCharacter(character);
   }
 }
 } // namespace TerreateCore::Core

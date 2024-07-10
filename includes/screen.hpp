@@ -2,6 +2,7 @@
 #define __TC_SCREEN_HPP__
 
 #include "defines.hpp"
+#include "logger.hpp"
 #include "object.hpp"
 #include "texture.hpp"
 
@@ -36,17 +37,17 @@ public:
    * @brief: Getter for width.
    * @return: width
    */
-  Uint GetWidth() const { return mWidth; }
+  Uint GetWidth() const;
   /*
    * @brief: Getter for height.
    * @return: height
    */
-  Uint GetHeight() const { return mHeight; }
+  Uint GetHeight() const;
   /*
    * @brief: Getter for texture.
    * @return: texture
    */
-  Shared<Texture> const &GetTexture() const { return mTextures[0]; }
+  Shared<Texture> const &GetTexture() const;
 
   /*
    * @brief: Transcript to other screen.
@@ -56,9 +57,7 @@ public:
   /*
    * @brief: Binds the screen for reading.
    */
-  void ReadOnlyBind() const {
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFrameBuffer);
-  }
+  void ReadOnlyBind() const;
   /*
    * @brief: Binds the screen for drawing.
    */
@@ -77,15 +76,11 @@ public:
    * @detail: Color format is (red, green, blue). Each color is float (0
    * ~ 1.0).
    */
-  void Fill(Vec<Float> const &color) const {
-    glClearColor(color[0], color[1], color[2], 0.0f);
-  }
+  void Fill(Vec<Float> const &color) const;
   /*
    * @brief: Clear screen.
    */
-  void Clear() const {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-  }
+  void Clear() const;
 
   // FIXME: Support multi-buffer screen.
   /* Shared<Texture> const &operator[](Index const &index) const { */

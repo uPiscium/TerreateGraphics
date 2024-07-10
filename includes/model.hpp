@@ -4,13 +4,11 @@
 #include "bitflag.hpp"
 #include "buffer.hpp"
 #include "defines.hpp"
-#include "math/math.hpp"
 #include "object.hpp"
 #include "texture.hpp"
 
 namespace TerreateCore::Model {
 using namespace TerreateCore::Defines;
-using namespace TerreateCore::Math;
 
 using TextureMap = Shared<Core::Texture>;
 
