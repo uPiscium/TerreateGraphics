@@ -5,7 +5,7 @@ using namespace TerreateCore::Defines;
 using namespace TerreateMath::Utils;
 
 void Text::LoadText() {
-  TC_TRACE_CALL(LOCATION(Text));
+  Logger::Trace(LOCATION(Text));
 
   mPositions.clear();
   mFont->LoadText(mText);
@@ -31,41 +31,41 @@ void Text::LoadText() {
 }
 
 Text::Text() {
-  TC_TRACE_CALL(LOCATION(Text));
+  Logger::Trace(LOCATION(Text));
 
   mTextMeshData.SetFlag(ModelFlag::UV);
   mText = L"";
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
-  TC_DEBUG_CALL("Text is created.");
+  Logger::Debug("Text is created.");
 }
 
 Text::Text(Str const &text, Shared<Core::Font> const &font) : mFont(font) {
-  TC_TRACE_CALL(LOCATION(Text));
+  Logger::Trace(LOCATION(Text));
 
   mTextMeshData.SetFlag(ModelFlag::UV);
   mText = WStr(text.begin(), text.end());
   this->LoadText();
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
-  TC_DEBUG_CALL("Text is created with char text and font.");
+  Logger::Debug("Text is created with char text and font.");
 }
 
 Text::Text(WStr const &text, Shared<Core::Font> const &font)
     : mFont(font), mText(text) {
-  TC_TRACE_CALL(LOCATION(Text));
+  Logger::Trace(LOCATION(Text));
 
   mTextMeshData.SetFlag(ModelFlag::UV);
   this->LoadText();
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
-  TC_DEBUG_CALL("Text is created with wchar text and font.");
+  Logger::Debug("Text is created with wchar text and font.");
 }
 
 Text::~Text() {
-  TC_TRACE_CALL(LOCATION(Text));
-  TC_DEBUG_CALL("Text is destroyed.");
+  Logger::Trace(LOCATION(Text));
+  Logger::Debug("Text is destroyed.");
 }
 
 void Text::LoadShader(Str const &vertexPath, Str const &fragmentPath) {
-  TC_TRACE_CALL(LOCATION(Text));
+  Logger::Trace(LOCATION(Text));
 
   mShader.AddVertexShaderSource(Shader::LoadShaderSource(vertexPath));
   mShader.AddFragmentShaderSource(Shader::LoadShaderSource(fragmentPath));
@@ -74,7 +74,7 @@ void Text::LoadShader(Str const &vertexPath, Str const &fragmentPath) {
 }
 
 void Text::LoadText(WStr const &text, Shared<Core::Font> const &font) {
-  TC_TRACE_CALL(LOCATION(Text));
+  Logger::Trace(LOCATION(Text));
 
   mFont = font;
   mText = text;
@@ -83,10 +83,10 @@ void Text::LoadText(WStr const &text, Shared<Core::Font> const &font) {
 
 void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
                   Float const &windowHeight) {
-  TC_TRACE_CALL(LOCATION(Text));
+  Logger::Trace(LOCATION(Text));
 
   if (!mShaderLoaded) {
-    TC_ERROR_CALL("Shader not loaded");
+    Logger::Error("Shader not loaded");
   }
 
   for (int i = 0; i < mText.size(); ++i) {

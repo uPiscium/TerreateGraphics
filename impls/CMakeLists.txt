@@ -143,6 +143,7 @@ function(Build)
     font.cpp
     gl.cpp
     job.cpp
+    logger.cpp
     model.cpp
     object.cpp
     screen.cpp

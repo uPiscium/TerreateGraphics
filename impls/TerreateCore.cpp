@@ -34,7 +34,7 @@ void Initialize(Bool const &enableConsoleLog) {
       new FileLogger("TerrcateCore/FileLogger", "build/log.txt"));
 
   if (!glfwInit()) {
-    TC_CRITICAL_CALL("Failed to initialize GLFW");
+    Logger::Critical("Failed to initialize GLFW");
     return;
   }
 

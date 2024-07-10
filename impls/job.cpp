@@ -13,29 +13,29 @@ void JobBase::Run() {
 }
 
 JobBase::JobBase() : mFinished(false) {
-  TC_TRACE_CALL(LOCATION(JobBase));
-  TC_DEBUG_CALL("JobBase generated.");
+  Logger::Trace(LOCATION(JobBase));
+  Logger::Debug("JobBase generated.");
 }
 
 JobBase::JobBase(JobBase *dependency) : mFinished(false) {
-  TC_TRACE_CALL(LOCATION(JobBase));
-  TC_DEBUG_CALL("JobBase generated with dependency.");
+  Logger::Trace(LOCATION(JobBase));
+  Logger::Debug("JobBase generated with dependency.");
   mDependencies.push_back(const_cast<JobBase *>(dependency));
 }
 
 JobBase::JobBase(std::vector<JobBase *> const &dependencies)
     : mDependencies(dependencies), mFinished(false) {
-  TC_TRACE_CALL(LOCATION(JobBase));
-  TC_DEBUG_CALL("JobBase generated with dependencies.");
+  Logger::Trace(LOCATION(JobBase));
+  Logger::Debug("JobBase generated with dependencies.");
 }
 
 JobBase::~JobBase() {
-  TC_TRACE_CALL(LOCATION(JobBase));
-  TC_DEBUG_CALL("JobBase deleted.");
+  Logger::Trace(LOCATION(JobBase));
+  Logger::Debug("JobBase deleted.");
 }
 
 bool JobBase::IsExecutable() const {
-  TC_TRACE_CALL(LOCATION(JobBase));
+  Logger::Trace(LOCATION(JobBase));
 
   for (auto &dep : mDependencies) {
     if (!dep->IsFinished()) {
@@ -46,49 +46,49 @@ bool JobBase::IsExecutable() const {
 }
 
 bool JobBase::IsFinished() const {
-  TC_TRACE_CALL(LOCATION(JobBase));
+  Logger::Trace(LOCATION(JobBase));
 
   return mFinished;
 }
 
 SimpleJob::SimpleJob(Function<void()> const &target) : mFunction(target) {
-  TC_TRACE_CALL(LOCATION(SimpleJob));
-  TC_DEBUG_CALL("SimpleJob generated.");
+  Logger::Trace(LOCATION(SimpleJob));
+  Logger::Debug("SimpleJob generated.");
 }
 
 SimpleJob::SimpleJob(Function<void()> const &target, JobBase *dependency)
     : JobBase(dependency), mFunction(target) {
-  TC_TRACE_CALL(LOCATION(SimpleJob));
-  TC_DEBUG_CALL("SimpleJob generated with dependency.");
+  Logger::Trace(LOCATION(SimpleJob));
+  Logger::Debug("SimpleJob generated with dependency.");
 }
 
 SimpleJob::SimpleJob(Function<void()> const &target,
                      std::vector<JobBase *> const &dependencies)
     : JobBase(dependencies), mFunction(target) {
-  TC_TRACE_CALL(LOCATION(SimpleJob));
-  TC_DEBUG_CALL("SimpleJob generated with dependencies.");
+  Logger::Trace(LOCATION(SimpleJob));
+  Logger::Debug("SimpleJob generated with dependencies.");
 }
 
 SimpleJob::~SimpleJob() {
-  TC_TRACE_CALL(LOCATION(SimpleJob));
-  TC_DEBUG_CALL("SimpleJob deleted.");
+  Logger::Trace(LOCATION(SimpleJob));
+  Logger::Debug("SimpleJob deleted.");
 }
 
 SimpleJob &SimpleJob::operator=(Function<void()> const &target) {
-  TC_TRACE_CALL(LOCATION(SimpleJob));
+  Logger::Trace(LOCATION(SimpleJob));
 
   mFunction = target;
   return *this;
 }
 
 void SimpleJob::Execute() {
-  TC_TRACE_CALL(LOCATION(SimpleJob));
+  Logger::Trace(LOCATION(SimpleJob));
 
   mFunction();
 }
 
 void JobSystem::WorkerThread() {
-  TC_TRACE_CALL(LOCATION(JobSystem));
+  Logger::Trace(LOCATION(JobSystem));
 
   while (!mStop) {
     JobBase *job = nullptr;
@@ -122,7 +122,7 @@ void JobSystem::WorkerThread() {
 }
 
 void JobSystem::DaemonThread(JobBase *job) {
-  TC_TRACE_CALL(LOCATION(JobSystem));
+  Logger::Trace(LOCATION(JobSystem));
 
   while (!mStop) {
     job->Run();
@@ -130,23 +130,23 @@ void JobSystem::DaemonThread(JobBase *job) {
 }
 
 JobSystem::JobSystem(Uint const &numThreads) {
-  TC_TRACE_CALL(LOCATION(JobSystem));
+  Logger::Trace(LOCATION(JobSystem));
 
   for (Uint i = 0; i < numThreads; ++i) {
     mWorkers.emplace_back(Thread([this] { this->WorkerThread(); }));
   }
-  TC_DEBUG_CALL("JobSystem generated.");
+  Logger::Debug("JobSystem generated.");
 }
 
 JobSystem::~JobSystem() {
-  TC_TRACE_CALL(LOCATION(JobSystem));
+  Logger::Trace(LOCATION(JobSystem));
 
   this->Stop();
-  TC_DEBUG_CALL("JobSystem deleted.");
+  Logger::Debug("JobSystem deleted.");
 }
 
 void JobSystem::Stop() {
-  TC_TRACE_CALL(LOCATION(JobBase));
+  Logger::Trace(LOCATION(JobBase));
 
   mStop.store(true);
   mCondition.notify_all();
@@ -161,7 +161,7 @@ void JobSystem::Stop() {
 }
 
 void JobSystem::Schedule(JobBase *job) {
-  TC_TRACE_CALL(LOCATION(JobSystem));
+  Logger::Trace(LOCATION(JobSystem));
 
   {
     UniqueLock<Mutex> lock(mJobLock);
@@ -174,13 +174,13 @@ void JobSystem::Schedule(JobBase *job) {
 }
 
 void JobSystem::Daemonize(JobBase *job) {
-  TC_TRACE_CALL(LOCATION(JobSystem));
+  Logger::Trace(LOCATION(JobSystem));
 
   mDaemons.emplace_back(Thread([this, job] { this->DaemonThread(job); }));
 }
 
 void JobSystem::WaitForAll() {
-  TC_TRACE_CALL(LOCATION(JobSystem));
+  Logger::Trace(LOCATION(JobSystem));
 
   UniqueLock<Mutex> lock(mJobLock);
   mComplete.wait(false);

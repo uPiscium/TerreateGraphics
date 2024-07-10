@@ -384,7 +384,7 @@ public:
    * @return: User pointer.
    */
   template <typename T> T *GetUserPointer() const {
-    TC_TRACE_CALL(LOCATION(Window));
+    Logger::Trace(LOCATION(Window));
     return static_cast<T *>(mUserPointer);
   }
 
@@ -460,7 +460,7 @@ public:
    * @param: pointer: User pointer.
    */
   template <typename T> void SetUserPointer(T *pointer) {
-    TC_TRACE_CALL(LOCATION(Window));
+    Logger::Trace(LOCATION(Window));
     mUserPointer = static_cast<void *>(pointer);
   }
   /*

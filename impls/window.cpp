@@ -5,31 +5,31 @@ namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Icon::Icon() {
-  TC_TRACE_CALL(LOCATION(Icon));
+  Logger::Trace(LOCATION(Icon));
 
   mImages = Vec<GLFWimage>();
   mPointers = Vec<Ubyte *>();
-  TC_DEBUG_CALL("Icon is created.");
+  Logger::Debug("Icon is created.");
 }
 
 Icon::~Icon() {
-  TC_TRACE_CALL(LOCATION(Icon));
+  Logger::Trace(LOCATION(Icon));
 
   for (auto &pointer : mPointers) {
     delete[] pointer;
   }
-  TC_DEBUG_CALL("Icon is deleted.");
+  Logger::Debug("Icon is deleted.");
 }
 
 Uint Icon::GetSize() const {
-  TC_TRACE_CALL(LOCATION(Icon));
+  Logger::Trace(LOCATION(Icon));
 
   return mImages.size();
 }
 
 void Icon::AddImage(Uint const &width, Uint const &height,
                     Ubyte const *pixels) {
-  TC_TRACE_CALL(LOCATION(Icon));
+  Logger::Trace(LOCATION(Icon));
 
   GLFWimage image;
   image.width = width;
@@ -42,21 +42,21 @@ void Icon::AddImage(Uint const &width, Uint const &height,
 }
 
 Cursor::Cursor(Int const &xhot, Int const &yhot) : mXHot(xhot), mYHot(yhot) {
-  TC_TRACE_CALL(LOCATION(Icon));
-  TC_DEBUG_CALL("Cursor is created.");
+  Logger::Trace(LOCATION(Icon));
+  Logger::Debug("Cursor is created.");
 }
 
 Cursor::~Cursor() {
-  TC_TRACE_CALL(LOCATION(Icon));
+  Logger::Trace(LOCATION(Icon));
 
   glfwDestroyCursor(mCursor);
   delete[] mPixels;
-  TC_DEBUG_CALL("Cursor is deleted.");
+  Logger::Debug("Cursor is deleted.");
 }
 
 void Cursor::SetImage(Uint const &width, Uint const &height,
                       Ubyte const *pixels) {
-  TC_TRACE_CALL(LOCATION(Icon));
+  Logger::Trace(LOCATION(Icon));
 
   GLFWimage image;
   image.width = width;
@@ -68,17 +68,17 @@ void Cursor::SetImage(Uint const &width, Uint const &height,
 }
 
 StandardCursor::StandardCursor(CursorShape const &shape) {
-  TC_TRACE_CALL(LOCATION(StandardCursor));
+  Logger::Trace(LOCATION(StandardCursor));
 
   mCursor = glfwCreateStandardCursor((int)shape);
-  TC_DEBUG_CALL("StandardCursor is created.");
+  Logger::Debug("StandardCursor is created.");
 }
 
 StandardCursor::~StandardCursor() {
-  TC_TRACE_CALL(LOCATION(StandardCursor));
+  Logger::Trace(LOCATION(StandardCursor));
 
   glfwDestroyCursor(mCursor);
-  TC_DEBUG_CALL("StandardCursor is deleted.");
+  Logger::Debug("StandardCursor is deleted.");
 }
 
 namespace Callbacks {
@@ -178,56 +178,56 @@ void DropCallbackWrapper(GLFWwindow *window, int count, const char **paths) {
 } // namespace Callbacks
 
 Str const &WindowProperty::GetTitle() const {
-  TC_TRACE_CALL(LOCATION(WindowProperty));
+  Logger::Trace(LOCATION(WindowProperty));
 
   return mTitle;
 }
 
 Pair<Double> const &WindowProperty::GetScrollOffset() const {
-  TC_TRACE_CALL(LOCATION(WindowProperty));
+  Logger::Trace(LOCATION(WindowProperty));
 
   return mScrollOffset;
 }
 
 Vec<Uint> const &WindowProperty::GetCodePoints() const {
-  TC_TRACE_CALL(LOCATION(WindowProperty));
+  Logger::Trace(LOCATION(WindowProperty));
 
   return mCodePoints;
 }
 
 Vec<Key> const &WindowProperty::GetKeys() const {
-  TC_TRACE_CALL(LOCATION(WindowProperty));
+  Logger::Trace(LOCATION(WindowProperty));
 
   return mKeys;
 }
 
 Vec<Str> const &WindowProperty::GetDroppedFiles() const {
-  TC_TRACE_CALL(LOCATION(WindowProperty));
+  Logger::Trace(LOCATION(WindowProperty));
 
   return mDroppedFiles;
 }
 
 Pair<Uint> const &WindowProperty::GetSize() const {
-  TC_TRACE_CALL(LOCATION(WindowProperty));
+  Logger::Trace(LOCATION(WindowProperty));
 
   return mSize;
 }
 
 Pair<Int> const &WindowProperty::GetPosition() const {
-  TC_TRACE_CALL(LOCATION(WindowProperty));
+  Logger::Trace(LOCATION(WindowProperty));
 
   return mPosition;
 }
 
 Pair<Double> const &WindowProperty::GetCursorPosition() const {
-  TC_TRACE_CALL(LOCATION(WindowProperty));
+  Logger::Trace(LOCATION(WindowProperty));
 
   return mCursorPosition;
 }
 
 Window::Window(Uint const &width, Uint const &height, Str const &title,
                WindowSettings const &settings) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwWindowHint(GLFW_RESIZABLE, settings.resizable);
   glfwWindowHint(GLFW_VISIBLE, settings.visible);
@@ -247,7 +247,7 @@ Window::Window(Uint const &width, Uint const &height, Str const &title,
 
   if (!GLAD_INITIALIZED) {
     if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress)) {
-      TC_CRITICAL_CALL("Failed to initialize GLAD");
+      Logger::Critical("Failed to initialize GLAD");
     }
     GLAD_INITIALIZED = true;
   }
@@ -273,144 +273,144 @@ Window::Window(Uint const &width, Uint const &height, Str const &title,
   glfwSetKeyCallback(mWindow, Callbacks::KeyCallbackWrapper);
   glfwSetCharCallback(mWindow, Callbacks::CharCallbackWrapper);
   glfwSetDropCallback(mWindow, Callbacks::DropCallbackWrapper);
-  TC_DEBUG_CALL("Window is generated.");
+  Logger::Debug("Window is generated.");
 }
 
 Window::~Window() {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   this->Close();
-  TC_DEBUG_CALL("Window is deleted.");
+  Logger::Debug("Window is deleted.");
 }
 
 Pair<Uint> const &Window::GetSize() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return mProperty.GetSize();
 }
 
 Pair<Int> const &Window::GetPosition() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return mProperty.GetPosition();
 }
 
 Pair<Double> const &Window::GetCursorPosition() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return mProperty.GetCursorPosition();
 }
 
 Pair<Double> const &Window::GetScrollOffset() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return mProperty.GetScrollOffset();
 }
 
 Str Window::GetClipboardString() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return glfwGetClipboardString(mWindow);
 }
 
 Str const &Window::GetTitle() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return mProperty.GetTitle();
 }
 
 Vec<Uint> const &Window::GetCodePoints() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return mProperty.GetCodePoints();
 }
 
 Vec<Key> const &Window::GetKeys() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return mProperty.GetKeys();
 }
 
 Vec<Str> const &Window::GetDroppedFiles() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return mProperty.GetDroppedFiles();
 }
 
 Float Window::GetOpacity() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return glfwGetWindowOpacity(mWindow);
 }
 
 Bool Window::GetMousebutton(MousebuttonInput const &button) const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return glfwGetMouseButton(mWindow, (int)button);
 }
 
 Bool Window::GetInputTypeState(InputType const &mode) const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return glfwGetInputMode(mWindow, (int)mode);
 }
 
 CursorMode Window::GetCursorMode() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   return (CursorMode)glfwGetInputMode(mWindow, GLFW_CURSOR);
 }
 
 void Window::SetCurrentContext() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwMakeContextCurrent(mWindow);
 }
 
 void Window::SetIcon(Icon const &icon) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetWindowIcon(mWindow, icon.GetSize(), (GLFWimage const *)icon);
 }
 
 void Window::SetCursor(Cursor const &cursor) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetCursor(mWindow, (GLFWcursor *)cursor);
 }
 
 void Window::SetCursor(StandardCursor const &cursor) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetCursor(mWindow, (GLFWcursor *)cursor);
 }
 
 void Window::SetDefaultCursor() {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetCursor(mWindow, nullptr);
 }
 
 void Window::SetSize(Pair<Uint> const &size) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetWindowSize(mWindow, size.first, size.second);
 }
 
 void Window::SetPosition(Pair<Int> const &position) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetWindowPos(mWindow, position.first, position.second);
 }
 
 void Window::SetCursorPosition(Pair<Double> const &position) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetCursorPos(mWindow, position.first, position.second);
 }
 
 void Window::SetClipboardString(Str const &string) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetClipboardString(mWindow, string.c_str());
 }
@@ -421,122 +421,122 @@ void Window::SetTitle(Str const &title) {
 }
 
 void Window::SetOpacity(Float const &opacity) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetWindowOpacity(mWindow, opacity);
 }
 
 void Window::SetInputTypeState(InputType const &mode, Bool const &value) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetInputMode(mWindow, (int)mode, value);
 }
 
 void Window::SetCursorMode(CursorMode const &mode) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSetInputMode(mWindow, GLFW_CURSOR, (int)mode);
 }
 
 void Window::SetWindowController(WindowController *controller) {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   mController = controller;
 }
 
 void Window::Close() {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwDestroyWindow(mWindow);
   mWindow = nullptr;
 }
 
 void Window::Iconify() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwIconifyWindow(mWindow);
 }
 
 void Window::Maximize() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwMaximizeWindow(mWindow);
 }
 
 void Window::Show() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwShowWindow(mWindow);
 }
 
 void Window::Hide() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwHideWindow(mWindow);
 }
 
 void Window::Focus() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwFocusWindow(mWindow);
 }
 
 void Window::Restore() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwRestoreWindow(mWindow);
 }
 
 void Window::RequestAttention() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwRequestWindowAttention(mWindow);
 }
 
 void Window::Fill(Vec<Float> const &color) const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glClearColor(color[0], color[1], color[2], 0.0f);
 }
 
 void Window::Clear() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 }
 
 void Window::ClearColor() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void Window::ClearDepth() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::ClearStencil() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glClear(GL_STENCIL_BUFFER_BIT);
 }
 
 void Window::Swap() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwSwapBuffers(mWindow);
 }
 
 void Window::PollEvents() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   glfwPollEvents();
 }
 
 void Window::Bind() const {
-  TC_TRACE_CALL(LOCATION(Window));
+  Logger::Trace(LOCATION(Window));
 
   this->SetCurrentContext();
 }

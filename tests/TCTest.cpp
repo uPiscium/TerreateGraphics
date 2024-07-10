@@ -1,3 +1,6 @@
+﻿#define TC_LOG_LEVEL TC_DEBUG_LEVEL | TC_ERROR_LEVEL | TC_CRITICAL_LEVEL
+#define TC_THROW_LEVEL TC_DEBUG_LEVEL | TC_ERROR_LEVEL | TC_CRITICAL_LEVEL
+
 #include "../../includes/TerreateCore.hpp"
 
 using namespace TerreateCore::Core;
@@ -108,14 +111,11 @@ public:
 
     window->Swap();
     mClock.Frame(80);
-    TC_WARNING_CALL("Frame");
   }
 };
 
 int main() {
   Initialize();
-  TC_INFO_CALL("Initialize");
-
   {
     Window window(1500, 750, "Test Window", WindowSettings());
 

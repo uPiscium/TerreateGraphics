@@ -5,10 +5,10 @@ namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 void Screen::AddBuffer() {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   if (mTextures.size() >= 32) {
-    TC_ERROR_CALL("Cannot add more than 32 buffers to screen.");
+    Logger::Error("Cannot add more than 32 buffers to screen.");
     return;
   }
 
@@ -34,7 +34,7 @@ void Screen::AddBuffer() {
 
 Screen::Screen(Uint const &width, Uint const &height)
     : mWidth(width), mHeight(height) {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   glGenFramebuffers(1, &mFrameBuffer);
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
@@ -47,37 +47,37 @@ Screen::Screen(Uint const &width, Uint const &height)
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glBindRenderbuffer(GL_RENDERBUFFER, 0);
   this->AddBuffer();
-  TC_DEBUG_CALL("Screen generated.");
+  Logger::Debug("Screen generated.");
 }
 
 Screen::~Screen() {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   mTextures.clear();
   glDeleteFramebuffers(1, &mFrameBuffer);
-  TC_DEBUG_CALL("Screen deleted.");
+  Logger::Debug("Screen deleted.");
 }
 
 Uint Screen::GetWidth() const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   return mWidth;
 }
 
 Uint Screen::GetHeight() const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   return mHeight;
 }
 
 Shared<Texture> const &Screen::GetTexture() const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   return mTextures[0];
 }
 
 void Screen::Transcript(Screen const &screen) const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   this->ReadOnlyBind();
   screen.DrawOnlyBind();
@@ -87,34 +87,34 @@ void Screen::Transcript(Screen const &screen) const {
 }
 
 void Screen::ReadOnlyBind() const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   glBindFramebuffer(GL_READ_FRAMEBUFFER, mFrameBuffer);
 }
 
 void Screen::DrawOnlyBind() const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFrameBuffer);
   glDrawBuffers(mDrawBuffers.size(), mDrawBuffers.data());
 }
 
 void Screen::Bind() const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
   glDrawBuffers(mDrawBuffers.size(), mDrawBuffers.data());
 }
 
 void Screen::Unbind() const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDrawBuffer(GL_BACK);
 }
 
 void Screen::Fill(Vec<Float> const &color) const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   this->Bind();
   glClearColor(color[0], color[1], color[2], 0.0f);
@@ -123,7 +123,7 @@ void Screen::Fill(Vec<Float> const &color) const {
 }
 
 void Screen::Clear() const {
-  TC_TRACE_CALL(LOCATION(Screen));
+  Logger::Trace(LOCATION(Screen));
 
   this->Bind();
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

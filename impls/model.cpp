@@ -36,7 +36,7 @@ void MaterialData::RemoveColorProperty(ColorProperty const &property) {
   if (this->HasColorProperty(property)) {
     mColorProperties.erase(property);
   } else {
-    TC_ERROR_CALL("Color property not found");
+    Logger::Error("Color property not found");
   }
 }
 
@@ -44,7 +44,7 @@ void MaterialData::RemoveFloatProperty(FloatProperty const &property) {
   if (this->HasFloatProperty(property)) {
     mFloatProperties.erase(property);
   } else {
-    TC_ERROR_CALL("Float property not found");
+    Logger::Error("Float property not found");
   }
 }
 
@@ -52,7 +52,7 @@ void MaterialData::RemoveTextureProperty(TextureProperty const &property) {
   if (this->HasTextureProperty(property)) {
     mTextureProperties.erase(property);
   } else {
-    TC_ERROR_CALL("Texture property not found");
+    Logger::Error("Texture property not found");
   }
 }
 
@@ -100,7 +100,7 @@ void MeshData::Construct() {
   mVertices.clear();
 
   if (mVertexProperties.find(ModelFlag::POSITION) == mVertexProperties.end()) {
-    TC_ERROR_CALL("Position property not found");
+    Logger::Error("Position property not found");
   }
 
   properties.push_back(mVertexProperties[ModelFlag::POSITION]);
@@ -130,7 +130,7 @@ void MeshData::Construct() {
   }
 
   if (properties.size() != mVertexSet[0].size()) {
-    TC_ERROR_CALL("Property size does not match vertex set size");
+    Logger::Error("Property size does not match vertex set size");
   }
 
   for (auto &set : mVertexSet) {
@@ -155,7 +155,7 @@ void Mesh::LoadData(MeshData &data) {
   }
 
   if (data.GetFlag() != mFlag) {
-    TC_ERROR_CALL("Flag does not match");
+    Logger::Error("Flag does not match");
   }
 
   if (mBuffer == nullptr) {

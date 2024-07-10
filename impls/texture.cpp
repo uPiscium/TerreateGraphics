@@ -4,28 +4,28 @@ namespace TerreateCore::Core {
 using namespace TerreateCore::Defines;
 
 Texture::Texture() {
-  TC_TRACE_CALL(LOCATION(Texture));
+  Logger::Trace(LOCATION(Texture));
 
   glGenTextures(1, &mTexture);
-  TC_DEBUG_CALL("Texture is created.");
+  Logger::Debug("Texture is created.");
 }
 
 Texture::Texture(Uint const &texture, Uint const &width, Uint const &height,
                  Uint const &channels)
     : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
-  TC_TRACE_CALL(LOCATION(Texture));
-  TC_DEBUG_CALL("Texture is created.");
+  Logger::Trace(LOCATION(Texture));
+  Logger::Debug("Texture is created.");
 }
 
 Texture::~Texture() {
-  TC_TRACE_CALL(LOCATION(Texture));
+  Logger::Trace(LOCATION(Texture));
 
   glDeleteTextures(1, &mTexture);
-  TC_DEBUG_CALL("Texture is deleted.");
+  Logger::Debug("Texture is deleted.");
 }
 
 void Texture::SetFilter(FilterType const &filter) {
-  TC_TRACE_CALL(LOCATION(Texture));
+  Logger::Trace(LOCATION(Texture));
 
   mFilter = filter;
   this->Bind();
@@ -35,7 +35,7 @@ void Texture::SetFilter(FilterType const &filter) {
 }
 
 void Texture::SetWrapping(WrappingType const &wrap) {
-  TC_TRACE_CALL(LOCATION(Texture));
+  Logger::Trace(LOCATION(Texture));
 
   mWrap = wrap;
   this->Bind();
@@ -46,7 +46,7 @@ void Texture::SetWrapping(WrappingType const &wrap) {
 
 void Texture::LoadData(Uint width, Uint height, Uint channels,
                        Ubyte const *data) {
-  TC_TRACE_CALL(LOCATION(Texture));
+  Logger::Trace(LOCATION(Texture));
 
   mWidth = width;
   mHeight = height;
@@ -74,7 +74,7 @@ void Texture::LoadData(Uint width, Uint height, Uint channels,
   }
 
   if (format == 0) {
-    TC_ERROR_CALL("Invalid number of channels.");
+    Logger::Error("Invalid number of channels.");
     return;
   }
 
@@ -88,19 +88,19 @@ void Texture::LoadData(Uint width, Uint height, Uint channels,
 }
 
 void Texture::Bind() const {
-  TC_TRACE_CALL(LOCATION(Texture));
+  Logger::Trace(LOCATION(Texture));
 
   glBindTexture(GL_TEXTURE_2D, mTexture);
 }
 
 void Texture::Unbind() const {
-  TC_TRACE_CALL(LOCATION(Texture));
+  Logger::Trace(LOCATION(Texture));
 
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 TextureData Texture::LoadTexture(Str const &path) {
-  TC_TRACE_CALL(LOCATION(Texture));
+  Logger::Trace(LOCATION(Texture));
 
   TextureData texData;
   stbi_set_flip_vertically_on_load(true);
@@ -110,7 +110,7 @@ TextureData Texture::LoadTexture(Str const &path) {
   stbi_set_flip_vertically_on_load(false);
 
   if (pixelData == nullptr) {
-    TC_ERROR_CALL("Failed to load texture.");
+    Logger::Error("Failed to load texture.");
     return texData;
   }
 
@@ -121,28 +121,28 @@ TextureData Texture::LoadTexture(Str const &path) {
 }
 
 CubeTexture::CubeTexture() {
-  TC_TRACE_CALL(LOCATION(CubeTexture));
+  Logger::Trace(LOCATION(CubeTexture));
 
   glGenTextures(1, &mTexture);
-  TC_DEBUG_CALL("CubeTexture is created.");
+  Logger::Debug("CubeTexture is created.");
 }
 
 CubeTexture::CubeTexture(Uint const &texture, Uint const &width,
                          Uint const &height, Uint const &channels)
     : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
-  TC_TRACE_CALL(LOCATION(CubeTexture));
-  TC_DEBUG_CALL("CubeTexture is created.");
+  Logger::Trace(LOCATION(CubeTexture));
+  Logger::Debug("CubeTexture is created.");
 }
 
 CubeTexture::~CubeTexture() {
-  TC_TRACE_CALL(LOCATION(CubeTexture));
+  Logger::Trace(LOCATION(CubeTexture));
 
   glDeleteTextures(1, &mTexture);
-  TC_DEBUG_CALL("CubeTexture is deleted.");
+  Logger::Debug("CubeTexture is deleted.");
 }
 
 void CubeTexture::SetFilter(FilterType const &filter) {
-  TC_TRACE_CALL(LOCATION(CubeTexture));
+  Logger::Trace(LOCATION(CubeTexture));
 
   mFilter = filter;
   this->Bind();
@@ -152,7 +152,7 @@ void CubeTexture::SetFilter(FilterType const &filter) {
 }
 
 void CubeTexture::SetWrapping(WrappingType const &wrap) {
-  TC_TRACE_CALL(LOCATION(CubeTexture));
+  Logger::Trace(LOCATION(CubeTexture));
 
   mWrap = wrap;
   this->Bind();
@@ -164,7 +164,7 @@ void CubeTexture::SetWrapping(WrappingType const &wrap) {
 
 void CubeTexture::LoadData(CubeFace face, Uint width, Uint height,
                            Uint channels, Ubyte const *data) {
-  TC_TRACE_CALL(LOCATION(CubeTexture));
+  Logger::Trace(LOCATION(CubeTexture));
 
   mWidth = width;
   mHeight = height;
@@ -192,7 +192,7 @@ void CubeTexture::LoadData(CubeFace face, Uint width, Uint height,
   }
 
   if (format == 0) {
-    TC_ERROR_CALL("Invalid number of channels.");
+    Logger::Error("Invalid number of channels.");
     return;
   }
 
@@ -206,19 +206,19 @@ void CubeTexture::LoadData(CubeFace face, Uint width, Uint height,
 }
 
 void CubeTexture::Bind() const {
-  TC_TRACE_CALL(LOCATION(CubeTexture));
+  Logger::Trace(LOCATION(CubeTexture));
 
   glBindTexture(GL_TEXTURE_CUBE_MAP, mTexture);
 }
 
 void CubeTexture::Unbind() const {
-  TC_TRACE_CALL(LOCATION(CubeTexture));
+  Logger::Trace(LOCATION(CubeTexture));
 
   glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
 void CubeTexture::LoadDatas(Vec<TextureData> const &datas) {
-  TC_TRACE_CALL(LOCATION(CubeTexture));
+  Logger::Trace(LOCATION(CubeTexture));
 
   for (Uint i = 0; i < datas.size(); ++i) {
     this->LoadData((CubeFace)((GLenum)CubeFace::RIGHT + i), datas[i]);

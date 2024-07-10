@@ -4,17 +4,17 @@ namespace TerreateCore::Event {
 using namespace TerreateCore::Defines;
 
 EventSystem::EventSystem() {
-  TC_TRACE_CALL(LOCATION(EventSystem));
-  TC_DEBUG_CALL("EventSystem is generated.");
+  Logger::Trace(LOCATION(EventSystem));
+  Logger::Debug("EventSystem is generated.");
 }
 
 EventSystem::~EventSystem() {
-  TC_TRACE_CALL(LOCATION(EventSystem));
-  TC_DEBUG_CALL("EventSystem is deleted.");
+  Logger::Trace(LOCATION(EventSystem));
+  Logger::Debug("EventSystem is deleted.");
 }
 
 void EventSystem::Register(Str const &event, EventCallback const &callback) {
-  TC_TRACE_CALL(LOCATION(EventSystem));
+  Logger::Trace(LOCATION(EventSystem));
 
   if (mCallbacks.find(event) == mCallbacks.end()) {
     mCallbacks[event] = Vec<EventCallback>();
@@ -24,7 +24,7 @@ void EventSystem::Register(Str const &event, EventCallback const &callback) {
 }
 
 void EventSystem::AddTrigger(Str const &event, EventCallback const &callback) {
-  TC_TRACE_CALL(LOCATION(EventSystem));
+  Logger::Trace(LOCATION(EventSystem));
 
   if (mTriggers.find(event) == mTriggers.end()) {
     mTriggers[event] = Queue<EventCallback>();
@@ -34,7 +34,7 @@ void EventSystem::AddTrigger(Str const &event, EventCallback const &callback) {
 }
 
 void EventSystem::ProcessEvents() {
-  TC_TRACE_CALL(LOCATION(EventSystem));
+  Logger::Trace(LOCATION(EventSystem));
 
   UniqueLock<Mutex> lock(mQueueMutex);
   while (!mEventQueue.empty()) {
@@ -57,7 +57,7 @@ void EventSystem::ProcessEvents() {
 }
 
 void EventSystem::PublishEvent(Str const &event) {
-  TC_TRACE_CALL(LOCATION(EventSystem));
+  Logger::Trace(LOCATION(EventSystem));
 
   LockGuard<Mutex> lock(mQueueMutex);
   mEventQueue.push(event);
