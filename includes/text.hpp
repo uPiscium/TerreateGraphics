@@ -1,5 +1,5 @@
-#ifndef __TC_TEXT_HPP__
-#define __TC_TEXT_HPP__
+#ifndef __TERREATE_CORE_TEXT_HPP__
+#define __TERREATE_CORE_TEXT_HPP__
 
 #include "defines.hpp"
 #include "font.hpp"
@@ -8,8 +8,8 @@
 #include "object.hpp"
 #include "shader.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 class Text : public Core::Object {
 private:
@@ -39,6 +39,6 @@ public:
   void Render(Float const &x, Float const &y, Float const &windowWidth,
               Float const &windowHeight);
 };
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
-#endif // __TC_TEXT_HPP__
+#endif // __TERREATE_CORE_TEXT_HPP__

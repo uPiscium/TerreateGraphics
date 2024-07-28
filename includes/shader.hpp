@@ -1,12 +1,12 @@
-#ifndef __TC_SHADER_HPP__
-#define __TC_SHADER_HPP__
+#ifndef __TERREATE_CORE_SHADER_HPP__
+#define __TERREATE_CORE_SHADER_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
 #include "object.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 struct ShaderOption {
   Bool blending = true;
@@ -266,6 +266,6 @@ public:
    */
   static Str LoadShaderSource(Str const &path);
 };
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
-#endif // __TC_SHADER_HPP__
+#endif // __TERREATE_CORE_SHADER_HPP__

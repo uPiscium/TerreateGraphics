@@ -1,12 +1,12 @@
-#ifndef __TC_BUFFER_HPP__
-#define __TC_BUFFER_HPP__
+#ifndef __TERREATE_CORE_BUFFER_HPP__
+#define __TERREATE_CORE_BUFFER_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
 #include "object.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 class Attribute {
 private:
@@ -144,6 +144,6 @@ public:
 
   operator Bool() const override { return mVAO != 0 && mVBO != 0 && mIBO != 0; }
 };
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
-#endif // __TC_BUFFER_HPP__
+#endif // __TERREATE_CORE_BUFFER_HPP__

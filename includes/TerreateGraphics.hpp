@@ -1,5 +1,5 @@
-#ifndef __TC_TERREATECORE_HPP__
-#define __TC_TERREATECORE_HPP__
+#ifndef __TERREATE_CORE_TERREATECORE_HPP__
+#define __TERREATE_CORE_TERREATECORE_HPP__
 
 #include "animation.hpp"
 #include "buffer.hpp"
@@ -17,8 +17,8 @@
 #include "texture.hpp"
 #include "window.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 class Clock : public Object {
 private:
   Float mLastTime = 0.0f;
@@ -38,5 +38,5 @@ public:
 
 void Initialize(Bool const &enableConsoleLog = false);
 void Terminate();
-} // namespace TerreateCore::Core
-#endif // __TC_TERREATECORE_HPP__
+} // namespace TerreateGraphics::Core
+#endif // __TERREATE_CORE_TERREATECORE_HPP__

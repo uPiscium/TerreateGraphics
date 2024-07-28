@@ -1,7 +1,7 @@
 #include "../includes/texture.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 Texture::Texture() {
   Logger::Trace(LOCATION(Texture));
@@ -224,4 +224,4 @@ void CubeTexture::LoadDatas(Vec<TextureData> const &datas) {
     this->LoadData((CubeFace)((GLenum)CubeFace::RIGHT + i), datas[i]);
   }
 }
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core

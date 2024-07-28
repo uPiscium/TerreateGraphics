@@ -1,13 +1,13 @@
-#ifndef __TC_SCREEN_HPP__
-#define __TC_SCREEN_HPP__
+#ifndef __TERREATE_CORE_SCREEN_HPP__
+#define __TERREATE_CORE_SCREEN_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
 #include "object.hpp"
 #include "texture.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 class Screen final : public Object {
 private:
@@ -88,6 +88,6 @@ public:
   /* } */
   operator Bool() const override { return mFrameBuffer != 0; }
 };
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
-#endif // __TC_SCREEN_HPP__
+#endif // __TERREATE_CORE_SCREEN_HPP__

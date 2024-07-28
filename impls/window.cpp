@@ -1,8 +1,8 @@
 #include "../includes/window.hpp"
 #include "GLFW/glfw3.h"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 Icon::Icon() {
   Logger::Trace(LOCATION(Icon));
@@ -548,4 +548,4 @@ void Window::Frame() {
 
   mController->OnFrame(this);
 }
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core

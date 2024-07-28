@@ -1,9 +1,9 @@
 #include "../includes/model.hpp"
 #include <memory>
 
-namespace TerreateCore::Model {
-using namespace TerreateCore::Defines;
-using namespace TerreateCore::Core;
+namespace TerreateGraphics::Model {
+using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::Core;
 
 void MaterialData::SetColorProperty(ColorProperty const &property,
                                     vec4 const &value) {
@@ -212,4 +212,4 @@ Model &Model::operator=(Model const &other) {
   mMeshes = other.mMeshes;
   return *this;
 }
-} // namespace TerreateCore::Model
+} // namespace TerreateGraphics::Model

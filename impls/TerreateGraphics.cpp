@@ -1,12 +1,12 @@
-#include "../includes/TerreateCore.hpp"
+#include "../includes/TerreateGraphics.hpp"
 
-namespace TerreateCore::Defines {
+namespace TerreateGraphics::Defines {
 bool GLFW_INITIALIZED = false;
 bool GLAD_INITIALIZED = false;
-} // namespace TerreateCore::Defines
+} // namespace TerreateGraphics::Defines
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 Bool Clock::IsElapsed(Float const &time) {
   Float const now = glfwGetTime();
@@ -56,4 +56,4 @@ void Terminate() {
 
   glfwTerminate();
 }
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core

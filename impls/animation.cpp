@@ -1,7 +1,7 @@
 #include "../includes/animation.hpp"
 
-namespace TerreateCore::Animation {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Animation {
+using namespace TerreateGraphics::Defines;
 using namespace TerreateMath::Utils;
 
 void Animation::AddKeyFrame(Transform const &keyFrame, Float const &time) {
@@ -60,4 +60,4 @@ mat4 Animation::TransformToMatrix(Transform const &transform) {
   result = Translate(transform.position) * result;
   return result;
 }
-} // namespace TerreateCore::Animation
+} // namespace TerreateGraphics::Animation

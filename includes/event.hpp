@@ -1,13 +1,13 @@
-#ifndef __TC_EVENT_HPP__
-#define __TC_EVENT_HPP__
+#ifndef __TERREATE_CORE_EVENT_HPP__
+#define __TERREATE_CORE_EVENT_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
 #include "object.hpp"
 
-namespace TerreateCore::Event {
-using namespace TerreateCore::Core;
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Event {
+using namespace TerreateGraphics::Core;
+using namespace TerreateGraphics::Defines;
 
 using EventCallback = Function<void(Str const &)>;
 
@@ -51,6 +51,6 @@ public:
    */
   void PublishEvent(Str const &event);
 };
-} // namespace TerreateCore::Event
+} // namespace TerreateGraphics::Event
 
-#endif // __TC_EVENT_HPP__
+#endif // __TERREATE_CORE_EVENT_HPP__
