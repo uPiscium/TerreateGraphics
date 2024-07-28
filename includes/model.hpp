@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_MODEL_HPP__
-#define __TERREATE_CORE_MODEL_HPP__
+#ifndef __TERREATE_GRAPHICS_MODEL_HPP__
+#define __TERREATE_GRAPHICS_MODEL_HPP__
 
 #include "bitflag.hpp"
 #include "buffer.hpp"
@@ -420,4 +420,4 @@ public:
 };
 } // namespace TerreateGraphics::Model
 
-#endif // __TERREATE_CORE_MODEL_HPP__
+#endif // __TERREATE_GRAPHICS_MODEL_HPP__

@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_FONT_HPP__
-#define __TERREATE_CORE_FONT_HPP__
+#ifndef __TERREATE_GRAPHICS_FONT_HPP__
+#define __TERREATE_GRAPHICS_FONT_HPP__
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -88,4 +88,4 @@ public:
 };
 } // namespace TerreateGraphics::Core
 
-#endif // __TERREATE_CORE_FONT_HPP__
+#endif // __TERREATE_GRAPHICS_FONT_HPP__

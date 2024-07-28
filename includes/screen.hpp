@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_SCREEN_HPP__
-#define __TERREATE_CORE_SCREEN_HPP__
+#ifndef __TERREATE_GRAPHICS_SCREEN_HPP__
+#define __TERREATE_GRAPHICS_SCREEN_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
@@ -90,4 +90,4 @@ public:
 };
 } // namespace TerreateGraphics::Core
 
-#endif // __TERREATE_CORE_SCREEN_HPP__
+#endif // __TERREATE_GRAPHICS_SCREEN_HPP__

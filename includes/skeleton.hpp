@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_SKELETON_HPP__
-#define __TERREATE_CORE_SKELETON_HPP__
+#ifndef __TERREATE_GRAPHICS_SKELETON_HPP__
+#define __TERREATE_GRAPHICS_SKELETON_HPP__
 
 #include "defines.hpp"
 #include "object.hpp"
@@ -151,4 +151,4 @@ public:
 };
 } // namespace TerreateGraphics::Animation
 
-#endif // __TERREATE_CORE_SKELETON_HPP__
+#endif // __TERREATE_GRAPHICS_SKELETON_HPP__

@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_BITFLAG_HPP__
-#define __TERREATE_CORE_BITFLAG_HPP__
+#ifndef __TERREATE_GRAPHICS_BITFLAG_HPP__
+#define __TERREATE_GRAPHICS_BITFLAG_HPP__
 
 #include "defines.hpp"
 
@@ -208,4 +208,4 @@ template <enumtype T> BitFlag<T> operator^(T const &lhs, T const &rhs) {
 }
 } // namespace TerreateGraphics::Core
 
-#endif // __TERREATE_CORE_BITFLAG_HPP__
+#endif // __TERREATE_GRAPHICS_BITFLAG_HPP__

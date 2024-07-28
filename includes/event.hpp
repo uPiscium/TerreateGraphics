@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_EVENT_HPP__
-#define __TERREATE_CORE_EVENT_HPP__
+#ifndef __TERREATE_GRAPHICS_EVENT_HPP__
+#define __TERREATE_GRAPHICS_EVENT_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
@@ -53,4 +53,4 @@ public:
 };
 } // namespace TerreateGraphics::Event
 
-#endif // __TERREATE_CORE_EVENT_HPP__
+#endif // __TERREATE_GRAPHICS_EVENT_HPP__
