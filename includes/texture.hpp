@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_TEXTURE_HPP__
-#define __TERREATE_CORE_TEXTURE_HPP__
+#ifndef __TERREATE_GRAPHICS_TEXTURE_HPP__
+#define __TERREATE_GRAPHICS_TEXTURE_HPP__
 
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
@@ -175,4 +175,4 @@ public:
 };
 } // namespace TerreateGraphics::Core
 
-#endif // __TERREATE_CORE_TEXTURE_HPP__
+#endif // __TERREATE_GRAPHICS_TEXTURE_HPP__

@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_WINDOW_HPP__
-#define __TERREATE_CORE_WINDOW_HPP__
+#ifndef __TERREATE_GRAPHICS_WINDOW_HPP__
+#define __TERREATE_GRAPHICS_WINDOW_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
@@ -657,4 +657,4 @@ public:
 };
 } // namespace TerreateGraphics::Core
 
-#endif // __TERREATE_CORE_WINDOW_HPP__
+#endif // __TERREATE_GRAPHICS_WINDOW_HPP__

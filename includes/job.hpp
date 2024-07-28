@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_JOB_HPP__
-#define __TERREATE_CORE_JOB_HPP__
+#ifndef __TERREATE_GRAPHICS_JOB_HPP__
+#define __TERREATE_GRAPHICS_JOB_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
@@ -156,4 +156,4 @@ public:
 };
 } // namespace TerreateGraphics::Job
 
-#endif // __TERREATE_CORE_JOB_HPP__
+#endif // __TERREATE_GRAPHICS_JOB_HPP__

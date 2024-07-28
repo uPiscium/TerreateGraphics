@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_TEXT_HPP__
-#define __TERREATE_CORE_TEXT_HPP__
+#ifndef __TERREATE_GRAPHICS_TEXT_HPP__
+#define __TERREATE_GRAPHICS_TEXT_HPP__
 
 #include "defines.hpp"
 #include "font.hpp"
@@ -41,4 +41,4 @@ public:
 };
 } // namespace TerreateGraphics::Core
 
-#endif // __TERREATE_CORE_TEXT_HPP__
+#endif // __TERREATE_GRAPHICS_TEXT_HPP__

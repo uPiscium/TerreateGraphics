@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_DEFINES_HPP__
-#define __TERREATE_CORE_DEFINES_HPP__
+#ifndef __TERREATE_GRAPHICS_DEFINES_HPP__
+#define __TERREATE_GRAPHICS_DEFINES_HPP__
 
 #include <atomic>
 #include <chrono>
@@ -30,6 +30,7 @@
 // Constants
 #define GLAD_H <glad/gl.h>
 #define GLFW_H <GLFW/glfw3.h>
+#define TC_PI 3.14159265358979
 
 #ifndef TC_UNICODE_HALF_SPACE
 #define TC_UNICODE_HALF_SPACE 32
@@ -633,4 +634,4 @@ static unsigned COLOR_BUFFERS[] = {
     (GLenum)Attachment::COLOR30, (GLenum)Attachment::COLOR31};
 } // namespace TerreateGraphics::Defines
 
-#endif // __TERREATE_CORE_DEFINES_HPP__
+#endif // __TERREATE_GRAPHICS_DEFINES_HPP__

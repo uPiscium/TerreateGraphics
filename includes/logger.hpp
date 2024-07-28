@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_LOGGER_HPP__
-#define __TERREATE_CORE_LOGGER_HPP__
+#ifndef __TERREATE_GRAPHICS_LOGGER_HPP__
+#define __TERREATE_GRAPHICS_LOGGER_HPP__
 
 #include "defines.hpp"
 
@@ -38,4 +38,4 @@ void Debug(Str const &msg);
 void Trace(Str const &msg);
 } // namespace TerreateGraphics::Logger
 
-#endif // __TERREATE_CORE_LOGGER_HPP__
+#endif // __TERREATE_GRAPHICS_LOGGER_HPP__

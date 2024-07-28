@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_TERREATECORE_HPP__
-#define __TERREATE_CORE_TERREATECORE_HPP__
+#ifndef __TERREATE_GRAPHICS_TERREATEGRAPHICS_HPP__
+#define __TERREATE_GRAPHICS_TERREATEGRAPHICS_HPP__
 
 #include "animation.hpp"
 #include "buffer.hpp"
@@ -39,4 +39,4 @@ public:
 void Initialize(Bool const &enableConsoleLog = false);
 void Terminate();
 } // namespace TerreateGraphics::Core
-#endif // __TERREATE_CORE_TERREATECORE_HPP__
+#endif // __TERREATE_GRAPHICS_TERREATEGRAPHICS_HPP__
