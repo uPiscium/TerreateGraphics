@@ -10,9 +10,9 @@ function(SetLibs)
 endfunction()
 
 function(SetIncludes)
-  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
-  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/deps)
-  target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/math)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes/deps)
+  target_include_directories(${PROJECT_NAME} PUBLIC ../includes/math)
 endfunction()
 
 function(Build)

@@ -1,7 +1,7 @@
 #include "../includes/logger.hpp"
 
-namespace TerreateCore::Logger {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Logger {
+using namespace TerreateGraphics::Defines;
 
 void Critical(Str const &msg) {
 #if TC_LOG_CRITICAL
@@ -50,4 +50,4 @@ void Trace(Str const &msg) {
   LoggerManager::Log(CONSTRUCT_LOG(TRACE_PREFIX, msg));
 #endif
 }
-} // namespace TerreateCore::Logger
+} // namespace TerreateGraphics::Logger

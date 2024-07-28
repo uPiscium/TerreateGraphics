@@ -1,7 +1,7 @@
 #include "../includes/text.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 using namespace TerreateMath::Utils;
 
 void Text::LoadText() {
@@ -115,4 +115,4 @@ void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
     mShader.Unuse();
   }
 }
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core

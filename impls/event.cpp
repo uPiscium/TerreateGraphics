@@ -1,7 +1,7 @@
 #include "../includes/event.hpp"
 
-namespace TerreateCore::Event {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Event {
+using namespace TerreateGraphics::Defines;
 
 EventSystem::EventSystem() {
   Logger::Trace(LOCATION(EventSystem));
@@ -62,4 +62,4 @@ void EventSystem::PublishEvent(Str const &event) {
   LockGuard<Mutex> lock(mQueueMutex);
   mEventQueue.push(event);
 }
-} // namespace TerreateCore::Event
+} // namespace TerreateGraphics::Event

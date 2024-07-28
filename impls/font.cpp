@@ -1,7 +1,7 @@
 #include "../includes/font.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 void Font::LoadDummyCharacter() {
   Logger::Trace(LOCATION(Font));
@@ -144,4 +144,4 @@ void Font::LoadText(WStr const &text) {
     this->LoadCharacter(character);
   }
 }
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core

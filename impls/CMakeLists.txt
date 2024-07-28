@@ -136,7 +136,7 @@ endfunction()
 function(Build)
   add_library(
     ${PROJECT_NAME} STATIC
-    TerreateCore.cpp
+    TerreateGraphics.cpp
     animation.cpp
     buffer.cpp
     event.cpp

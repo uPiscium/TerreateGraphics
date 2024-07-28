@@ -1,7 +1,7 @@
 #include "../includes/skeleton.hpp"
 
-namespace TerreateCore::Animation {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Animation {
+using namespace TerreateGraphics::Defines;
 using namespace TerreateMath::Utils;
 
 void Joint::Initialize(mat4 const &parentOffset) {
@@ -39,4 +39,4 @@ void Skeleton::ApplyTransforms(Vec<mat4> const &transforms) {
     mRoot->Transform(Eye<Float>(4), transforms, mJointTransformMatrices);
   }
 }
-} // namespace TerreateCore::Animation
+} // namespace TerreateGraphics::Animation
