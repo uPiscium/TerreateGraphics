@@ -1,8 +1,8 @@
 #include "../includes/screen.hpp"
 #include <memory>
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 void Screen::AddBuffer() {
   Logger::Trace(LOCATION(Screen));
@@ -129,4 +129,4 @@ void Screen::Clear() const {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   this->Unbind();
 }
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core

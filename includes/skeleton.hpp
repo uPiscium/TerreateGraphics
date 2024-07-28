@@ -1,11 +1,11 @@
-#ifndef __TC_SKELETON_HPP__
-#define __TC_SKELETON_HPP__
+#ifndef __TERREATE_CORE_SKELETON_HPP__
+#define __TERREATE_CORE_SKELETON_HPP__
 
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace TerreateCore::Animation {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Animation {
+using namespace TerreateGraphics::Defines;
 
 class Joint : public Core::Object {
 private:
@@ -149,6 +149,6 @@ public:
    */
   void ApplyTransforms(Vec<mat4> const &transforms);
 };
-} // namespace TerreateCore::Animation
+} // namespace TerreateGraphics::Animation
 
-#endif // __TC_SKELETON_HPP__
+#endif // __TERREATE_CORE_SKELETON_HPP__

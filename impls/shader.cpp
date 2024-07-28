@@ -1,7 +1,7 @@
 #include "../includes/shader.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 Str GetShaderLog(Uint const &id) {
   Int status;
@@ -397,4 +397,4 @@ void Shader::Unuse() const {
 
   glUseProgram(0);
 }
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core

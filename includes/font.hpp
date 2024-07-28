@@ -1,5 +1,5 @@
-#ifndef __TC_FONT_HPP__
-#define __TC_FONT_HPP__
+#ifndef __TERREATE_CORE_FONT_HPP__
+#define __TERREATE_CORE_FONT_HPP__
 
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -9,8 +9,8 @@
 #include "object.hpp"
 #include "texture.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 struct Character {
   Uint codepoint;
@@ -86,6 +86,6 @@ public:
 
   operator Bool() const override { return mFace != nullptr; }
 };
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
-#endif // __TC_FONT_HPP__
+#endif // __TERREATE_CORE_FONT_HPP__

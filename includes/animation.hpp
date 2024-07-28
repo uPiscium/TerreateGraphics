@@ -1,11 +1,11 @@
-#ifndef __TC_ANIMATION_HPP__
-#define __TC_ANIMATION_HPP__
+#ifndef __TERREATE_CORE_ANIMATION_HPP__
+#define __TERREATE_CORE_ANIMATION_HPP__
 
 #include "defines.hpp"
 #include "object.hpp"
 
-namespace TerreateCore::Animation {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Animation {
+using namespace TerreateGraphics::Defines;
 
 struct Transform {
   vec3 scale;
@@ -71,6 +71,6 @@ public:
    */
   static mat4 TransformToMatrix(Transform const &transform);
 };
-} // namespace TerreateCore::Animation
+} // namespace TerreateGraphics::Animation
 
-#endif // __TC_ANIMATION_HPP__
+#endif // __TERREATE_CORE_ANIMATION_HPP__

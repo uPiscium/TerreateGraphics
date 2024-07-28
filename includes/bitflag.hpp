@@ -1,10 +1,10 @@
-#ifndef __TC_BITFLAG_HPP__
-#define __TC_BITFLAG_HPP__
+#ifndef __TERREATE_CORE_BITFLAG_HPP__
+#define __TERREATE_CORE_BITFLAG_HPP__
 
 #include "defines.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 template <enumtype T> class BitFlag {
 public:
@@ -75,11 +75,11 @@ template <enumtype T> BitFlag<T> operator^(T const &lhs, BitFlag<T> const &rhs);
 template <enumtype T> BitFlag<T> operator|(T const &lhs, T const &rhs);
 template <enumtype T> BitFlag<T> operator&(T const &lhs, T const &rhs);
 template <enumtype T> BitFlag<T> operator^(T const &lhs, T const &rhs);
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
 // Implementation
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 template <enumtype T> BitFlag<T> &BitFlag<T>::operator=(T const &flag) {
   mFlag = static_cast<Flag>(flag);
@@ -206,6 +206,6 @@ template <enumtype T> BitFlag<T> operator^(T const &lhs, T const &rhs) {
   result ^= rhs;
   return result;
 }
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
-#endif // __TC_BITFLAG_HPP__
+#endif // __TERREATE_CORE_BITFLAG_HPP__

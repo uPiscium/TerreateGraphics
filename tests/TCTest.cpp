@@ -1,10 +1,10 @@
 ﻿#define TC_LOG_LEVEL TC_DEBUG_LEVEL | TC_ERROR_LEVEL | TC_CRITICAL_LEVEL
 #define TC_THROW_LEVEL TC_DEBUG_LEVEL | TC_ERROR_LEVEL | TC_CRITICAL_LEVEL
 
-#include "../../includes/TerreateCore.hpp"
+#include "../../includes/TerreateGraphics.hpp"
 
-using namespace TerreateCore::Core;
-using namespace TerreateCore::Model;
+using namespace TerreateGraphics::Core;
+using namespace TerreateGraphics::Model;
 using namespace TerreateMath::Utils;
 
 class TestApp : public WindowController {

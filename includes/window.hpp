@@ -1,12 +1,12 @@
-#ifndef __TC_WINDOW_HPP__
-#define __TC_WINDOW_HPP__
+#ifndef __TERREATE_CORE_WINDOW_HPP__
+#define __TERREATE_CORE_WINDOW_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
 #include "object.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 class Icon final : public Object {
 private:
@@ -655,6 +655,6 @@ public:
 
   operator Bool() const override { return !this->IsClosed(); }
 };
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
-#endif // __TC_WINDOW_HPP__
+#endif // __TERREATE_CORE_WINDOW_HPP__

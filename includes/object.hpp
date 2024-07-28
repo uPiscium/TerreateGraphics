@@ -1,13 +1,13 @@
-#ifndef __TC_OBJECT_HPP__
-#define __TC_OBJECT_HPP__
+#ifndef __TERREATE_CORE_OBJECT_HPP__
+#define __TERREATE_CORE_OBJECT_HPP__
 
 #include <cstring>
 #include <random>
 
 #include "defines.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 class UUID {
 private:
@@ -54,15 +54,15 @@ public:
 
   virtual operator Bool() const { return true; }
 };
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
 std::ostream &operator<<(std::ostream &stream,
-                         const TerreateCore::Core::UUID &uuid);
+                         const TerreateGraphics::Core::UUID &uuid);
 
-template <> struct std::hash<TerreateCore::Core::UUID> {
-  size_t operator()(TerreateCore::Core::UUID const &uuid) const {
+template <> struct std::hash<TerreateGraphics::Core::UUID> {
+  size_t operator()(TerreateGraphics::Core::UUID const &uuid) const {
     return std::hash<std::string>()(uuid.ToString());
   }
 };
 
-#endif // __TC_OBJECT_HPP__
+#endif // __TERREATE_CORE_OBJECT_HPP__
