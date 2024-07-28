@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_OBJECT_HPP__
-#define __TERREATE_CORE_OBJECT_HPP__
+#ifndef __TERREATE_GRAPHICS_OBJECT_HPP__
+#define __TERREATE_GRAPHICS_OBJECT_HPP__
 
 #include <cstring>
 #include <random>
@@ -65,4 +65,4 @@ template <> struct std::hash<TerreateGraphics::Core::UUID> {
   }
 };
 
-#endif // __TERREATE_CORE_OBJECT_HPP__
+#endif // __TERREATE_GRAPHICS_OBJECT_HPP__

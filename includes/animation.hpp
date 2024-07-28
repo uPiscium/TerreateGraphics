@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_ANIMATION_HPP__
-#define __TERREATE_CORE_ANIMATION_HPP__
+#ifndef __TERREATE_GRAPHICS_ANIMATION_HPP__
+#define __TERREATE_GRAPHICS_ANIMATION_HPP__
 
 #include "defines.hpp"
 #include "object.hpp"
@@ -73,4 +73,4 @@ public:
 };
 } // namespace TerreateGraphics::Animation
 
-#endif // __TERREATE_CORE_ANIMATION_HPP__
+#endif // __TERREATE_GRAPHICS_ANIMATION_HPP__

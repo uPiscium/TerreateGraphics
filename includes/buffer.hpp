@@ -1,5 +1,5 @@
-#ifndef __TERREATE_CORE_BUFFER_HPP__
-#define __TERREATE_CORE_BUFFER_HPP__
+#ifndef __TERREATE_GRAPHICS_BUFFER_HPP__
+#define __TERREATE_GRAPHICS_BUFFER_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
@@ -146,4 +146,4 @@ public:
 };
 } // namespace TerreateGraphics::Core
 
-#endif // __TERREATE_CORE_BUFFER_HPP__
+#endif // __TERREATE_GRAPHICS_BUFFER_HPP__
