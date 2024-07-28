@@ -155,6 +155,80 @@ public:
   }
 };
 
+class BufferConstructor {
+private:
+  BufferUsage mUsage;
+  Map<ModelDataType, Vec<Vec<Float>>> mVertexProperties;
+  std::pair<Vec<Vec<Float>>, Vec<Vec<Uint>>> mJointData;
+  Vec<Vec<Vec<Uint>>> mFaces;
+  Int mMaterial;
+  Bool mGenNormals = false;
+
+public:
+  /*
+   * @brief: This class constructs a Buffer object from vertex data sets.
+   * @param: usage: Buffer usage.
+  */
+  BufferConstructor(BufferUsage const &usage = BufferUsage::STATIC_DRAW, Bool const &genNormals = false);
+  ~BufferConstructor();
+
+  /*
+   * @brief: Load vertex position data.
+   * @note: Data format => [[x1, y1, z1], [x2, y2, z2], ...]
+   * @param: positions: Vertex position data.
+  */
+  void LoadPositions(Vec<Vec<Float>> const &positions);
+  /*
+   * @brief: Load vertex normal data. If you set "genNormals" parameter true, normals will generated automatically.
+   * @note: Data format => [[x1, y1, z1], [x2, y2, z2], ...]
+   * @param: normals: Vertex normal data.
+  */
+  void LoadNormals(Vec<Vec<Float>> const &normals);
+  /*
+   * @brief: Load vertex UV data.
+   * @note: Data format => [[u1, v1], [u2, v2], ...]
+   * @param: uvs: Vertex UV data.
+  */
+  void LoadUVs(Vec<Vec<Float>> const &uvs);
+  /*
+   * @brief: Load vertex color data.
+   * @note: Data format => [[r1, g1, b1, a1], [r2, g2, b2, a2], ...]
+   * @param: colors: Vertex color data.
+  */
+  void LoadColors(Vec<Vec<Float>> const &colors);
+  /*
+   * @brief: Load vertex joints' weight data.
+   * @note: Data format => [[w11, w12, w13, w14], [w21, w22, w23, w24], ...]
+   * @param: weights: Vertex joints' weight data.
+  */
+  void LoadJointWeights(Vec<Vec<Float>> const &weights);
+  /*
+   * @brief: Load vertex joint index data.
+   * @note: Data format => [[j11, j12, j13, j14], [j21, j22, j23, j24], ...]
+   * @param: joints: Vertex joint index data.
+  */
+  void LoadJointIndices(Vec<Vec<Uint>> const &joints);
+  /*
+   * @brief: Load vertex face data.
+   * @note: Data format
+   * [
+   *   [
+   *     [position_index, normal_index(optional), uv_index(optional), color_index(optional), joint_index(optional), weight_index(optional)],
+   *     [...],
+   *     ...
+   *   ]
+   * ]
+   * @param: faces: Vertex face data.
+  */
+  void LoadFaces(Vec<Vec<Vec<Uint>>> const &faces);
+
+  /*
+   * @brief: Construct buffer data.
+   * @param: buffer: Construct target.
+  */
+  void Construct(Buffer &buffer);
+};
+
 class MeshData {
 private:
   BufferUsage mUsage;

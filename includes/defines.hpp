@@ -519,6 +519,17 @@ enum class ModelFlag : TCu8 {
   MORPH = 1 << 7
 };
 
+// Use to select data type included in buffer.
+enum class ModelDataType {
+  POSITION = 1,
+  NORMAL = 1 << 1,
+  UV = 1 << 2,
+  COLOR = 1 << 3,
+  WEIGHT = 1 << 4,
+  JOINT = 1 << 5,
+  MATERIAL = 1 << 6
+};
+
 // Use to select mouse button input.
 enum class MousebuttonInput {
   BUTTON1 = GLFW_MOUSE_BUTTON_1,

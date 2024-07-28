@@ -95,6 +95,66 @@ void MeshData::LoadMorph(Vec<Vec<Float>> const &morph) {
   this->SetFlag(ModelFlag::MORPH);
 }
 
+BufferConstructor::BufferConstructor(BufferUsage const &usage, Bool const &genNormals) : mUsage(usage), mGenNormals(genNormals) {
+  Logger::Trace(LOCATION(BufferConstructor));
+  Logger::Debug("BufferConstructor generated.");
+}
+
+BufferConstructor::~BufferConstructor() {
+  Logger::Trace(LOCATION(BufferConstructor));
+  Logger::Debug("BufferConstructor deleted.");
+}
+
+void BufferConstructor::LoadPositions(Vec<Vec<Float>> const &positions) {
+  Logger::Trace(LOCATION(BufferConstructor));
+  if (mVertexProperties.find(ModelDataType::POSITION) == mVertexProperties.end()) {
+    mVertexProperties[ModelDataType::POSITION] = positions;
+  } else {
+    mVertexProperties.insert({ModelDataType::POSITION, positions});
+  }
+}
+
+void BufferConstructor::LoadNormals(Vec<Vec<Float>> const &normals) {
+  Logger::Trace(LOCATION(BufferConstructor));
+  if (mVertexProperties.find(ModelDataType::NORMAL) == mVertexProperties.end()) {
+    mVertexProperties[ModelDataType::NORMAL] = normals;
+  } else {
+    mVertexProperties.insert({ModelDataType::NORMAL, normals});
+  }
+}
+
+void BufferConstructor::LoadUVs(Vec<Vec<Float>> const &uvs) {
+  Logger::Trace(LOCATION(BufferConstructor));
+  if (mVertexProperties.find(ModelDataType::UV) == mVertexProperties.end()) {
+    mVertexProperties[ModelDataType::UV] = uvs;
+  } else {
+    mVertexProperties.insert({ModelDataType::UV, uvs});
+  }
+}
+
+void BufferConstructor::LoadColors(Vec<Vec<Float>> const &colors) {
+  Logger::Trace(LOCATION(BufferConstructor));
+  if (mVertexProperties.find(ModelDataType::COLOR) == mVertexProperties.end()) {
+    mVertexProperties[ModelDataType::COLOR] = colors;
+  } else {
+    mVertexProperties.insert({ModelDataType::COLOR, colors});
+  }
+}
+
+void BufferConstructor::LoadJointWeights(Vec<Vec<Float>> const &weights) {
+  Logger::Trace(LOCATION(BufferConstructor));
+  mJointData.first = weights;
+}
+
+void BufferConstructor::LoadJointIndices(Vec<Vec<Uint>> const &joints) {
+  Logger::Trace(LOCATION(BufferConstructor));
+  mJointData.second = joints;
+}
+
+void BufferConstructor::Construct(Buffer &buffer) {
+  ;
+}
+
 void MeshData::Construct() {
   Vec<Vec<Vec<Float>>> properties;
   mVertices.clear();

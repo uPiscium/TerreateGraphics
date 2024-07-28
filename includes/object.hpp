@@ -11,13 +11,13 @@ using namespace TerreateGraphics::Defines;
 
 class UUID {
 private:
-  Byte mUUID[16] = {0};
+  char mUUID[16] = {0};
   static std::mt19937 sRandomEngine;
 
 private:
   void GenerateUUID();
-  UUID(Byte const *uuid) { std::memcpy(mUUID, uuid, sizeof(char) * 16); }
-  UUID(Str const &uuid) { std::memcpy(mUUID, uuid.c_str(), sizeof(char) * 16); }
+  UUID(char const *uuid) { std::memcpy(mUUID, uuid, sizeof(char) * 16); }
+  UUID(std::string const &uuid) { std::memcpy(mUUID, uuid.c_str(), sizeof(char) * 16); }
   UUID &operator=(UUID const &other) = delete;
 
 public:
@@ -26,13 +26,13 @@ public:
     std::memcpy(mUUID, other.mUUID, sizeof(char) * 16);
   }
 
-  Byte const *GetUUID() const { return mUUID; }
+  char const *GetUUID() const { return mUUID; }
 
-  Str ToString() const;
+  std::string ToString() const;
 
 public:
-  static UUID FromChar(Byte const *uuid) { return UUID(uuid); }
-  static UUID FromString(Str const &uuid) { return UUID(uuid); }
+  static UUID FromChar(char const *uuid) { return UUID(uuid); }
+  static UUID FromString(std::string const &uuid) { return UUID(uuid); }
 };
 
 inline bool operator==(UUID const &lhs, UUID const &rhs) {
@@ -52,7 +52,7 @@ public:
 
   UUID const &GetUUID() const { return mUUID; }
 
-  virtual operator Bool() const { return true; }
+  virtual operator bool() const { return true; }
 };
 } // namespace TerreateGraphics::Core
 

@@ -1,3 +1,4 @@
+#include "../includes/defines.hpp"
 #include "../includes/object.hpp"
 
 #include <iomanip>
