@@ -1,7 +1,7 @@
 #include "../includes/buffer.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 Attribute::Attribute(Ulong const &index, Ulong const &comps,
                      Ulong const &stride, Ulong const &offset)
@@ -166,4 +166,4 @@ void Buffer::DrawInstances(size_t const &numInstances,
                           numInstances);
   glBindVertexArray(0);
 }
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core

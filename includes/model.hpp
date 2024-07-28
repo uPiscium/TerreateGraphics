@@ -1,5 +1,5 @@
-#ifndef __TC_MODEL_HPP__
-#define __TC_MODEL_HPP__
+#ifndef __TERREATE_CORE_MODEL_HPP__
+#define __TERREATE_CORE_MODEL_HPP__
 
 #include "bitflag.hpp"
 #include "buffer.hpp"
@@ -7,8 +7,8 @@
 #include "object.hpp"
 #include "texture.hpp"
 
-namespace TerreateCore::Model {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Model {
+using namespace TerreateGraphics::Defines;
 
 using TextureMap = Shared<Core::Texture>;
 
@@ -418,6 +418,6 @@ public:
 
   Model &operator=(Model const &other);
 };
-} // namespace TerreateCore::Model
+} // namespace TerreateGraphics::Model
 
-#endif // __TC_MODEL_HPP__
+#endif // __TERREATE_CORE_MODEL_HPP__

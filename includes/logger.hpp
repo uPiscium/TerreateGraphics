@@ -1,5 +1,5 @@
-#ifndef __TC_LOGGER_HPP__
-#define __TC_LOGGER_HPP__
+#ifndef __TERREATE_CORE_LOGGER_HPP__
+#define __TERREATE_CORE_LOGGER_HPP__
 
 #include "defines.hpp"
 
@@ -20,8 +20,8 @@
 #define TC_DEBUG_LEVEL 1 << 5
 #define TC_TRACE_LEVEL 1 << 6
 
-namespace TerreateCore::Logger {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Logger {
+using namespace TerreateGraphics::Defines;
 
 static Str const CRITICAL_PREFIX = "[**CRITICAL**]";
 static Str const ERROR_PREFIX = "[*ERROR*]";
@@ -36,6 +36,6 @@ void Warning(Str const &msg);
 void Info(Str const &msg);
 void Debug(Str const &msg);
 void Trace(Str const &msg);
-} // namespace TerreateCore::Logger
+} // namespace TerreateGraphics::Logger
 
-#endif // __TC_LOGGER_HPP__
+#endif // __TERREATE_CORE_LOGGER_HPP__

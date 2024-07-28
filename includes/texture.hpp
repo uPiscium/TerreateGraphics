@@ -1,5 +1,5 @@
-#ifndef __TC_TEXTURE_HPP__
-#define __TC_TEXTURE_HPP__
+#ifndef __TERREATE_CORE_TEXTURE_HPP__
+#define __TERREATE_CORE_TEXTURE_HPP__
 
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
@@ -9,8 +9,8 @@
 #include "logger.hpp"
 #include "object.hpp"
 
-namespace TerreateCore::Core {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Core {
+using namespace TerreateGraphics::Defines;
 
 struct TextureData {
   Vec<Ubyte> pixels;
@@ -173,6 +173,6 @@ public:
 
   operator Bool() const override { return mTexture != 0; }
 };
-} // namespace TerreateCore::Core
+} // namespace TerreateGraphics::Core
 
-#endif // __TC_TEXTURE_HPP__
+#endif // __TERREATE_CORE_TEXTURE_HPP__

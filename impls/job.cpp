@@ -1,7 +1,7 @@
 #include "../includes/job.hpp"
 
-namespace TerreateCore::Job {
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Job {
+using namespace TerreateGraphics::Defines;
 
 void JobBase::Run() {
   try {
@@ -185,4 +185,4 @@ void JobSystem::WaitForAll() {
   UniqueLock<Mutex> lock(mJobLock);
   mComplete.wait(false);
 }
-} // namespace TerreateCore::Job
+} // namespace TerreateGraphics::Job

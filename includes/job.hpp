@@ -1,13 +1,13 @@
-#ifndef __TC_JOB_HPP__
-#define __TC_JOB_HPP__
+#ifndef __TERREATE_CORE_JOB_HPP__
+#define __TERREATE_CORE_JOB_HPP__
 
 #include "defines.hpp"
 #include "logger.hpp"
 #include "object.hpp"
 
-namespace TerreateCore::Job {
-using namespace TerreateCore::Core;
-using namespace TerreateCore::Defines;
+namespace TerreateGraphics::Job {
+using namespace TerreateGraphics::Core;
+using namespace TerreateGraphics::Defines;
 
 class JobBase : public Object {
 private:
@@ -154,6 +154,6 @@ public:
 
   virtual operator Bool() const override { return mComplete; }
 };
-} // namespace TerreateCore::Job
+} // namespace TerreateGraphics::Job
 
-#endif // __TC_JOB_HPP__
+#endif // __TERREATE_CORE_JOB_HPP__
