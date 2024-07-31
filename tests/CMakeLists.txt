@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.20)
-project(TCTest)
+project(TGTest)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 function(SetLibs)
-  target_link_libraries(${PROJECT_NAME} TerreateCore)
+  target_link_libraries(${PROJECT_NAME} TerreateGraphics)
 endfunction()
 
 function(SetIncludes)
@@ -16,7 +16,7 @@ function(SetIncludes)
 endfunction()
 
 function(Build)
-  add_executable(${PROJECT_NAME} TCTest.cpp)
+  add_executable(${PROJECT_NAME} TGTest.cpp)
   set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY
                                                    ${CMAKE_BINARY_DIR}/bin)
   setlibs()
