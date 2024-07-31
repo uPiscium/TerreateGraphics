@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(TerreateCore)
+project(TerreateGraphics)
 message(STATUS "Project name : " ${PROJECT_NAME})
 
 include(FetchContent)
