@@ -1,10 +1,13 @@
 #ifndef __TERREATE_GRAPHICS_BUFFER_HPP__
 #define __TERREATE_GRAPHICS_BUFFER_HPP__
 
+#include "TerreateCore/defines.hpp"
 #include "defines.hpp"
+#include "globj.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::GL;
 
 class Attribute {
 private:
@@ -61,9 +64,9 @@ public:
 
 class Buffer final : public TerreateObjectBase {
 private:
-  ID mVAO = 0;
-  ID mVBO = 0;
-  ID mIBO = 0;
+  GLObject mVAO = GLObject();
+  GLObject mVBO = GLObject();
+  GLObject mIBO = GLObject();
   BufferUsage mUsage = BufferUsage::STATIC_DRAW;
 
   Ulong mNumIndices = 0;
@@ -138,7 +141,7 @@ public:
    */
   void DrawInstances(Size const &numInstances, DrawMode const &drawMode);
 
-  operator Bool() const override { return mVAO != 0 && mVBO != 0 && mIBO != 0; }
+  operator Bool() const override { return mVAO && mVBO && mIBO; }
 };
 } // namespace TerreateGraphics::Core
 

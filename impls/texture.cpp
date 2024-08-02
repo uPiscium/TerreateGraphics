@@ -4,6 +4,13 @@
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
+Texture::~Texture() {
+  if (mTexture.Count() <= 1) {
+    glDeleteTextures(1, mTexture);
+    mTexture.Delete();
+  }
+}
+
 void Texture::SetFilter(FilterType const &filter) {
   mFilter = filter;
   this->Bind();
@@ -78,6 +85,13 @@ TextureData Texture::LoadTexture(Str const &path) {
       pixelData, pixelData + texData.width * texData.height * texData.channels);
   stbi_image_free(pixelData);
   return texData;
+}
+
+CubeTexture::~CubeTexture() {
+  if (mTexture.Count() <= 1) {
+    glDeleteTextures(1, mTexture);
+    mTexture.Delete();
+  }
 }
 
 void CubeTexture::SetFilter(FilterType const &filter) {

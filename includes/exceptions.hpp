@@ -20,6 +20,11 @@ public:
   }
 };
 
+class NullObjectException : public GraphicsException {
+public:
+  NullObjectException() : GraphicsException("Null object is accessed!") {}
+};
+
 class BufferError : public GraphicsException {
 public:
   BufferError(Str const &message) : GraphicsException(message) {}

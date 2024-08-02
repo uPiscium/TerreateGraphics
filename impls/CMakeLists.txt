@@ -71,6 +71,7 @@ function(Build)
     event.cpp
     font.cpp
     gl.cpp
+    globj.cpp
     job.cpp
     model.cpp
     screen.cpp

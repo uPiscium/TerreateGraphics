@@ -2,9 +2,11 @@
 #define __TERREATE_GRAPHICS_SHADER_HPP__
 
 #include "defines.hpp"
+#include "globj.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::GL;
 
 struct ShaderOption {
   Bool blending = true;
@@ -28,7 +30,7 @@ struct ShaderOption {
 class Shader final : public TerreateObjectBase {
 private:
   Bool mCompiled = false;
-  ID mShaderID = 0;
+  GLObject mShaderID = GLObject();
   Str mVertexShaderSource = "";
   Str mFragmentShaderSource = "";
   Str mGeometryShaderSource = "";
@@ -40,7 +42,7 @@ public:
    * and geometry shaders.
    */
   Shader();
-  ~Shader() override { glDeleteProgram(mShaderID); }
+  ~Shader() override;
 
   /*
    * @brief: Getter for shader uniform ID.
@@ -323,7 +325,7 @@ public:
    */
   void Unuse() const { glUseProgram(0); }
 
-  operator Bool() const override { return mShaderID != 0; }
+  operator Bool() const override { return mShaderID; }
 
 public:
   /*

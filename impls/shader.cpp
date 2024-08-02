@@ -51,6 +51,13 @@ Shader::Shader() {
   mCompiled = false;
 }
 
+Shader::~Shader() {
+  if (mShaderID.Count() <= 1) {
+    glDeleteProgram(mShaderID);
+    mShaderID.Delete();
+  }
+}
+
 void Shader::SetBlending(BlendingFuntion const &src,
                          BlendingFuntion const &dst) {
   mOption.src = src;

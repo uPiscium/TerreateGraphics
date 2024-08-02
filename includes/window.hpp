@@ -11,6 +11,10 @@ private:
   Vec<GLFWimage> mImages;
   Vec<Ubyte *> mPointers;
 
+private:
+  Icon(Icon const &) = delete;
+  Icon &operator=(Icon const &) = delete;
+
 public:
   /*
    * @brief: This function creates a glfw icon.
@@ -43,6 +47,10 @@ private:
   int mXHot = 0;
   int mYHot = 0;
 
+private:
+  Cursor(Cursor const &) = delete;
+  Cursor &operator=(Cursor const &) = delete;
+
 public:
   /*
    * @brief: This function creates a glfw cursor.
@@ -69,6 +77,10 @@ public:
 class StandardCursor : public TerreateObjectBase {
 private:
   GLFWcursor *mCursor = nullptr;
+
+private:
+  StandardCursor(StandardCursor const &) = delete;
+  StandardCursor &operator=(StandardCursor const &) = delete;
 
 public:
   /*
@@ -276,6 +288,10 @@ private:
                                              Uint codepoint);
   friend void Callbacks::DropCallbackWrapper(GLFWwindow *window, int count,
                                              const char **paths);
+
+private:
+  Window(Window const &) = delete;
+  Window &operator=(Window const &) = delete;
 
 public:
   /*
