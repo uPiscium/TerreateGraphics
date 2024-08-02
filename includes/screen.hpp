@@ -2,14 +2,16 @@
 #define __TERREATE_GRAPHICS_SCREEN_HPP__
 
 #include "defines.hpp"
+#include "globj.hpp"
 #include "texture.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::GL;
 
 class Screen final : public TerreateObjectBase {
 private:
-  ID mFrameBuffer;
+  GLObject mFrameBuffer = GLObject();
   Uint mWidth;
   Uint mHeight;
   Vec<Shared<Texture>> mTextures;
@@ -86,7 +88,7 @@ public:
   /* Shared<Texture> const &operator[](Index const &index) const { */
   /*   return mTextures[index]; */
   /* } */
-  operator Bool() const override { return mFrameBuffer != 0; }
+  operator Bool() const override { return mFrameBuffer; }
 };
 } // namespace TerreateGraphics::Core
 

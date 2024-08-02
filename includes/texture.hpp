@@ -6,9 +6,11 @@
 #include <stb/stb_image.h>
 
 #include "defines.hpp"
+#include "globj.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::GL;
 
 struct TextureData {
   Vec<Ubyte> pixels;
@@ -19,7 +21,7 @@ struct TextureData {
 
 class Texture final : public TerreateObjectBase {
 private:
-  ID mTexture = 0;
+  GLObject mTexture = GLObject();
   Uint mWidth = 0;
   Uint mHeight = 0;
   Uint mChannels = 0;
@@ -30,7 +32,7 @@ public:
   /*
    * @brief: This function creates a opengl texture.
    */
-  Texture() { glGenTextures(1, &mTexture); }
+  Texture() { glGenTextures(1, mTexture); }
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be created by Screen.
@@ -43,7 +45,7 @@ public:
           Uint const &channels)
       : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
   }
-  ~Texture() override { glDeleteTextures(1, &mTexture); }
+  ~Texture() override;
 
   /*
    * @brief: Setter for texture filter.
@@ -81,7 +83,7 @@ public:
    */
   void Unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
 
-  operator bool() const override { return mTexture != 0; }
+  operator Bool() const override { return mTexture; }
 
 public:
   /*
@@ -94,7 +96,7 @@ public:
 
 class CubeTexture final : public TerreateObjectBase {
 private:
-  Uint mTexture = 0;
+  GLObject mTexture = GLObject();
   Uint mWidth = 0;
   Uint mHeight = 0;
   Uint mChannels = 0;
@@ -105,7 +107,7 @@ public:
   /*
    * @brief: This function creates a opengl cube texture.
    */
-  CubeTexture() { glGenTextures(1, &mTexture); }
+  CubeTexture() { glGenTextures(1, mTexture); }
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be created by CubeScreen.
@@ -118,7 +120,7 @@ public:
               Uint const &channels)
       : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
   }
-  ~CubeTexture() override { glDeleteTextures(1, &mTexture); }
+  ~CubeTexture() override;
 
   /*
    * @brief: Setter for texture filter.
@@ -167,7 +169,7 @@ public:
    */
   void Unbind() const { glBindTexture(GL_TEXTURE_CUBE_MAP, 0); }
 
-  operator Bool() const override { return mTexture != 0; }
+  operator Bool() const override { return mTexture; }
 };
 } // namespace TerreateGraphics::Core
 

@@ -33,7 +33,7 @@ void Screen::AddBuffer() {
 
 Screen::Screen(Uint const &width, Uint const &height)
     : mWidth(width), mHeight(height) {
-  glGenFramebuffers(1, &mFrameBuffer);
+  glGenFramebuffers(1, mFrameBuffer);
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
   ID rbo = 0;
   glGenRenderbuffers(1, &rbo);
@@ -48,7 +48,8 @@ Screen::Screen(Uint const &width, Uint const &height)
 
 Screen::~Screen() {
   mTextures.clear();
-  glDeleteFramebuffers(1, &mFrameBuffer);
+  glDeleteFramebuffers(1, mFrameBuffer);
+  mFrameBuffer.Delete();
 }
 
 void Screen::Transcript(Screen const &screen) const {

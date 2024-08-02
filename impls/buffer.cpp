@@ -1,5 +1,6 @@
 #include "../includes/buffer.hpp"
 #include "../includes/exceptions.hpp"
+#include "TerreateCore/defines.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
@@ -30,15 +31,18 @@ Vec<Attribute> Attribute::GenerateAttributes(Vec<Ulong> const &comps,
 }
 
 Buffer::Buffer(BufferUsage usage) : mUsage(usage) {
-  glGenVertexArrays(1, &mVAO);
-  glGenBuffers(1, &mVBO);
-  glGenBuffers(1, &mIBO);
+  glGenVertexArrays(1, mVAO);
+  glGenBuffers(1, mVBO);
+  glGenBuffers(1, mIBO);
 }
 
 Buffer::~Buffer() {
-  glDeleteVertexArrays(1, &mVAO);
-  glDeleteBuffers(1, &mVBO);
-  glDeleteBuffers(1, &mIBO);
+  glDeleteVertexArrays(1, mVAO);
+  glDeleteBuffers(1, mVBO);
+  glDeleteBuffers(1, mIBO);
+  mVAO.Delete();
+  mVBO.Delete();
+  mIBO.Delete();
 }
 
 void Buffer::LoadVertices(Float const *data, Size const &size) {
