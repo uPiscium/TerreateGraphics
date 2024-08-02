@@ -2,7 +2,6 @@
 
 namespace TerreateGraphics::Animation {
 using namespace TerreateGraphics::Defines;
-using namespace TerreateMath::Utils;
 
 void Joint::Initialize(mat4 const &parentOffset) {
   if (mChild) {
@@ -30,13 +29,14 @@ void Joint::Transform(mat4 const &parentTransform,
 
 void Skeleton::Initialize() {
   if (mRoot) {
-    mRoot->Initialize(Eye<Float>(4));
+    mRoot->Initialize(TerreateMath::Utils::Eye<Float>(4));
   }
 }
 
 void Skeleton::ApplyTransforms(Vec<mat4> const &transforms) {
   if (mRoot) {
-    mRoot->Transform(Eye<Float>(4), transforms, mJointTransformMatrices);
+    mRoot->Transform(TerreateMath::Utils::Eye<Float>(4), transforms,
+                     mJointTransformMatrices);
   }
 }
 } // namespace TerreateGraphics::Animation

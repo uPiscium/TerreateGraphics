@@ -2,8 +2,6 @@
 #define __TERREATE_GRAPHICS_BUFFER_HPP__
 
 #include "defines.hpp"
-#include "logger.hpp"
-#include "object.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
@@ -23,24 +21,25 @@ public:
    * @param offset: Offset of this attribute.
    */
   Attribute(Ulong const &index, Ulong const &comps, Ulong const &stride,
-            Ulong const &offset);
+            Ulong const &offset)
+      : mIndex(index), mComps(comps), mStride(stride), mOffset(offset) {}
 
   /*
    * @return: Index of this attribute.
    */
-  Ulong const &GetIndex() const;
+  Ulong const &GetIndex() const { return mIndex; }
   /*
    * @return: Number of components of this attribute.
    */
-  Ulong const &GetComps() const;
+  Ulong const &GetComps() const { return mComps; }
   /*
    * @return: Size of stride of this attribute.
    */
-  Ulong const &GetStride() const;
+  Ulong const &GetStride() const { return mStride; }
   /*
    * @return: Offset from the beginning of this attributes.
    */
-  Ulong const &GetOffset() const;
+  Ulong const &GetOffset() const { return mOffset; }
 
 public:
   /*
@@ -60,7 +59,7 @@ public:
                                            Vec<Ulong> const &strides);
 };
 
-class Buffer final : public Object {
+class Buffer final : public TerreateObjectBase {
 private:
   ID mVAO = 0;
   ID mVBO = 0;
@@ -71,9 +70,6 @@ private:
 
   Bool mSetVBO = false;
   Bool mSetIBO = false;
-
-public:
-  TC_DISABLE_COPY_AND_ASSIGN(Buffer);
 
 public:
   /*
@@ -88,7 +84,7 @@ public:
    * @brief: Get buffer usage on opengl.
    * @return: Buffer usage
    */
-  BufferUsage const &GetUsage() const;
+  BufferUsage const &GetUsage() const { return mUsage; }
 
   /*
    * @brief: Load vertex buffer data.

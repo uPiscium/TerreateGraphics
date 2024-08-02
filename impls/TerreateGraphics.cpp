@@ -1,4 +1,5 @@
 #include "../includes/TerreateGraphics.hpp"
+#include "../includes/exceptions.hpp"
 
 namespace TerreateGraphics::Defines {
 bool GLFW_INITIALIZED = false;
@@ -26,15 +27,9 @@ void Clock::Frame(Uint const &fps) {
   }
 }
 
-void Initialize(Bool const &enableConsoleLog) {
-  if (enableConsoleLog) {
-    LoggerManager::Register(new ConsoleLogger("TerrcateCore/ConsoleLogger"));
-  }
-  LoggerManager::Register(
-      new FileLogger("TerrcateCore/FileLogger", "build/log.txt"));
-
+void Initialize() {
   if (!glfwInit()) {
-    Logger::Critical("Failed to initialize GLFW");
+    throw Exceptions::GraphicsException("Failed to initialize GLFW");
     return;
   }
 

@@ -2,16 +2,13 @@
 #define __TERREATE_GRAPHICS_EVENT_HPP__
 
 #include "defines.hpp"
-#include "logger.hpp"
-#include "object.hpp"
 
 namespace TerreateGraphics::Event {
-using namespace TerreateGraphics::Core;
 using namespace TerreateGraphics::Defines;
 
 using EventCallback = Function<void(Str const &)>;
 
-class EventSystem : public Object {
+class EventSystem : public TerreateObjectBase {
 private:
   Queue<Str> mEventQueue;
   Mutex mQueueMutex;
@@ -24,8 +21,8 @@ public:
    * callbacks to be registered to events and for events
    * to be published to the system.
    */
-  EventSystem();
-  virtual ~EventSystem() override;
+  EventSystem() {}
+  virtual ~EventSystem() override {}
 
   /*
    * @brief: Register a callback to an event
