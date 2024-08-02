@@ -2,14 +2,12 @@
 #define __TERREATE_GRAPHICS_SCREEN_HPP__
 
 #include "defines.hpp"
-#include "logger.hpp"
-#include "object.hpp"
 #include "texture.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
-class Screen final : public Object {
+class Screen final : public TerreateObjectBase {
 private:
   ID mFrameBuffer;
   Uint mWidth;
@@ -37,17 +35,17 @@ public:
    * @brief: Getter for width.
    * @return: width
    */
-  Uint GetWidth() const;
+  Uint GetWidth() const { return mWidth; }
   /*
    * @brief: Getter for height.
    * @return: height
    */
-  Uint GetHeight() const;
+  Uint GetHeight() const { return mHeight; }
   /*
    * @brief: Getter for texture.
    * @return: texture
    */
-  Shared<Texture> const &GetTexture() const;
+  Shared<Texture> const &GetTexture() const { return mTextures[0]; }
 
   /*
    * @brief: Transcript to other screen.
@@ -57,7 +55,9 @@ public:
   /*
    * @brief: Binds the screen for reading.
    */
-  void ReadOnlyBind() const;
+  void ReadOnlyBind() const {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, mFrameBuffer);
+  }
   /*
    * @brief: Binds the screen for drawing.
    */

@@ -1,18 +1,18 @@
 #ifndef __TERREATE_GRAPHICS_MODEL_HPP__
 #define __TERREATE_GRAPHICS_MODEL_HPP__
 
-#include "bitflag.hpp"
 #include "buffer.hpp"
 #include "defines.hpp"
-#include "object.hpp"
 #include "texture.hpp"
 
 namespace TerreateGraphics::Model {
+using namespace TerreateGraphics::Core;
 using namespace TerreateGraphics::Defines;
 
 using TextureMap = Shared<Core::Texture>;
+template <typename T> using BitFlag = TerreateCore::Core::BitFlag<T>;
 
-class MaterialData : public Core::Object {
+class MaterialData : public TerreateObjectBase {
 private:
   Str mName;
   Map<ColorProperty, vec4> mColorProperties;
@@ -158,7 +158,7 @@ public:
 class MeshData {
 private:
   BufferUsage mUsage;
-  Core::BitFlag<ModelFlag> mFlag;
+  BitFlag<ModelFlag> mFlag;
   Map<ModelFlag, Vec<Vec<Float>>> mVertexProperties;
   Vec<Vec<Uint>> mVertexSet;
   Vec<Float> mVertices;
@@ -314,10 +314,10 @@ public:
   void Construct();
 };
 
-class Mesh : public Core::Object {
+class Mesh : public TerreateObjectBase {
 private:
   BufferUsage mUsage;
-  Core::BitFlag<ModelFlag> mFlag;
+  BitFlag<ModelFlag> mFlag;
   Shared<Core::Buffer> mBuffer;
   Uint mMaterial;
 
@@ -374,7 +374,7 @@ public:
   static Vec<Core::Attribute> GenerateAttributes(ModelFlag const &flag);
 };
 
-class Model : public Core::Object {
+class Model : public TerreateObjectBase {
 private:
   Vec<Mesh> mMeshes;
   Vec<MaterialData> mMaterials;

@@ -2,8 +2,9 @@
 #include <memory>
 
 namespace TerreateGraphics::Model {
-using namespace TerreateGraphics::Defines;
+using namespace TerreateCore::Core;
 using namespace TerreateGraphics::Core;
+using namespace TerreateGraphics::Defines;
 
 void MaterialData::SetColorProperty(ColorProperty const &property,
                                     vec4 const &value) {
@@ -36,7 +37,7 @@ void MaterialData::RemoveColorProperty(ColorProperty const &property) {
   if (this->HasColorProperty(property)) {
     mColorProperties.erase(property);
   } else {
-    Logger::Error("Color property not found");
+    throw std::runtime_error("Color property not found");
   }
 }
 
@@ -44,7 +45,7 @@ void MaterialData::RemoveFloatProperty(FloatProperty const &property) {
   if (this->HasFloatProperty(property)) {
     mFloatProperties.erase(property);
   } else {
-    Logger::Error("Float property not found");
+    throw std::runtime_error("Float property not found");
   }
 }
 
@@ -52,7 +53,7 @@ void MaterialData::RemoveTextureProperty(TextureProperty const &property) {
   if (this->HasTextureProperty(property)) {
     mTextureProperties.erase(property);
   } else {
-    Logger::Error("Texture property not found");
+    throw std::runtime_error("Texture property not found");
   }
 }
 
@@ -100,7 +101,7 @@ void MeshData::Construct() {
   mVertices.clear();
 
   if (mVertexProperties.find(ModelFlag::POSITION) == mVertexProperties.end()) {
-    Logger::Error("Position property not found");
+    throw std::runtime_error("Position property not found");
   }
 
   properties.push_back(mVertexProperties[ModelFlag::POSITION]);
@@ -130,7 +131,7 @@ void MeshData::Construct() {
   }
 
   if (properties.size() != mVertexSet[0].size()) {
-    Logger::Error("Property size does not match vertex set size");
+    throw std::runtime_error("Property size does not match");
   }
 
   for (auto &set : mVertexSet) {
@@ -155,7 +156,7 @@ void Mesh::LoadData(MeshData &data) {
   }
 
   if (data.GetFlag() != mFlag) {
-    Logger::Error("Flag does not match");
+    throw std::runtime_error("Flag does not match");
   }
 
   if (mBuffer == nullptr) {

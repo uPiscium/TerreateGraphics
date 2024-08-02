@@ -3,15 +3,13 @@
 
 #include "defines.hpp"
 #include "font.hpp"
-#include "logger.hpp"
 #include "model.hpp"
-#include "object.hpp"
 #include "shader.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
-class Text : public Core::Object {
+class Text : public TerreateObjectBase {
 private:
   Bool mShaderLoaded = false;
   WStr mText;
@@ -28,7 +26,7 @@ public:
   Text();
   Text(Str const &text, Shared<Core::Font> const &font);
   Text(WStr const &text, Shared<Core::Font> const &font);
-  ~Text() override;
+  ~Text() override {}
 
   void LoadShader(Str const &vertexPath, Str const &fragmentPath);
   void LoadText(Str const &text, Shared<Core::Font> const &font) {

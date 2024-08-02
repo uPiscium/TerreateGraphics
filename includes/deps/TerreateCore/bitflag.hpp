@@ -3,8 +3,8 @@
 
 #include "defines.hpp"
 
-namespace TerreateGraphics::Core {
-using namespace TerreateGraphics::Defines;
+namespace TerreateCore::Core {
+using namespace TerreateCore::Defines;
 
 template <enumtype T> class BitFlag {
 public:
@@ -75,11 +75,11 @@ template <enumtype T> BitFlag<T> operator^(T const &lhs, BitFlag<T> const &rhs);
 template <enumtype T> BitFlag<T> operator|(T const &lhs, T const &rhs);
 template <enumtype T> BitFlag<T> operator&(T const &lhs, T const &rhs);
 template <enumtype T> BitFlag<T> operator^(T const &lhs, T const &rhs);
-} // namespace TerreateGraphics::Core
+} // namespace TerreateCore::Core
 
 // Implementation
-namespace TerreateGraphics::Core {
-using namespace TerreateGraphics::Defines;
+namespace TerreateCore::Core {
+using namespace TerreateCore::Defines;
 
 template <enumtype T> BitFlag<T> &BitFlag<T>::operator=(T const &flag) {
   mFlag = static_cast<Flag>(flag);
@@ -206,6 +206,6 @@ template <enumtype T> BitFlag<T> operator^(T const &lhs, T const &rhs) {
   result ^= rhs;
   return result;
 }
-} // namespace TerreateGraphics::Core
+} // namespace TerreateCore::Core
 
 #endif // __TERREATE_GRAPHICS_BITFLAG_HPP__

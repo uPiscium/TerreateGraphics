@@ -2,7 +2,6 @@
 #define __TERREATE_GRAPHICS_ANIMATION_HPP__
 
 #include "defines.hpp"
-#include "object.hpp"
 
 namespace TerreateGraphics::Animation {
 using namespace TerreateGraphics::Defines;
@@ -13,7 +12,7 @@ struct Transform {
   quat rotation;
 };
 
-class Animation : public Core::Object {
+class Animation : public TerreateObjectBase {
 private:
   Str mName;
   Vec<Transform> mKeyFrames;

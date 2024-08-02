@@ -2,12 +2,11 @@
 #define __TERREATE_GRAPHICS_SKELETON_HPP__
 
 #include "defines.hpp"
-#include "object.hpp"
 
 namespace TerreateGraphics::Animation {
 using namespace TerreateGraphics::Defines;
 
-class Joint : public Core::Object {
+class Joint : public TerreateObjectBase {
 private:
   Uint mID = 0;
   Shared<Joint> mChild = nullptr;
@@ -107,7 +106,7 @@ public:
                  Vec<mat4> &jointMatrices);
 };
 
-class Skeleton : public Core::Object {
+class Skeleton : public TerreateObjectBase {
 private:
   Shared<Joint> mRoot;
   Vec<Shared<Joint>> mJoints;

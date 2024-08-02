@@ -1,12 +1,10 @@
 #include "../includes/text.hpp"
+#include "../includes/exceptions.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
-using namespace TerreateMath::Utils;
 
 void Text::LoadText() {
-  Logger::Trace(LOCATION(Text));
-
   mPositions.clear();
   mFont->LoadText(mText);
   auto chars = mFont->AcquireCharacters(mText);
@@ -31,42 +29,26 @@ void Text::LoadText() {
 }
 
 Text::Text() {
-  Logger::Trace(LOCATION(Text));
-
   mTextMeshData.SetFlag(ModelFlag::UV);
   mText = L"";
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
-  Logger::Debug("Text is created.");
 }
 
 Text::Text(Str const &text, Shared<Core::Font> const &font) : mFont(font) {
-  Logger::Trace(LOCATION(Text));
-
   mTextMeshData.SetFlag(ModelFlag::UV);
   mText = WStr(text.begin(), text.end());
   this->LoadText();
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
-  Logger::Debug("Text is created with char text and font.");
 }
 
 Text::Text(WStr const &text, Shared<Core::Font> const &font)
     : mFont(font), mText(text) {
-  Logger::Trace(LOCATION(Text));
-
   mTextMeshData.SetFlag(ModelFlag::UV);
   this->LoadText();
   mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
-  Logger::Debug("Text is created with wchar text and font.");
-}
-
-Text::~Text() {
-  Logger::Trace(LOCATION(Text));
-  Logger::Debug("Text is destroyed.");
 }
 
 void Text::LoadShader(Str const &vertexPath, Str const &fragmentPath) {
-  Logger::Trace(LOCATION(Text));
-
   mShader.AddVertexShaderSource(Shader::LoadShaderSource(vertexPath));
   mShader.AddFragmentShaderSource(Shader::LoadShaderSource(fragmentPath));
   mShader.Compile();
@@ -74,8 +56,6 @@ void Text::LoadShader(Str const &vertexPath, Str const &fragmentPath) {
 }
 
 void Text::LoadText(WStr const &text, Shared<Core::Font> const &font) {
-  Logger::Trace(LOCATION(Text));
-
   mFont = font;
   mText = text;
   this->LoadText();
@@ -83,10 +63,8 @@ void Text::LoadText(WStr const &text, Shared<Core::Font> const &font) {
 
 void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
                   Float const &windowHeight) {
-  Logger::Trace(LOCATION(Text));
-
   if (!mShaderLoaded) {
-    Logger::Error("Shader not loaded");
+    throw Exceptions::TextError("Shader not loaded");
   }
 
   for (int i = 0; i < mText.size(); ++i) {
@@ -104,9 +82,9 @@ void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
     mShader.ActiveTexture(TextureTargets::TEX_0);
     mShader.SetInt("uTexture", 0);
 
-    mShader.SetMat4("uModel", Translate(vec3(x, y, 0.0f)));
-    mShader.SetMat4("uTransform",
-                    Orthographic(0.0f, windowWidth, 0.0f, windowHeight));
+    mShader.SetMat4("uModel", TerreateMath::Utils::Translate(vec3(x, y, 0.0f)));
+    mShader.SetMat4("uTransform", TerreateMath::Utils::Orthographic(
+                                      0.0f, windowWidth, 0.0f, windowHeight));
 
     chr->texture->Bind();
     mTextMesh.Draw();

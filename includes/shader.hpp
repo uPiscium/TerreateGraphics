@@ -2,8 +2,6 @@
 #define __TERREATE_GRAPHICS_SHADER_HPP__
 
 #include "defines.hpp"
-#include "logger.hpp"
-#include "object.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
@@ -27,7 +25,7 @@ struct ShaderOption {
   StencilOperation dpPass = StencilOperation::KEEP;
 };
 
-class Shader final : public Object {
+class Shader final : public TerreateObjectBase {
 private:
   Bool mCompiled = false;
   ID mShaderID = 0;
@@ -42,126 +40,190 @@ public:
    * and geometry shaders.
    */
   Shader();
-  ~Shader() override;
+  ~Shader() override { glDeleteProgram(mShaderID); }
 
   /*
    * @brief: Getter for shader uniform ID.
    * @param: name: name of uniform
    * @return: uniform ID
    */
-  unsigned GetLocation(Str const &name) const;
+  unsigned GetLocation(Str const &name) const {
+    return glGetUniformLocation(mShaderID, name.c_str());
+  }
 
   /*
    * @brief: Setter for shader Bool uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetBool(Str const &name, Bool const &value) const;
+  void SetBool(Str const &name, Bool const &value) const {
+    glUniform1i(this->GetLocation(name), static_cast<Int>(value));
+  }
   /*
    * @brief: Setter for shader Bool array uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    * @param: count: number of elements in array
    */
-  void SetBools(Str const &name, Bool const *value, Int const &count) const;
+  void SetBools(Str const &name, Bool const *value, Int const &count) const {
+    glUniform1iv(this->GetLocation(name), count,
+                 reinterpret_cast<Int const *>(value));
+  }
   /*
    * @brief: Setter for shader Int uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetInt(Str const &name, Int const &value) const;
+  void SetInt(Str const &name, Int const &value) const {
+    glUniform1i(this->GetLocation(name), value);
+  }
   /*
    * @brief: Setter for shader Int array uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    * @param: count: number of elements in array
    */
-  void SetInts(Str const &name, Int const *value, Int const &count) const;
+  void SetInts(Str const &name, Int const *value, Int const &count) const {
+    glUniform1iv(this->GetLocation(name), count, value);
+  }
+  /*
+   * @brief: Setter for shader Int array uniform.
+   * @param: name: name of uniform
+   * @param: value: value of uniform
+   */
+  void SetInts(Str const &name, Vec<Int> value) const {
+    this->SetInts(name, value.data(), value.size());
+  }
   /*
    * @brief: Setter for shader float uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetFloat(Str const &name, Float const &value) const;
+  void SetFloat(Str const &name, Float const &value) const {
+    glUniform1f(this->GetLocation(name), value);
+  }
   /*
    * @brief: Setter for shader float array uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    * @param: count: number of elements in array
    */
-  void SetFloats(Str const &name, Float const *value, Int const &count) const;
+  void SetFloats(Str const &name, Float const *value, Int const &count) const {
+    glUniform1fv(this->GetLocation(name), count, value);
+  }
+  /*
+   * @brief: Setter for shader float array uniform.
+   * @param: name: name of uniform
+   * @param: value: value of uniform
+   */
+  void SetFloats(Str const &name, Vec<Float> value) const {
+    this->SetFloats(name, value.data(), value.size());
+  }
   /*
    * @brief: Setter for shader vec2 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetVec2(Str const &name, vec2 const &value) const;
+  void SetVec2(Str const &name, vec2 const &value) const {
+    glUniform2fv(this->GetLocation(name), 1, value.GetArray());
+  }
   /*
    * @brief: Setter for shader vec3 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetVec3(Str const &name, vec3 const &value) const;
+  void SetVec3(Str const &name, vec3 const &value) const {
+    glUniform3fv(this->GetLocation(name), 1, value.GetArray());
+  }
   /*
    * @brief: Setter for shader vec4 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetVec4(Str const &name, vec4 const &value) const;
+  void SetVec4(Str const &name, vec4 const &value) const {
+    glUniform4fv(this->GetLocation(name), 1, value.GetArray());
+  }
   /*
    * @brief: Setter for shader mat2 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat2(Str const &name, mat2 const &value) const;
+  void SetMat2(Str const &name, mat2 const &value) const {
+    glUniformMatrix2fv(this->GetLocation(name), 1, GL_FALSE,
+                       value.AcquireTransposed().GetArray());
+  }
   /*
    * @brief: Setter for shader mat2x3 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat2x3(Str const &name, mat2x3 const &value) const;
+  void SetMat2x3(Str const &name, mat2x3 const &value) const {
+    glUniformMatrix2x3fv(this->GetLocation(name), 1, GL_FALSE,
+                         value.AcquireTransposed().GetArray());
+  }
   /*
    * @brief: Setter for shader mat2x4 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat2x4(Str const &name, mat2x4 const &value) const;
+  void SetMat2x4(Str const &name, mat2x4 const &value) const {
+    glUniformMatrix2x4fv(this->GetLocation(name), 1, GL_FALSE,
+                         value.AcquireTransposed().GetArray());
+  }
   /*
    * @brief: Setter for shader mat3x2 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat3x2(Str const &name, mat3x2 const &value) const;
+  void SetMat3x2(Str const &name, mat3x2 const &value) const {
+    glUniformMatrix3x2fv(this->GetLocation(name), 1, GL_FALSE,
+                         value.AcquireTransposed().GetArray());
+  }
   /*
    * @brief: Setter for shader mat3 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat3(Str const &name, mat3 const &value) const;
+  void SetMat3(Str const &name, mat3 const &value) const {
+    glUniformMatrix3fv(this->GetLocation(name), 1, GL_FALSE,
+                       value.AcquireTransposed().GetArray());
+  }
   /*
    * @brief: Setter for shader mat3x4 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat3x4(Str const &name, mat3x4 const &value) const;
+  void SetMat3x4(Str const &name, mat3x4 const &value) const {
+    glUniformMatrix3x4fv(this->GetLocation(name), 1, GL_FALSE,
+                         value.AcquireTransposed().GetArray());
+  }
   /*
    * @brief: Setter for shader mat4x2 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat4x2(Str const &name, mat4x2 const &value) const;
+  void SetMat4x2(Str const &name, mat4x2 const &value) const {
+    glUniformMatrix4x2fv(this->GetLocation(name), 1, GL_FALSE,
+                         value.AcquireTransposed().GetArray());
+  }
   /*
    * @brief: Setter for shader mat4x3 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat4x3(Str const &name, mat4x3 const &value) const;
+  void SetMat4x3(Str const &name, mat4x3 const &value) const {
+    glUniformMatrix4x3fv(this->GetLocation(name), 1, GL_FALSE,
+                         value.AcquireTransposed().GetArray());
+  }
   /*
    * @brief: Setter for shader mat4 uniform.
    * @param: name: name of uniform
    * @param: value: value of uniform
    */
-  void SetMat4(Str const &name, mat4 const &value) const;
+  void SetMat4(Str const &name, mat4 const &value) const {
+    glUniformMatrix4fv(this->GetLocation(name), 1, GL_FALSE,
+                       value.AcquireTransposed().GetArray());
+  }
   /*
    * @brief: Setter for blending function.
    * @param: src: source blending function
@@ -199,42 +261,48 @@ public:
    * @brief: Add vertex shader source to current source.
    * @param: source: source code to add
    */
-  void AddVertexShaderSource(Str const &source);
+  void AddVertexShaderSource(Str const &source) {
+    mVertexShaderSource += source;
+  }
   /*
    * @brief: Add fragment shader source to current source.
    * @param: source: source code to add
    */
-  void AddFragmentShaderSource(Str const &source);
+  void AddFragmentShaderSource(Str const &source) {
+    mFragmentShaderSource += source;
+  }
   /*
    * @brief: Add geometry shader source to current source.
    * @param: source: source code to add
    */
-  void AddGeometryShaderSource(Str const &source);
+  void AddGeometryShaderSource(Str const &source) {
+    mGeometryShaderSource += source;
+  }
   /*
    * @brief: This function swiches blending on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseBlending(Bool const &value);
+  void UseBlending(Bool const &value) { mOption.blending = value; }
   /*
    * @brief: This function swiches culling on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseCulling(Bool const &value);
+  void UseCulling(Bool const &value) { mOption.culling = value; }
   /*
    * @brief: This function swiches depth testing on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseDepth(Bool const &value);
+  void UseDepth(Bool const &value) { mOption.depth = value; }
   /*
    * @brief: This function swiches scissor testing on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseScissor(Bool const &value);
+  void UseScissor(Bool const &value) { mOption.scissor = value; }
   /*
    * @brief: This function swiches stencil testing on or off.
    * @param: value: true to turn on, false to turn off
    */
-  void UseStencil(Bool const &value);
+  void UseStencil(Bool const &value) { mOption.stencil = value; }
   /*
    * @brief: This function activates selected texture binding point.
    * @param: target: texture binding point
@@ -253,7 +321,7 @@ public:
   /*
    * @brief: Unuse shader.
    */
-  void Unuse() const;
+  void Unuse() const { glUseProgram(0); }
 
   operator Bool() const override { return mShaderID != 0; }
 

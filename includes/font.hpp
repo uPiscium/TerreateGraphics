@@ -5,8 +5,6 @@
 #include FT_FREETYPE_H
 
 #include "defines.hpp"
-#include "logger.hpp"
-#include "object.hpp"
 #include "texture.hpp"
 
 namespace TerreateGraphics::Core {
@@ -20,15 +18,12 @@ struct Character {
   Long advance;
 };
 
-class Font final : public Object {
+class Font final : public TerreateObjectBase {
 private:
   FT_Library mLibrary;
   FT_Face mFace;
   Uint mSize;
   Map<wchar_t, Shared<Character>> mCharacters;
-
-private:
-  TC_DISABLE_COPY_AND_ASSIGN(Font);
 
 private:
   void LoadDummyCharacter();
@@ -46,7 +41,7 @@ public:
    * @brief: Getter for font size.
    * @return: font size
    */
-  Uint GetFontSize() const;
+  Uint GetFontSize() const { return mSize; }
   /*
    * @brief: Getter for character.
    * @param: character: character to get

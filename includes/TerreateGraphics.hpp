@@ -7,9 +7,7 @@
 #include "event.hpp"
 #include "font.hpp"
 #include "job.hpp"
-#include "logger.hpp"
 #include "model.hpp"
-#include "object.hpp"
 #include "screen.hpp"
 #include "shader.hpp"
 #include "skeleton.hpp"
@@ -19,7 +17,7 @@
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
-class Clock : public Object {
+class Clock : public TerreateObjectBase {
 private:
   Float mLastTime = 0.0f;
   Float mDeltaTime = 0.0f;
@@ -36,7 +34,7 @@ public:
   static Float GetCurrentRuntime() { return glfwGetTime(); }
 };
 
-void Initialize(Bool const &enableConsoleLog = false);
+void Initialize();
 void Terminate();
 } // namespace TerreateGraphics::Core
 #endif // __TERREATE_GRAPHICS_TERREATEGRAPHICS_HPP__
