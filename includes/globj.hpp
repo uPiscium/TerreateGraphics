@@ -28,6 +28,7 @@ public:
   TCu32 &Ref();
   TCu32 const &Ref() const;
 
+  Uint Count() const { return mObject.use_count(); }
   void Delete();
 
   TCu32 operator*() const;

@@ -14,7 +14,7 @@ private:
   GLObject mFrameBuffer = GLObject();
   Uint mWidth;
   Uint mHeight;
-  Vec<Shared<Texture>> mTextures;
+  Vec<Texture> mTextures;
   Vec<GLenum> mDrawBuffers;
 
   // FIXME: Support multi-buffer screen.
@@ -47,7 +47,7 @@ public:
    * @brief: Getter for texture.
    * @return: texture
    */
-  Shared<Texture> const &GetTexture() const { return mTextures[0]; }
+  Texture const &GetTexture() const { return mTextures[0]; }
 
   /*
    * @brief: Transcript to other screen.
@@ -85,7 +85,7 @@ public:
   void Clear() const;
 
   // FIXME: Support multi-buffer screen.
-  /* Shared<Texture> const &operator[](Index const &index) const { */
+  /* Texture const &operator[](Index const &index) const { */
   /*   return mTextures[index]; */
   /* } */
   operator Bool() const override { return mFrameBuffer; }

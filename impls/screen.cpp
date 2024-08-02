@@ -1,6 +1,5 @@
 #include "../includes/screen.hpp"
 #include "../includes/exceptions.hpp"
-#include <memory>
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
@@ -24,8 +23,7 @@ void Screen::AddBuffer() {
                          buffer, 0);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  Shared<Texture> texture =
-      std::make_shared<Texture>(buffer, mWidth, mHeight, 4);
+  Texture texture = Texture(buffer, mWidth, mHeight, 4);
   mDrawBuffers.push_back(GL_COLOR_ATTACHMENT0 + mTextures.size());
   mTextures.push_back(texture);
   glBindTexture(GL_TEXTURE_2D, 0);
@@ -47,9 +45,10 @@ Screen::Screen(Uint const &width, Uint const &height)
 }
 
 Screen::~Screen() {
-  mTextures.clear();
-  glDeleteFramebuffers(1, mFrameBuffer);
-  mFrameBuffer.Delete();
+  if (mFrameBuffer.Count() <= 1) {
+    glDeleteFramebuffers(1, mFrameBuffer);
+    mFrameBuffer.Delete();
+  }
 }
 
 void Screen::Transcript(Screen const &screen) const {

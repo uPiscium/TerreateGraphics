@@ -5,8 +5,10 @@ namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
 Texture::~Texture() {
-  glDeleteTextures(1, mTexture);
-  mTexture.Delete();
+  if (mTexture.Count() <= 1) {
+    glDeleteTextures(1, mTexture);
+    mTexture.Delete();
+  }
 }
 
 void Texture::SetFilter(FilterType const &filter) {
@@ -86,8 +88,10 @@ TextureData Texture::LoadTexture(Str const &path) {
 }
 
 CubeTexture::~CubeTexture() {
-  glDeleteTextures(1, mTexture);
-  mTexture.Delete();
+  if (mTexture.Count() <= 1) {
+    glDeleteTextures(1, mTexture);
+    mTexture.Delete();
+  }
 }
 
 void CubeTexture::SetFilter(FilterType const &filter) {

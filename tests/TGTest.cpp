@@ -14,7 +14,7 @@ private:
   Float mHeight = 750.0f;
   Float mDepth = 100.0f / 0.01f;
 
-  Shared<Font> mFont;
+  Font mFont;
   Texture mTexture;
   Text mText;
 
@@ -31,8 +31,9 @@ public:
 
 public:
   TestApp() {
-    mFont = std::make_shared<Font>("tests/resources/AsebiMin-Light.otf", 200);
-    mText.LoadText(L"日本語テスト", mFont);
+    mFont = Font("tests/resources/AsebiMin-Light.otf", 200);
+    mText.LoadFont(&mFont);
+    mText.LoadText(L"日本語テスト");
     mText.LoadShader("tests/resources/textVert.glsl",
                      "tests/resources/textFrag.glsl");
     mTexture.LoadData(Texture::LoadTexture("tests/resources/testImage.png"));
@@ -99,9 +100,12 @@ public:
     mShader.SetMat4("uModel", model);
     mShader.SetMat4("uNormalTransform", Transpose(Inverse(model)));
 
-    mTexture.Bind();
+    // mTexture.Bind();
+    Texture temp = mTexture;
+    temp.Bind();
     mModel.Draw();
-    mTexture.Unbind();
+    // mTexture.Unbind();
+    temp.Unbind();
     mShader.Unuse();
 
     mText.Render(50, 50, mWidth, mHeight);

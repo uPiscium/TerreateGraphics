@@ -77,7 +77,7 @@ public:
   /*
    * @brief: Binds texture to OpenGL.
    */
-  void Bind() const { glBindTexture(GL_TEXTURE_2D, mTexture); }
+  void Bind() const { glBindTexture(GL_TEXTURE_2D, (TCu32)mTexture); }
   /*
    * @brief: Unbinds texture from OpenGL.
    */

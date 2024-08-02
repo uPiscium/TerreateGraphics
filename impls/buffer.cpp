@@ -1,6 +1,5 @@
 #include "../includes/buffer.hpp"
 #include "../includes/exceptions.hpp"
-#include "TerreateCore/defines.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
@@ -37,12 +36,18 @@ Buffer::Buffer(BufferUsage usage) : mUsage(usage) {
 }
 
 Buffer::~Buffer() {
-  glDeleteVertexArrays(1, mVAO);
-  glDeleteBuffers(1, mVBO);
-  glDeleteBuffers(1, mIBO);
-  mVAO.Delete();
-  mVBO.Delete();
-  mIBO.Delete();
+  if (mVAO.Count() <= 1) {
+    glDeleteVertexArrays(1, mVAO);
+    mVAO.Delete();
+  }
+  if (mVBO.Count() <= 1) {
+    glDeleteBuffers(1, mVBO);
+    mVBO.Delete();
+  }
+  if (mIBO.Count() <= 1) {
+    glDeleteBuffers(1, mIBO);
+    mIBO.Delete();
+  }
 }
 
 void Buffer::LoadVertices(Float const *data, Size const &size) {
