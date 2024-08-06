@@ -4,6 +4,7 @@
 #include "defines.hpp"
 #include "font.hpp"
 #include "model.hpp"
+#include "newbuffer.hpp"
 #include "shader.hpp"
 
 namespace TerreateGraphics::Core {
@@ -16,6 +17,7 @@ private:
   Model::MeshData mTextMeshData;
   Vec<Vec<Float>> mPositions;
   Model::Mesh mTextMesh;
+  NewBuffer mBuffer;
   Font *mFont = nullptr;
   Core::Shader mShader;
 
