@@ -1,7 +1,6 @@
 #ifndef __TERREATE_GRAPHICS_DEFINES_HPP__
 #define __TERREATE_GRAPHICS_DEFINES_HPP__
 
-#include "TerreateCore/object.hpp"
 #include <atomic>
 #include <condition_variable>
 #include <deque>
@@ -53,36 +52,6 @@ template <typename T> using Atomic = std::atomic<T>;
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;
 using MonitorCallback = std::function<void(GLFWmonitor *monitor, int event)>;
 using JoystickCallback = std::function<void(int joystickID, int event)>;
-
-// Structs
-struct Modifier {
-public:
-  TCbool shift = false;
-  TCbool control = false;
-  TCbool alt = false;
-  TCbool super = false;
-  TCbool capsLock = false;
-  TCbool numLock = false;
-
-public:
-  Modifier(int mods_)
-      : shift(mods_ & GLFW_MOD_SHIFT), control(mods_ & GLFW_MOD_CONTROL),
-        alt(mods_ & GLFW_MOD_ALT), super(mods_ & GLFW_MOD_SUPER),
-        capsLock(mods_ & GLFW_MOD_CAPS_LOCK),
-        numLock(mods_ & GLFW_MOD_NUM_LOCK) {}
-};
-
-struct Key {
-public:
-  TCi32 key = 0;
-  TCi32 scancode = 0;
-  TCi32 action = 0;
-  Modifier mods = 0;
-
-public:
-  Key(int key_, int scancode_, int action_, int mods_)
-      : key(key_), scancode(scancode_), action(action_), mods(mods_) {}
-};
 
 // Enums
 // Use to select opengl color frame buffer attachement.
@@ -503,23 +472,37 @@ enum class WrappingType {
   REPEAT = GL_REPEAT
 };
 
-static unsigned COLOR_BUFFERS[] = {
-    (GLenum)Attachment::COLOR0,  (GLenum)Attachment::COLOR1,
-    (GLenum)Attachment::COLOR2,  (GLenum)Attachment::COLOR3,
-    (GLenum)Attachment::COLOR4,  (GLenum)Attachment::COLOR5,
-    (GLenum)Attachment::COLOR6,  (GLenum)Attachment::COLOR7,
-    (GLenum)Attachment::COLOR8,  (GLenum)Attachment::COLOR9,
-    (GLenum)Attachment::COLOR10, (GLenum)Attachment::COLOR11,
-    (GLenum)Attachment::COLOR12, (GLenum)Attachment::COLOR13,
-    (GLenum)Attachment::COLOR14, (GLenum)Attachment::COLOR15,
-    (GLenum)Attachment::COLOR16, (GLenum)Attachment::COLOR17,
-    (GLenum)Attachment::COLOR18, (GLenum)Attachment::COLOR19,
-    (GLenum)Attachment::COLOR20, (GLenum)Attachment::COLOR21,
-    (GLenum)Attachment::COLOR22, (GLenum)Attachment::COLOR23,
-    (GLenum)Attachment::COLOR24, (GLenum)Attachment::COLOR25,
-    (GLenum)Attachment::COLOR26, (GLenum)Attachment::COLOR27,
-    (GLenum)Attachment::COLOR28, (GLenum)Attachment::COLOR29,
-    (GLenum)Attachment::COLOR30, (GLenum)Attachment::COLOR31};
+// Structs
+struct Modifier {
+public:
+  TCbool shift = false;
+  TCbool control = false;
+  TCbool alt = false;
+  TCbool super = false;
+  TCbool capsLock = false;
+  TCbool numLock = false;
+
+public:
+  Modifier(int mods_)
+      : shift(mods_ & GLFW_MOD_SHIFT), control(mods_ & GLFW_MOD_CONTROL),
+        alt(mods_ & GLFW_MOD_ALT), super(mods_ & GLFW_MOD_SUPER),
+        capsLock(mods_ & GLFW_MOD_CAPS_LOCK),
+        numLock(mods_ & GLFW_MOD_NUM_LOCK) {}
+};
+
+struct Key {
+public:
+  Keyboard key = Keyboard::K_LAST;
+  TCi32 scancode = 0;
+  TCi32 action = 0;
+  Modifier mods = 0;
+
+public:
+  Key(int key_, int scancode_, int action_, int mods_)
+      : key((Keyboard)key_), scancode(scancode_), action(action_), mods(mods_) {
+  }
+};
+
 } // namespace TerreateGraphics::Defines
 
 #endif // __TERREATE_GRAPHICS_DEFINES_HPP__

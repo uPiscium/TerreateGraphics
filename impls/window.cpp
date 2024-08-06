@@ -47,74 +47,74 @@ namespace Callbacks {
 void WindowPositionCallbackWrapper(GLFWwindow *window, int xpos, int ypos) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
   ptr->mProperty.mPosition = Pair<Int>(xpos, ypos);
-  ptr->mController->PositionCallback(xpos, ypos);
+  ptr->mController->PositionCallback(ptr, xpos, ypos);
 }
 
 void WindowSizeCallbackWrapper(GLFWwindow *window, int width, int height) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
   ptr->mProperty.mSize = Pair<Uint>(width, height);
-  ptr->mController->SizeCallback(width, height);
+  ptr->mController->SizeCallback(ptr, width, height);
 }
 
 void WindowCloseCallbackWrapper(GLFWwindow *window) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mController->CloseCallback();
+  ptr->mController->CloseCallback(ptr);
 }
 
 void WindowRefreshCallbackWrapper(GLFWwindow *window) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mController->RefreshCallback();
+  ptr->mController->RefreshCallback(ptr);
 }
 
 void WindowFocusCallbackWrapper(GLFWwindow *window, int focused) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mController->FocusCallback(focused);
+  ptr->mController->FocusCallback(ptr, focused);
 }
 
 void WindowIconifyCallbackWrapper(GLFWwindow *window, int iconified) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mController->IconifyCallback(iconified);
+  ptr->mController->IconifyCallback(ptr, iconified);
 }
 
 void WindowMaximizeCallbackWrapper(GLFWwindow *window, int maximized) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mController->MaximizeCallback(maximized);
+  ptr->mController->MaximizeCallback(ptr, maximized);
 }
 
 void WindowFramebufferSizeCallbackWrapper(GLFWwindow *window, int width,
                                           int height) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mController->FramebufferSizeCallback(width, height);
+  ptr->mController->FramebufferSizeCallback(ptr, width, height);
 }
 
 void WindowContentScaleCallbackWrapper(GLFWwindow *window, float xscale,
                                        float yscale) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mController->ContentScaleCallback(xscale, yscale);
+  ptr->mController->ContentScaleCallback(ptr, xscale, yscale);
 }
 
 void MousebuttonCallbackWrapper(GLFWwindow *window, int button, int action,
                                 int mods) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mController->MousebuttonCallback(button, action, Modifier(mods));
+  ptr->mController->MousebuttonCallback(ptr, button, action, Modifier(mods));
 }
 
 void CursorPositionCallbackWrapper(GLFWwindow *window, double xpos,
                                    double ypos) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
   ptr->mProperty.mCursorPosition = Pair<Double>(xpos, ypos);
-  ptr->mController->CursorPositionCallback(xpos, ypos);
+  ptr->mController->CursorPositionCallback(ptr, xpos, ypos);
 }
 
 void CursorEnterCallbackWrapper(GLFWwindow *window, int entered) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
-  ptr->mController->CursorEnterCallback(entered);
+  ptr->mController->CursorEnterCallback(ptr, entered);
 }
 
 void ScrollCallbackWrapper(GLFWwindow *window, double xoffset, double yoffset) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
   ptr->mProperty.mScrollOffset = Pair<Double>(xoffset, yoffset);
-  ptr->mController->ScrollCallback(xoffset, yoffset);
+  ptr->mController->ScrollCallback(ptr, xoffset, yoffset);
 }
 
 void KeyCallbackWrapper(GLFWwindow *window, int key, int scancode, int action,
@@ -122,20 +122,20 @@ void KeyCallbackWrapper(GLFWwindow *window, int key, int scancode, int action,
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
   Key wrappedKey = Key(key, scancode, action, mods);
   ptr->mProperty.mKeys.push_back(wrappedKey);
-  ptr->mController->KeyCallback(wrappedKey);
+  ptr->mController->KeyCallback(ptr, wrappedKey);
 }
 
 void CharCallbackWrapper(GLFWwindow *window, Uint codepoint) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
   ptr->mProperty.mCodePoints.push_back(codepoint);
-  ptr->mController->CharCallback(codepoint);
+  ptr->mController->CharCallback(ptr, codepoint);
 }
 
 void DropCallbackWrapper(GLFWwindow *window, int count, const char **paths) {
   Window *ptr = (Window *)glfwGetWindowUserPointer(window);
   Vec<Str> droppedFiles(paths, paths + count);
   ptr->mProperty.mDroppedFiles = droppedFiles;
-  ptr->mController->DropCallback(droppedFiles);
+  ptr->mController->DropCallback(ptr, droppedFiles);
 }
 } // namespace Callbacks
 
@@ -187,7 +187,7 @@ Window::Window(Uint const &width, Uint const &height, Str const &title,
   glfwSetDropCallback(mWindow, Callbacks::DropCallbackWrapper);
 }
 
-void Window::Close() {
+void Window::Destroy() {
   glfwDestroyWindow(mWindow);
   mWindow = nullptr;
 }

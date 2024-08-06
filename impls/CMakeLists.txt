@@ -45,11 +45,7 @@ function(CloneFreetype)
 endfunction()
 
 function(SetIncludes)
-  target_include_directories(${PROJECT_NAME}
-                             PUBLIC ../includes/deps/TerreateCore/deps)
   target_include_directories(${PROJECT_NAME} PUBLIC ../includes/deps)
-  target_include_directories(${PROJECT_NAME} PUBLIC ../includes/math)
-  target_include_directories(${PROJECT_NAME} PUBLIC ../includes/glsl)
   target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
 endfunction()
 
@@ -66,17 +62,14 @@ function(Build)
   add_library(
     ${PROJECT_NAME} STATIC
     TerreateGraphics.cpp
-    animation.cpp
     buffer.cpp
     event.cpp
     font.cpp
     gl.cpp
     globj.cpp
     job.cpp
-    model.cpp
     screen.cpp
     shader.cpp
-    skeleton.cpp
     text.cpp
     texture.cpp
     window.cpp)

@@ -1,16 +1,13 @@
 #ifndef __TERREATE_GRAPHICS_TERREATEGRAPHICS_HPP__
 #define __TERREATE_GRAPHICS_TERREATEGRAPHICS_HPP__
 
-#include "animation.hpp"
 #include "buffer.hpp"
 #include "defines.hpp"
 #include "event.hpp"
 #include "font.hpp"
 #include "job.hpp"
-#include "model.hpp"
 #include "screen.hpp"
 #include "shader.hpp"
-#include "skeleton.hpp"
 #include "text.hpp"
 #include "texture.hpp"
 #include "window.hpp"
@@ -31,7 +28,7 @@ public:
   void Frame(Uint const &fps);
 
 public:
-  static Float GetCurrentRuntime() { return glfwGetTime(); }
+  static Double GetCurrentRuntime() { return glfwGetTime(); }
 };
 
 void Initialize();

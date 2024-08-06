@@ -3,9 +3,11 @@
 
 #include "defines.hpp"
 #include "globj.hpp"
+#include "math.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::Math;
 using namespace TerreateGraphics::GL;
 
 struct ShaderOption {
@@ -14,8 +16,8 @@ struct ShaderOption {
   Bool depth = true;
   Bool scissor = false;
   Bool stencil = false;
-  BlendingFuntion src = BlendingFuntion::ONE;
-  BlendingFuntion dst = BlendingFuntion::ZERO;
+  BlendingFuntion src = BlendingFuntion::SRC_ALPHA;
+  BlendingFuntion dst = BlendingFuntion::ONE_MINUS_SRC_ALPHA;
   CullingFace cullFace = CullingFace::BACK;
   CullingMode frontFace = CullingMode::CCW;
   DepthFunction depthFunc = DepthFunction::LESS;
@@ -30,6 +32,7 @@ struct ShaderOption {
 class Shader final : public TerreateObjectBase {
 private:
   Bool mCompiled = false;
+  Bool mLinked = false;
   GLObject mShaderID = GLObject();
   Str mVertexShaderSource = "";
   Str mFragmentShaderSource = "";
@@ -44,6 +47,14 @@ public:
   Shader();
   ~Shader() override;
 
+  /*
+   * @brief: Get attribute index
+   * @param: name: name of attribute
+   * @return: attribute index
+   */
+  unsigned GetAttribute(Str const &name) const {
+    return glGetAttribLocation(mShaderID, name.c_str());
+  }
   /*
    * @brief: Getter for shader uniform ID.
    * @param: name: name of uniform
@@ -127,7 +138,7 @@ public:
    * @param: value: value of uniform
    */
   void SetVec2(Str const &name, vec2 const &value) const {
-    glUniform2fv(this->GetLocation(name), 1, value.GetArray());
+    glUniform2fv(this->GetLocation(name), 1, &value[0]);
   }
   /*
    * @brief: Setter for shader vec3 uniform.
@@ -135,7 +146,7 @@ public:
    * @param: value: value of uniform
    */
   void SetVec3(Str const &name, vec3 const &value) const {
-    glUniform3fv(this->GetLocation(name), 1, value.GetArray());
+    glUniform3fv(this->GetLocation(name), 1, &value[0]);
   }
   /*
    * @brief: Setter for shader vec4 uniform.
@@ -143,7 +154,7 @@ public:
    * @param: value: value of uniform
    */
   void SetVec4(Str const &name, vec4 const &value) const {
-    glUniform4fv(this->GetLocation(name), 1, value.GetArray());
+    glUniform4fv(this->GetLocation(name), 1, &value[0]);
   }
   /*
    * @brief: Setter for shader mat2 uniform.
@@ -151,35 +162,7 @@ public:
    * @param: value: value of uniform
    */
   void SetMat2(Str const &name, mat2 const &value) const {
-    glUniformMatrix2fv(this->GetLocation(name), 1, GL_FALSE,
-                       value.AcquireTransposed().GetArray());
-  }
-  /*
-   * @brief: Setter for shader mat2x3 uniform.
-   * @param: name: name of uniform
-   * @param: value: value of uniform
-   */
-  void SetMat2x3(Str const &name, mat2x3 const &value) const {
-    glUniformMatrix2x3fv(this->GetLocation(name), 1, GL_FALSE,
-                         value.AcquireTransposed().GetArray());
-  }
-  /*
-   * @brief: Setter for shader mat2x4 uniform.
-   * @param: name: name of uniform
-   * @param: value: value of uniform
-   */
-  void SetMat2x4(Str const &name, mat2x4 const &value) const {
-    glUniformMatrix2x4fv(this->GetLocation(name), 1, GL_FALSE,
-                         value.AcquireTransposed().GetArray());
-  }
-  /*
-   * @brief: Setter for shader mat3x2 uniform.
-   * @param: name: name of uniform
-   * @param: value: value of uniform
-   */
-  void SetMat3x2(Str const &name, mat3x2 const &value) const {
-    glUniformMatrix3x2fv(this->GetLocation(name), 1, GL_FALSE,
-                         value.AcquireTransposed().GetArray());
+    glUniformMatrix2fv(this->GetLocation(name), 1, GL_FALSE, &value[0][0]);
   }
   /*
    * @brief: Setter for shader mat3 uniform.
@@ -187,35 +170,7 @@ public:
    * @param: value: value of uniform
    */
   void SetMat3(Str const &name, mat3 const &value) const {
-    glUniformMatrix3fv(this->GetLocation(name), 1, GL_FALSE,
-                       value.AcquireTransposed().GetArray());
-  }
-  /*
-   * @brief: Setter for shader mat3x4 uniform.
-   * @param: name: name of uniform
-   * @param: value: value of uniform
-   */
-  void SetMat3x4(Str const &name, mat3x4 const &value) const {
-    glUniformMatrix3x4fv(this->GetLocation(name), 1, GL_FALSE,
-                         value.AcquireTransposed().GetArray());
-  }
-  /*
-   * @brief: Setter for shader mat4x2 uniform.
-   * @param: name: name of uniform
-   * @param: value: value of uniform
-   */
-  void SetMat4x2(Str const &name, mat4x2 const &value) const {
-    glUniformMatrix4x2fv(this->GetLocation(name), 1, GL_FALSE,
-                         value.AcquireTransposed().GetArray());
-  }
-  /*
-   * @brief: Setter for shader mat4x3 uniform.
-   * @param: name: name of uniform
-   * @param: value: value of uniform
-   */
-  void SetMat4x3(Str const &name, mat4x3 const &value) const {
-    glUniformMatrix4x3fv(this->GetLocation(name), 1, GL_FALSE,
-                         value.AcquireTransposed().GetArray());
+    glUniformMatrix3fv(this->GetLocation(name), 1, GL_FALSE, &value[0][0]);
   }
   /*
    * @brief: Setter for shader mat4 uniform.
@@ -223,8 +178,7 @@ public:
    * @param: value: value of uniform
    */
   void SetMat4(Str const &name, mat4 const &value) const {
-    glUniformMatrix4fv(this->GetLocation(name), 1, GL_FALSE,
-                       value.AcquireTransposed().GetArray());
+    glUniformMatrix4fv(this->GetLocation(name), 1, GL_FALSE, &value[0][0]);
   }
   /*
    * @brief: Setter for blending function.
@@ -314,6 +268,10 @@ public:
    * @brief: Compile shader.
    */
   void Compile();
+  /*
+   * @brief: Link shader.
+   */
+  void Link();
   /*
    * @brief: Use shader.
    * @sa: Compile

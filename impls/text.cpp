@@ -1,9 +1,9 @@
 #include "../includes/text.hpp"
 #include "../includes/exceptions.hpp"
-#include "TerreateCore/defines.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::Math;
 
 void Text::LoadText() {
   mPositions.clear();
@@ -30,30 +30,37 @@ void Text::LoadText() {
     Float h = chr.size.second;
     Float x = px + chr.bearing.first;
     Float y = chr.bearing.second - h;
-    mPositions.push_back({x,    y + h, 0.0f,  0.0f,  0.0f, x,    y,
-                          0.0f, 0.0f,  1.0f,  x + w, y,    0.0f, 1.0f,
-                          1.0f, x + w, y + h, 0.0f,  1.0f, 0.0f});
+    mPositions.push_back({{x, y + h, 0.0f},
+                          {x, y, 0.0f},
+                          {x + w, y, 0.0f},
+                          {x + w, y + h, 0.0f}});
     px += chr.advance >> 6;
   }
 }
 
 Text::Text() {
-  mTextMeshData.SetFlag(ModelFlag::UV);
   mText = L"";
-  mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
+  mTextMeshConstructor.AddVertexComponent(
+      "iUV", {{0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}});
+  mTextMeshConstructor.SetVertexIndices({{0, 0}, {1, 1}, {2, 2}, {3, 3}});
+  mBuffer.LoadIndices({0, 1, 2, 2, 3, 0});
 }
 
 Text::Text(Str const &text, Font *font) : mFont(font) {
-  mTextMeshData.SetFlag(ModelFlag::UV);
   mText = WStr(text.begin(), text.end());
   this->LoadText();
-  mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
+  mTextMeshConstructor.AddVertexComponent(
+      "iUV", {{0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}});
+  mTextMeshConstructor.SetVertexIndices({{0, 0}, {1, 1}, {2, 2}, {3, 3}});
+  mBuffer.LoadIndices({0, 1, 2, 2, 3, 0});
 }
 
 Text::Text(WStr const &text, Font *font) : mFont(font), mText(text) {
-  mTextMeshData.SetFlag(ModelFlag::UV);
   this->LoadText();
-  mTextMeshData.LoadIndices({0, 1, 2, 2, 3, 0});
+  mTextMeshConstructor.AddVertexComponent(
+      "iUV", {{0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}});
+  mTextMeshConstructor.SetVertexIndices({{0, 0}, {1, 1}, {2, 2}, {3, 3}});
+  mBuffer.LoadIndices({0, 1, 2, 2, 3, 0});
 }
 
 void Text::LoadShader(Str const &vertexPath, Str const &fragmentPath) {
@@ -74,30 +81,41 @@ void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
     throw Exceptions::TextError("Shader not loaded");
   }
 
-  mShader.Use();
-  mShader.ActiveTexture(TextureTargets::TEX_0);
-  mShader.SetInt("uTexture", 0);
-
-  for (int i = 0; i < mText.size(); ++i) {
-    auto &position = mPositions[i];
-    auto &chr = mFont->GetCharacter(mText[i]);
+  for (int i = mText.size(); i > 0; --i) {
+    auto &chr = mFont->GetCharacter(mText[i - 1]);
 
     if (chr.codepoint == 0 || chr.codepoint == TC_UNICODE_HALF_SPACE ||
         chr.codepoint == TC_UNICODE_FULL_SPACE) {
       continue;
     }
 
-    mTextMeshData.LoadVertices(position);
-    mTextMesh.LoadData(mTextMeshData);
-    mShader.SetMat4("uModel", TerreateMath::Utils::Translate(vec3(x, y, 0.0f)));
-    mShader.SetMat4("uTransform", TerreateMath::Utils::Orthographic(
-                                      0.0f, windowWidth, 0.0f, windowHeight));
+    mTextMeshConstructor.ReloadVertexComponent("iPosition", mPositions[i - 1]);
+    mTextMeshConstructor.Construct();
+    mBuffer.LoadData(mShader, mTextMeshConstructor);
+
+    mShader.Use();
+    mShader.ActiveTexture(TextureTargets::TEX_0);
+    mShader.SetInt("uTexture", 0);
+
+    mShader.SetMat4("uModel", translate(identity<mat4>(), vec3(x, y, 0.0f)));
+    mShader.SetMat4("uTransform", ortho(0.0f, windowWidth, 0.0f, windowHeight));
+    mShader.SetVec3("uColor", mColor);
 
     chr.texture.Bind();
-    mTextMesh.Draw();
+    mBuffer.Draw(DrawMode::TRIANGLES);
     chr.texture.Unbind();
-  }
 
-  mShader.Unuse();
+    mShader.Unuse();
+  }
+}
+
+Text &Text::operator=(Str const &text) {
+  this->LoadText(WStr(text.begin(), text.end()));
+  return *this;
+}
+
+Text &Text::operator=(WStr const &text) {
+  this->LoadText(text);
+  return *this;
 }
 } // namespace TerreateGraphics::Core

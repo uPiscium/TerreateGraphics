@@ -123,11 +123,18 @@ void Shader::Compile() {
 
     glAttachShader(mShaderID, geomID);
   }
+  mCompiled = true;
+}
+
+void Shader::Link() {
+  if (!mCompiled) {
+    throw Exceptions::ShaderError("Shader is not compiled");
+    return;
+  }
 
   glLinkProgram(mShaderID);
   CheckLinkStatus(mShaderID);
-
-  mCompiled = true;
+  mLinked = true;
 }
 
 Str Shader::LoadShaderSource(const Str &path) {
