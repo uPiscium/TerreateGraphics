@@ -23,5 +23,5 @@ vec4 effect(vec3 color) {
 void main() {
   // fragColor = effect(vColor);
   vec4 tex = texture(uTexture, vUV);
-  fragColor = vec4(tex.rgb, 1.0) * vec4(vColor, 1.0) * 1.2;
+  fragColor = vec4(tex.rgb, 1.0) * vec4(vColor, 1.0) * 1.5;
 }

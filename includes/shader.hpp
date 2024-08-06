@@ -16,8 +16,8 @@ struct ShaderOption {
   Bool depth = true;
   Bool scissor = false;
   Bool stencil = false;
-  BlendingFuntion src = BlendingFuntion::ONE;
-  BlendingFuntion dst = BlendingFuntion::ZERO;
+  BlendingFuntion src = BlendingFuntion::SRC_ALPHA;
+  BlendingFuntion dst = BlendingFuntion::ONE_MINUS_SRC_ALPHA;
   CullingFace cullFace = CullingFace::BACK;
   CullingMode frontFace = CullingMode::CCW;
   DepthFunction depthFunc = DepthFunction::LESS;
@@ -47,6 +47,14 @@ public:
   Shader();
   ~Shader() override;
 
+  /*
+   * @brief: Get attribute index
+   * @param: name: name of attribute
+   * @return: attribute index
+   */
+  unsigned GetAttribute(Str const &name) const {
+    return glGetAttribLocation(mShaderID, name.c_str());
+  }
   /*
    * @brief: Getter for shader uniform ID.
    * @param: name: name of uniform

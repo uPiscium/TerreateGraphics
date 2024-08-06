@@ -226,23 +226,29 @@ class WindowController {
 public:
   virtual ~WindowController() = default;
 
-  virtual void PositionCallback(int const &xpos, int const &ypos) {}
-  virtual void SizeCallback(int const &width, int const &height) {}
-  virtual void CloseCallback() {}
-  virtual void RefreshCallback() {}
-  virtual void FocusCallback(Bool const &focused) {}
-  virtual void IconifyCallback(Bool const &iconified) {}
-  virtual void MaximizeCallback(Bool const &maximized) {}
-  virtual void FramebufferSizeCallback(int const &width, int const &height) {}
-  virtual void ContentScaleCallback(float const &xscale, float const &yscale) {}
-  virtual void MousebuttonCallback(Uint const &button, Uint const &action,
-                                   Modifier const &mods) {}
-  virtual void CursorPositionCallback(double const &xpos, double const &ypos) {}
-  virtual void CursorEnterCallback(Bool const &entered) {}
-  virtual void ScrollCallback(double const &xoffset, double const &yoffset) {}
-  virtual void KeyCallback(Key const &key) {}
-  virtual void CharCallback(Uint const &codepoint) {}
-  virtual void DropCallback(Vec<Str> const &paths) {}
+  virtual void PositionCallback(Window *window, int const &xpos,
+                                int const &ypos) {}
+  virtual void SizeCallback(Window *window, int const &width,
+                            int const &height) {}
+  virtual void CloseCallback(Window *window) {}
+  virtual void RefreshCallback(Window *window) {}
+  virtual void FocusCallback(Window *window, Bool const &focused) {}
+  virtual void IconifyCallback(Window *window, Bool const &iconified) {}
+  virtual void MaximizeCallback(Window *window, Bool const &maximized) {}
+  virtual void FramebufferSizeCallback(Window *window, int const &width,
+                                       int const &height) {}
+  virtual void ContentScaleCallback(Window *window, float const &xscale,
+                                    float const &yscale) {}
+  virtual void MousebuttonCallback(Window *window, Uint const &button,
+                                   Uint const &action, Modifier const &mods) {}
+  virtual void CursorPositionCallback(Window *window, double const &xpos,
+                                      double const &ypos) {}
+  virtual void CursorEnterCallback(Window *window, Bool const &entered) {}
+  virtual void ScrollCallback(Window *window, double const &xoffset,
+                              double const &yoffset) {}
+  virtual void KeyCallback(Window *window, Key const &key) {}
+  virtual void CharCallback(Window *window, Uint const &codepoint) {}
+  virtual void DropCallback(Window *window, Vec<Str> const &paths) {}
 
   virtual void OnFrame(Window *window) = 0;
 };
@@ -303,7 +309,7 @@ public:
    */
   Window(Uint const &width, Uint const &height, Str const &title,
          WindowSettings const &settings);
-  ~Window() override { this->Close(); }
+  ~Window() override { this->Destroy(); }
 
   /*
    * @brief: This function returns window size.
@@ -621,9 +627,13 @@ public:
   }
 
   /*
+   * @brief: This function destroies window.
+   */
+  void Destroy();
+  /*
    * @brief: This function closes window.
    */
-  void Close();
+  void Close() const { glfwSetWindowShouldClose(mWindow, GLFW_TRUE); }
   /*
    * @brief: This function iconifies window.
    */

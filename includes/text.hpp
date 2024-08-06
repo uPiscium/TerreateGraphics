@@ -1,10 +1,9 @@
 #ifndef __TERREATE_GRAPHICS_TEXT_HPP__
 #define __TERREATE_GRAPHICS_TEXT_HPP__
 
+#include "buffer.hpp"
 #include "defines.hpp"
 #include "font.hpp"
-#include "model.hpp"
-#include "newbuffer.hpp"
 #include "shader.hpp"
 
 namespace TerreateGraphics::Core {
@@ -14,12 +13,12 @@ class Text : public TerreateObjectBase {
 private:
   Bool mShaderLoaded = false;
   WStr mText;
-  Model::MeshData mTextMeshData;
-  Vec<Vec<Float>> mPositions;
-  Model::Mesh mTextMesh;
-  NewBuffer mBuffer;
+  Vec<Vec<Vec<Float>>> mPositions;
+  BufferDataConstructor mTextMeshConstructor;
+  Buffer mBuffer;
   Font *mFont = nullptr;
   Core::Shader mShader;
+  vec3 mColor = vec3(1.0f, 1.0f, 1.0f);
 
 private:
   void LoadText();
@@ -29,6 +28,12 @@ public:
   Text(Str const &text, Font *font);
   Text(WStr const &text, Font *font);
   ~Text() override {}
+
+  void SetColor(vec3 const &color) { mColor = color; }
+  void SetText(Str const &text) {
+    this->LoadText(WStr(text.begin(), text.end()));
+  }
+  void SetText(WStr const &text) { this->LoadText(text); }
 
   void LoadFont(Font *font) { mFont = font; }
   void LoadShader(Shader const &shader) { mShader = shader; }
@@ -40,6 +45,9 @@ public:
 
   void Render(Float const &x, Float const &y, Float const &windowWidth,
               Float const &windowHeight);
+
+  Text &operator=(Str const &text);
+  Text &operator=(WStr const &text);
 };
 } // namespace TerreateGraphics::Core
 

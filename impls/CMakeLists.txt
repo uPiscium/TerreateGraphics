@@ -63,13 +63,11 @@ function(Build)
     ${PROJECT_NAME} STATIC
     TerreateGraphics.cpp
     buffer.cpp
-    newbuffer.cpp
     event.cpp
     font.cpp
     gl.cpp
     globj.cpp
     job.cpp
-    model.cpp
     screen.cpp
     shader.cpp
     text.cpp

@@ -3,144 +3,221 @@
 
 #include "defines.hpp"
 #include "globj.hpp"
+#include "shader.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 using namespace TerreateGraphics::GL;
 
-class Attribute {
-private:
-  Ulong mIndex = 0;
-  Ulong mComps = 0;
-  Ulong mStride = 0;
-  Ulong mOffset = 0;
-
-public:
-  /*
-   * Attribute generator for OpenGL.
-   * @param index: Index of this attribute.
-   * @param comps: Number of components of this attribute.
-   * @param offset: Offset of this attribute.
-   */
-  Attribute(Ulong const &index, Ulong const &comps, Ulong const &stride,
-            Ulong const &offset)
-      : mIndex(index), mComps(comps), mStride(stride), mOffset(offset) {}
-
-  /*
-   * @return: Index of this attribute.
-   */
-  Ulong const &GetIndex() const { return mIndex; }
-  /*
-   * @return: Number of components of this attribute.
-   */
-  Ulong const &GetComps() const { return mComps; }
-  /*
-   * @return: Size of stride of this attribute.
-   */
-  Ulong const &GetStride() const { return mStride; }
-  /*
-   * @return: Offset from the beginning of this attributes.
-   */
-  Ulong const &GetOffset() const { return mOffset; }
-
-public:
-  /*
-   * Generate attributes from component data. Offsets and indices are
-   * calculated automatically.
-   * @params comps: Component of each attribute.
-   * @return: Attribute list.
-   */
-  static Vec<Attribute> GenerateAttributes(Vec<Ulong> const &comps);
-  /*
-   * Generate attributes from component, offset, and index data.
-   * @params comps: Component of each attribute.
-   * @return: Attribute list.
-   */
-  static Vec<Attribute> GenerateAttributes(Vec<Ulong> const &comps,
-                                           Vec<Ulong> const &offsets,
-                                           Vec<Ulong> const &strides);
+struct AttributeData {
+  Ulong vboIndex;
+  Ulong index;
+  Ulong size;
+  Ulong stride;
+  Ulong offset;
 };
 
-class Buffer final : public TerreateObjectBase {
+class BufferDataConstructor {
 private:
-  GLObject mVAO = GLObject();
-  GLObject mVBO = GLObject();
-  GLObject mIBO = GLObject();
-  BufferUsage mUsage = BufferUsage::STATIC_DRAW;
-
-  Ulong mNumIndices = 0;
-
-  Bool mSetVBO = false;
-  Bool mSetIBO = false;
+  Vec<Vec<Vec<Float>>> mVertexDataComponents;
+  Vec<Vec<Uint>> mVertexIndices;
+  Vec<Str> mAttributeNames;
+  Map<Str, AttributeData> mAttributes;
+  Vec<Float> mVertexData;
+  Bool mConstructed = false;
+  Bool mUpdated = false;
+  Uint mOffset = 0u;
 
 public:
   /*
-   * @brief: OpenGL buffer wrapper class. This class handles vertex array,
-   * vertex buffer, and element array.
-   * @param: usage: Usage of this buffer on OpenGL.
+   * @brief: Construct a new BufferDataConstructor object. BufferDataConstructor
+   * is used to construct data for a new buffer object
    */
-  Buffer(BufferUsage usage);
+  BufferDataConstructor() {}
+  ~BufferDataConstructor() {}
+
+  /*
+   * @brief: Get attribute names
+   * @return: Attribute names
+   */
+  Vec<Str> const &GetAttributeNames() const { return mAttributeNames; }
+  /*
+   * @brief: Get attributes
+   * @return: Attributes
+   */
+  Map<Str, AttributeData> const &GetAttributes() const { return mAttributes; }
+  /*
+   * @brief: Get vertex data
+   * @return: Vertex data
+   */
+  Vec<Float> const &GetVertexData() const;
+
+  /*
+   * @brief: Set vertex indices
+   * @detail: Indices are used to construct each vertex data from vertex
+   * component data
+   * @param: indices: Indices to set
+   */
+  void SetVertexIndices(Vec<Vec<Uint>> const &indices) {
+    mVertexIndices = indices;
+  }
+
+  /*
+   * @brief: Add a vertex component to the buffer data constructor
+   * @param: name: Name of the vertex component
+   * @param: data: Data of the vertex component
+   */
+  void AddVertexComponent(Str const &name, Vec<Vec<Float>> const &data);
+  /*
+   * @brief: Reload a vertex component in the buffer data constructor
+   * @param: name: Name of the vertex component
+   * @param: data: Data of the vertex component
+   */
+  void ReloadVertexComponent(Str const &name, Vec<Vec<Float>> const &data);
+  /*
+   * @brief: Construct the buffer data
+   */
+  void Construct();
+};
+
+class Buffer : public TerreateObjectBase {
+private:
+  GLObject mVAO = GLObject();
+  GLObject mIBO = GLObject();
+  Ulong mIndexCount = 0u;
+  Bool mLoadedIndices = false;
+  Vec<GLObject> mBuffers;
+  Map<Str, AttributeData> mAttributes;
+
+public:
+  /*
+   * @brief: Construct a new Buffer object
+   */
+  Buffer() { glGenVertexArrays(1, mVAO); }
   ~Buffer() override;
 
   /*
-   * @brief: Get buffer usage on opengl.
-   * @return: Buffer usage
+   * @brief: Set vertex attribute divisor
+   * @param: attribute: Attribute to set divisor
+   * @param: divisor: Divisor value
    */
-  BufferUsage const &GetUsage() const { return mUsage; }
-
+  void SetAttributeDivisor(AttributeData const &attribute,
+                           Uint const &divisor) const;
   /*
-   * @brief: Load vertex buffer data.
-   * @param: data: Pointer to vertex buffer data to be loaded.
-   * @param: size: Size of data to be loaded.
+   * @brief: Set vertex attribute divisor
+   * @param: name: Name of the attribute to set divisor
+   * @param: divisor: Divisor value
    */
-  void LoadVertices(Float const *data, Size const &size);
-  /*
-   * @brief: Load vertex buffer data.
-   * @param data: Vector of vertex buffer data to be loaded.
-   */
-  void LoadVertices(Vec<Float> const &data) {
-    this->LoadVertices(data.data(), data.size() * sizeof(Float));
-  }
-  /*
-   * @brief: Load index buffer data.
-   * @param: data: Pointer to index buffer data to be loaded.
-   * @param: size: Size of data to be loaded.
-   */
-  void LoadIndices(Uint const *data, Size const &size);
-  /*
-   * @brief: Load index buffer data.
-   * @param: data: Vector of index buffer data to be loaded.
-   */
-  void LoadIndices(Vec<Uint> const &data) {
-    this->LoadIndices(data.data(), data.size() * sizeof(Uint));
-  }
-  /*
-   * @brief: Load vertex attributes.
-   * @param: data: Pointer to attribute data to be loaded.
-   * @param: size: Size of data to be loaded.
-   */
-  void LoadAttributes(Attribute const *data, Size const &size);
-  /*
-   * @brief: Load vertex attributes.
-   * @param: data: Vector of attribute data to be loaded.
-   */
-  void LoadAttributes(Vec<Attribute> const &data) {
-    this->LoadAttributes(data.data(), data.size());
+  void SetAttributeDivisor(Str const &name, Uint const &divisor) const {
+    this->SetAttributeDivisor(mAttributes.at(name), divisor);
   }
 
   /*
-   * @brief: Draw registered buffer.
-   * @param: drawMode: Draw mode of opengl.
+   * @brief: Load data into the new buffer
+   * @param: bdc: Buffer data constructor object
+   * @param: usage: Buffer usage
    */
-  void Draw(DrawMode const &drawMode);
+  void LoadData(Shader &shader, BufferDataConstructor const &bdc,
+                BufferUsage const &usage = BufferUsage::STATIC_DRAW);
   /*
-   * @brief: Draw registered buffer more than once.
-   * @param: numInstances: Number of instances to draw.
-   * @param: drawMode: Draw mode of opengl.
+   * @brief: Reload data into the buffer
+   * @param: target: Target buffer
+   * @param: bdc: Buffer data constructor object
    */
-  void DrawInstances(Size const &numInstances, DrawMode const &drawMode);
+  void ReloadData(AttributeData const &target,
+                  BufferDataConstructor const &bdc);
+  /*
+   * @brief: Reload data into the buffer
+   * @param: name: Name of the attribute to reload
+   * @param: bdc: Buffer data constructor object
+   */
+  void ReloadData(Str const &name, BufferDataConstructor const &bdc) {
+    this->ReloadData(mAttributes.at(name), bdc);
+  }
+  /*
+   * @brief: Reload data into the buffer
+   * @param: target: Target buffer
+   * @param: bdc: Buffer data constructor object
+   * @param: offset: Offset to reload data
+   */
+  void ReloadData(AttributeData const &target, BufferDataConstructor const &bdc,
+                  Uint const &offset);
+  /*
+   * @brief: Reload data into the buffer
+   * @param: name: Name of the attribute to reload
+   * @param: bdc: Buffer data constructor object
+   * @param: offset: Offset to reload data
+   */
+  void ReloadData(Str const &name, BufferDataConstructor const &bdc,
+                  Uint const &offset) {
+    this->ReloadData(mAttributes.at(name), bdc, offset);
+  }
+  /*
+   * @brief: Load indices into the buffer
+   * @param: indices: Indices to load
+   */
+  void LoadIndices(Vec<Uint> const &indices);
+  /*
+   * @brief: Load indices into the buffer
+   * @param: indices: Indices to load
+   */
+  void LoadIndices(Vec<Vec<Uint>> const &indices) {
+    this->LoadIndices(Buffer::Flatten(indices));
+  }
+  /*
+   * @brief: Reload indices into the buffer
+   * @param: indices: Indices to reload
+   */
+  void ReloadIndices(Vec<Uint> const &indices);
+  /*
+   * @brief: Reload indices into the buffer
+   * @param: indices: Indices to reload
+   */
+  void ReloadIndices(Vec<Vec<Uint>> const &indices) {
+    this->ReloadIndices(Buffer::Flatten(indices));
+  }
+  /*
+   * @brief: Bind the buffer
+   */
+  void Bind() const { glBindVertexArray(mVAO); }
+  /*
+   * @brief: Unbind the buffer
+   */
+  void Unbind() const { glBindVertexArray(0); }
+  /*
+   * @brief: Draw the buffer
+   * @param: mode: Mode to draw
+   */
+  void Draw(DrawMode const &mode) const;
+  /*
+   * @brief: Draw the buffer
+   * @param: mode: Mode to draw
+   * @param: count: Number of instances to draw
+   */
+  void Draw(DrawMode const &mode, Ulong const &count) const;
 
-  operator Bool() const override { return mVAO && mVBO && mIBO; }
+  AttributeData &operator[](Str const &name) { return mAttributes[name]; }
+  AttributeData &operator[](char const *name) { return mAttributes[name]; }
+  AttributeData const &operator[](Str const &name) const {
+    return mAttributes.at(name);
+  }
+  AttributeData const &operator[](char const *name) const {
+    return mAttributes.at(name);
+  }
+
+public:
+  /*
+   * @brief: Flatten a 2D vector into a 1D vector
+   * @param: data: Data to flatten
+   * @return: Flattened data
+   */
+  template <typename T> static Vec<T> Flatten(Vec<Vec<T>> const &data) {
+    Vec<T> flat;
+    for (auto const &v : data) {
+      flat.insert(flat.end(), v.begin(), v.end());
+    }
+    return flat;
+  }
 };
 } // namespace TerreateGraphics::Core
 

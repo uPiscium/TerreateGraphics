@@ -1,7 +1,6 @@
 ﻿#include "../../includes/TerreateGraphics.hpp"
 
 using namespace TerreateGraphics::Core;
-using namespace TerreateGraphics::Model;
 // using namespace TerreateMath::Utils;
 
 class TestApp : public WindowController {
@@ -11,16 +10,25 @@ private:
   mat4 mTransform;
   Float mWidth = 1500.0f;
   Float mHeight = 750.0f;
-  Float mDepth = 1000.0f - 0.01f;
+  Float mNear = 0.01f;
+  Float mFar = 10000.0f;
+  Float mDepth = mFar - mNear;
 
   Font mFont;
   Texture mTexture;
   Text mText;
 
-  NewBuffer mBuffer;
+  WStr mTextString = L"日本語テスト";
+  Uint mDelflag = 0u;
+  Uint mPressingFlag = 0u;
+  Uint mDelInterval = 10u;
+
+  Buffer mBuffer;
+  BufferDataConstructor mColorDataConstructor;
 
 public:
-  void SizeCallback(int const &width, int const &height) override {
+  void SizeCallback(Window *window, int const &width,
+                    int const &height) override {
     glViewport(0, 0, width, height);
     mWidth = (Float)width;
     mHeight = (Float)height;
@@ -29,6 +37,28 @@ public:
         "uTransform",
         mTransform * scale(identity<mat4>(),
                            vec3(1.0f / mWidth, 1.0f / mHeight, 1.0f / mDepth)));
+  }
+
+  void KeyCallback(Window *window, Key const &key) override {
+    if (key.key == Keyboard::K_ESCAPE) {
+      window->Close();
+    }
+    if (key.key == Keyboard::K_BACKSPACE && key.action) {
+      if (!mTextString.empty() &&
+          (mDelflag > mDelInterval || mPressingFlag > 1)) {
+        mDelflag = 0u;
+        ++mPressingFlag;
+        mTextString.pop_back();
+        mText.LoadText(mTextString);
+      }
+    } else {
+      mPressingFlag = 0u;
+    }
+  }
+
+  void CharCallback(Window *window, Uint const &codepoint) override {
+    mTextString.push_back(codepoint);
+    mText.LoadText(mTextString);
   }
 
 public:
@@ -49,16 +79,16 @@ public:
 
     BufferDataConstructor bdc;
 
-    bdc.AddVertexComponent("position", {{-600.0f, -600.0f, 600.0f},
-                                        {600.0f, -600.0f, 600.0f},
-                                        {600.0f, -600.0f, -600.0f},
-                                        {-600.0f, -600.0f, -600.0f},
-                                        {-600.0f, 600.0f, 600.0f},
-                                        {600.0f, 600.0f, 600.0f},
-                                        {600.0f, 600.0f, -600.0f},
-                                        {-600.0f, 600.0f, -600.0f}});
+    bdc.AddVertexComponent("iPosition", {{-600.0f, -600.0f, 600.0f},
+                                         {600.0f, -600.0f, 600.0f},
+                                         {600.0f, -600.0f, -600.0f},
+                                         {-600.0f, -600.0f, -600.0f},
+                                         {-600.0f, 600.0f, 600.0f},
+                                         {600.0f, 600.0f, 600.0f},
+                                         {600.0f, 600.0f, -600.0f},
+                                         {-600.0f, 600.0f, -600.0f}});
     bdc.AddVertexComponent(
-        "uv", {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}});
+        "iUV", {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}});
     bdc.SetVertexIndices({
         {0, 0}, {1, 1}, {5, 2}, {4, 3}, {1, 0}, {2, 1}, {6, 2}, {5, 3},
         {2, 0}, {3, 1}, {7, 2}, {6, 3}, {3, 0}, {0, 1}, {4, 2}, {7, 3},
@@ -67,14 +97,12 @@ public:
     bdc.Construct();
     mBuffer.LoadData(mShader, bdc);
 
-    BufferDataConstructor bdc2;
-
-    bdc2.AddVertexComponent("color", {{1, 0, 0}});
-    bdc2.SetVertexIndices({{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0},
-                           {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0},
-                           {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}});
-    bdc2.Construct();
-    mBuffer.LoadData(mShader, bdc2);
+    mColorDataConstructor.AddVertexComponent("iColor", {{1, 0, 0}});
+    mColorDataConstructor.SetVertexIndices(
+        {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0},
+         {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}});
+    mColorDataConstructor.Construct();
+    mBuffer.LoadData(mShader, mColorDataConstructor);
 
     mBuffer.LoadIndices({{0, 1, 2, 2, 3, 0},
                          {4, 5, 6, 6, 7, 4},
@@ -84,7 +112,7 @@ public:
                          {20, 21, 22, 22, 23, 20}});
 
     mat4 view = lookAt(vec3(0, 0, 2), vec3(0, 0, 0), vec3(0, 1, 0));
-    mat4 proj = perspective(45.0f, 1.0f, 0.01f, 10000.0f);
+    mat4 proj = perspective(45.0f, 1.0f, mNear, mFar);
     mTransform = proj * view;
 
     // Uncomment if you want to break your brain...
@@ -117,19 +145,19 @@ public:
     mTexture.Unbind();
     mShader.Unuse();
 
-    // mText.Render(50, 50, mWidth, mHeight);
+    mText.Render(50, 50, mWidth, mHeight);
 
-    /* AttributeData color = mBuffer["color"]; */
-    /* BufferDataConstructor bdc; */
-    /* Float s = sin(mClock.GetCurrentRuntime()) * 0.5f + 0.5f; */
-    /* bdc.AddVertexComponent("color", {{s, s, s}}); */
-    /* bdc.SetVertexIndices({{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, */
-    /*                       {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, */
-    /*                       {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}}); */
-    /* bdc.Construct(); */
-    /* mBuffer.ReloadData(color, bdc); */
+    AttributeData color = mBuffer["iColor"];
+    Float s = sin(mClock.GetCurrentRuntime()) * 0.5f + 0.5f;
+    mColorDataConstructor.ReloadVertexComponent("iColor", {{s, s, s}});
+    mColorDataConstructor.Construct();
+    mBuffer.ReloadData(color, mColorDataConstructor);
+    mText.SetColor({s, 0, s});
+
+    mText = mTextString;
 
     window->Swap();
+    ++mDelflag;
     mClock.Frame(80);
   }
 };
