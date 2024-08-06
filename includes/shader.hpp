@@ -30,6 +30,7 @@ struct ShaderOption {
 class Shader final : public TerreateObjectBase {
 private:
   Bool mCompiled = false;
+  Bool mLinked = false;
   GLObject mShaderID = GLObject();
   Str mVertexShaderSource = "";
   Str mFragmentShaderSource = "";
@@ -314,6 +315,10 @@ public:
    * @brief: Compile shader.
    */
   void Compile();
+  /*
+   * @brief: Link shader.
+   */
+  void Link();
   /*
    * @brief: Use shader.
    * @sa: Compile

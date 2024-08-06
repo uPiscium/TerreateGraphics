@@ -66,8 +66,9 @@ function(Build)
   add_library(
     ${PROJECT_NAME} STATIC
     TerreateGraphics.cpp
-    animation.cpp
+    # animation.cpp
     buffer.cpp
+    newbuffer.cpp
     event.cpp
     font.cpp
     gl.cpp
@@ -76,7 +77,7 @@ function(Build)
     model.cpp
     screen.cpp
     shader.cpp
-    skeleton.cpp
+    # skeleton.cpp
     text.cpp
     texture.cpp
     window.cpp)

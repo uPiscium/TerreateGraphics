@@ -74,10 +74,6 @@ void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
     throw Exceptions::TextError("Shader not loaded");
   }
 
-  mShader.Use();
-  mShader.ActiveTexture(TextureTargets::TEX_0);
-  mShader.SetInt("uTexture", 0);
-
   for (int i = 0; i < mText.size(); ++i) {
     auto &position = mPositions[i];
     auto &chr = mFont->GetCharacter(mText[i]);
@@ -86,6 +82,10 @@ void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
         chr.codepoint == TC_UNICODE_FULL_SPACE) {
       continue;
     }
+
+    mShader.Use();
+    mShader.ActiveTexture(TextureTargets::TEX_0);
+    mShader.SetInt("uTexture", 0);
 
     mTextMeshData.LoadVertices(position);
     mTextMesh.LoadData(mTextMeshData);
@@ -96,8 +96,8 @@ void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
     chr.texture.Bind();
     mTextMesh.Draw();
     chr.texture.Unbind();
-  }
 
-  mShader.Unuse();
+    mShader.Unuse();
+  }
 }
 } // namespace TerreateGraphics::Core

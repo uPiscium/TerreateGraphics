@@ -1,7 +1,6 @@
 #ifndef __TERREATE_GRAPHICS_BUFFER_HPP__
 #define __TERREATE_GRAPHICS_BUFFER_HPP__
 
-#include "TerreateCore/defines.hpp"
 #include "defines.hpp"
 #include "globj.hpp"
 

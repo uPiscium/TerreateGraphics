@@ -1,7 +1,6 @@
 #ifndef __TERREATE_GRAPHICS_DEFINES_HPP__
 #define __TERREATE_GRAPHICS_DEFINES_HPP__
 
-#include "TerreateCore/object.hpp"
 #include <atomic>
 #include <condition_variable>
 #include <deque>

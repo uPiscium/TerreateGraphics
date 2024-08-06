@@ -100,6 +100,7 @@ void Buffer::Draw(DrawMode const &drawMode) {
     throw Exceptions::BufferError("No indices loaded.");
     return;
   }
+
   glDrawElements((GLenum)drawMode, mNumIndices, GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 }
