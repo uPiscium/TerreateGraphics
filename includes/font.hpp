@@ -5,8 +5,6 @@
 #include FT_FREETYPE_H
 
 #include "defines.hpp"
-#include "logger.hpp"
-#include "object.hpp"
 #include "texture.hpp"
 
 namespace TerreateGraphics::Core {
@@ -14,26 +12,27 @@ using namespace TerreateGraphics::Defines;
 
 struct Character {
   Uint codepoint;
-  Shared<Texture> texture;
+  Texture texture;
   Pair<Uint> size;
   Pair<Uint> bearing;
   Long advance;
 };
 
-class Font final : public Object {
+class Font final : public TerreateObjectBase {
 private:
-  FT_Library mLibrary;
-  FT_Face mFace;
+  Shared<FT_Library> mLibrary;
+  Shared<FT_Face> mFace;
   Uint mSize;
-  Map<wchar_t, Shared<Character>> mCharacters;
-
-private:
-  TC_DISABLE_COPY_AND_ASSIGN(Font);
+  Map<wchar_t, Character> mCharacters;
 
 private:
   void LoadDummyCharacter();
 
 public:
+  /*
+   * @brief: Default constructor for RawFont.
+   */
+  Font();
   /*
    * @brief: Constructor for RawFont.
    * @param: path: path to font file
@@ -46,20 +45,20 @@ public:
    * @brief: Getter for font size.
    * @return: font size
    */
-  Uint GetFontSize() const;
+  Uint GetFontSize() const { return mSize; }
   /*
    * @brief: Getter for character.
    * @param: character: character to get
    * @return: character
    */
-  Shared<Character> const &GetCharacter(wchar_t const &character);
+  Character const &GetCharacter(wchar_t const &character);
 
   /*
    * @brief: Acquirer for character.
    * @param: character: character to acquire
    * @return: character
    */
-  Shared<Character> const &AcquireCharacter(wchar_t const &character) const;
+  Character const &AcquireCharacter(wchar_t const &character) const;
   /*
    * @brief: Acquirer for text size in pixels.
    * @param: text: text to acquire size of
@@ -71,8 +70,14 @@ public:
    * @param: text: text to acquire characters of
    * @return: characters of text
    */
-  Vec<Shared<Character>> AcquireCharacters(WStr const &text) const;
+  Vec<Character> AcquireCharacters(WStr const &text) const;
 
+  /*
+   * @brief: Loads font data.
+   * @param: path: path to font file
+   * @param: size: size of font
+   */
+  void LoadFont(Str const &path, Uint const &size);
   /*
    * @brief: Loads character data.
    * @param: character: character to load

@@ -4,9 +4,13 @@ in vec2 vUV;
 out vec4 fragColor;
 
 uniform sampler2D uTexture;
+uniform vec3 uColor;
 
 void main() {
   float alpha = texture(uTexture, vUV).r;
-  if (alpha < 0.6) discard;
-  else fragColor = vec4(1.0);
+  // fragColor = vec4(uColor, alpha);
+  if (alpha < 0.1) {
+    discard;
+  }
+  fragColor = vec4(uColor, alpha);
 }

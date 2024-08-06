@@ -2,19 +2,18 @@
 #define __TERREATE_GRAPHICS_WINDOW_HPP__
 
 #include "defines.hpp"
-#include "logger.hpp"
-#include "object.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
-class Icon final : public Object {
+class Icon final : public TerreateObjectBase {
 private:
   Vec<GLFWimage> mImages;
   Vec<Ubyte *> mPointers;
 
 private:
-  TC_DISABLE_COPY_AND_ASSIGN(Icon);
+  Icon(Icon const &) = delete;
+  Icon &operator=(Icon const &) = delete;
 
 public:
   /*
@@ -23,7 +22,7 @@ public:
   Icon();
   ~Icon() override;
 
-  Uint GetSize() const;
+  Uint GetSize() const { return mImages.size(); }
 
   /*
    * @brief: This function adds an image to the icon.
@@ -40,7 +39,7 @@ public:
   operator Bool() const override { return mImages.size() > 0; }
 };
 
-class Cursor final : public Object {
+class Cursor final : public TerreateObjectBase {
 private:
   GLFWcursor *mCursor = nullptr;
   GLFWimage mImage = GLFWimage();
@@ -49,7 +48,8 @@ private:
   int mYHot = 0;
 
 private:
-  TC_DISABLE_COPY_AND_ASSIGN(Cursor);
+  Cursor(Cursor const &) = delete;
+  Cursor &operator=(Cursor const &) = delete;
 
 public:
   /*
@@ -57,7 +57,7 @@ public:
    * @param: xHot: The x-coordinate of the cursor's hot spot.
    * @param: yHot: The y-coordinate of the cursor's hot spot.
    */
-  Cursor(Int const &xHot = 0, Int const &yHot = 0);
+  Cursor(Int const &xHot = 0, Int const &yHot = 0) : mXHot(xHot), mYHot(yHot) {}
   ~Cursor() override;
 
   /*
@@ -74,17 +74,23 @@ public:
   operator Bool() const override { return mCursor != nullptr; }
 };
 
-class StandardCursor : public Object {
+class StandardCursor : public TerreateObjectBase {
 private:
   GLFWcursor *mCursor = nullptr;
+
+private:
+  StandardCursor(StandardCursor const &) = delete;
+  StandardCursor &operator=(StandardCursor const &) = delete;
 
 public:
   /*
    * @brief: This function creates a glfw standard cursor.
    * @param: shape: Cursor shape.
    */
-  StandardCursor(CursorShape const &shape);
-  ~StandardCursor() override;
+  StandardCursor(CursorShape const &shape) {
+    mCursor = glfwCreateStandardCursor((Uint)shape);
+  }
+  ~StandardCursor() override { glfwDestroyCursor(mCursor); }
 
   operator GLFWcursor *() const { return mCursor; }
   operator Bool() const override { return mCursor != nullptr; }
@@ -167,47 +173,47 @@ public:
    * @brief: This function returns window title.
    * @return: Window title.
    */
-  Str const &GetTitle() const;
+  Str const &GetTitle() const { return mTitle; }
   /*
    * @brief: This function returns scroll offset.
    * @return: Scroll offset.
    * @detail: Return format is (x, y).
    */
-  Pair<Double> const &GetScrollOffset() const;
+  Pair<Double> const &GetScrollOffset() const { return mScrollOffset; }
   /*
    * @brief: This function returns inputted code points.
    * @return: Inputted code points.
    * @detail: Code points are Unicode code points.
    */
-  Vec<Uint> const &GetCodePoints() const;
+  Vec<Uint> const &GetCodePoints() const { return mCodePoints; }
   /*
    * @brief: This function returns inputted keys.
    * @return: Inputted keys.
    */
-  Vec<Key> const &GetKeys() const;
+  Vec<Key> const &GetKeys() const { return mKeys; }
   /*
    * @brief: This function returns dropped files.
    * @return: Dropped files.
    */
-  Vec<Str> const &GetDroppedFiles() const;
+  Vec<Str> const &GetDroppedFiles() const { return mDroppedFiles; }
   /*
    * @brief: This function returns window size.
    * @return: Window size.
    * @detail: Return format is (width, height).
    */
-  Pair<Uint> const &GetSize() const;
+  Pair<Uint> const &GetSize() const { return mSize; }
   /*
    * @brief: This function returns window position.
    * @return: Window position.
    * @detail: Return format is (x, y).
    */
-  Pair<Int> const &GetPosition() const;
+  Pair<Int> const &GetPosition() const { return mPosition; }
   /*
    * @brief: This function returns cursor position.
    * @return: Cursor position.
    * @detail: Return format is (x, y).
    */
-  Pair<Double> const &GetCursorPosition() const;
+  Pair<Double> const &GetCursorPosition() const { return mCursorPosition; }
 
   /*
    * @brief: This function clears inputted chars, inputted codepoints, and
@@ -220,28 +226,34 @@ class WindowController {
 public:
   virtual ~WindowController() = default;
 
-  virtual void PositionCallback(int const &xpos, int const &ypos) {}
-  virtual void SizeCallback(int const &width, int const &height) {}
-  virtual void CloseCallback() {}
-  virtual void RefreshCallback() {}
-  virtual void FocusCallback(Bool const &focused) {}
-  virtual void IconifyCallback(Bool const &iconified) {}
-  virtual void MaximizeCallback(Bool const &maximized) {}
-  virtual void FramebufferSizeCallback(int const &width, int const &height) {}
-  virtual void ContentScaleCallback(float const &xscale, float const &yscale) {}
-  virtual void MousebuttonCallback(Uint const &button, Uint const &action,
-                                   Modifier const &mods) {}
-  virtual void CursorPositionCallback(double const &xpos, double const &ypos) {}
-  virtual void CursorEnterCallback(Bool const &entered) {}
-  virtual void ScrollCallback(double const &xoffset, double const &yoffset) {}
-  virtual void KeyCallback(Key const &key) {}
-  virtual void CharCallback(Uint const &codepoint) {}
-  virtual void DropCallback(Vec<Str> const &paths) {}
+  virtual void PositionCallback(Window *window, int const &xpos,
+                                int const &ypos) {}
+  virtual void SizeCallback(Window *window, int const &width,
+                            int const &height) {}
+  virtual void CloseCallback(Window *window) {}
+  virtual void RefreshCallback(Window *window) {}
+  virtual void FocusCallback(Window *window, Bool const &focused) {}
+  virtual void IconifyCallback(Window *window, Bool const &iconified) {}
+  virtual void MaximizeCallback(Window *window, Bool const &maximized) {}
+  virtual void FramebufferSizeCallback(Window *window, int const &width,
+                                       int const &height) {}
+  virtual void ContentScaleCallback(Window *window, float const &xscale,
+                                    float const &yscale) {}
+  virtual void MousebuttonCallback(Window *window, Uint const &button,
+                                   Uint const &action, Modifier const &mods) {}
+  virtual void CursorPositionCallback(Window *window, double const &xpos,
+                                      double const &ypos) {}
+  virtual void CursorEnterCallback(Window *window, Bool const &entered) {}
+  virtual void ScrollCallback(Window *window, double const &xoffset,
+                              double const &yoffset) {}
+  virtual void KeyCallback(Window *window, Key const &key) {}
+  virtual void CharCallback(Window *window, Uint const &codepoint) {}
+  virtual void DropCallback(Window *window, Vec<Str> const &paths) {}
 
   virtual void OnFrame(Window *window) = 0;
 };
 
-class Window final : public Object {
+class Window final : public TerreateObjectBase {
 private:
   GLFWwindow *mWindow = nullptr;
   void *mUserPointer = nullptr;
@@ -284,7 +296,8 @@ private:
                                              const char **paths);
 
 private:
-  TC_DISABLE_COPY_AND_ASSIGN(Window);
+  Window(Window const &) = delete;
+  Window &operator=(Window const &) = delete;
 
 public:
   /*
@@ -296,43 +309,47 @@ public:
    */
   Window(Uint const &width, Uint const &height, Str const &title,
          WindowSettings const &settings);
-  ~Window() override;
+  ~Window() override { this->Destroy(); }
 
   /*
    * @brief: This function returns window size.
    * @return: Window size.
    * @detail: Return format is (width, height).
    */
-  Pair<Uint> const &GetSize() const;
+  Pair<Uint> const &GetSize() const { return mProperty.GetSize(); }
   /*
    * @brief: This function returns window position.
    * @return: Window position.
    * @detail: Return format is (x, y).
    */
-  Pair<Int> const &GetPosition() const;
+  Pair<Int> const &GetPosition() const { return mProperty.GetPosition(); }
   /*
    * @brief: This function returns cursor position.
    * @return: Cursor position.
    * @detail: Return format is (x, y)
    */
-  Pair<Double> const &GetCursorPosition() const;
+  Pair<Double> const &GetCursorPosition() const {
+    return mProperty.GetCursorPosition();
+  }
   /*
    * @brief: This function returns scroll offset.
    * @return: Scroll offset.
    * @detail: Return format is (x, y).
    * @note: Scroll offset cannot be set.
    */
-  Pair<Double> const &GetScrollOffset() const;
+  Pair<Double> const &GetScrollOffset() const {
+    return mProperty.GetScrollOffset();
+  }
   /*
    * @brief: This function returns clipboard string.
    * @return: Clipboard string.
    */
-  Str GetClipboardString() const;
+  Str GetClipboardString() const { return glfwGetClipboardString(mWindow); }
   /*
    * @brief: This function returns window title.
    * @return: Window title.
    */
-  Str const &GetTitle() const;
+  Str const &GetTitle() const { return mProperty.GetTitle(); }
   /*
    * @brief: This function returns inputted code points.
    * @return: Inputted code points.
@@ -341,7 +358,7 @@ public:
    * inputted code points. If you want to clear inputted code points, use
    * ClearInputs() function.
    */
-  Vec<Uint> const &GetCodePoints() const;
+  Vec<Uint> const &GetCodePoints() const { return mProperty.GetCodePoints(); }
   /*
    * @brief: This function returns inputted keys.
    * @return: Inputted keys.
@@ -349,7 +366,7 @@ public:
    * @detail: This function doesn't clear inputted keys. If you want to clear
    * inputted keys, use ClearInputs() function.
    */
-  Vec<Key> const &GetKeys() const;
+  Vec<Key> const &GetKeys() const { return mProperty.GetKeys(); }
   /*
    * @brief: This function returns dropped files.
    * @return: Dropped files.
@@ -357,83 +374,104 @@ public:
    * @detail: This function doesn't clear dropped files. If you want to clear
    * dropped files, use ClearInputs() function.
    */
-  Vec<Str> const &GetDroppedFiles() const;
+  Vec<Str> const &GetDroppedFiles() const {
+    return mProperty.GetDroppedFiles();
+  }
   /*
    * @brief: This function returns window opacity.
    * @return: Window opacity.
    */
-  Float GetOpacity() const;
+  Float GetOpacity() const { return glfwGetWindowOpacity(mWindow); }
   /*
    * @brief: This function returns specified mouse button state.
    * @return: Mousebutton state [true(Pressed)/false(Released)].
    */
-  Bool GetMousebutton(MousebuttonInput const &button) const;
+  Bool GetMousebutton(MousebuttonInput const &button) const {
+    return Bool(glfwGetMouseButton(mWindow, (Uint)button) == GLFW_PRESS);
+  }
   /*
    * @brief: This function returns specified input type state.
    * @return: Input type state. [true(enabled)/false(disabled)]
    * @note: If you want to get cursor mode, use GetCursorMode() function.
    */
-  Bool GetInputTypeState(InputType const &type) const;
+  Bool GetInputTypeState(InputType const &type) const {
+    return Bool(glfwGetInputMode(mWindow, (Uint)type) == GLFW_TRUE);
+  }
   /*
    * @brief: This function returns specified input type state.
    * @return: Current cursor state.
    */
-  CursorMode GetCursorMode() const;
+  CursorMode GetCursorMode() const {
+    return static_cast<CursorMode>(glfwGetInputMode(mWindow, GLFW_CURSOR));
+  }
   /*
    * @brief: This function returns user pointer binded to window.
    * @return: User pointer.
    */
   template <typename T> T *GetUserPointer() const {
-    Logger::Trace(LOCATION(Window));
     return static_cast<T *>(mUserPointer);
   }
 
   /*
    * @brief: This function sets window as current context.
    */
-  void SetCurrentContext() const;
+  void SetCurrentContext() const { glfwMakeContextCurrent(mWindow); }
   /*
    * @brief: This function sets window icon.
    * @param: icon: Window icon.
    */
-  void SetIcon(Icon const &icon);
+  void SetIcon(Icon const &icon) {
+    glfwSetWindowIcon(mWindow, icon.GetSize(), (GLFWimage const *)icon);
+  }
   /*
    * @brief: This function sets cursor appearance.
    * @param: cursor: Cursor data.
    */
-  void SetCursor(Cursor const &cursor);
+  void SetCursor(Cursor const &cursor) {
+    glfwSetCursor(mWindow, (GLFWcursor *)cursor);
+  }
   /*
    * @brief: This function sets standard cursor appearance.
    * @param: cursor: Standard cursor data.
    */
-  void SetCursor(StandardCursor const &cursor);
+  void SetCursor(StandardCursor const &cursor) {
+    glfwSetCursor(mWindow, (GLFWcursor *)cursor);
+  }
   /*
    * @brief: This function sets window cursor to default.
    */
-  void SetDefaultCursor();
+  void SetDefaultCursor() { glfwSetCursor(mWindow, nullptr); }
   /*
    * @brief: This function sets window size.
    * @param: size: Window size.
    * @detail: Size format is (width, height).
    */
-  void SetSize(Pair<Uint> const &size);
+  void SetSize(Pair<Uint> const &size) {
+    glfwSetWindowSize(mWindow, size.first, size.second);
+  }
   /*
    * @brief: This function sets window position.
    * @param: position: Window position.
    * @detail: Position format is (x, y).
    */
-  void SetPosition(Pair<int> const &position);
+  void SetPosition(Pair<int> const &position) {
+    glfwSetWindowPos(mWindow, position.first, position.second);
+  }
   /*
    * @brief: This function sets cursor position.
    * @param: position: Cursor position.
    * @detail: Position format is (x, y).
    */
-  void SetCursorPosition(Pair<Double> const &position);
+  void SetCursorPosition(Pair<Double> const &position) {
+    glfwSetCursorPos(mWindow, position.first, position.second);
+  }
   /*
    * @brief: This function sets clipboard string.
    * @param: string: Clipboard string.
    */
-  void SetClipboardString(Str const &string);
+  void SetClipboardString(Str const &string) {
+    glfwSetClipboardString(mWindow, string.c_str());
+  }
   /*
    * @brief: This function sets window title.
    * @param: title: Window title.
@@ -443,31 +481,38 @@ public:
    * @brief: This function sets window opacity.
    * @param: opacity: Window opacity.
    */
-  void SetOpacity(float const &opacity);
+  void SetOpacity(float const &opacity) {
+    glfwSetWindowOpacity(mWindow, opacity);
+  }
   /*
    * @brief: This function sets specified input type state.
    * @param: type: Input type.
    * @param: state: Input type state.
    */
-  void SetInputTypeState(InputType const &type, Bool const &state);
+  void SetInputTypeState(InputType const &type, Bool const &state) {
+    glfwSetInputMode(mWindow, (int)type, state);
+  }
   /*
    * @brief: This function sets cursor mode.
    * @param: mode: Cursor mode.
    */
-  void SetCursorMode(CursorMode const &mode);
+  void SetCursorMode(CursorMode const &mode) {
+    glfwSetInputMode(mWindow, GLFW_CURSOR, (int)mode);
+  }
   /*
    * This function sets user pointer binded to window.
    * @param: pointer: User pointer.
    */
   template <typename T> void SetUserPointer(T *pointer) {
-    Logger::Trace(LOCATION(Window));
     mUserPointer = static_cast<void *>(pointer);
   }
   /*
-   * @brief: This function sets window callbacks.
-   * @param: callbacks: Window callbacks.
+   * @brief: This function sets window controller.
+   * @param: controller: Window controller.
    */
-  void SetWindowController(WindowController *callbacks);
+  void SetWindowController(WindowController *controller) {
+    mController = controller;
+  }
 
   /*
    * @brief: This function returns whether window is closed or not.
@@ -582,72 +627,80 @@ public:
   }
 
   /*
+   * @brief: This function destroies window.
+   */
+  void Destroy();
+  /*
    * @brief: This function closes window.
    */
-  void Close();
+  void Close() const { glfwSetWindowShouldClose(mWindow, GLFW_TRUE); }
   /*
    * @brief: This function iconifies window.
    */
-  void Iconify() const;
+  void Iconify() const { glfwIconifyWindow(mWindow); }
   /*
    * @brief: This function maximizes window.
    */
-  void Maximize() const;
+  void Maximize() const { glfwMaximizeWindow(mWindow); }
   /*
    * @brief: This function shows window.
    */
-  void Show() const;
+  void Show() const { glfwShowWindow(mWindow); }
   /*
    * @brief: This function hides window.
    */
-  void Hide() const;
+  void Hide() const { glfwHideWindow(mWindow); }
   /*
    * @brief: This function focuses window.
    */
-  void Focus() const;
+  void Focus() const { glfwFocusWindow(mWindow); }
   /*
    * @brief: This function unmaximize or uniconify window.
    */
-  void Restore() const;
+  void Restore() const { glfwRestoreWindow(mWindow); }
   /*
    * @brief: This function requests attention to window.
    */
-  void RequestAttention() const;
+  void RequestAttention() const { glfwRequestWindowAttention(mWindow); }
   /*
    * @brief: This function fills window with specified color.
    * @param: color: Fill color.
    * @detail: Color format is (red, green, blue). Each color is float (0
    * ~ 1.0).
    */
-  void Fill(Vec<float> const &color) const;
+  void Fill(Vec<float> const &color) const {
+    glClearColor(color[0], color[1], color[2], 0.0f);
+  }
   /*
    * @brief: This function clears color, depth, and stencil buffers.
    */
-  void Clear() const;
+  void Clear() const {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+  }
   /*
    * @brief: This function clears color buffer.
    */
-  void ClearColor() const;
+  void ClearColor() const { glClear(GL_COLOR_BUFFER_BIT); }
   /*
    * @brief: This function clears depth buffer.
    */
-  void ClearDepth() const;
+  void ClearDepth() const { glClear(GL_DEPTH_BUFFER_BIT); }
   /*
    * @brief: This function clears stencil buffer.
    */
-  void ClearStencil() const;
+  void ClearStencil() const { glClear(GL_STENCIL_BUFFER_BIT); }
   /*
    * @brief: This function swaps front and back buffers.
    */
-  void Swap() const;
+  void Swap() const { glfwSwapBuffers(mWindow); }
   /*
    * @brief: This function poll events.
    */
-  void PollEvents() const;
+  void PollEvents() const { glfwPollEvents(); }
   /*
    * @brief: This function binds window to current context.
    */
-  void Bind() const;
+  void Bind() const { this->SetCurrentContext(); }
   /*
    * @brief: This function executes callbacks->Run().
    */

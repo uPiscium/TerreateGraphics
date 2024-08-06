@@ -1,169 +1,191 @@
 #include "../includes/buffer.hpp"
+#include "../includes/exceptions.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
-Attribute::Attribute(Ulong const &index, Ulong const &comps,
-                     Ulong const &stride, Ulong const &offset)
-    : mIndex(index), mComps(comps), mStride(stride), mOffset(offset) {
-  Logger::Trace(LOCATION(Attribute));
-  Logger::Debug("Attribute is generated.");
+Vec<Float> const &BufferDataConstructor::GetVertexData() const {
+  if (!mConstructed) {
+    throw Exceptions::BufferError("Data not constructed.");
+  }
+  return mVertexData;
 }
 
-Ulong const &Attribute::GetIndex() const {
-  Logger::Trace(LOCATION(Attribute));
-
-  return mIndex;
+void BufferDataConstructor::AddVertexComponent(Str const &name,
+                                               Vec<Vec<Float>> const &data) {
+  mUpdated = true;
+  mVertexDataComponents.push_back(data);
+  mAttributeNames.push_back(name);
+  mAttributes.insert(
+      {name,
+       {0, mVertexDataComponents.size() - 1, data[0].size(), 0, mOffset}});
+  mOffset += data[0].size() * sizeof(Float);
 }
 
-Ulong const &Attribute::GetComps() const {
-  Logger::Trace(LOCATION(Attribute));
-
-  return mComps;
-}
-
-Ulong const &Attribute::GetStride() const {
-  Logger::Trace(LOCATION(Attribute));
-
-  return mStride;
-}
-
-Ulong const &Attribute::GetOffset() const {
-  Logger::Trace(LOCATION(Attribute));
-
-  return mOffset;
-}
-
-Vec<Attribute> Attribute::GenerateAttributes(Vec<Ulong> const &comps) {
-  Logger::Trace(LOCATION(Attribute));
-
-  Vec<Attribute> attributes;
-  Ulong stride = 0;
-  for (Ulong i = 0; i < comps.size(); ++i) {
-    stride += comps[i] * sizeof(Float);
+void BufferDataConstructor::ReloadVertexComponent(Str const &name,
+                                                  Vec<Vec<Float>> const &data) {
+  mUpdated = true;
+  if (mAttributes.find(name) == mAttributes.end()) {
+    this->AddVertexComponent(name, data);
+    return;
   }
 
-  Ulong offset = 0;
-  for (Ulong i = 0; i < comps.size(); ++i) {
-    attributes.push_back(Attribute(i, comps[i], stride, offset));
-    offset += comps[i] * sizeof(Float);
-  }
-  return attributes;
+  Uint index = mAttributes.at(name).index;
+  mVertexDataComponents[index] = data;
 }
 
-Vec<Attribute> Attribute::GenerateAttributes(Vec<Ulong> const &comps,
-                                             Vec<Ulong> const &offsets,
-                                             Vec<Ulong> const &strides) {
-  Logger::Trace(LOCATION(Attribute));
-
-  Vec<Attribute> attributes;
-  for (Ulong i = 0; i < comps.size(); ++i) {
-    attributes.push_back(Attribute(i, comps[i], strides[i], offsets[i]));
+void BufferDataConstructor::Construct() {
+  if (mVertexDataComponents.size() == 0) {
+    throw Exceptions::BufferError("No data components added.");
   }
-  return attributes;
-}
 
-Buffer::Buffer(BufferUsage usage) : mUsage(usage) {
-  Logger::Trace(LOCATION(Buffer));
+  if (mVertexIndices.size() == 0) {
+    throw Exceptions::BufferError("No indices added.");
+  }
 
-  glGenVertexArrays(1, &mVAO);
-  glGenBuffers(1, &mVBO);
-  glGenBuffers(1, &mIBO);
+  if (mVertexIndices[0].size() != mVertexDataComponents.size()) {
+    throw Exceptions::BufferError("Indices and data components mismatch.");
+  }
 
-  Logger::Debug("Buffer is generated.");
+  for (auto &attr : mAttributes) {
+    attr.second.stride = mOffset;
+  }
+
+  mVertexData.clear();
+  for (auto &indices : mVertexIndices) {
+    for (Uint i = 0; i < indices.size(); ++i) {
+      auto &data = mVertexDataComponents[i];
+      Uint &index = indices[i];
+      mVertexData.insert(mVertexData.end(), data[index].begin(),
+                         data[index].end());
+    }
+  }
+  mConstructed = true;
 }
 
 Buffer::~Buffer() {
-  Logger::Trace(LOCATION(Buffer));
-
-  glDeleteVertexArrays(1, &mVAO);
-  glDeleteBuffers(1, &mVBO);
-  glDeleteBuffers(1, &mIBO);
-
-  Logger::Debug("Buffer is deleted.");
-}
-
-BufferUsage const &Buffer::GetUsage() const {
-  Logger::Trace(LOCATION(Buffer));
-
-  return mUsage;
-}
-
-void Buffer::LoadVertices(Float const *data, Size const &size) {
-  Logger::Trace(LOCATION(Buffer));
-
-  glBindVertexArray(mVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-  if (mSetVBO) {
-    glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
-  } else {
-    glBufferData(GL_ARRAY_BUFFER, size, data, (GLenum)mUsage);
-    mSetVBO = true;
+  if (mVAO.Count() <= 1) {
+    glDeleteVertexArrays(1, mVAO);
+    mVAO.Delete();
   }
+  if (mIBO.Count() <= 1) {
+    glDeleteBuffers(1, mIBO);
+    mIBO.Delete();
+  }
+  for (auto &buffer : mBuffers) {
+    if (buffer.Count() <= 1) {
+      glDeleteBuffers(1, buffer);
+      buffer.Delete();
+    }
+  }
+}
 
-  glBindVertexArray(0);
+void Buffer::SetAttributeDivisor(AttributeData const &attribute,
+                                 Uint const &divisor) const {
+  this->Bind();
+  glVertexAttribDivisor(attribute.index, divisor);
+  this->Unbind();
+}
+
+void Buffer::LoadData(Shader &shader, BufferDataConstructor const &bdc,
+                      BufferUsage const &usage) {
+  Map<Str, AttributeData> const &attributes = bdc.GetAttributes();
+  Vec<Float> data = bdc.GetVertexData();
+  Ulong size = data.size() * sizeof(Float);
+  shader.Use();
+  this->Bind();
+  GLObject buffer = GLObject();
+  glGenBuffers(1, buffer);
+  glBindBuffer(GL_ARRAY_BUFFER, buffer);
+  glBufferData(GL_ARRAY_BUFFER, size, data.data(), (GLenum)usage);
+
+  for (auto &name : bdc.GetAttributeNames()) {
+    AttributeData const &attr = attributes.at(name);
+    Uint index = shader.GetAttribute(name);
+    glEnableVertexAttribArray(index);
+    glVertexAttribPointer(index, attr.size, GL_FLOAT, GL_FALSE, attr.stride,
+                          reinterpret_cast<void const *>(attr.offset));
+    mAttributes.insert(
+        {name, {mBuffers.size(), index, attr.size, attr.stride, attr.offset}});
+  }
+  this->Unbind();
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  shader.Unuse();
+  shader.Link();
+  mBuffers.push_back(buffer);
+}
+
+void Buffer::ReloadData(AttributeData const &target,
+                        BufferDataConstructor const &bdc) {
+  Vec<Float> data = bdc.GetVertexData();
+  Ulong size = data.size() * sizeof(Float);
+  this->Bind();
+  glBindBuffer(GL_ARRAY_BUFFER, mBuffers[target.vboIndex]);
+  glBufferSubData(GL_ARRAY_BUFFER, target.offset, size, data.data());
+  this->Unbind();
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Buffer::LoadIndices(Uint const *data, Size const &size) {
-  Logger::Trace(LOCATION(Buffer));
+void Buffer::ReloadData(AttributeData const &target,
+                        BufferDataConstructor const &bdc, Uint const &offset) {
+  Vec<Float> data = bdc.GetVertexData();
+  Ulong size = data.size() * sizeof(Float);
+  this->Bind();
+  glBindBuffer(GL_ARRAY_BUFFER, mBuffers[target.vboIndex]);
+  glBufferSubData(GL_ARRAY_BUFFER, offset, size, data.data());
+  this->Unbind();
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
-  mNumIndices = size / sizeof(Uint);
-  glBindVertexArray(mVAO);
+void Buffer::LoadIndices(Vec<Uint> const &indices) {
+  mLoadedIndices = true;
+  mIndexCount = indices.size();
+  this->Bind();
+  glGenBuffers(1, mIBO);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
-  if (mSetIBO) {
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data);
-  } else {
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, data, (GLenum)mUsage);
-    mSetIBO = true;
-  }
-
-  glBindVertexArray(0);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(Uint),
+               indices.data(), GL_STATIC_DRAW);
+  this->Unbind();
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Buffer::LoadAttributes(Attribute const *attributes, Size const &size) {
-  Logger::Trace(LOCATION(Buffer));
-
-  glBindVertexArray(mVAO);
-  glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-
-  for (Size i = 0; i < size; ++i) {
-    Attribute const &attr = attributes[i];
-    glEnableVertexAttribArray(attr.GetIndex());
-    glVertexAttribPointer(attr.GetIndex(), attr.GetComps(), GL_FLOAT, GL_FALSE,
-                          attr.GetStride(), (void const *)(attr.GetOffset()));
-  }
-
-  glBindVertexArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
+void Buffer::ReloadIndices(Vec<Uint> const &indices) {
+  mIndexCount = indices.size();
+  this->Bind();
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
+  glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(Uint),
+                  indices.data());
+  this->Unbind();
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Buffer::Draw(DrawMode const &drawMode) {
-  Logger::Trace(LOCATION(Buffer));
-
-  glBindVertexArray(mVAO);
-  if (mNumIndices == 0) {
-    Logger::Error("No indices loaded.");
-    return;
-  }
-  glDrawElements((GLenum)drawMode, mNumIndices, GL_UNSIGNED_INT, 0);
-  glBindVertexArray(0);
-}
-
-void Buffer::DrawInstances(size_t const &numInstances,
-                           DrawMode const &drawMode) {
-  Logger::Trace(LOCATION(Buffer));
-
-  glBindVertexArray(mVAO);
-
-  if (mNumIndices == 0) {
-    Logger::Error("No indices loaded.");
-    return;
+void Buffer::Draw(DrawMode const &mode) const {
+  if (!mLoadedIndices) {
+    throw Exceptions::BufferError("No indices loaded into buffer.");
   }
 
-  glDrawElementsInstanced((GLenum)drawMode, mNumIndices, GL_UNSIGNED_INT, 0,
-                          numInstances);
-  glBindVertexArray(0);
+  if (mBuffers.size() == 0) {
+    throw Exceptions::BufferError("No buffers attached to buffer.");
+  }
+
+  this->Bind();
+  glDrawElements((GLenum)mode, mIndexCount, GL_UNSIGNED_INT, 0);
+  this->Unbind();
 }
+
+void Buffer::Draw(DrawMode const &mode, Ulong const &count) const {
+  if (!mLoadedIndices) {
+    throw Exceptions::BufferError("No indices loaded into buffer.");
+  }
+
+  if (mBuffers.size() == 0) {
+    throw Exceptions::BufferError("No buffers attached to buffer.");
+  }
+
+  this->Bind();
+  glDrawElementsInstanced((GLenum)mode, mIndexCount, GL_UNSIGNED_INT, nullptr,
+                          count);
+  this->Unbind();
+}
+
 } // namespace TerreateGraphics::Core
