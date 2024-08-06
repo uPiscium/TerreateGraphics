@@ -11,7 +11,7 @@ private:
   mat4 mTransform;
   Float mWidth = 1500.0f;
   Float mHeight = 750.0f;
-  Float mDepth = 100.0f / 0.01f;
+  Float mDepth = 1000.0f - 0.01f;
 
   Font mFont;
   Texture mTexture;
@@ -25,10 +25,10 @@ public:
     mWidth = (Float)width;
     mHeight = (Float)height;
     mShader.Use();
-    mShader.SetMat4("uTransform",
-                    mTransform * TerreateMath::Utils::Scale(1.0f / mWidth,
-                                                            1.0f / mHeight,
-                                                            1.0f / mDepth));
+    mShader.SetMat4(
+        "uTransform",
+        mTransform * scale(identity<mat4>(),
+                           vec3(1.0f / mWidth, 1.0f / mHeight, 1.0f / mDepth)));
   }
 
 public:
@@ -83,9 +83,8 @@ public:
                          {16, 17, 18, 18, 19, 16},
                          {20, 21, 22, 22, 23, 20}});
 
-    mat4 view = TerreateMath::Utils::LookAt(vec3(0, 0, 1), vec3(0, 0, 0),
-                                            vec3(0, 1, 0));
-    mat4 proj = TerreateMath::Utils::Perspective(45.0f, 0.01f, 100.0f);
+    mat4 view = lookAt(vec3(0, 0, 2), vec3(0, 0, 0), vec3(0, 1, 0));
+    mat4 proj = perspective(45.0f, 1.0f, 0.01f, 10000.0f);
     mTransform = proj * view;
 
     // Uncomment if you want to break your brain...
@@ -94,10 +93,10 @@ public:
     mShader.Use();
     mShader.SetInt("uTexture", 0);
     mShader.ActiveTexture(TextureTargets::TEX_0);
-    mShader.SetMat4("uTransform",
-                    mTransform * TerreateMath::Utils::Scale(1.0f / mWidth,
-                                                            1.0f / mHeight,
-                                                            1.0f / mDepth));
+    mShader.SetMat4(
+        "uTransform",
+        mTransform * scale(identity<mat4>(),
+                           vec3(1.0f / mWidth, 1.0f / mHeight, 1.0f / mDepth)));
   }
 
   void OnFrame(Window *window) override {
@@ -105,14 +104,13 @@ public:
     window->Fill({0.2, 0.2, 0.2});
     window->Clear();
 
-    Float angle =
-        TerreateMath::Utils::Radian(10.0f * mClock.GetCurrentRuntime());
-    mat4 model = ToMatrix(TerreateMath::Utils::Rotate(angle, angle, angle));
-    model = TerreateMath::Utils::Translate(0.0f, 0.0f, -100.0f) * model;
+    Float angle = radians(10.0f * mClock.GetCurrentRuntime());
+    mat4 model = rotate(identity<mat4>(), angle, vec3(1, 1, 1));
+    model = translate(model, vec3(0.0f, 0.0f, -100.0f));
 
     mShader.Use();
     mShader.SetMat4("uModel", model);
-    mShader.SetMat4("uNormalTransform", Transpose(Inverse(model)));
+    mShader.SetMat4("uNormalTransform", transpose(inverse(model)));
 
     mTexture.Bind();
     mBuffer.Draw(DrawMode::TRIANGLES);

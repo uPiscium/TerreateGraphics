@@ -3,11 +3,13 @@
 
 #include "buffer.hpp"
 #include "defines.hpp"
+#include "math.hpp"
 #include "texture.hpp"
 
 namespace TerreateGraphics::Model {
 using namespace TerreateGraphics::Core;
 using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::Math;
 
 using TextureMap = Shared<Core::Texture>;
 template <typename T> using BitFlag = TerreateCore::Core::BitFlag<T>;

@@ -4,6 +4,7 @@
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::Math;
 
 void Text::LoadText() {
   mPositions.clear();
@@ -89,9 +90,8 @@ void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
 
     mTextMeshData.LoadVertices(position);
     mTextMesh.LoadData(mTextMeshData);
-    mShader.SetMat4("uModel", TerreateMath::Utils::Translate(vec3(x, y, 0.0f)));
-    mShader.SetMat4("uTransform", TerreateMath::Utils::Orthographic(
-                                      0.0f, windowWidth, 0.0f, windowHeight));
+    mShader.SetMat4("uModel", translate(identity<mat4>(), vec3(x, y, 0.0f)));
+    mShader.SetMat4("uTransform", ortho(0.0f, windowWidth, 0.0f, windowHeight));
 
     chr.texture.Bind();
     mTextMesh.Draw();
