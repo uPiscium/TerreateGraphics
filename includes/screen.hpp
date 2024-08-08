@@ -14,7 +14,9 @@ private:
   GLObject mFrameBuffer = GLObject();
   Uint mWidth;
   Uint mHeight;
-  Vec<Texture> mTextures;
+  Int mInitialViewPort[4];
+  // Vec<Texture> mTextures;
+  Texture mTexture;
   Vec<GLenum> mDrawBuffers;
 
   // FIXME: Support multi-buffer screen.
@@ -47,7 +49,7 @@ public:
    * @brief: Getter for texture.
    * @return: texture
    */
-  Texture const &GetTexture() const { return mTextures[0]; }
+  Texture const &GetTexture() const { return mTexture; }
 
   /*
    * @brief: Transcript to other screen.
@@ -67,7 +69,7 @@ public:
   /*
    * @brief: Binds the screen.
    */
-  void Bind() const;
+  void Bind();
   /*
    * @brief: Unbinds the screen.
    */
@@ -78,17 +80,22 @@ public:
    * @detail: Color format is (red, green, blue). Each color is float (0
    * ~ 1.0).
    */
-  void Fill(Vec<Float> const &color) const;
+  void Fill(Vec<Float> const &color);
   /*
    * @brief: Clear screen.
    */
-  void Clear() const;
+  void Clear();
 
   // FIXME: Support multi-buffer screen.
   /* Texture const &operator[](Index const &index) const { */
   /*   return mTextures[index]; */
   /* } */
   operator Bool() const override { return mFrameBuffer; }
+};
+
+class CubeScreen : public TerreateObjectBase {
+private:
+  ;
 };
 } // namespace TerreateGraphics::Core
 

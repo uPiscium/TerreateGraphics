@@ -41,7 +41,7 @@ public:
    * @param: height: height of texture
    * @param: channels: number of channels in texture
    */
-  Texture(Uint const &texture, Uint const &width, Uint const &height,
+  Texture(GLObject const &texture, Uint const &width, Uint const &height,
           Uint const &channels)
       : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
   }

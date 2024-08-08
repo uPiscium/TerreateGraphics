@@ -1,31 +1,51 @@
 #include "../includes/screen.hpp"
-#include "../includes/exceptions.hpp"
+/* #include "../includes/exceptions.hpp" */
+
+#include <iostream>
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
 void Screen::AddBuffer() {
-  if (mTextures.size() >= 32) {
-    throw Exceptions::ScreenError("Max buffer count reached.");
-    return;
-  }
+  /*   if (mTextures.size() >= 32) { */
+  /*     throw Exceptions::ScreenError("Max buffer count reached."); */
+  /*     return; */
+  /*   } */
 
-  ID buffer = 0;
+  /*   GLObject buffer = GLObject(); */
+
+  /*   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer); */
+  /*   glGenTextures(1, buffer); */
+  /*   glBindTexture(GL_TEXTURE_2D, buffer); */
+  /*   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA,
+   * GL_FLOAT, */
+  /*                nullptr); */
+  /*   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); */
+  /*   glFramebufferTexture2D(GL_FRAMEBUFFER, */
+  /*                          GL_COLOR_ATTACHMENT0 + mTextures.size(),
+   * GL_TEXTURE_2D, */
+  /*                          buffer, 0); */
+  /*   glBindFramebuffer(GL_FRAMEBUFFER, 0); */
+
+  /*   Texture texture = Texture(buffer, mWidth, mHeight, 4); */
+  /*   mDrawBuffers.push_back(GL_COLOR_ATTACHMENT0 + mTextures.size()); */
+  /*   mTextures.push_back(texture); */
+  /*   glBindTexture(GL_TEXTURE_2D, 0); */
+
+  GLObject buffer = GLObject();
 
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
-  glGenTextures(1, &buffer);
+  glGenTextures(1, buffer);
   glBindTexture(GL_TEXTURE_2D, buffer);
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mWidth, mHeight, 0, GL_RGBA, GL_FLOAT,
-               nullptr);
+               NULL);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glFramebufferTexture2D(GL_FRAMEBUFFER,
-                         GL_COLOR_ATTACHMENT0 + mTextures.size(), GL_TEXTURE_2D,
+  glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                          buffer, 0);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  Texture texture = Texture(buffer, mWidth, mHeight, 4);
-  mDrawBuffers.push_back(GL_COLOR_ATTACHMENT0 + mTextures.size());
-  mTextures.push_back(texture);
+  mTexture = Texture(buffer, mWidth, mHeight, 4);
+  mDrawBuffers.push_back(GL_COLOR_ATTACHMENT0);
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -61,27 +81,31 @@ void Screen::Transcript(Screen const &screen) const {
 
 void Screen::DrawOnlyBind() const {
   glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mFrameBuffer);
-  glDrawBuffers(mDrawBuffers.size(), mDrawBuffers.data());
+  // glDrawBuffers(mDrawBuffers.size(), mDrawBuffers.data());
 }
 
-void Screen::Bind() const {
+void Screen::Bind() {
+  glGetIntegerv(GL_VIEWPORT, mInitialViewPort);
   glBindFramebuffer(GL_FRAMEBUFFER, mFrameBuffer);
-  glDrawBuffers(mDrawBuffers.size(), mDrawBuffers.data());
+  glViewport(0, 0, mWidth, mHeight);
+  // glDrawBuffers(mDrawBuffers.size(), mDrawBuffers.data());
 }
 
 void Screen::Unbind() const {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glDrawBuffer(GL_BACK);
+  glViewport(mInitialViewPort[0], mInitialViewPort[1], mInitialViewPort[2],
+             mInitialViewPort[3]);
+  // glDrawBuffer(GL_BACK);
 }
 
-void Screen::Fill(Vec<Float> const &color) const {
+void Screen::Fill(Vec<Float> const &color) {
   this->Bind();
   glClearColor(color[0], color[1], color[2], 0.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   this->Unbind();
 }
 
-void Screen::Clear() const {
+void Screen::Clear() {
   this->Bind();
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
   this->Unbind();
