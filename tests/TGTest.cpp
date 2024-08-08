@@ -1,5 +1,7 @@
 ﻿#include "../../includes/TerreateGraphics.hpp"
 
+#include <iostream>
+
 using namespace TerreateGraphics::Core;
 // using namespace TerreateMath::Utils;
 
@@ -7,6 +9,7 @@ class TestApp : public WindowController {
 private:
   Clock mClock;
   Shader mShader;
+  Shader mScreenShader;
   mat4 mTransform;
   Float mWidth = 1500.0f;
   Float mHeight = 750.0f;
@@ -25,6 +28,8 @@ private:
 
   Buffer mBuffer;
   BufferDataConstructor mColorDataConstructor;
+
+  Screen mScreen;
 
 public:
   void SizeCallback(Window *window, int const &width,
@@ -62,7 +67,7 @@ public:
   }
 
 public:
-  TestApp() {
+  TestApp() : mScreen(1000, 1000) {
     mFont = Font("tests/resources/AsebiMin-Light.otf", 200);
     mText.LoadFont(&mFont);
     mText.LoadText(L"日本語テスト");
@@ -76,6 +81,13 @@ public:
         Shader::LoadShaderSource("tests/resources/fragment.glsl"));
     mShader.Compile();
     mShader.Link();
+
+    mScreenShader.AddVertexShaderSource(
+        Shader::LoadShaderSource("tests/resources/vertex.glsl"));
+    mScreenShader.AddFragmentShaderSource(
+        Shader::LoadShaderSource("tests/resources/fragment.glsl"));
+    mScreenShader.Compile();
+    mScreenShader.Link();
 
     BufferDataConstructor bdc;
 
@@ -125,6 +137,14 @@ public:
         "uTransform",
         mTransform * scale(identity<mat4>(),
                            vec3(1.0f / mWidth, 1.0f / mHeight, 1.0f / mDepth)));
+
+    mScreenShader.Use();
+    mScreenShader.SetInt("uTexture", 0);
+    mScreenShader.ActiveTexture(TextureTargets::TEX_0);
+    mScreenShader.SetMat4(
+        "uTransform",
+        mTransform * scale(identity<mat4>(),
+                           vec3(1.0f / 1000.0f, 1.0f / 1000.f, 1.0f / mDepth)));
   }
 
   void OnFrame(Window *window) override {
@@ -136,13 +156,30 @@ public:
     mat4 model = rotate(identity<mat4>(), angle, vec3(1, 1, 1));
     model = translate(model, vec3(0.0f, 0.0f, -100.0f));
 
+    mScreenShader.Use();
+    mScreenShader.SetMat4("uModel", model);
+    mScreenShader.SetMat4("uNormalTransform", transpose(inverse(model)));
+
+    Texture const &texture = mScreen.GetTexture();
+
+    mScreen.Fill({0.2, 0.2, 0.2});
+    mScreen.Clear();
+    mScreen.Bind();
+    texture.Bind();
+    mBuffer.Draw(DrawMode::TRIANGLES);
+    texture.Unbind();
+    // mText.Render(50, 50, mScreen.GetWidth(), mScreen.GetHeight());
+    mScreen.Unbind();
+    mScreenShader.Unuse();
+
+    window->Bind();
     mShader.Use();
     mShader.SetMat4("uModel", model);
     mShader.SetMat4("uNormalTransform", transpose(inverse(model)));
 
-    mTexture.Bind();
+    texture.Bind();
     mBuffer.Draw(DrawMode::TRIANGLES);
-    mTexture.Unbind();
+    texture.Unbind();
     mShader.Unuse();
 
     mText.Render(50, 50, mWidth, mHeight);
