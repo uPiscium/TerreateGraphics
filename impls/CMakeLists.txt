@@ -67,7 +67,6 @@ function(Build)
     font.cpp
     gl.cpp
     globj.cpp
-    job.cpp
     screen.cpp
     shader.cpp
     text.cpp

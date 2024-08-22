@@ -1,13 +1,6 @@
 #ifndef __TERREATE_GRAPHICS_DEFINES_HPP__
 #define __TERREATE_GRAPHICS_DEFINES_HPP__
 
-#include <atomic>
-#include <condition_variable>
-#include <deque>
-#include <mutex>
-#include <queue>
-#include <thread>
-
 #include <TerreateCore/TerreateCore.hpp>
 
 // Constants
@@ -28,9 +21,6 @@ extern bool GLFW_INITIALIZED;
 extern bool GLAD_INITIALIZED;
 
 // Type aliases
-typedef std::mutex Mutex;
-typedef std::condition_variable CondVar;
-typedef std::thread Thread;
 typedef TCu32 ID;
 typedef TCu64 Index;
 typedef TCu64 EventID;
@@ -42,11 +32,6 @@ typedef std::ifstream InputFileStream;
 typedef std::ofstream OutputFileStream;
 
 template <typename T> using Shared = std::shared_ptr<T>;
-template <typename T, typename Container = std::deque<T>>
-using Queue = std::queue<T, Container>;
-template <typename T> using UniqueLock = std::unique_lock<T>;
-template <typename T> using LockGuard = std::lock_guard<T>;
-template <typename T> using Atomic = std::atomic<T>;
 
 // Callbacks
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;
