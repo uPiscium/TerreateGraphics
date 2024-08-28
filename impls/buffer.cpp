@@ -87,6 +87,31 @@ void Buffer::SetAttributeDivisor(AttributeData const &attribute,
   this->Unbind();
 }
 
+void Buffer::LoadData(Shader &shader, Vec<Float> const &raw,
+                      Map<Str, AttributeData> const &attrs,
+                      BufferUsage const &usage) {
+  Ulong size = raw.size() * sizeof(Float);
+  shader.Use();
+  this->Bind();
+  GLObject buffer = GLObject();
+  glGenBuffers(1, buffer);
+  glBindBuffer(GL_ARRAY_BUFFER, buffer);
+  glBufferData(GL_ARRAY_BUFFER, size, raw.data(), (GLenum)usage);
+
+  for (auto &[name, attr] : attrs) {
+    Uint index = shader.GetAttribute(name);
+    glEnableVertexAttribArray(index);
+    glVertexAttribPointer(index, attr.size, GL_FLOAT, GL_FALSE, attr.stride,
+                          reinterpret_cast<void const *>(attr.offset));
+    mAttributes.insert(
+        {name, {mBuffers.size(), index, attr.size, attr.stride, attr.offset}});
+  }
+  this->Unbind();
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  shader.Unuse();
+  shader.Link();
+  mBuffers.push_back(buffer);
+}
 void Buffer::LoadData(Shader &shader, BufferDataConstructor const &bdc,
                       BufferUsage const &usage) {
   Map<Str, AttributeData> const &attributes = bdc.GetAttributes();
