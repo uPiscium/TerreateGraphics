@@ -114,6 +114,17 @@ public:
 
   /*
    * @brief: Load data into the new buffer
+   * @param: shader: Shader to use to draw the buffer
+   * @param: raw: Raw data to load
+   * @param: attrs: Attributes to load
+   * @param: usage: Buffer usage
+   */
+  void LoadData(Shader &shader, Vec<Float> const &raw,
+                Map<Str, AttributeData> const &attrs,
+                BufferUsage const &usage = BufferUsage::STATIC_DRAW);
+  /*
+   * @brief: Load data into the new buffer
+   * @param: shader: Shader to use to draw the buffer
    * @param: bdc: Buffer data constructor object
    * @param: usage: Buffer usage
    */
