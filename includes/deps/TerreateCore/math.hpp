@@ -1,14 +1,13 @@
-#ifndef __TERREATE_GRAPHICS_MATH_HPP__
-#define __TERREATE_GRAPHICS_MATH_HPP__
+#ifndef __TERREATECORE_MATH_HPP__
+#define __TERREATECORE_MATH_HPP__
 
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
 
 #include "defines.hpp"
-#include "glm/ext/matrix_transform.hpp"
 
-namespace TerreateGraphics::Math {
-using namespace TerreateGraphics::Defines;
+namespace TerreateCore::Math {
+using namespace TerreateCore::Defines;
 
 // glm constants
 const Float PI = glm::pi<Float>();
@@ -83,6 +82,6 @@ using glm::mix;
 using glm::normalize;
 using glm::slerp;
 
-} // namespace TerreateGraphics::Math
+} // namespace TerreateCore::Math
 
-#endif // __TERREATE_GRAPHICS_MATH_HPP__
+#endif // __TERREATECORE_MATH_HPP__
