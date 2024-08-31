@@ -3,11 +3,10 @@
 
 #include "defines.hpp"
 #include "globj.hpp"
-#include "math.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
-using namespace TerreateGraphics::Math;
+using namespace TerreateCore::Math;
 using namespace TerreateGraphics::GL;
 
 struct ShaderOption {
