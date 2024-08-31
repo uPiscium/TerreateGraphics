@@ -3,7 +3,7 @@
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
-using namespace TerreateGraphics::Math;
+using namespace TerreateCore::Math;
 
 void Text::LoadText() {
   mPositions.clear();
