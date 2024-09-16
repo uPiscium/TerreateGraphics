@@ -231,6 +231,7 @@ public:
   }
 };
 
+class UniformBuffer;
 } // namespace TerreateGraphics::Core
 
 #endif // __TERREATE_GRAPHICS_BUFFER_HPP__
