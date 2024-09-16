@@ -230,6 +230,7 @@ public:
     return flat;
   }
 };
+
 } // namespace TerreateGraphics::Core
 
 #endif // __TERREATE_GRAPHICS_BUFFER_HPP__
