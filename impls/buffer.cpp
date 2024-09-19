@@ -1,5 +1,4 @@
 #include "../includes/buffer.hpp"
-#include "../includes/exceptions.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
@@ -213,4 +212,18 @@ void Buffer::Draw(DrawMode const &mode, Ulong const &count) const {
   this->Unbind();
 }
 
+ShaderStorageBuffer::~ShaderStorageBuffer() {
+  if (mSSBO.Count() <= 1) {
+    glDeleteBuffers(1, mSSBO);
+    mSSBO.Delete();
+  }
+}
+
+void ShaderStorageBuffer::Allocate(Ulong const &size,
+                                   BufferUsage const &usage) {
+  this->Bind();
+  glBufferData(GL_SHADER_STORAGE_BUFFER, size, nullptr, (GLenum)usage);
+  mSize = size;
+  this->Unbind();
+}
 } // namespace TerreateGraphics::Core

@@ -204,4 +204,5 @@ void Shader::Use() const {
     glDisable(GL_CULL_FACE);
   }
 }
+
 } // namespace TerreateGraphics::Core
