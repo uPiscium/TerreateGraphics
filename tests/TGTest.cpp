@@ -1,8 +1,10 @@
 ﻿#include "../../includes/TerreateGraphics.hpp"
+#include "TerreateCore/defines.hpp"
 
 #include <iostream>
 
 using namespace TerreateGraphics::Core;
+using namespace TerreateGraphics::Compute;
 // using namespace TerreateMath::Utils;
 
 class TestApp : public WindowController {
@@ -206,6 +208,30 @@ int main() {
 
     TestApp app;
     window.SetWindowController(&app);
+
+    std::vector<float> inputData = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+
+    ShaderStorageBuffer input, output;
+    input.LoadData(inputData);
+    output.Allocate(input.GetSize());
+
+    ComputeKernel kernel;
+    kernel.AddKernelSource(
+        Shader::LoadShaderSource("tests/resources/compute.glsl"));
+    kernel.Compile();
+    kernel.Link();
+
+    kernel.AddStorage(input, "InputBuffer");
+    kernel.AddStorage(output, "OutputBuffer");
+
+    kernel.SetFloat("scaleFactor", 2.0f);
+    kernel.Dispatch(10, 1, 1);
+
+    std::vector<float> outputData;
+    output.GetData(outputData);
+    for (int i = 0; i < inputData.size(); ++i) {
+      std::cout << "output[" << i << "] = " << outputData[i] << std::endl;
+    }
 
     while (window) {
       window.Frame();
