@@ -187,6 +187,14 @@ Window::Window(Uint const &width, Uint const &height, Str const &title,
   glfwSetDropCallback(mWindow, Callbacks::DropCallbackWrapper);
 }
 
+void Window::SetWindowController(WindowController *controller) {
+  if (!mSetController) {
+    delete mController;
+    mSetController = true;
+  }
+  mController = controller;
+}
+
 void Window::Destroy() {
   glfwDestroyWindow(mWindow);
   mWindow = nullptr;

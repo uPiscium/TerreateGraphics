@@ -111,6 +111,7 @@ void Buffer::LoadData(Shader &shader, Vec<Float> const &raw,
   shader.Link();
   mBuffers.push_back(buffer);
 }
+
 void Buffer::LoadData(Shader &shader, BufferDataConstructor const &bdc,
                       BufferUsage const &usage) {
   Map<Str, AttributeData> const &attributes = bdc.GetAttributes();
@@ -210,6 +211,24 @@ void Buffer::Draw(DrawMode const &mode, Ulong const &count) const {
   glDrawElementsInstanced((GLenum)mode, mIndexCount, GL_UNSIGNED_INT, nullptr,
                           count);
   this->Unbind();
+}
+
+UniformBuffer::~UniformBuffer() {
+  if (mUBO.Count() <= 1) {
+    glDeleteBuffers(1, mUBO);
+    mUBO.Delete();
+  }
+}
+
+void UniformBuffer::Allocate(Ulong const &size, BufferUsage const &usage) {
+  this->Bind();
+  glBufferData(GL_UNIFORM_BUFFER, size, nullptr, (GLenum)usage);
+  this->Unbind();
+}
+
+void UniformBuffer::Bind(Shader const &shader, Str const &name) const {
+  shader.BindUniformBlock(name, (Uint)mUBO);
+  glBindBufferBase(GL_UNIFORM_BUFFER, (Uint)mUBO, mUBO);
 }
 
 ShaderStorageBuffer::~ShaderStorageBuffer() {
