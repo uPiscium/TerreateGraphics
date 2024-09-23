@@ -63,13 +63,12 @@ public:
     return glGetUniformLocation(mShaderID, name.c_str());
   }
   /*
-   * @brief: Getter for shader storage block index.
-   * @param: name: name of storage block
-   * @return: storage block index
+   * @brief: Getter for uniform block index.
+   * @param: name: name of uniform block
+   * @return: uniform block index
    */
-  unsigned GetStorageBlockIndex(Str const &name) const {
-    return glGetProgramResourceIndex(mShaderID, GL_SHADER_STORAGE_BLOCK,
-                                     name.c_str());
+  unsigned GetUniformBlockIndex(Str const &name) const {
+    return glGetUniformBlockIndex(mShaderID, name.c_str());
   }
 
   /*
@@ -241,6 +240,14 @@ public:
    */
   void AddGeometryShaderSource(Str const &source) {
     mGeometryShaderSource += source;
+  }
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: binding: binding point
+   */
+  void BindUniformBlock(Str const &name, Uint const &binding) const {
+    glUniformBlockBinding(mShaderID, this->GetUniformBlockIndex(name), binding);
   }
   /*
    * @brief: This function swiches blending on or off.

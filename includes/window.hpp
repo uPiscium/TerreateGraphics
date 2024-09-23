@@ -253,12 +253,18 @@ public:
   virtual void OnFrame(Window *window) = 0;
 };
 
+class DummyWindowController final : public WindowController {
+public:
+  void OnFrame(Window *window) override {}
+};
+
 class Window final : public TerreateObjectBase {
 private:
   GLFWwindow *mWindow = nullptr;
   void *mUserPointer = nullptr;
   WindowProperty mProperty;
-  WindowController *mController = nullptr;
+  Bool mSetController = false;
+  WindowController *mController = new DummyWindowController();
 
   friend void Callbacks::WindowPositionCallbackWrapper(GLFWwindow *window,
                                                        int xpos, int ypos);
@@ -510,9 +516,7 @@ public:
    * @brief: This function sets window controller.
    * @param: controller: Window controller.
    */
-  void SetWindowController(WindowController *controller) {
-    mController = controller;
-  }
+  void SetWindowController(WindowController *controller);
 
   /*
    * @brief: This function returns whether window is closed or not.

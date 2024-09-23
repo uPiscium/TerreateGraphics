@@ -3,6 +3,8 @@
 
 #include <TerreateCore/TerreateCore.hpp>
 
+#include <iostream>
+
 // Constants
 #define GLAD_H <glad/gl.h>
 #define GLFW_H <GLFW/glfw3.h>

@@ -232,6 +232,52 @@ public:
   }
 };
 
+class UniformBuffer : public TerreateObjectBase {
+private:
+  GLObject mUBO = GLObject();
+
+private:
+  void Bind() const { glBindBuffer(GL_UNIFORM_BUFFER, mUBO); }
+  void Unbind() const { glBindBuffer(GL_UNIFORM_BUFFER, 0); }
+
+public:
+  UniformBuffer() { glGenBuffers(1, mUBO); }
+  ~UniformBuffer() override;
+
+  template <typename T>
+  void LoadData(T const &data,
+                BufferUsage const &usage = BufferUsage::STATIC_DRAW) {
+    this->Bind();
+    glBufferData(GL_UNIFORM_BUFFER, sizeof(T), &data, (GLenum)usage);
+    this->Unbind();
+  }
+  template <typename T>
+  void LoadData(Vec<T> const &data,
+                BufferUsage const &usage = BufferUsage::STATIC_DRAW) {
+    this->Bind();
+    glBufferData(GL_UNIFORM_BUFFER, data.size() * sizeof(T), data.data(),
+                 (GLenum)usage);
+    this->Unbind();
+  }
+  template <typename T>
+  void ReloadData(T const &data, Ulong const &offset = 0u) {
+    this->Bind();
+    glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(T), &data);
+    this->Unbind();
+  }
+  template <typename T>
+  void ReloadData(Vec<T> const &data, Ulong const &offset = 0u) {
+    this->Bind();
+    glBufferSubData(GL_UNIFORM_BUFFER, offset, data.size() * sizeof(T),
+                    data.data());
+    this->Unbind();
+  }
+  void Allocate(Ulong const &size,
+                BufferUsage const &usage = BufferUsage::STATIC_DRAW);
+
+  void Bind(Shader const &shader, Str const &name) const;
+};
+
 class ShaderStorageBuffer : public TerreateObjectBase {
 private:
   GLObject mSSBO = GLObject();
