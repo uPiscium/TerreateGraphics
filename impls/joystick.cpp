@@ -22,6 +22,11 @@ void JoystickCallback(int id, int event) {
 
 JoystickAxisState Joystick::AcquireAxisState() const {
   JoystickAxisState state;
+
+  if (!this->IsConnected()) {
+    return state;
+  }
+
   if (!this->IsGamepad()) {
     int count = 0;
     Float const *axes = glfwGetJoystickAxes((int)mJoystickId, &count);
@@ -61,6 +66,11 @@ JoystickAxisState Joystick::AcquireAxisState() const {
 
 JoystickButtonState Joystick::AcquireButtonState() const {
   JoystickButtonState state;
+
+  if (!this->IsConnected()) {
+    return state;
+  }
+
   if (!this->IsGamepad()) {
     int count = 0;
     unsigned char const *buttons =
@@ -152,6 +162,11 @@ JoystickButtonState Joystick::AcquireButtonState() const {
 
 JoystickHatState Joystick::AcquireHatState() const {
   JoystickHatState state;
+
+  if (!this->IsConnected()) {
+    return state;
+  }
+
   int count = 0;
   Ubyte const *hats = glfwGetJoystickHats((int)mJoystickId, &count);
 
