@@ -38,6 +38,8 @@ void Initialize() {
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
 
+  glfwSetJoystickCallback(JoystickCallback);
+
   GLFW_INITIALIZED = true;
 }
 
