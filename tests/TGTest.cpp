@@ -83,7 +83,7 @@ void OutputJoystickData(Joystick const &joystick, Text &text, Uint const &width,
   text.Render(0, 1250, width, height);
 }
 
-class TestApp : public WindowController {
+class TestApp {
 private:
   Clock mClock;
   Shader mShader;
@@ -117,8 +117,7 @@ private:
   UniformBuffer mScreenUBO;
 
 public:
-  void SizeCallback(Window *window, int const &width,
-                    int const &height) override {
+  void SizeCallback(Window *window, int const &width, int const &height) {
     glViewport(0, 0, width, height);
     mWidth = (Float)width;
     mHeight = (Float)height;
@@ -128,7 +127,7 @@ public:
     mUBO.ReloadData(mUniform);
   }
 
-  void KeyCallback(Window *window, Key const &key) override {
+  void KeyCallback(Window *window, Key const &key) {
     if (key.key == Keyboard::K_ESCAPE) {
       window->Close();
     }
@@ -145,7 +144,7 @@ public:
     }
   }
 
-  void CharCallback(Window *window, Uint const &codepoint) override {
+  void CharCallback(Window *window, Uint const &codepoint) {
     mTextString.push_back(codepoint);
     mText.LoadText(mTextString);
   }
@@ -239,7 +238,7 @@ public:
     mScreenShader.ActiveTexture(TextureTargets::TEX_0);
   }
 
-  void OnFrame(Window *window) override {
+  void OnFrame(Window *window) {
     window->PollEvents();
     window->Fill({0.2, 0.2, 0.2});
     window->Clear();
@@ -277,7 +276,7 @@ public:
     texture.Unbind();
     mShader.Unuse();
 
-    mText.Render(50, 50, mWidth, mHeight);
+    mText.Render(0, 0, mWidth, mHeight);
 
     AttributeData color = mBuffer["iColor"];
     Float r = (state.leftTrigger + 1) / 2;
@@ -353,10 +352,20 @@ int main() {
     Window window(2500, 1600, "Test Window", WindowSettings());
 
     TestApp app;
-    window.SetWindowController(&app);
+    window.GetSizePublisher().Subscribe(
+        [&app](Window *window, int const &width, int const &height) {
+          app.SizeCallback(window, width, height);
+        });
+    window.GetKeyPublisher().Subscribe([&app](Window *window, Key const &key) {
+      app.KeyCallback(window, key);
+    });
+    window.GetCharPublisher().Subscribe(
+        [&app](Window *window, Uint const &codepoint) {
+          app.CharCallback(window, codepoint);
+        });
 
     while (window) {
-      window.Frame();
+      window.Frame([&app](Window *window) { app.OnFrame(window); });
     }
   }
   Terminate();
