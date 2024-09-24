@@ -68,6 +68,7 @@ function(Build)
     font.cpp
     gl.cpp
     globj.cpp
+    joystick.cpp
     screen.cpp
     shader.cpp
     text.cpp
