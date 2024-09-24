@@ -1,5 +1,4 @@
 #include "../includes/buffer.hpp"
-#include "../includes/exceptions.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
@@ -112,6 +111,7 @@ void Buffer::LoadData(Shader &shader, Vec<Float> const &raw,
   shader.Link();
   mBuffers.push_back(buffer);
 }
+
 void Buffer::LoadData(Shader &shader, BufferDataConstructor const &bdc,
                       BufferUsage const &usage) {
   Map<Str, AttributeData> const &attributes = bdc.GetAttributes();
@@ -213,4 +213,36 @@ void Buffer::Draw(DrawMode const &mode, Ulong const &count) const {
   this->Unbind();
 }
 
+UniformBuffer::~UniformBuffer() {
+  if (mUBO.Count() <= 1) {
+    glDeleteBuffers(1, mUBO);
+    mUBO.Delete();
+  }
+}
+
+void UniformBuffer::Allocate(Ulong const &size, BufferUsage const &usage) {
+  this->Bind();
+  glBufferData(GL_UNIFORM_BUFFER, size, nullptr, (GLenum)usage);
+  this->Unbind();
+}
+
+void UniformBuffer::Bind(Shader const &shader, Str const &name) const {
+  shader.BindUniformBlock(name, (Uint)mUBO);
+  glBindBufferBase(GL_UNIFORM_BUFFER, (Uint)mUBO, mUBO);
+}
+
+ShaderStorageBuffer::~ShaderStorageBuffer() {
+  if (mSSBO.Count() <= 1) {
+    glDeleteBuffers(1, mSSBO);
+    mSSBO.Delete();
+  }
+}
+
+void ShaderStorageBuffer::Allocate(Ulong const &size,
+                                   BufferUsage const &usage) {
+  this->Bind();
+  glBufferData(GL_SHADER_STORAGE_BUFFER, size, nullptr, (GLenum)usage);
+  mSize = size;
+  this->Unbind();
+}
 } // namespace TerreateGraphics::Core

@@ -48,6 +48,39 @@ public:
    */
   void PublishEvent(Str const &event);
 };
+
+template <typename Subscriber> class Publisher {
+private:
+  Vec<Subscriber> mSubscribers;
+
+public:
+  Publisher() = default;
+  ~Publisher() = default;
+
+  void Subscribe(Subscriber subscriber) { mSubscribers.push_back(subscriber); }
+  void Unsubscribe(Subscriber subscriber) {
+    auto it = std::find(mSubscribers.begin(), mSubscribers.end(), subscriber);
+    if (it != mSubscribers.end()) {
+      mSubscribers.erase(it);
+    }
+  }
+
+  template <typename... Args> void Publish(Args... args) {
+    for (auto &subscriber : mSubscribers) {
+      subscriber(args...);
+    }
+  }
+
+  Subscriber &operator+=(Subscriber subscriber) {
+    Subscribe(subscriber);
+    return subscriber;
+  }
+  Subscriber &operator-=(Subscriber subscriber) {
+    Unsubscribe(subscriber);
+    return subscriber;
+  }
+};
+
 } // namespace TerreateGraphics::Event
 
 #endif // __TERREATE_GRAPHICS_EVENT_HPP__

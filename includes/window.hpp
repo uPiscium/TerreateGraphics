@@ -2,9 +2,44 @@
 #define __TERREATE_GRAPHICS_WINDOW_HPP__
 
 #include "defines.hpp"
+#include "event.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+
+class Window;
+
+typedef Event::Publisher<Function<void(Window *, Uint const &, Uint const &)>>
+    WindowPositionPublisher;
+typedef Event::Publisher<Function<void(Window *, Uint const &, Uint const &)>>
+    WindowSizePublisher;
+typedef Event::Publisher<Function<void(Window *)>> WindowClosePublisher;
+typedef Event::Publisher<Function<void(Window *)>> WindowRefreshPublisher;
+typedef Event::Publisher<Function<void(Window *, Bool const &)>>
+    WindowFocusPublisher;
+typedef Event::Publisher<Function<void(Window *, Bool const &)>>
+    WindowIconifyPublisher;
+typedef Event::Publisher<Function<void(Window *, Bool const &)>>
+    WindowMaximizePublisher;
+typedef Event::Publisher<Function<void(Window *, Uint const &, Uint const &)>>
+    WindowFramebufferSizePublisher;
+typedef Event::Publisher<Function<void(Window *, Float const &, Float const &)>>
+    WindowContentScalePublisher;
+typedef Event::Publisher<
+    Function<void(Window *, Uint const &, Uint const &, Modifier const &)>>
+    MousebuttonPublisher;
+typedef Event::Publisher<
+    Function<void(Window *, Double const &, Double const &)>>
+    CursorPositionPublisher;
+typedef Event::Publisher<Function<void(Window *, Bool const &)>>
+    CursorEnterPublisher;
+typedef Event::Publisher<
+    Function<void(Window *, Double const &, Double const &)>>
+    ScrollPublisher;
+typedef Event::Publisher<Function<void(Window *, Key const &)>> KeyPublisher;
+typedef Event::Publisher<Function<void(Window *, Uint const &)>> CharPublisher;
+typedef Event::Publisher<Function<void(Window *, Vec<Str> const &)>>
+    DropPublisher;
 
 class Icon final : public TerreateObjectBase {
 private:
@@ -135,8 +170,6 @@ public:
   Uint scaleToMonitor = GLFW_FALSE;
 };
 
-class Window;
-
 class WindowProperty {
 private:
   Str mTitle = "TerreateCore Window";
@@ -222,78 +255,27 @@ public:
   void ClearInputs();
 };
 
-class WindowController {
-public:
-  virtual ~WindowController() = default;
-
-  virtual void PositionCallback(Window *window, int const &xpos,
-                                int const &ypos) {}
-  virtual void SizeCallback(Window *window, int const &width,
-                            int const &height) {}
-  virtual void CloseCallback(Window *window) {}
-  virtual void RefreshCallback(Window *window) {}
-  virtual void FocusCallback(Window *window, Bool const &focused) {}
-  virtual void IconifyCallback(Window *window, Bool const &iconified) {}
-  virtual void MaximizeCallback(Window *window, Bool const &maximized) {}
-  virtual void FramebufferSizeCallback(Window *window, int const &width,
-                                       int const &height) {}
-  virtual void ContentScaleCallback(Window *window, float const &xscale,
-                                    float const &yscale) {}
-  virtual void MousebuttonCallback(Window *window, Uint const &button,
-                                   Uint const &action, Modifier const &mods) {}
-  virtual void CursorPositionCallback(Window *window, double const &xpos,
-                                      double const &ypos) {}
-  virtual void CursorEnterCallback(Window *window, Bool const &entered) {}
-  virtual void ScrollCallback(Window *window, double const &xoffset,
-                              double const &yoffset) {}
-  virtual void KeyCallback(Window *window, Key const &key) {}
-  virtual void CharCallback(Window *window, Uint const &codepoint) {}
-  virtual void DropCallback(Window *window, Vec<Str> const &paths) {}
-
-  virtual void OnFrame(Window *window) = 0;
-};
-
 class Window final : public TerreateObjectBase {
 private:
   GLFWwindow *mWindow = nullptr;
-  void *mUserPointer = nullptr;
   WindowProperty mProperty;
-  WindowController *mController = nullptr;
 
-  friend void Callbacks::WindowPositionCallbackWrapper(GLFWwindow *window,
-                                                       int xpos, int ypos);
-  friend void Callbacks::WindowSizeCallbackWrapper(GLFWwindow *window,
-                                                   int width, int height);
-  friend void Callbacks::WindowCloseCallbackWrapper(GLFWwindow *window);
-  friend void Callbacks::WindowRefreshCallbackWrapper(GLFWwindow *window);
-  friend void Callbacks::WindowFocusCallbackWrapper(GLFWwindow *window,
-                                                    int focused);
-  friend void Callbacks::WindowIconifyCallbackWrapper(GLFWwindow *window,
-                                                      int iconified);
-  friend void Callbacks::WindowMaximizeCallbackWrapper(GLFWwindow *window,
-                                                       int maximized);
-  friend void
-  Callbacks::WindowFramebufferSizeCallbackWrapper(GLFWwindow *window, int width,
-                                                  int height);
-  friend void Callbacks::WindowContentScaleCallbackWrapper(GLFWwindow *window,
-                                                           float xscale,
-                                                           float yscale);
-  friend void Callbacks::MousebuttonCallbackWrapper(GLFWwindow *window,
-                                                    int button, int action,
-                                                    int mods);
-  friend void Callbacks::CursorPositionCallbackWrapper(GLFWwindow *window,
-                                                       double xpos,
-                                                       double ypos);
-  friend void Callbacks::CursorEnterCallbackWrapper(GLFWwindow *window,
-                                                    int entered);
-  friend void Callbacks::ScrollCallbackWrapper(GLFWwindow *window,
-                                               double xoffset, double yoffset);
-  friend void Callbacks::KeyCallbackWrapper(GLFWwindow *window, int key,
-                                            int scancode, int action, int mods);
-  friend void Callbacks::CharCallbackWrapper(GLFWwindow *window,
-                                             Uint codepoint);
-  friend void Callbacks::DropCallbackWrapper(GLFWwindow *window, int count,
-                                             const char **paths);
+  WindowPositionPublisher mPositionPublisher;
+  WindowSizePublisher mSizePublisher;
+  WindowClosePublisher mClosePublisher;
+  WindowRefreshPublisher mRefreshPublisher;
+  WindowFocusPublisher mFocusPublisher;
+  WindowIconifyPublisher mIconifyPublisher;
+  WindowMaximizePublisher mMaximizePublisher;
+  WindowFramebufferSizePublisher mFramebufferSizePublisher;
+  WindowContentScalePublisher mContentScalePublisher;
+  MousebuttonPublisher mMousebuttonPublisher;
+  CursorPositionPublisher mCursorPositionPublisher;
+  CursorEnterPublisher mCursorEnterPublisher;
+  ScrollPublisher mScrollPublisher;
+  KeyPublisher mKeyPublisher;
+  CharPublisher mCharPublisher;
+  DropPublisher mDropPublisher;
 
 private:
   Window(Window const &) = delete;
@@ -311,6 +293,208 @@ public:
          WindowSettings const &settings);
   ~Window() override { this->Destroy(); }
 
+  /*
+   * @brief: This function returns window property class.
+   * @return: Window property class.
+   */
+  WindowProperty &GetProperty() { return mProperty; }
+  /*
+   * @brief: This function returns window property class.
+   * @return: Window property class.
+   */
+  WindowProperty const &GetProperty() const { return mProperty; }
+  /*
+   * @brief: This function returns window position publisher.
+   * @return: Window position publisher.
+   */
+  WindowPositionPublisher &GetPositionPublisher() { return mPositionPublisher; }
+  /*
+   * @brief: This function returns window position publisher.
+   * @return: Window position publisher.
+   */
+  WindowPositionPublisher const &GetPositionPublisher() const {
+    return mPositionPublisher;
+  }
+  /*
+   * @brief: This function returns window size publisher.
+   * @return: Window size publisher.
+   */
+  WindowSizePublisher &GetSizePublisher() { return mSizePublisher; }
+  /*
+   * @brief: This function returns window size publisher.
+   * @return: Window size publisher.
+   */
+  WindowSizePublisher const &GetSizePublisher() const { return mSizePublisher; }
+  /*
+   * @brief: This function returns window close publisher.
+   * @return: Window close publisher.
+   */
+  WindowClosePublisher &GetClosePublisher() { return mClosePublisher; }
+  /*
+   * @brief: This function returns window close publisher.
+   * @return: Window close publisher.
+   */
+  WindowClosePublisher const &GetClosePublisher() const {
+    return mClosePublisher;
+  }
+  /*
+   * @brief: This function returns window refresh publisher.
+   * @return: Window refresh publisher.
+   */
+  WindowRefreshPublisher &GetRefreshPublisher() { return mRefreshPublisher; }
+  /*
+   * @brief: This function returns window refresh publisher.
+   * @return: Window refresh publisher.
+   */
+  WindowRefreshPublisher const &GetRefreshPublisher() const {
+    return mRefreshPublisher;
+  }
+  /*
+   * @brief: This function returns window focus publisher.
+   * @return: Window focus publisher.
+   */
+  WindowFocusPublisher &GetFocusPublisher() { return mFocusPublisher; }
+  /*
+   * @brief: This function returns window focus publisher.
+   * @return: Window focus publisher.
+   */
+  WindowFocusPublisher const &GetFocusPublisher() const {
+    return mFocusPublisher;
+  }
+  /*
+   * @brief: This function returns window iconify publisher.
+   * @return: Window iconify publisher.
+   */
+  WindowIconifyPublisher &GetIconifyPublisher() { return mIconifyPublisher; }
+  /*
+   * @brief: This function returns window iconify publisher.
+   * @return: Window iconify publisher.
+   */
+  WindowIconifyPublisher const &GetIconifyPublisher() const {
+    return mIconifyPublisher;
+  }
+  /*
+   * @brief: This function returns window maximize publisher.
+   * @return: Window maximize publisher.
+   */
+  WindowMaximizePublisher &GetMaximizePublisher() { return mMaximizePublisher; }
+  /*
+   * @brief: This function returns window maximize publisher.
+   * @return: Window maximize publisher.
+   */
+  WindowMaximizePublisher const &GetMaximizePublisher() const {
+    return mMaximizePublisher;
+  }
+  /*
+   * @brief: This function returns window framebuffer size publisher.
+   * @return: Window framebuffer size publisher.
+   */
+  WindowFramebufferSizePublisher &GetFramebufferSizePublisher() {
+    return mFramebufferSizePublisher;
+  }
+  /*
+   * @brief: This function returns window framebuffer size publisher.
+   * @return: Window framebuffer size publisher.
+   */
+  WindowFramebufferSizePublisher const &GetFramebufferSizePublisher() const {
+    return mFramebufferSizePublisher;
+  }
+  /*
+   * @brief: This function returns window content scale publisher.
+   * @return: Window content scale publisher.
+   */
+  WindowContentScalePublisher &GetContentScalePublisher() {
+    return mContentScalePublisher;
+  }
+  /*
+   * @brief: This function returns window content scale publisher.
+   * @return: Window content scale publisher.
+   */
+  WindowContentScalePublisher const &GetContentScalePublisher() const {
+    return mContentScalePublisher;
+  }
+  /*
+   * @brief: This function returns mousebutton publisher.
+   * @return: Mousebutton publisher.
+   */
+  MousebuttonPublisher &GetMousebuttonPublisher() {
+    return mMousebuttonPublisher;
+  }
+  /*
+   * @brief: This function returns mousebutton publisher.
+   * @return: Mousebutton publisher.
+   */
+  MousebuttonPublisher const &GetMousebuttonPublisher() const {
+    return mMousebuttonPublisher;
+  }
+  /*
+   * @brief: This function returns cursor position publisher.
+   * @return: Cursor position publisher.
+   */
+  CursorPositionPublisher &GetCursorPositionPublisher() {
+    return mCursorPositionPublisher;
+  }
+  /*
+   * @brief: This function returns cursor position publisher.
+   * @return: Cursor position publisher.
+   */
+  CursorPositionPublisher const &GetCursorPositionPublisher() const {
+    return mCursorPositionPublisher;
+  }
+  /*
+   * @brief: This function returns cursor enter publisher.
+   * @return: Cursor enter publisher.
+   */
+  CursorEnterPublisher &GetCursorEnterPublisher() {
+    return mCursorEnterPublisher;
+  }
+  /*
+   * @brief: This function returns cursor enter publisher.
+   * @return: Cursor enter publisher.
+   */
+  CursorEnterPublisher const &GetCursorEnterPublisher() const {
+    return mCursorEnterPublisher;
+  }
+  /*
+   * @brief: This function returns scroll publisher.
+   * @return: Scroll publisher.
+   */
+  ScrollPublisher &GetScrollPublisher() { return mScrollPublisher; }
+  /*
+   * @brief: This function returns scroll publisher.
+   * @return: Scroll publisher.
+   */
+  ScrollPublisher const &GetScrollPublisher() const { return mScrollPublisher; }
+  /*
+   * @brief: This function returns key publisher.
+   * @return: Key publisher.
+   */
+  KeyPublisher &GetKeyPublisher() { return mKeyPublisher; }
+  /*
+   * @brief: This function returns key publisher.
+   * @return: Key publisher.
+   */
+  KeyPublisher const &GetKeyPublisher() const { return mKeyPublisher; }
+  /*
+   * @brief: This function returns char publisher.
+   * @return: Char publisher.
+   */
+  CharPublisher &GetCharPublisher() { return mCharPublisher; }
+  /*
+   * @brief: This function returns char publisher.
+   * @return: Char publisher.
+   */
+  CharPublisher const &GetCharPublisher() const { return mCharPublisher; }
+  /*
+   * @brief: This function returns drop publisher.
+   * @return: Drop publisher.
+   */
+  DropPublisher &GetDropPublisher() { return mDropPublisher; }
+  /*
+   * @brief: This function returns drop publisher.
+   * @return: Drop publisher.
+   */
+  DropPublisher const &GetDropPublisher() const { return mDropPublisher; }
   /*
    * @brief: This function returns window size.
    * @return: Window size.
@@ -404,13 +588,6 @@ public:
   CursorMode GetCursorMode() const {
     return static_cast<CursorMode>(glfwGetInputMode(mWindow, GLFW_CURSOR));
   }
-  /*
-   * @brief: This function returns user pointer binded to window.
-   * @return: User pointer.
-   */
-  template <typename T> T *GetUserPointer() const {
-    return static_cast<T *>(mUserPointer);
-  }
 
   /*
    * @brief: This function sets window as current context.
@@ -500,18 +677,23 @@ public:
     glfwSetInputMode(mWindow, GLFW_CURSOR, (int)mode);
   }
   /*
-   * This function sets user pointer binded to window.
-   * @param: pointer: User pointer.
+   * @brief: This function sets window view port.
+   * @param: x0: View port x0.
+   * @param: y0: View port y0.
+   * @param: width: View port width.
+   * @param: height: View port height.
    */
-  template <typename T> void SetUserPointer(T *pointer) {
-    mUserPointer = static_cast<void *>(pointer);
+  void SetViewPort(Uint const &x0, Uint const &y0, Uint const &width,
+                   Uint const &height) {
+    glViewport(x0, y0, width, height);
   }
   /*
-   * @brief: This function sets window controller.
-   * @param: controller: Window controller.
+   * @brief: This function sets window view port.
+   * @param: width: View port width.
+   * @param: height: View port height.
    */
-  void SetWindowController(WindowController *controller) {
-    mController = controller;
+  void SetViewPort(Uint const &width, Uint const &height) {
+    glViewport(0, 0, width, height);
   }
 
   /*
@@ -704,7 +886,7 @@ public:
   /*
    * @brief: This function executes callbacks->Run().
    */
-  void Frame();
+  void Frame(Function<void(Window *)> const &frameFunction);
 
   operator Bool() const override { return !this->IsClosed(); }
 };

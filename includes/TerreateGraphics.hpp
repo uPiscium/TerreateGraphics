@@ -2,9 +2,11 @@
 #define __TERREATE_GRAPHICS_TERREATEGRAPHICS_HPP__
 
 #include "buffer.hpp"
+#include "compute.hpp"
 #include "defines.hpp"
 #include "event.hpp"
 #include "font.hpp"
+#include "joystick.hpp"
 #include "screen.hpp"
 #include "shader.hpp"
 #include "text.hpp"
