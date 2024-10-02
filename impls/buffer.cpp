@@ -245,4 +245,14 @@ void ShaderStorageBuffer::Allocate(Ulong const &size,
   mSize = size;
   this->Unbind();
 }
+
+void ShaderStorageBuffer::Bind(Shader &shader, Str const &name) const {
+  shader.BindStorageBlock(name, (Uint)mSSBO);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, (Uint)mSSBO, mSSBO);
+}
+
+void ShaderStorageBuffer::Bind(ComputeKernel &shader, Str const &name) const {
+  shader.BindStorageBlock(name, (Uint)mSSBO);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, (Uint)mSSBO, mSSBO);
+}
 } // namespace TerreateGraphics::Core

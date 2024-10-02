@@ -317,8 +317,8 @@ void TestCompute() {
   kernel.Compile();
   kernel.Link();
 
-  kernel.AddStorage(input, "InputBuffer");
-  kernel.AddStorage(output, "OutputBuffer");
+  input.Bind(kernel, "InputBuffer");
+  output.Bind(kernel, "OutputBuffer");
 
   kernel.SetFloat("scaleFactor", 2.0f);
   kernel.Dispatch(10, 1, 1);
@@ -329,8 +329,8 @@ void TestCompute() {
   kernel2.Compile();
   kernel2.Link();
 
-  kernel2.AddStorage(input2, "InputBuffer");
-  kernel2.AddStorage(output2, "OutputBuffer");
+  input2.Bind(kernel2, "InputBuffer");
+  output2.Bind(kernel2, "OutputBuffer");
 
   kernel2.SetFloat("scaleFactor", 3.0f);
   kernel2.Dispatch(10, 1, 1);
@@ -363,6 +363,8 @@ int main() {
         [&app](Window *window, Uint const &codepoint) {
           app.CharCallback(window, codepoint);
         });
+
+    // TestCompute();
 
     while (window) {
       window.Frame([&app](Window *window) { app.OnFrame(window); });
