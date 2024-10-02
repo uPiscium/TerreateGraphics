@@ -1,6 +1,7 @@
 #ifndef __TERREATE_GRAPHICS_BUFFER_HPP__
 #define __TERREATE_GRAPHICS_BUFFER_HPP__
 
+#include "compute.hpp"
 #include "defines.hpp"
 #include "exceptions.hpp"
 #include "globj.hpp"
@@ -8,6 +9,7 @@
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+using namespace TerreateGraphics::Compute;
 using namespace TerreateGraphics::GL;
 
 struct AttributeData {
@@ -356,9 +358,8 @@ public:
 
   void Allocate(Ulong const &size,
                 BufferUsage const &usage = BufferUsage::STATIC_DRAW);
-  void BindBase(Uint const &index) const {
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, index, mSSBO);
-  }
+  void Bind(Shader &shader, Str const &name) const;
+  void Bind(ComputeKernel &kernel, Str const &name) const;
 };
 } // namespace TerreateGraphics::Core
 

@@ -1,13 +1,13 @@
 #ifndef __TERREATE_GRAPHICS_KERNEL_HPP__
 #define __TERREATE_GRAPHICS_KERNEL_HPP__
 
-#include "buffer.hpp"
+// #include "buffer.hpp"
 #include "defines.hpp"
 #include "globj.hpp"
 
 namespace TerreateGraphics::Compute {
 using namespace TerreateGraphics::Defines;
-using namespace TerreateGraphics::Core;
+// using namespace TerreateGraphics::Core;
 using namespace TerreateGraphics::GL;
 using namespace TerreateCore::Math;
 
@@ -17,8 +17,6 @@ private:
   Bool mLinked = false;
   GLObject mKernelID = GLObject();
   Str mKernelSource = "";
-  Map<Uint, ShaderStorageBuffer> mSSBOMap;
-  Map<Uint, Uint> mSSBOBindingMap;
 
 public:
   /*
@@ -144,16 +142,20 @@ public:
   void SetMat4(Str const &name, mat4 const &value) const;
 
   /*
-   * @brief: Add shader storage block.
-   * @param: name: name of storage block
-   * @param: binding: binding point of storage block
-   */
-  void AddStorage(ShaderStorageBuffer const &ssbo, Str const &name);
-  /*
    * @brief: Add kernel source.
    * @param: source: source code to add
    */
   void AddKernelSource(Str const &source) { mKernelSource += source; }
+
+  /*
+   * @brief: This function binds storage block index to binding point.
+   * @param: name: name of storage block
+   * @param: binding: binding point
+   */
+  void BindStorageBlock(Str const &name, Uint const &binding) const {
+    glShaderStorageBlockBinding(mKernelID, this->GetStorageBlockIndex(name),
+                                binding);
+  }
 
   /*
    * @brief: Compile shader.
