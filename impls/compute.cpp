@@ -151,25 +151,6 @@ void ComputeKernel::SetMat4(Str const &name, mat4 const &value) const {
   glUseProgram(0);
 }
 
-void ComputeKernel::AddStorage(ShaderStorageBuffer const &ssbo,
-                               Str const &name) {
-  if (!mLinked) {
-    throw Exceptions::ShaderError("Kernel is not linked");
-    return;
-  }
-
-  Uint index = this->GetStorageBlockIndex(name);
-
-  if (mSSBOBindingMap.find(index) == mSSBOBindingMap.end()) {
-    Uint newID = mSSBOBindingMap.size();
-    glShaderStorageBlockBinding(mKernelID, index, newID);
-    mSSBOBindingMap.insert({index, newID});
-    mSSBOMap.insert({index, ssbo});
-  }
-
-  ssbo.BindBase(mSSBOBindingMap.at(index));
-}
-
 void ComputeKernel::Compile() {
   if (mKernelSource == "") {
     throw Exceptions::ShaderError("Compute kernel source is empty");
