@@ -1,10 +1,6 @@
 #ifndef __TERREATE_GRAPHICS_TEXTURE_HPP__
 #define __TERREATE_GRAPHICS_TEXTURE_HPP__
 
-#define STB_IMAGE_STATIC
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
-
 #include "defines.hpp"
 #include "globj.hpp"
 

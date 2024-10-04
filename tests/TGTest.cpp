@@ -163,8 +163,6 @@ public:
     mInfoText.LoadShader("tests/resources/textVert.glsl",
                          "tests/resources/textFrag.glsl");
 
-    mTexture.LoadData(Texture::LoadTexture("tests/resources/testImage.png"));
-
     mShader.AddVertexShaderSource(
         Shader::LoadShaderSource("tests/resources/testVert.glsl"));
     mShader.AddFragmentShaderSource(

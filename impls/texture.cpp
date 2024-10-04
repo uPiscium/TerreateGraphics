@@ -68,25 +68,6 @@ void Texture::LoadData(Uint width, Uint height, Uint channels,
   this->Unbind();
 }
 
-TextureData Texture::LoadTexture(Str const &path) {
-  TextureData texData;
-  stbi_set_flip_vertically_on_load(true);
-  auto pixelData =
-      stbi_load(path.c_str(), (int *)&texData.width, (int *)&texData.height,
-                (int *)&texData.channels, 0);
-  stbi_set_flip_vertically_on_load(false);
-
-  if (pixelData == nullptr) {
-    throw Exceptions::TextureError("Failed to load texture.");
-    return texData;
-  }
-
-  texData.pixels = Vec<Ubyte>(
-      pixelData, pixelData + texData.width * texData.height * texData.channels);
-  stbi_image_free(pixelData);
-  return texData;
-}
-
 CubeTexture::~CubeTexture() {
   if (mTexture.Count() <= 1) {
     glDeleteTextures(1, mTexture);
