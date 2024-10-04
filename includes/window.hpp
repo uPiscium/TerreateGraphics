@@ -172,7 +172,6 @@ public:
 
 class WindowProperty {
 private:
-  Str mTitle = "TerreateCore Window";
   Pair<Double> mScrollOffset;
   Vec<Uint> mCodePoints;
   Vec<Key> mKeys;
@@ -202,11 +201,6 @@ public:
   WindowProperty() = default;
   ~WindowProperty() = default;
 
-  /*
-   * @brief: This function returns window title.
-   * @return: Window title.
-   */
-  Str const &GetTitle() const { return mTitle; }
   /*
    * @brief: This function returns scroll offset.
    * @return: Scroll offset.
@@ -533,7 +527,7 @@ public:
    * @brief: This function returns window title.
    * @return: Window title.
    */
-  Str const &GetTitle() const { return mProperty.GetTitle(); }
+  Str GetTitle() const { return Str(glfwGetWindowTitle(mWindow)); }
   /*
    * @brief: This function returns inputted code points.
    * @return: Inputted code points.
