@@ -10,12 +10,91 @@ using namespace TerreateGraphics::GL;
 
 struct TextureData {
   Vec<Ubyte> pixels;
-  Uint width = 0;
-  Uint height = 0;
-  Uint channels = 0;
+  Uint width = 0u;
+  Uint height = 0u;
+  Uint channels = 0u;
+};
+
+enum class TextureSize {
+  S256 = 256,
+  S512 = 512,
+  S1024 = 1024,
+  S2048 = 2048,
+  S4096 = 4096
 };
 
 class Texture final : public TerreateObjectBase {
+private:
+  GLObject mTexture = GLObject();
+  Pair<Uint> mSize = {0u, 0u};
+  Pair<FilterType> mFilter = {FilterType::LINEAR, FilterType::LINEAR};
+  Pair<WrappingType> mWrap = {WrappingType::REPEAT, WrappingType::REPEAT};
+  Map<Str, Uint> mTextures = Map<Str, Uint>();
+
+private:
+  friend class Screen;
+  /*
+   * @brief: DO NOT USE THIS CONSTRUCTOR.
+   * This constructor should only be called by MultiScreen.
+   * @param: texture: OpenGL texture ID
+   * @param: width: width of texture
+   * @param: height: height of texture
+   */
+  Texture(GLObject const &texture, Uint const &width, Uint const &height)
+      : mTexture(texture), mSize(width, height) {}
+
+public:
+  /*
+   * @brief: This function creates a opengl texture set.
+   */
+  Texture() { glGenTextures(1, mTexture); }
+  /*
+   * @brief: This function creates a opengl texture set.
+   * @param: width: width of texture
+   * @param: height: height of texture
+   * @param: layers: number of layers in texture
+   */
+  Texture(Uint const &width, Uint const &height, Uint const &layers = 32);
+  /*
+   * @brief: This function creates a opengl texture set.
+   * @param: size: size of texture (width and height are the same and its a
+   * power of 2)
+   * @param: layers: number of layers in texture
+   */
+  Texture(TextureSize const &size, Uint const &layers = 32);
+  ~Texture() override;
+
+  Uint const &GetTextureIndex(Str const &name) const {
+    return mTextures.at(name);
+  }
+
+  void SetFilter(FilterType const &min, FilterType const &mag);
+  void SetWrapping(WrappingType const &s, WrappingType const &t);
+
+  void LoadData(Str const &name, Uint width, Uint height, Uint channels,
+                Ubyte const *data);
+  void LoadData(Str const &name, TextureData const &data) {
+    this->LoadData(name, data.width, data.height, data.channels,
+                   data.pixels.data());
+  }
+  void LoadDataAt(Str const &name, Uint const &xoffset, Uint const &yoffset,
+                  Uint const &layer, Uint const &width, Uint const &height,
+                  Uint const &channels, Ubyte const *data);
+  void LoadDataAt(Str const &name, Uint const &xoffset, Uint const &yoffset,
+                  Uint const &layer, TextureData const &data) {
+    this->LoadDataAt(name, xoffset, yoffset, layer, data.width, data.height,
+                     data.channels, data.pixels.data());
+  }
+
+  void Bind() const { glBindTexture(GL_TEXTURE_2D_ARRAY, (TCu32)mTexture); }
+  void Unbind() const { glBindTexture(GL_TEXTURE_2D_ARRAY, 0); }
+
+  Uint const &operator[](Str const &name) const {
+    return this->GetTextureIndex(name);
+  }
+};
+
+class CharTexture final : public TerreateObjectBase {
 private:
   GLObject mTexture = GLObject();
   Uint mWidth = 0;
@@ -28,20 +107,8 @@ public:
   /*
    * @brief: This function creates a opengl texture.
    */
-  Texture() { glGenTextures(1, mTexture); }
-  /*
-   * @brief: DO NOT USE THIS CONSTRUCTOR.
-   * This constructor should only be created by Screen.
-   * @param: texture: OpenGL texture ID
-   * @param: width: width of texture
-   * @param: height: height of texture
-   * @param: channels: number of channels in texture
-   */
-  Texture(GLObject const &texture, Uint const &width, Uint const &height,
-          Uint const &channels)
-      : mTexture(texture), mWidth(width), mHeight(height), mChannels(channels) {
-  }
-  ~Texture() override;
+  CharTexture() { glGenTextures(1, mTexture); }
+  ~CharTexture() override;
 
   /*
    * @brief: Setter for texture filter.
@@ -80,22 +147,14 @@ public:
   void Unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
 
   operator Bool() const override { return mTexture; }
-
-public:
-  /*
-   * @brief: Loads texture data from file.
-   * @param: path: path to texture file
-   * @return: texture data
-   */
-  static TextureData LoadTexture(Str const &path);
 };
 
 class CubeTexture final : public TerreateObjectBase {
 private:
   GLObject mTexture = GLObject();
-  Uint mWidth = 0;
-  Uint mHeight = 0;
-  Uint mChannels = 0;
+  Uint mWidth = 0u;
+  Uint mHeight = 0u;
+  Uint mChannels = 0u;
   FilterType mFilter = FilterType::LINEAR;
   WrappingType mWrap = WrappingType::REPEAT;
 

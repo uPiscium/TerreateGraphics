@@ -1,8 +1,32 @@
-#include "../includes/texture.hpp"
 #include "../includes/exceptions.hpp"
+#include "../includes/texture.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
+
+Texture::Texture(Uint const &width, Uint const &height, Uint const &layers)
+    : mSize({width, height}) {
+  glGenTextures(1, mTexture);
+
+  this->Bind();
+  glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA32F, mSize.first, mSize.second,
+                 layers);
+  this->SetFilter(mFilter.first, mFilter.second);
+  this->SetWrapping(mWrap.first, mWrap.second);
+  this->Unbind();
+}
+
+Texture::Texture(TextureSize const &size, Uint const &layers)
+    : mSize({(Uint)size, (Uint)size}) {
+  glGenTextures(1, mTexture);
+
+  this->Bind();
+  glTexStorage3D(GL_TEXTURE_2D_ARRAY, 1, GL_RGBA32F, mSize.first, mSize.second,
+                 layers);
+  this->SetFilter(mFilter.first, mFilter.second);
+  this->SetWrapping(mWrap.first, mWrap.second);
+  this->Unbind();
+}
 
 Texture::~Texture() {
   if (mTexture.Count() <= 1) {
@@ -11,7 +35,99 @@ Texture::~Texture() {
   }
 }
 
-void Texture::SetFilter(FilterType const &filter) {
+void Texture::SetFilter(FilterType const &min, FilterType const &mag) {
+  mFilter = {min, mag};
+  this->Bind();
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, (GLenum)min);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, (GLenum)mag);
+  this->Unbind();
+}
+
+void Texture::SetWrapping(WrappingType const &s, WrappingType const &t) {
+  mWrap = {s, t};
+  this->Bind();
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, (GLenum)s);
+  glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, (GLenum)t);
+  this->Unbind();
+}
+
+void Texture::LoadData(Str const &name, Uint width, Uint height, Uint channels,
+                       Ubyte const *data) {
+  mTextures[name] = mTextures.size();
+
+  Uint format;
+  switch (channels) {
+  case 1:
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    format = GL_RED;
+    break;
+  case 2:
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+    format = GL_RG;
+    break;
+  case 3:
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 3);
+    format = GL_RGB;
+    break;
+  case 4:
+    format = GL_RGBA;
+    break;
+  default:
+    throw Exceptions::TextureError("Invalid number of channels.");
+  }
+
+  this->Bind();
+  glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, mSize.second - height,
+                  mTextures[name], width, height, 1, format, GL_UNSIGNED_BYTE,
+                  data);
+  glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+  this->Unbind();
+}
+
+void Texture::LoadDataAt(Str const &name, Uint const &xoffset,
+                         Uint const &yoffset, Uint const &layer,
+                         Uint const &width, Uint const &height,
+                         Uint const &channels, Ubyte const *data) {
+  mTextures[name] = layer;
+
+  Uint format;
+  switch (channels) {
+  case 1:
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    format = GL_RED;
+    break;
+  case 2:
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+    format = GL_RG;
+    break;
+  case 3:
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 3);
+    format = GL_RGB;
+    break;
+  case 4:
+    format = GL_RGBA;
+    break;
+  default:
+    throw Exceptions::TextureError("Invalid number of channels.");
+  }
+
+  this->Bind();
+  glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, layer, width,
+                  height, 1, format, GL_UNSIGNED_BYTE, data);
+  glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+  this->Unbind();
+}
+
+CharTexture::~CharTexture() {
+  if (mTexture.Count() <= 1) {
+    glDeleteTextures(1, mTexture);
+    mTexture.Delete();
+  }
+}
+
+void CharTexture::SetFilter(FilterType const &filter) {
   mFilter = filter;
   this->Bind();
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLenum)mFilter);
@@ -19,7 +135,7 @@ void Texture::SetFilter(FilterType const &filter) {
   this->Unbind();
 }
 
-void Texture::SetWrapping(WrappingType const &wrap) {
+void CharTexture::SetWrapping(WrappingType const &wrap) {
   mWrap = wrap;
   this->Bind();
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (GLenum)mWrap);
@@ -27,8 +143,8 @@ void Texture::SetWrapping(WrappingType const &wrap) {
   this->Unbind();
 }
 
-void Texture::LoadData(Uint width, Uint height, Uint channels,
-                       Ubyte const *data) {
+void CharTexture::LoadData(Uint width, Uint height, Uint channels,
+                           Ubyte const *data) {
   mWidth = width;
   mHeight = height;
   mChannels = channels;
