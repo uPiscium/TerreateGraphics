@@ -9,30 +9,24 @@ namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 using namespace TerreateGraphics::GL;
 
-class Screen final : public TerreateObjectBase {
+class Screen : public TerreateObjectBase {
 private:
   GLObject mFrameBuffer = GLObject();
   Uint mWidth;
   Uint mHeight;
+  Uint mLayers;
   Int mInitialViewPort[4];
-  // Vec<Texture> mTextures;
   Texture mTexture;
   Vec<GLenum> mDrawBuffers;
-
-  // FIXME: Support multi-buffer screen.
-  /*
-   * This function is not working properly. Need to fix this.
-   * @brief: Add new buffer to screen. (Max 32)
-   */
-  void AddBuffer();
 
 public:
   /*
    * @brief: Constructor for Screen.
    * @param: width: width of screen
    * @param: height: height of screen
+   * @param: layers: number of screen layers
    */
-  Screen(Uint const &width, Uint const &height);
+  Screen(Uint const &width, Uint const &height, Uint const &layers = 1);
   ~Screen() override;
 
   /*
@@ -46,8 +40,8 @@ public:
    */
   Uint GetHeight() const { return mHeight; }
   /*
-   * @brief: Getter for texture.
-   * @return: texture
+   * @brief: Getter for texture set.
+   * @return: texture set
    */
   Texture const &GetTexture() const { return mTexture; }
 
@@ -86,16 +80,7 @@ public:
    */
   void Clear();
 
-  // FIXME: Support multi-buffer screen.
-  /* Texture const &operator[](Index const &index) const { */
-  /*   return mTextures[index]; */
-  /* } */
   operator Bool() const override { return mFrameBuffer; }
-};
-
-class CubeScreen : public TerreateObjectBase {
-private:
-  ;
 };
 } // namespace TerreateGraphics::Core
 
