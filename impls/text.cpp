@@ -1,19 +1,24 @@
-#include "../includes/text.hpp"
 #include "../includes/exceptions.hpp"
+#include "../includes/text.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 using namespace TerreateCore::Math;
 
 void Text::LoadText() {
-  mPositions.clear();
+  if (mText == mLastText) {
+    return;
+  }
+
   mFont->LoadText(mText);
   auto chars = mFont->AcquireCharacters(mText);
 
+  Vec<Vec<Float>> vertices;
+  Vec<Uint> indices;
   Float px = 0.0f;
+  Uint count = 0;
   for (auto &chr : chars) {
     if (chr.codepoint == 0) { // Skip dummy characters
-      mPositions.push_back({});
       px += chr.advance >> 6;
       continue;
     }
@@ -21,7 +26,6 @@ void Text::LoadText() {
     Uint c = chr.codepoint;
     if (c == TC_UNICODE_HALF_SPACE ||
         c == TC_UNICODE_FULL_SPACE) { // Skip spaces
-      mPositions.push_back({});
       px += chr.advance >> 6;
       continue;
     }
@@ -30,43 +34,34 @@ void Text::LoadText() {
     Float h = chr.size.second;
     Float x = px + chr.bearing.first;
     Float y = chr.bearing.second - h;
-    mPositions.push_back({{x, y + h, 0.0f},
-                          {x, y, 0.0f},
-                          {x + w, y, 0.0f},
-                          {x + w, y + h, 0.0f}});
+    vertices.push_back({x, y + h, 0.0f});
+    vertices.push_back({chr.uv[0], chr.uv[1], chr.uv[4]});
+    vertices.push_back({x, y, 0.0f});
+    vertices.push_back({chr.uv[0], chr.uv[3], chr.uv[4]});
+    vertices.push_back({x + w, y, 0.0f});
+    vertices.push_back({chr.uv[2], chr.uv[3], chr.uv[4]});
+    vertices.push_back({x + w, y + h, 0.0f});
+    vertices.push_back({chr.uv[2], chr.uv[1], chr.uv[4]});
+    indices.push_back(count);
+    indices.push_back(count + 1);
+    indices.push_back(count + 2);
+    indices.push_back(count + 2);
+    indices.push_back(count + 3);
+    indices.push_back(count);
+    count += 4;
     px += chr.advance >> 6;
   }
-}
 
-Text::Text() {
-  mText = L"";
-  mTextMeshConstructor.AddVertexComponent(
-      "iUV", {{0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}});
-  mTextMeshConstructor.SetVertexIndices({{0, 0}, {1, 1}, {2, 2}, {3, 3}});
-  mBuffer.LoadIndices({0, 1, 2, 2, 3, 0});
-}
-
-Text::Text(Str const &text, Font *font) : mFont(font) {
-  mText = WStr(text.begin(), text.end());
-  this->LoadText();
-  mTextMeshConstructor.AddVertexComponent(
-      "iUV", {{0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}});
-  mTextMeshConstructor.SetVertexIndices({{0, 0}, {1, 1}, {2, 2}, {3, 3}});
-  mBuffer.LoadIndices({0, 1, 2, 2, 3, 0});
-}
-
-Text::Text(WStr const &text, Font *font) : mFont(font), mText(text) {
-  this->LoadText();
-  mTextMeshConstructor.AddVertexComponent(
-      "iUV", {{0.0f, 0.0f}, {0.0f, 1.0f}, {1.0f, 1.0f}, {1.0f, 0.0f}});
-  mTextMeshConstructor.SetVertexIndices({{0, 0}, {1, 1}, {2, 2}, {3, 3}});
-  mBuffer.LoadIndices({0, 1, 2, 2, 3, 0});
+  mBuffer.LoadData(mShader, mBuffer.Flatten(vertices), mAttributes);
+  mBuffer.LoadIndices(indices);
+  mLastText = mText;
 }
 
 void Text::LoadShader(Str const &vertexPath, Str const &fragmentPath) {
   mShader.AddVertexShaderSource(Shader::LoadShaderSource(vertexPath));
   mShader.AddFragmentShaderSource(Shader::LoadShaderSource(fragmentPath));
   mShader.Compile();
+  mShader.Link();
   mShaderLoaded = true;
 }
 
@@ -81,32 +76,19 @@ void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
     throw Exceptions::TextError("Shader not loaded");
   }
 
-  for (int i = mText.size(); i > 0; --i) {
-    auto &chr = mFont->GetCharacter(mText[i - 1]);
+  mShader.Use();
+  mShader.ActiveTexture(TextureTargets::TEX_0);
+  mShader.SetInt("uTexture", 0);
 
-    if (chr.codepoint == 0 || chr.codepoint == TC_UNICODE_HALF_SPACE ||
-        chr.codepoint == TC_UNICODE_FULL_SPACE) {
-      continue;
-    }
+  mShader.SetMat4("uModel", translate(identity<mat4>(), vec3(x, y, 0.0f)));
+  mShader.SetMat4("uTransform", ortho(0.0f, windowWidth, 0.0f, windowHeight));
+  mShader.SetVec3("uColor", mColor);
 
-    mTextMeshConstructor.ReloadVertexComponent("iPosition", mPositions[i - 1]);
-    mTextMeshConstructor.Construct();
-    mBuffer.LoadData(mShader, mTextMeshConstructor);
+  mFont->Use();
+  mBuffer.Draw(DrawMode::TRIANGLES);
+  mFont->Unuse();
 
-    mShader.Use();
-    mShader.ActiveTexture(TextureTargets::TEX_0);
-    mShader.SetInt("uTexture", 0);
-
-    mShader.SetMat4("uModel", translate(identity<mat4>(), vec3(x, y, 0.0f)));
-    mShader.SetMat4("uTransform", ortho(0.0f, windowWidth, 0.0f, windowHeight));
-    mShader.SetVec3("uColor", mColor);
-
-    chr.texture.Bind();
-    mBuffer.Draw(DrawMode::TRIANGLES);
-    chr.texture.Unbind();
-
-    mShader.Unuse();
-  }
+  mShader.Unuse();
 }
 
 Text &Text::operator=(Str const &text) {

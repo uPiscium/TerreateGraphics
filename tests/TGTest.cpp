@@ -96,18 +96,21 @@ private:
   Float mDepth = mFar - mNear;
 
   Font mFont;
-  Texture mTexture;
   Text mText;
 
   Font mInfoFont;
   Text mInfoText;
 
-  WStr mTextString = L"日本語テスト";
+  Texture mTexture;
+
+  // WStr mTextString = L"日本語テスト";
+  WStr mTextString = L"ABC";
   Uint mDelflag = 0u;
   Uint mPressingFlag = 0u;
   Uint mDelInterval = 10u;
 
   Buffer mBuffer;
+  Buffer mScreenBuffer;
   BufferDataConstructor mColorDataConstructor;
 
   Screen mScreen;
@@ -150,30 +153,31 @@ public:
   }
 
 public:
-  TestApp() : mScreen(1000, 1000) {
-    mFont = Font("tests/resources/AsebiMin-Light.otf", 200);
-    mInfoFont = Font("tests/resources/AsebiMin-Light.otf", 30);
+  TestApp() : mScreen(1000, 1000, 4) {
+    mFont = Font("tests/resources/AsebiMin-Light.otf", 128);
+    mInfoFont = Font("tests/resources/AsebiMin-Light.otf", 32);
+
     mText.LoadFont(&mFont);
-    mText.LoadText(L"日本語テスト");
-    mText.LoadShader("tests/resources/textVert.glsl",
-                     "tests/resources/textFrag.glsl");
+    mText.LoadShader("tests/resources/shaders/textVert.glsl",
+                     "tests/resources/shaders/textFrag.glsl");
+    // mText.LoadText(L"XXX");
 
     mInfoText.LoadFont(&mInfoFont);
-    mInfoText.LoadText(L"XXX");
-    mInfoText.LoadShader("tests/resources/textVert.glsl",
-                         "tests/resources/textFrag.glsl");
+    mInfoText.LoadShader("tests/resources/shaders/textVert.glsl",
+                         "tests/resources/shaders/textFrag.glsl");
+    /* mInfoText.LoadText(L"XXX"); */
 
     mShader.AddVertexShaderSource(
-        Shader::LoadShaderSource("tests/resources/testVert.glsl"));
+        Shader::LoadShaderSource("tests/resources/shaders/mainVert.glsl"));
     mShader.AddFragmentShaderSource(
-        Shader::LoadShaderSource("tests/resources/testFrag.glsl"));
+        Shader::LoadShaderSource("tests/resources/shaders/mainFrag.glsl"));
     mShader.Compile();
     mShader.Link();
 
     mScreenShader.AddVertexShaderSource(
-        Shader::LoadShaderSource("tests/resources/testVert.glsl"));
+        Shader::LoadShaderSource("tests/resources/shaders/screenVert.glsl"));
     mScreenShader.AddFragmentShaderSource(
-        Shader::LoadShaderSource("tests/resources/testFrag.glsl"));
+        Shader::LoadShaderSource("tests/resources/shaders/screenFrag.glsl"));
     mScreenShader.Compile();
     mScreenShader.Link();
 
@@ -197,6 +201,17 @@ public:
     bdc.Construct();
     mBuffer.LoadData(mShader, bdc);
 
+    BufferDataConstructor screenBDC;
+    screenBDC.AddVertexComponent("iPosition", {{-0.8f, -0.8f, 0.2f},
+                                               {0.8f, -0.8f, 0.2f},
+                                               {0.8f, 0.8f, 0.2f},
+                                               {-0.8f, 0.8f, 0.2f}});
+    screenBDC.AddVertexComponent(
+        "iUV", {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}});
+    screenBDC.SetVertexIndices({{0, 0}, {1, 1}, {2, 2}, {3, 3}});
+    screenBDC.Construct();
+    mScreenBuffer.LoadData(mScreenShader, screenBDC);
+
     mColorDataConstructor.AddVertexComponent("iColor", {{1, 0, 0}});
     mColorDataConstructor.SetVertexIndices(
         {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0},
@@ -210,13 +225,14 @@ public:
                          {12, 13, 14, 14, 15, 12},
                          {16, 17, 18, 18, 19, 16},
                          {20, 21, 22, 22, 23, 20}});
+    mScreenBuffer.LoadIndices({0, 1, 2, 2, 3, 0});
 
     mat4 view = lookAt(vec3(0, 0, 2), vec3(0, 0, 0), vec3(0, 1, 0));
     mat4 proj = perspective(45.0f, 1.0f, mNear, mFar);
     mUniform.view = view;
-    mScreenUniform.view = view;
+    mScreenUniform.view = identity<mat4>();
     mUniform.proj = proj;
-    mScreenUniform.proj = proj;
+    mScreenUniform.proj = identity<mat4>();
     mUniform.model = identity<mat4>();
     mScreenUniform.model = identity<mat4>();
     mUBO.LoadData(mUniform);
@@ -252,19 +268,21 @@ public:
     mUBO.ReloadData(mUniform);
     mScreenUBO.ReloadData(mScreenUniform);
 
-    mScreenShader.Use();
-
     Texture const &texture = mScreen.GetTexture();
 
-    mScreen.Fill({0.2, 0.2, 0.2});
+    mScreen.Fill({0, 0, 0});
     mScreen.Clear();
     mScreen.Bind();
+    mScreenShader.Use();
+    // mFont.Use();
+    mScreenBuffer.Draw(DrawMode::TRIANGLES);
+    // mFont.Unuse();
+    mScreenShader.Unuse();
     mText.LoadText(L"立方体");
     auto size = mFont.AcquireTextSize(L"立方体");
     mText.Render(500 - size.first / 2.0, 500 - size.second / 2.0,
                  mScreen.GetWidth(), mScreen.GetHeight());
     mScreen.Unbind();
-    mScreenShader.Unuse();
 
     window->Bind();
     mText.LoadText(mTextString);
@@ -282,7 +300,7 @@ public:
     mColorDataConstructor.ReloadVertexComponent("iColor", {{r, g, 1}});
     mColorDataConstructor.Construct();
     mBuffer.ReloadData(color, mColorDataConstructor);
-    mText.SetColor({r, g, 0});
+    mText.SetColor({0, 0, 0});
 
     mText = mTextString;
 
@@ -292,7 +310,7 @@ public:
     /*   mInfoText.Render(0, 1400 - 50 * i, mWidth, mHeight); */
     /* } */
     Joystick const &joystick = Joystick::GetJoystick(JoystickID::JOYSTICK1);
-    OutputJoystickData(joystick, mInfoText, mWidth, mHeight);
+    // OutputJoystickData(joystick, mInfoText, mWidth, mHeight);
 
     window->Swap();
     ++mDelflag;
@@ -311,7 +329,7 @@ void TestCompute() {
 
   ComputeKernel kernel;
   kernel.AddKernelSource(
-      Shader::LoadShaderSource("tests/resources/compute.glsl"));
+      Shader::LoadShaderSource("tests/resources/shaders/compute.glsl"));
   kernel.Compile();
   kernel.Link();
 
@@ -323,7 +341,7 @@ void TestCompute() {
 
   ComputeKernel kernel2;
   kernel2.AddKernelSource(
-      Shader::LoadShaderSource("tests/resources/compute.glsl"));
+      Shader::LoadShaderSource("tests/resources/shaders/compute.glsl"));
   kernel2.Compile();
   kernel2.Link();
 
@@ -333,7 +351,7 @@ void TestCompute() {
   kernel2.SetFloat("scaleFactor", 3.0f);
   kernel2.Dispatch(10, 1, 1);
 
-  std::vector<float> outputData, outputData2;
+  Vec<float> outputData, outputData2;
   output.GetData(outputData);
   output2.GetData(outputData2);
   for (int i = 0; i < inputData.size(); ++i) {
