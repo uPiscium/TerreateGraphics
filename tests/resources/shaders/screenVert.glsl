@@ -1,5 +1,8 @@
 #version 430 core
 in vec3 iPosition;
+in vec2 iUV;
+
+out vec2 vUV;
 
 layout(std140) uniform Matrices {
   mat4 uTransform;
@@ -10,4 +13,5 @@ layout(std140) uniform Matrices {
 
 void main() {
   gl_Position = vec4(iPosition, 1.0f);
+  vUV = iUV;
 }

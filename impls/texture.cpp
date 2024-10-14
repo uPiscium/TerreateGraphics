@@ -5,7 +5,7 @@ namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
 Texture::Texture(Uint const &width, Uint const &height, Uint const &layers)
-    : mSize({width, height}) {
+    : mSize({width, height}), mLayers(layers) {
   glGenTextures(1, mTexture);
 
   this->Bind();
@@ -17,7 +17,7 @@ Texture::Texture(Uint const &width, Uint const &height, Uint const &layers)
 }
 
 Texture::Texture(TextureSize const &size, Uint const &layers)
-    : mSize({(Uint)size, (Uint)size}) {
+    : mSize({(Uint)size, (Uint)size}), mLayers(layers) {
   glGenTextures(1, mTexture);
 
   this->Bind();
@@ -115,73 +115,26 @@ void Texture::LoadDataAt(Str const &name, Uint const &xoffset,
   this->Bind();
   glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, layer, width,
                   height, 1, format, GL_UNSIGNED_BYTE, data);
-  glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
+  // glGenerateMipmap(GL_TEXTURE_2D_ARRAY);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
   this->Unbind();
 }
 
-CharTexture::~CharTexture() {
-  if (mTexture.Count() <= 1) {
-    glDeleteTextures(1, mTexture);
-    mTexture.Delete();
-  }
+Uint Texture::GetMaxTextureSize() {
+  GLint size;
+  glGetIntegerv(GL_MAX_TEXTURE_SIZE, &size);
+  return size;
 }
 
-void CharTexture::SetFilter(FilterType const &filter) {
-  mFilter = filter;
-  this->Bind();
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLenum)mFilter);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLenum)mFilter);
-  this->Unbind();
+Uint Texture::GetMaxStorage() {
+  GLuint size = Texture::GetMaxTextureSize();
+  return size * size;
 }
 
-void CharTexture::SetWrapping(WrappingType const &wrap) {
-  mWrap = wrap;
-  this->Bind();
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (GLenum)mWrap);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (GLenum)mWrap);
-  this->Unbind();
-}
-
-void CharTexture::LoadData(Uint width, Uint height, Uint channels,
-                           Ubyte const *data) {
-  mWidth = width;
-  mHeight = height;
-  mChannels = channels;
-  GLenum format;
-  switch (mChannels) {
-  case 1:
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    format = GL_RED;
-    break;
-  case 2:
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
-    format = GL_RG;
-    break;
-  case 3:
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 3);
-    format = GL_RGB;
-    break;
-  case 4:
-    format = GL_RGBA;
-    break;
-  default:
-    format = 0;
-    break;
-  }
-
-  if (format == 0) {
-    throw Exceptions::TextureError("Invalid number of channels.");
-    return;
-  }
-
-  this->Bind();
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, mWidth, mHeight, 0, format,
-               GL_UNSIGNED_BYTE, data);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
-  this->SetFilter(mFilter);
-  this->SetWrapping(mWrap);
-  this->Unbind();
+Uint Texture::GetMaxLayers() {
+  GLint layers;
+  glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &layers);
+  return layers;
 }
 
 CubeTexture::~CubeTexture() {

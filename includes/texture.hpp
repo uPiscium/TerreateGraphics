@@ -20,13 +20,17 @@ enum class TextureSize {
   S512 = 512,
   S1024 = 1024,
   S2048 = 2048,
-  S4096 = 4096
+  S4096 = 4096,
+  S8192 = 8192,
+  S16384 = 16384,
+  S32768 = 32768,
 };
 
 class Texture final : public TerreateObjectBase {
 private:
   GLObject mTexture = GLObject();
   Pair<Uint> mSize = {0u, 0u};
+  Uint mLayers = 0u;
   Pair<FilterType> mFilter = {FilterType::LINEAR, FilterType::LINEAR};
   Pair<WrappingType> mWrap = {WrappingType::REPEAT, WrappingType::REPEAT};
   Map<Str, Uint> mTextures = Map<Str, Uint>();
@@ -35,13 +39,14 @@ private:
   friend class Screen;
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
-   * This constructor should only be called by MultiScreen.
+   * This constructor should only be called by Screen class.
    * @param: texture: OpenGL texture ID
    * @param: width: width of texture
    * @param: height: height of texture
    */
-  Texture(GLObject const &texture, Uint const &width, Uint const &height)
-      : mTexture(texture), mSize(width, height) {}
+  Texture(GLObject const &texture, Uint const &width, Uint const &height,
+          Uint const &layers)
+      : mTexture(texture), mSize(width, height), mLayers(layers) {}
 
 public:
   /*
@@ -68,6 +73,10 @@ public:
     return mTextures.at(name);
   }
 
+  Uint const &GetWidth() const { return mSize.first; }
+  Uint const &GetHeight() const { return mSize.second; }
+  Uint const &GetLayers() const { return mLayers; }
+
   void SetFilter(FilterType const &min, FilterType const &mag);
   void SetWrapping(WrappingType const &s, WrappingType const &t);
 
@@ -92,61 +101,23 @@ public:
   Uint const &operator[](Str const &name) const {
     return this->GetTextureIndex(name);
   }
-};
-
-class CharTexture final : public TerreateObjectBase {
-private:
-  GLObject mTexture = GLObject();
-  Uint mWidth = 0;
-  Uint mHeight = 0;
-  Uint mChannels = 0;
-  FilterType mFilter = FilterType::LINEAR;
-  WrappingType mWrap = WrappingType::REPEAT;
 
 public:
   /*
-   * @brief: This function creates a opengl texture.
+   * @brief: Getter for maximum texture size.
+   * @return: maximum texture size
    */
-  CharTexture() { glGenTextures(1, mTexture); }
-  ~CharTexture() override;
-
+  static Uint GetMaxTextureSize();
   /*
-   * @brief: Setter for texture filter.
-   * @param: filter: filter type
+   * @brief: Getter for maximum texture storage.
+   * @return: maximum texture storage
    */
-  void SetFilter(FilterType const &filter);
+  static Uint GetMaxStorage();
   /*
-   * @brief: Setter for texture wrapping.
-   * @param: wrap: wrapping type
+   * @brief: Getter for maximum texture layers.
+   * @return: maximum texture layers
    */
-  void SetWrapping(WrappingType const &wrap);
-
-  /*
-   * @brief: Loads texture data into OpenGL texture.
-   * @param: width: width of texture
-   * @param: height: height of texture
-   * @param: channels: number of channels in texture
-   * @param: data: pointer to texture data
-   */
-  void LoadData(Uint width, Uint height, Uint channels, Ubyte const *data);
-  /*
-   * @brief: Loads texture data into OpenGL texture.
-   * @param: data: texture data
-   */
-  void LoadData(TextureData const &data) {
-    this->LoadData(data.width, data.height, data.channels, data.pixels.data());
-  }
-
-  /*
-   * @brief: Binds texture to OpenGL.
-   */
-  void Bind() const { glBindTexture(GL_TEXTURE_2D, (TCu32)mTexture); }
-  /*
-   * @brief: Unbinds texture from OpenGL.
-   */
-  void Unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
-
-  operator Bool() const override { return mTexture; }
+  static Uint GetMaxLayers();
 };
 
 class CubeTexture final : public TerreateObjectBase {

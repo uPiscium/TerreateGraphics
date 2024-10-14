@@ -28,7 +28,7 @@ Screen::Screen(Uint const &width, Uint const &height, Uint const &layers)
   }
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  mTexture = Texture(buffer, mWidth, mHeight);
+  mTexture = Texture(buffer, mWidth, mHeight, layers);
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
