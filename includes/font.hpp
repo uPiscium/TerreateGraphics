@@ -5,27 +5,33 @@
 #include FT_FREETYPE_H
 
 #include "defines.hpp"
+#include "globj.hpp"
 #include "texture.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
-struct Character {
+struct CharacterData {
   Uint codepoint;
-  Texture texture;
   Pair<Uint> size;
   Pair<Uint> bearing;
   Long advance;
+  Vec<Float> uv; // {x0, y0, x1, y1, z}
 };
 
-class Font final : public TerreateObjectBase {
+class Font : public TerreateObjectBase {
 private:
-  Shared<FT_Library> mLibrary;
-  Shared<FT_Face> mFace;
+  Shared<FT_Library> mLibrary = nullptr;
+  Shared<FT_Face> mFace = nullptr;
   Uint mSize;
-  Map<wchar_t, Character> mCharacters;
+  Texture mTexture;
+  Uint mXOffset = 0u;
+  Uint mYOffset = 0u;
+  Uint mZOffset = 0u;
+  Map<wchar_t, CharacterData> mCharacters;
 
 private:
+  void InitializeTexture();
   void LoadDummyCharacter();
 
 public:
@@ -51,14 +57,14 @@ public:
    * @param: character: character to get
    * @return: character
    */
-  Character const &GetCharacter(wchar_t const &character);
+  CharacterData const &GetCharacter(wchar_t const &character);
 
   /*
    * @brief: Acquirer for character.
    * @param: character: character to acquire
    * @return: character
    */
-  Character const &AcquireCharacter(wchar_t const &character) const;
+  CharacterData const &AcquireCharacter(wchar_t const &character) const;
   /*
    * @brief: Acquirer for text size in pixels.
    * @param: text: text to acquire size of
@@ -70,7 +76,7 @@ public:
    * @param: text: text to acquire characters of
    * @return: characters of text
    */
-  Vec<Character> AcquireCharacters(WStr const &text) const;
+  Vec<CharacterData> AcquireCharacters(WStr const &text) const;
 
   /*
    * @brief: Loads font data.
@@ -88,6 +94,15 @@ public:
    * @param: text: text to load
    */
   void LoadText(WStr const &text);
+
+  /*
+   * @brief: Uses font texture.
+   */
+  void Use() const { mTexture.Bind(); }
+  /*
+   * @brief: Unuses font texture.
+   */
+  void Unuse() const { mTexture.Unbind(); }
 
   operator Bool() const override { return mFace != nullptr; }
 };
