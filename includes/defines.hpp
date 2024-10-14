@@ -212,6 +212,19 @@ enum class FloatProperty {
   REFRACTIVITY
 };
 
+// Use to select opengl error.
+enum class GLError {
+  NO_ERROR = GL_NO_ERROR,
+  INVALID_ENUM = GL_INVALID_ENUM,
+  INVALID_VALUE = GL_INVALID_VALUE,
+  INVALID_OPERATION = GL_INVALID_OPERATION,
+  STACK_OVERFLOW = GL_STACK_OVERFLOW,
+  STACK_UNDERFLOW = GL_STACK_UNDERFLOW,
+  OUT_OF_MEMORY = GL_OUT_OF_MEMORY,
+  INVALID_FRAMEBUFFER_OPERATION = GL_INVALID_FRAMEBUFFER_OPERATION,
+  CONTEXT_LOST = GL_CONTEXT_LOST
+};
+
 // Use to select opengl feature.
 enum class GLFeature {
   BLEND = GL_BLEND,
@@ -572,7 +585,6 @@ public:
       : key((Keyboard)key_), scancode(scancode_), action(action_), mods(mods_) {
   }
 };
-
 } // namespace TerreateGraphics::Defines
 
 #endif // __TERREATE_GRAPHICS_DEFINES_HPP__

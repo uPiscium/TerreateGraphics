@@ -1,8 +1,8 @@
-#version 330 core
+#version 430 core
 in vec3 iPosition;
-in vec2 iUV;
+in vec3 iUV;
 
-out vec2 vUV;
+out vec3 vUV;
 
 uniform mat4 uTransform;
 uniform mat4 uModel;
