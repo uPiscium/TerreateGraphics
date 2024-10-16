@@ -19,14 +19,23 @@ class Clock : public TerreateObjectBase {
 private:
   Float mLastTime = 0.0f;
   Float mDeltaTime = 0.0f;
+  Float mSamplingTime = 0.0f;
+  Uint mNumSamples = 0u;
+  Vec<Float> mSamples = {};
+  Uint mSampleIndex = 0u;
 
-public:
-  Clock() {}
-  ~Clock() {}
-
+private:
   Bool IsElapsed(Float const &time);
 
-  void Frame(Uint const &fps);
+public:
+  Clock(Uint const &samples = 10)
+      : mSamples(samples, 0.0f), mNumSamples(samples) {}
+  ~Clock() {}
+
+  Float GetSPF() const { return mSamplingTime / mNumSamples; }
+  Float GetFPS() const { return mNumSamples / mSamplingTime; }
+
+  void Tick(Uint const &fps);
 
 public:
   static Double GetCurrentRuntime() { return glfwGetTime(); }

@@ -190,7 +190,8 @@ void ComputeKernel::Dispatch(Uint const &x, Uint const &y,
 
   glUseProgram(mKernelID);
   glDispatchCompute(x, y, z);
-  glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+  glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT |
+                  GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
   glUseProgram(0);
 }
 } // namespace TerreateGraphics::Compute

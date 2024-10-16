@@ -274,9 +274,9 @@ public:
     mScreen.Clear();
     mScreen.Bind();
     mScreenShader.Use();
-    // mFont.Use();
+    mFont.Use();
     mScreenBuffer.Draw(DrawMode::TRIANGLES);
-    // mFont.Unuse();
+    mFont.Unuse();
     mScreenShader.Unuse();
     mText.LoadText(L"立方体");
     auto size = mFont.AcquireTextSize(L"立方体");
@@ -300,9 +300,11 @@ public:
     mColorDataConstructor.ReloadVertexComponent("iColor", {{r, g, 1}});
     mColorDataConstructor.Construct();
     mBuffer.ReloadData(color, mColorDataConstructor);
-    mText.SetColor({0, 0, 0});
+    mText.SetColor({1, 0, 0});
 
     mText = mTextString;
+    mInfoText = L"FPS: " + std::to_wstring(mClock.GetFPS());
+    mInfoText.Render(0, 1500, mWidth, mHeight);
 
     /* for (int i = 0; i < (Uint)JoystickID::LAST; ++i) { */
     /*   Joystick const &joystick = Joystick::GetJoystick((JoystickID)i); */
@@ -314,12 +316,12 @@ public:
 
     window->Swap();
     ++mDelflag;
-    mClock.Frame(80);
+    mClock.Tick(80);
   }
 };
 
 void TestCompute() {
-  std::vector<float> inputData = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  Vec<Float> inputData = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
   ShaderStorageBuffer input, input2, output, output2;
   input.LoadData(inputData);
@@ -362,10 +364,24 @@ void TestCompute() {
   }
 }
 
+void TestImageConvert() {
+  ComputeKernel kernel;
+  kernel.AddKernelSource(
+      Shader::LoadShaderSource("tests/resources/shaders/converter.glsl"));
+  kernel.Compile();
+  kernel.Link();
+
+  std::cout << kernel.GetLocation("img_input") << std::endl;
+  std::cout << kernel.GetLocation("img_output") << std::endl;
+  kernel.Dispatch(1, 1, 1);
+}
+
 int main() {
   Initialize();
   {
     Window window(2500, 1600, "Test Window", WindowSettings());
+
+    // TestImageConvert();
 
     TestApp app;
     window.GetSizePublisher().Subscribe(

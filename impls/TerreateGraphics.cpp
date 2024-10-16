@@ -15,12 +15,18 @@ Bool Clock::IsElapsed(Float const &time) {
   if (delta >= time) {
     mLastTime = now;
     mDeltaTime = delta;
+    mSamplingTime += delta;
+    // Get the last cycle sample index
+    Uint idx = (mSampleIndex + 1) % mNumSamples;
+    mSamplingTime -= mSamples[idx];
+    mSamples[mSampleIndex++] = delta;
+    mSampleIndex %= mNumSamples;
     return true;
   }
   return false;
 }
 
-void Clock::Frame(Uint const &fps) {
+void Clock::Tick(Uint const &fps) {
   Float const frameTime = 1.0f / fps;
   while (!IsElapsed(frameTime)) {
     // Do nothing

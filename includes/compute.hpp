@@ -1,13 +1,13 @@
 #ifndef __TERREATE_GRAPHICS_KERNEL_HPP__
 #define __TERREATE_GRAPHICS_KERNEL_HPP__
 
-// #include "buffer.hpp"
 #include "defines.hpp"
 #include "globj.hpp"
+#include "texture.hpp"
 
 namespace TerreateGraphics::Compute {
 using namespace TerreateGraphics::Defines;
-// using namespace TerreateGraphics::Core;
+using namespace TerreateGraphics::Core;
 using namespace TerreateGraphics::GL;
 using namespace TerreateCore::Math;
 
@@ -51,6 +51,14 @@ public:
   unsigned GetStorageBlockIndex(Str const &name) const {
     return glGetProgramResourceIndex(mKernelID, GL_SHADER_STORAGE_BLOCK,
                                      name.c_str());
+  }
+  /*
+   * @brief: Getter for shader uniform block index.
+   * @param: name: name of uniform block
+   * @return: uniform block index
+   */
+  unsigned GetUniformBlockIndex(Str const &name) const {
+    return glGetProgramResourceIndex(mKernelID, GL_UNIFORM, name.c_str());
   }
 
   /*
@@ -155,6 +163,39 @@ public:
   void BindStorageBlock(Str const &name, Uint const &binding) const {
     glShaderStorageBlockBinding(mKernelID, this->GetStorageBlockIndex(name),
                                 binding);
+  }
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: binding: binding point
+   * @param: texture: texture to bind
+   */
+  void BindImage(Str const &name, Uint const &unit,
+                 Texture const &texture) const {
+    glBindImageTexture(unit, texture.GetGLIndex(), 0, GL_FALSE, 0,
+                       GL_READ_WRITE, GL_RGBA32F);
+  }
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: binding: binding point
+   * @param: texture: texture to bind
+   */
+  void BindReadImage(Str const &name, Uint const &unit,
+                     Texture const &texture) const {
+    glBindImageTexture(unit, texture.GetGLIndex(), 0, GL_FALSE, 0, GL_READ_ONLY,
+                       GL_RGBA32F);
+  }
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: binding: binding point
+   * @param: texture: texture to bind
+   */
+  void BindWriteImage(Str const &name, Uint const &unit,
+                      Texture const &texture) const {
+    glBindImageTexture(unit, texture.GetGLIndex(), 0, GL_FALSE, 0,
+                       GL_WRITE_ONLY, GL_RGBA32F);
   }
 
   /*

@@ -69,6 +69,7 @@ public:
   Texture(TextureSize const &size, Uint const &layers = 32);
   ~Texture() override;
 
+  Uint const &GetGLIndex() const { return mTexture; }
   Uint const &GetTextureIndex(Str const &name) const {
     return mTextures.at(name);
   }
