@@ -15,14 +15,20 @@ Bool Clock::IsElapsed(Float const &time) {
   if (delta >= time) {
     mLastTime = now;
     mDeltaTime = delta;
+    mSamplingTime += delta;
+    if (++mSampleCount >= mNumSamples) {
+      mFPS = mSampleCount / mSamplingTime;
+      mSPF = mSamplingTime / mSampleCount;
+      mSampleCount = 0;
+      mSamplingTime = 0.0f;
+    }
     return true;
   }
   return false;
 }
 
-void Clock::Frame(Uint const &fps) {
-  Float const frameTime = 1.0f / fps;
-  while (!IsElapsed(frameTime)) {
+void Clock::Tick() {
+  while (!IsElapsed(mTickTime)) {
     // Do nothing
   }
 }

@@ -803,6 +803,14 @@ public:
   }
 
   /*
+   * @brief: This function enables window vsync.
+   */
+  void EnableVsync() const { glfwSwapInterval(1); }
+  /*
+   * @brief: This function disables window vsync.
+   */
+  void DisableVsync() const { glfwSwapInterval(0); }
+  /*
    * @brief: This function destroies window.
    */
   void Destroy();

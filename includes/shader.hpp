@@ -293,11 +293,6 @@ public:
    */
   void UseStencil(Bool const &value) { mOption.stencil = value; }
   /*
-   * @brief: This function activates selected texture binding point.
-   * @param: target: texture binding point
-   */
-  void ActiveTexture(TextureTargets const &target) const;
-  /*
    * @brief: Compile shader.
    */
   void Compile();
@@ -326,6 +321,13 @@ public:
    * @return: source code
    */
   static Str LoadShaderSource(Str const &path);
+  /*
+   * @brief: This function activates selected texture binding point.
+   * @param: target: texture binding point
+   */
+  static void ActivateTexture(TextureTargets const &target) {
+    glActiveTexture((Uint)target);
+  }
 };
 } // namespace TerreateGraphics::Core
 

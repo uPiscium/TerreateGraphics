@@ -3,6 +3,11 @@
 
 #include <iostream>
 
+#ifndef STB_IMAGE_IMPLEMENTATION
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+#endif
+
 using namespace TerreateGraphics::Core;
 using namespace TerreateGraphics::Compute;
 // using namespace TerreateMath::Utils;
@@ -83,9 +88,49 @@ void OutputJoystickData(Joystick const &joystick, Text &text, Uint const &width,
   text.Render(0, 1250, width, height);
 }
 
+Texture TestImageConvert() {
+  ComputeKernel kernel;
+  kernel.AddKernelSource(
+      Shader::LoadShaderSource("tests/resources/shaders/converter.glsl"));
+  kernel.Compile();
+  kernel.Link();
+
+  Int width = 0, height = 0, channels = 0;
+  stbi_set_flip_vertically_on_load(true);
+  Ubyte *data = stbi_load("tests/resources/testImage2.png", &width, &height,
+                          &channels, 4);
+
+  Uint buffer;
+  glGenTextures(1, &buffer);
+  glBindTexture(GL_TEXTURE_2D, buffer);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
+               GL_UNSIGNED_BYTE, data);
+  glGenerateMipmap(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  stbi_image_free(data);
+
+  Texture storage(800, 800);
+
+  storage.Bind();
+  kernel.BindImage("outputTextures", storage);
+
+  Shader::ActivateTexture(TextureTargets::TEX_0);
+  kernel.SetInt("inputTexture", 0);
+  kernel.SetVec2("inputSize", vec2(width, height));
+  kernel.SetVec2("outputSize", vec2(800, 800));
+  glBindTexture(GL_TEXTURE_2D, buffer);
+  kernel.Dispatch((storage.GetWidth() + 7) / 8, (storage.GetHeight() + 7) / 8,
+                  1);
+  glBindTexture(GL_TEXTURE_2D, 0);
+  storage.Unbind();
+  // storage.Unbind();
+
+  return storage;
+}
+
 class TestApp {
 private:
-  Clock mClock;
+  Clock mClock = Clock(120, 100);
   Shader mShader;
   Shader mScreenShader;
   mat4 mTransform;
@@ -102,6 +147,7 @@ private:
   Text mInfoText;
 
   Texture mTexture;
+  Texture mTexture2;
 
   // WStr mTextString = L"日本語テスト";
   WStr mTextString = L"ABC";
@@ -160,12 +206,10 @@ public:
     mText.LoadFont(&mFont);
     mText.LoadShader("tests/resources/shaders/textVert.glsl",
                      "tests/resources/shaders/textFrag.glsl");
-    // mText.LoadText(L"XXX");
 
     mInfoText.LoadFont(&mInfoFont);
     mInfoText.LoadShader("tests/resources/shaders/textVert.glsl",
                          "tests/resources/shaders/textFrag.glsl");
-    /* mInfoText.LoadText(L"XXX"); */
 
     mShader.AddVertexShaderSource(
         Shader::LoadShaderSource("tests/resources/shaders/mainVert.glsl"));
@@ -245,11 +289,13 @@ public:
 
     mShader.Use();
     mShader.SetInt("uTexture", 0);
-    mShader.ActiveTexture(TextureTargets::TEX_0);
+    Shader::ActivateTexture(TextureTargets::TEX_0);
 
     mScreenShader.Use();
     mScreenShader.SetInt("uTexture", 0);
-    mScreenShader.ActiveTexture(TextureTargets::TEX_0);
+    Shader::ActivateTexture(TextureTargets::TEX_0);
+
+    mTexture2 = TestImageConvert();
   }
 
   void OnFrame(Window *window) {
@@ -257,12 +303,14 @@ public:
     window->Fill({0.2, 0.2, 0.2});
     window->Clear();
 
-    auto state =
-        Joystick::GetJoystick(JoystickID::JOYSTICK1).AcquireAxisState();
-    Float angleX = state.leftStick[0];
-    Float angleY = state.leftStick[1];
-    mat4 model = rotate(identity<mat4>(), angleX, vec3(0, 1, 0));
-    model = rotate(model, angleY, vec3(1, 0, 0));
+    /* auto state = */
+    /*     Joystick::GetJoystick(JoystickID::JOYSTICK1).AcquireAxisState(); */
+    /* Float angleX = state.leftStick[0]; */
+    /* Float angleY = state.leftStick[1]; */
+    /* mat4 model = rotate(identity<mat4>(), angleX, vec3(0, 1, 0)); */
+    /* model = rotate(model, angleY, vec3(1, 0, 0)); */
+    Float angle = mClock.GetCurrentRuntime() * 0.1;
+    mat4 model = rotate(identity<mat4>(), angle, vec3(1, 1, 1));
     mUniform.model = model;
     mScreenUniform.model = model;
     mUBO.ReloadData(mUniform);
@@ -274,9 +322,11 @@ public:
     mScreen.Clear();
     mScreen.Bind();
     mScreenShader.Use();
-    // mFont.Use();
+    /* mInfoFont.Use(); */
+    mTexture2.Bind();
     mScreenBuffer.Draw(DrawMode::TRIANGLES);
-    // mFont.Unuse();
+    mTexture2.Unbind();
+    /* mInfoFont.Unuse(); */
     mScreenShader.Unuse();
     mText.LoadText(L"立方体");
     auto size = mFont.AcquireTextSize(L"立方体");
@@ -285,41 +335,37 @@ public:
     mScreen.Unbind();
 
     window->Bind();
-    mText.LoadText(mTextString);
     mShader.Use();
     texture.Bind();
     mBuffer.Draw(DrawMode::TRIANGLES);
     texture.Unbind();
     mShader.Unuse();
 
+    mText = mTextString;
     mText.Render(0, 0, mWidth, mHeight);
 
-    AttributeData color = mBuffer["iColor"];
-    Float r = (state.leftTrigger + 1) / 2;
-    Float g = (state.rightTrigger + 1) / 2;
-    mColorDataConstructor.ReloadVertexComponent("iColor", {{r, g, 1}});
-    mColorDataConstructor.Construct();
-    mBuffer.ReloadData(color, mColorDataConstructor);
-    mText.SetColor({0, 0, 0});
+    /* AttributeData color = mBuffer["iColor"]; */
+    /* Float r = (state.leftTrigger + 1) / 2; */
+    /* Float g = (state.rightTrigger + 1) / 2; */
+    /* mColorDataConstructor.ReloadVertexComponent("iColor", {{r, g, 1}}); */
+    /* mColorDataConstructor.Construct(); */
+    /* mBuffer.ReloadData(color, mColorDataConstructor); */
+    mText.SetColor({1, 0, 0});
 
-    mText = mTextString;
+    mInfoText = L"FPS: " + std::to_wstring(mClock.GetFPS());
+    mInfoText.Render(0, 180, mWidth, mHeight);
 
-    /* for (int i = 0; i < (Uint)JoystickID::LAST; ++i) { */
-    /*   Joystick const &joystick = Joystick::GetJoystick((JoystickID)i); */
-    /*   OutputJoystickData(joystick, mInfoText); */
-    /*   mInfoText.Render(0, 1400 - 50 * i, mWidth, mHeight); */
-    /* } */
     Joystick const &joystick = Joystick::GetJoystick(JoystickID::JOYSTICK1);
-    // OutputJoystickData(joystick, mInfoText, mWidth, mHeight);
+    OutputJoystickData(joystick, mInfoText, mWidth, mHeight);
 
     window->Swap();
     ++mDelflag;
-    mClock.Frame(80);
+    mClock.Tick();
   }
 };
 
 void TestCompute() {
-  std::vector<float> inputData = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  Vec<Float> inputData = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
   ShaderStorageBuffer input, input2, output, output2;
   input.LoadData(inputData);
@@ -366,6 +412,7 @@ int main() {
   Initialize();
   {
     Window window(2500, 1600, "Test Window", WindowSettings());
+    window.DisableVsync();
 
     TestApp app;
     window.GetSizePublisher().Subscribe(

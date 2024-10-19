@@ -34,8 +34,21 @@ private:
   Pair<FilterType> mFilter = {FilterType::LINEAR, FilterType::LINEAR};
   Pair<WrappingType> mWrap = {WrappingType::REPEAT, WrappingType::REPEAT};
   Map<Str, Uint> mTextures = Map<Str, Uint>();
+  Str mKernelSource = "#version 430\n"
+                      "layout(local_size_x = 8, local_size_y = 8) in;\n"
+                      "uniform sampler2D inputTexture;\n"
+                      "layout(rgba32f) uniform image2DArray outputTextures;\n"
+                      "uniform vec2 inputSize;\n"
+                      "uniform vec2 outputSize;\n"
+                      "void main() {\n"
+                      "  ivec3 id = ivec3(gl_GlobalInvocationID);\n"
+                      "  vec2 scale = vec2(inputSize) / vec2(outputSize);\n"
+                      "  vec2 inputUV = vec2(id.xy) / outputSize;\n"
+                      "  vec4 inputColor = texture(inputTexture, inputUV);\n"
+                      "  imageStore(outputTextures, id, inputColor);\n"
+                      "}";
 
-private:
+public:
   friend class Screen;
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
@@ -58,17 +71,19 @@ public:
    * @param: width: width of texture
    * @param: height: height of texture
    * @param: layers: number of layers in texture
+   * @param: type: type of texture channel
    */
-  Texture(Uint const &width, Uint const &height, Uint const &layers = 32);
+  Texture(Uint const &width, Uint const &height, Uint const &layers = 1);
   /*
    * @brief: This function creates a opengl texture set.
    * @param: size: size of texture (width and height are the same and its a
    * power of 2)
    * @param: layers: number of layers in texture
    */
-  Texture(TextureSize const &size, Uint const &layers = 32);
+  Texture(TextureSize const &size, Uint const &layers = 1);
   ~Texture() override;
 
+  Uint const &GetGLIndex() const { return mTexture; }
   Uint const &GetTextureIndex(Str const &name) const {
     return mTextures.at(name);
   }

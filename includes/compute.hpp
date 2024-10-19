@@ -1,13 +1,13 @@
 #ifndef __TERREATE_GRAPHICS_KERNEL_HPP__
 #define __TERREATE_GRAPHICS_KERNEL_HPP__
 
-// #include "buffer.hpp"
 #include "defines.hpp"
 #include "globj.hpp"
+#include "texture.hpp"
 
 namespace TerreateGraphics::Compute {
 using namespace TerreateGraphics::Defines;
-// using namespace TerreateGraphics::Core;
+using namespace TerreateGraphics::Core;
 using namespace TerreateGraphics::GL;
 using namespace TerreateCore::Math;
 
@@ -156,6 +156,42 @@ public:
     glShaderStorageBlockBinding(mKernelID, this->GetStorageBlockIndex(name),
                                 binding);
   }
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: texture: texture to bind
+   */
+  void BindImage(Str const &name, Uint const &texture) const;
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: texture: texture to bind
+   */
+  void BindImage(Str const &name, Texture const &texture) const;
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: texture: texture to bind
+   */
+  void BindReadImage(Str const &name, Uint const &texture) const;
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: texture: texture to bind
+   */
+  void BindReadImage(Str const &name, Texture const &texture) const;
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: texture: texture to bind
+   */
+  void BindWriteImage(Str const &name, Uint const &texture) const;
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: texture: texture to bind
+   */
+  void BindWriteImage(Str const &name, Texture const &texture) const;
 
   /*
    * @brief: Compile shader.
@@ -165,6 +201,11 @@ public:
    * @brief: Link shader.
    */
   void Link();
+  /*
+   * @brief: This function activates selected texture binding point.
+   * @param: target: texture binding point
+   */
+  void ActivateTexture(TextureTargets const &target) const;
   /*
    * @brief: Dispatch compute shader.
    * @param: x: number of work groups in x direction

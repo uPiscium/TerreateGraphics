@@ -151,6 +151,44 @@ void ComputeKernel::SetMat4(Str const &name, mat4 const &value) const {
   glUseProgram(0);
 }
 
+void ComputeKernel::BindImage(Str const &name, Uint const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture, 0, GL_TRUE, 0,
+                     GL_READ_WRITE, GL_RGBA32F);
+}
+
+void ComputeKernel::BindImage(Str const &name, Texture const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture.GetGLIndex(), 0, GL_TRUE,
+                     0, GL_READ_WRITE, GL_RGBA32F);
+}
+
+void ComputeKernel::BindReadImage(Str const &name, Uint const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture, 0, GL_TRUE, 0,
+                     GL_READ_ONLY, GL_RGBA32F);
+}
+
+void ComputeKernel::BindReadImage(Str const &name,
+                                  Texture const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture.GetGLIndex(), 0, GL_TRUE,
+                     0, GL_READ_ONLY, GL_RGBA32F);
+}
+
+void ComputeKernel::BindWriteImage(Str const &name, Uint const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture, 0, GL_TRUE, 0,
+                     GL_WRITE_ONLY, GL_RGBA32F);
+}
+
+void ComputeKernel::BindWriteImage(Str const &name,
+                                   Texture const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture.GetGLIndex(), 0, GL_TRUE,
+                     0, GL_WRITE_ONLY, GL_RGBA32F);
+}
+
 void ComputeKernel::Compile() {
   if (mKernelSource == "") {
     throw Exceptions::ShaderError("Compute kernel source is empty");
@@ -190,7 +228,8 @@ void ComputeKernel::Dispatch(Uint const &x, Uint const &y,
 
   glUseProgram(mKernelID);
   glDispatchCompute(x, y, z);
-  glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+  glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT |
+                  GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
   glUseProgram(0);
 }
 } // namespace TerreateGraphics::Compute

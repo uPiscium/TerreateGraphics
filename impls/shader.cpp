@@ -1,5 +1,5 @@
-#include "../includes/shader.hpp"
 #include "../includes/exceptions.hpp"
+#include "../includes/shader.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
@@ -151,11 +151,6 @@ Str Shader::LoadShaderSource(const Str &path) {
   file.close();
 
   return stream.str();
-}
-
-void Shader::ActiveTexture(TextureTargets const &target) const {
-  this->Use();
-  glActiveTexture((GLenum)target);
 }
 
 void Shader::Use() const {

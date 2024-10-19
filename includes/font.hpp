@@ -5,7 +5,6 @@
 #include FT_FREETYPE_H
 
 #include "defines.hpp"
-#include "globj.hpp"
 #include "texture.hpp"
 
 namespace TerreateGraphics::Core {
