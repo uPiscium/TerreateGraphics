@@ -1,35 +1,46 @@
 #version 430
+layout(local_size_x = 8, local_size_y = 8) in;
 
-layout (local_size_x = 16, local_size_y = 16) in;
+uniform sampler2D inputTexture;
+layout(rgba32f) uniform image2DArray outputTextures;
 
-// sampler2Dを使用してテクスチャをサンプリング
-uniform sampler2D img_input;
-layout (rgba32f) uniform writeonly image2D img_output;
-
-uniform vec2 input_size;  // 入力画像のサイズ (幅, 高さ)
-uniform vec2 output_size; // 出力画像のサイズ (幅, 高さ)
-
-// テクスチャ座標からバイリニア補間でピクセルをサンプリング
-vec4 bilinearInterpolate(sampler2D img, vec2 uv) {
-    // `texture()`関数を使って浮動小数点座標からサンプリング
-    return texture(img, uv);
-}
+uniform vec2 inputSize;
+uniform vec2 outputSize;
 
 void main() {
-    // 出力画像の座標
-    ivec2 output_coords = ivec2(gl_GlobalInvocationID.xy);
+    ivec3 id = ivec3(gl_GlobalInvocationID);
 
-    // 出力画像の範囲外なら何もしない
-    if (output_coords.x >= int(output_size.x) || output_coords.y >= int(output_size.y)) {
-        return;
-    }
+    vec2 scale = vec2(inputSize) / vec2(outputSize);
+    vec2 inputUV = vec2(id.xy) / outputSize;
+    // inputUV = inputUV * scale;
 
-    // 出力座標を0~1に正規化
-    vec2 uv = vec2(output_coords) / output_size;
-
-    // バイリニア補間を使用して入力画像からサンプリング
-    vec4 pixel = bilinearInterpolate(img_input, uv);
-
-    // 出力画像に書き込む
-    imageStore(img_output, output_coords, pixel);
+    vec4 inputColor = texture(inputTexture, inputUV);
+    imageStore(outputTextures, id, inputColor);
 }
+
+// #version 430
+// layout(local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
+
+// uniform float scaleFactor;
+// uniform int inputWidth;
+// uniform int inputHeight;
+// uniform int outputWidth;
+// uniform int outputHeight;
+
+// uniform sampler2D inputTextures;
+// layout(binding=0, rgba32f) uniform image2DArray outputTextures;
+
+// void main() {
+//     ivec3 id = ivec3(gl_GlobalInvocationID);
+
+//     vec2 inputUV = vec2(id.xy) / vec2(outputWidth, outputHeight);
+//     inputUV *= scaleFactor;
+
+//     if (inputUV.x < 1.0 && inputUV.y < 1.0) {
+//         vec4 inputColor = texture(inputTextures, vec3(inputUV, id.z));
+//         imageStore(outputTextures, id, inputColor);
+//     } else {
+//         imageStore(outputTextures, id, vec4(0, 0, 0, 1));
+//     }
+//     imageStore(outputTextures, id, vec4(1.0f));
+// }

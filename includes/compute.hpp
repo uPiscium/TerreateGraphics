@@ -52,14 +52,6 @@ public:
     return glGetProgramResourceIndex(mKernelID, GL_SHADER_STORAGE_BLOCK,
                                      name.c_str());
   }
-  /*
-   * @brief: Getter for shader uniform block index.
-   * @param: name: name of uniform block
-   * @return: uniform block index
-   */
-  unsigned GetUniformBlockIndex(Str const &name) const {
-    return glGetProgramResourceIndex(mKernelID, GL_UNIFORM, name.c_str());
-  }
 
   /*
    * @brief: Setter for shader Bool uniform.
@@ -167,36 +159,39 @@ public:
   /*
    * @brief: This function binds uniform block index to binding point.
    * @param: name: name of uniform block
-   * @param: binding: binding point
    * @param: texture: texture to bind
    */
-  void BindImage(Str const &name, Uint const &unit,
-                 Texture const &texture) const {
-    glBindImageTexture(unit, texture.GetGLIndex(), 0, GL_FALSE, 0,
-                       GL_READ_WRITE, GL_RGBA32F);
-  }
+  void BindImage(Str const &name, Uint const &texture) const;
   /*
    * @brief: This function binds uniform block index to binding point.
    * @param: name: name of uniform block
-   * @param: binding: binding point
    * @param: texture: texture to bind
    */
-  void BindReadImage(Str const &name, Uint const &unit,
-                     Texture const &texture) const {
-    glBindImageTexture(unit, texture.GetGLIndex(), 0, GL_FALSE, 0, GL_READ_ONLY,
-                       GL_RGBA32F);
-  }
+  void BindImage(Str const &name, Texture const &texture) const;
   /*
    * @brief: This function binds uniform block index to binding point.
    * @param: name: name of uniform block
-   * @param: binding: binding point
    * @param: texture: texture to bind
    */
-  void BindWriteImage(Str const &name, Uint const &unit,
-                      Texture const &texture) const {
-    glBindImageTexture(unit, texture.GetGLIndex(), 0, GL_FALSE, 0,
-                       GL_WRITE_ONLY, GL_RGBA32F);
-  }
+  void BindReadImage(Str const &name, Uint const &texture) const;
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: texture: texture to bind
+   */
+  void BindReadImage(Str const &name, Texture const &texture) const;
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: texture: texture to bind
+   */
+  void BindWriteImage(Str const &name, Uint const &texture) const;
+  /*
+   * @brief: This function binds uniform block index to binding point.
+   * @param: name: name of uniform block
+   * @param: texture: texture to bind
+   */
+  void BindWriteImage(Str const &name, Texture const &texture) const;
 
   /*
    * @brief: Compile shader.
@@ -206,6 +201,11 @@ public:
    * @brief: Link shader.
    */
   void Link();
+  /*
+   * @brief: This function activates selected texture binding point.
+   * @param: target: texture binding point
+   */
+  void ActivateTexture(TextureTargets const &target) const;
   /*
    * @brief: Dispatch compute shader.
    * @param: x: number of work groups in x direction

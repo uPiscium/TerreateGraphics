@@ -77,7 +77,7 @@ void Text::Render(Float const &x, Float const &y, Float const &windowWidth,
   }
 
   mShader.Use();
-  mShader.ActiveTexture(TextureTargets::TEX_0);
+  Shader::ActivateTexture(TextureTargets::TEX_0);
   mShader.SetInt("uTexture", 0);
 
   mShader.SetMat4("uModel", translate(identity<mat4>(), vec3(x, y, 0.0f)));

@@ -21,21 +21,23 @@ private:
   Float mDeltaTime = 0.0f;
   Float mSamplingTime = 0.0f;
   Uint mNumSamples = 0u;
-  Vec<Float> mSamples = {};
-  Uint mSampleIndex = 0u;
+  Uint mSampleCount = 0u;
+  Float mTickTime = 0.0f;
+  Float mFPS = 0.0f;
+  Float mSPF = 0.0f;
 
 private:
   Bool IsElapsed(Float const &time);
 
 public:
-  Clock(Uint const &samples = 10)
-      : mSamples(samples, 0.0f), mNumSamples(samples) {}
+  Clock(Float const &fps = 60, Uint const &samples = 10)
+      : mTickTime(1.0f / fps), mNumSamples(samples) {}
   ~Clock() {}
 
-  Float GetSPF() const { return mSamplingTime / mNumSamples; }
-  Float GetFPS() const { return mNumSamples / mSamplingTime; }
+  Float GetFPS() const { return mFPS; }
+  Float GetSPF() const { return mSPF; }
 
-  void Tick(Uint const &fps);
+  void Tick();
 
 public:
   static Double GetCurrentRuntime() { return glfwGetTime(); }

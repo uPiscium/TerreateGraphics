@@ -151,6 +151,44 @@ void ComputeKernel::SetMat4(Str const &name, mat4 const &value) const {
   glUseProgram(0);
 }
 
+void ComputeKernel::BindImage(Str const &name, Uint const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture, 0, GL_TRUE, 0,
+                     GL_READ_WRITE, GL_RGBA32F);
+}
+
+void ComputeKernel::BindImage(Str const &name, Texture const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture.GetGLIndex(), 0, GL_TRUE,
+                     0, GL_READ_WRITE, GL_RGBA32F);
+}
+
+void ComputeKernel::BindReadImage(Str const &name, Uint const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture, 0, GL_TRUE, 0,
+                     GL_READ_ONLY, GL_RGBA32F);
+}
+
+void ComputeKernel::BindReadImage(Str const &name,
+                                  Texture const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture.GetGLIndex(), 0, GL_TRUE,
+                     0, GL_READ_ONLY, GL_RGBA32F);
+}
+
+void ComputeKernel::BindWriteImage(Str const &name, Uint const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture, 0, GL_TRUE, 0,
+                     GL_WRITE_ONLY, GL_RGBA32F);
+}
+
+void ComputeKernel::BindWriteImage(Str const &name,
+                                   Texture const &texture) const {
+  this->SetInt(name, this->GetLocation(name));
+  glBindImageTexture(this->GetLocation(name), texture.GetGLIndex(), 0, GL_TRUE,
+                     0, GL_WRITE_ONLY, GL_RGBA32F);
+}
+
 void ComputeKernel::Compile() {
   if (mKernelSource == "") {
     throw Exceptions::ShaderError("Compute kernel source is empty");

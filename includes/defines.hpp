@@ -498,6 +498,21 @@ enum class StencilOperation {
   INVERT = GL_INVERT
 };
 
+enum class TextureChannelType {
+  /* RED = GL_RED, */
+  /* R16F = GL_R16F, */
+  /* R32F = GL_R32F, */
+  /* RG = GL_RG, */
+  /* RG16F = GL_RG16F, */
+  /* RG32F = GL_RG32F, */
+  /* RGB = GL_RGB, */
+  /* RGB16F = GL_RGB16F, */
+  /* RGB32F = GL_RGB32F, */
+  RGBA = GL_RGBA,
+  RGBA16F = GL_RGBA16F,
+  RGBA32F = GL_RGBA32F
+};
+
 // Use to select material texture property.
 enum class TextureProperty {
   NORMAL,
