@@ -88,46 +88,6 @@ void OutputJoystickData(Joystick const &joystick, Text &text, Uint const &width,
   text.Render(0, 1250, width, height);
 }
 
-Texture TestImageConvert() {
-  ComputeKernel kernel;
-  kernel.AddKernelSource(
-      Shader::LoadShaderSource("tests/resources/shaders/converter.glsl"));
-  kernel.Compile();
-  kernel.Link();
-
-  Int width = 0, height = 0, channels = 0;
-  stbi_set_flip_vertically_on_load(true);
-  Ubyte *data = stbi_load("tests/resources/testImage2.png", &width, &height,
-                          &channels, 4);
-
-  Uint buffer;
-  glGenTextures(1, &buffer);
-  glBindTexture(GL_TEXTURE_2D, buffer);
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, width, height, 0, GL_RGBA,
-               GL_UNSIGNED_BYTE, data);
-  glGenerateMipmap(GL_TEXTURE_2D);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  stbi_image_free(data);
-
-  Texture storage(800, 800);
-
-  storage.Bind();
-  kernel.BindImage("outputTextures", storage);
-
-  Shader::ActivateTexture(TextureTargets::TEX_0);
-  kernel.SetInt("inputTexture", 0);
-  kernel.SetVec2("inputSize", vec2(width, height));
-  kernel.SetVec2("outputSize", vec2(800, 800));
-  glBindTexture(GL_TEXTURE_2D, buffer);
-  kernel.Dispatch((storage.GetWidth() + 7) / 8, (storage.GetHeight() + 7) / 8,
-                  1);
-  glBindTexture(GL_TEXTURE_2D, 0);
-  storage.Unbind();
-  // storage.Unbind();
-
-  return storage;
-}
-
 class TestApp {
 private:
   Clock mClock = Clock(120, 100);
@@ -295,7 +255,19 @@ public:
     mScreenShader.SetInt("uTexture", 0);
     Shader::ActivateTexture(TextureTargets::TEX_0);
 
-    mTexture2 = TestImageConvert();
+    mTexture2 = Texture(800, 800, 2);
+    ImageConverter converter;
+    Int width = 0, height = 0, channels = 0;
+    TextureData data;
+    stbi_set_flip_vertically_on_load(true);
+    Ubyte *pixels = stbi_load("tests/resources/testImage2.png", &width, &height,
+                              &channels, 4);
+    data.width = width;
+    data.height = height;
+    data.channels = channels;
+    data.pixels = Vec<Ubyte>(pixels, pixels + width * height * channels);
+    converter.Convert("testImage2", 1, data, mTexture2);
+    stbi_image_free(pixels);
   }
 
   void OnFrame(Window *window) {
