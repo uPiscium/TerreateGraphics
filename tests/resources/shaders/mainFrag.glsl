@@ -27,9 +27,13 @@ vec4 sampleFrom0(sampler2DArray target, vec2 uv) {
   return texture(target, vec3(uv, 0));
 }
 
+vec4 sampleFrom(sampler2DArray target, vec2 uv, int layer) {
+  return texture(target, vec3(uv, layer));
+}
+
 void main() {
   // vec4 color = sampleTexture(uTexture, vUV);
-  vec4 color = sampleFrom0(uTexture, vUV);
+  vec4 color = sampleFrom(uTexture, vUV, 0);
   if (color.a < 0.1f) {
     discard;
   }

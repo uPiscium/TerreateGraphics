@@ -4,6 +4,10 @@
 #include "defines.hpp"
 #include "globj.hpp"
 
+namespace TerreateGraphics::Compute {
+class ImageConverter;
+} // namespace TerreateGraphics::Compute
+
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 using namespace TerreateGraphics::GL;
@@ -34,22 +38,10 @@ private:
   Pair<FilterType> mFilter = {FilterType::LINEAR, FilterType::LINEAR};
   Pair<WrappingType> mWrap = {WrappingType::REPEAT, WrappingType::REPEAT};
   Map<Str, Uint> mTextures = Map<Str, Uint>();
-  Str mKernelSource = "#version 430\n"
-                      "layout(local_size_x = 8, local_size_y = 8) in;\n"
-                      "uniform sampler2D inputTexture;\n"
-                      "layout(rgba32f) uniform image2DArray outputTextures;\n"
-                      "uniform vec2 inputSize;\n"
-                      "uniform vec2 outputSize;\n"
-                      "void main() {\n"
-                      "  ivec3 id = ivec3(gl_GlobalInvocationID);\n"
-                      "  vec2 scale = vec2(inputSize) / vec2(outputSize);\n"
-                      "  vec2 inputUV = vec2(id.xy) / outputSize;\n"
-                      "  vec4 inputColor = texture(inputTexture, inputUV);\n"
-                      "  imageStore(outputTextures, id, inputColor);\n"
-                      "}";
 
-public:
+private:
   friend class Screen;
+  friend class Compute::ImageConverter;
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be called by Screen class.
@@ -60,6 +52,13 @@ public:
   Texture(GLObject const &texture, Uint const &width, Uint const &height,
           Uint const &layers)
       : mTexture(texture), mSize(width, height), mLayers(layers) {}
+
+  void AddBinding(Str const &name) {
+    mTextures.insert({name, mTextures.size()});
+  }
+  void AddBinding(Str const &name, Uint const &index) {
+    mTextures.insert({name, index});
+  }
 
 public:
   /*
@@ -91,6 +90,7 @@ public:
   Uint const &GetWidth() const { return mSize.first; }
   Uint const &GetHeight() const { return mSize.second; }
   Uint const &GetLayers() const { return mLayers; }
+  Uint GetCurrentLayer() const { return mTextures.size(); }
 
   void SetFilter(FilterType const &min, FilterType const &mag);
   void SetWrapping(WrappingType const &s, WrappingType const &t);
