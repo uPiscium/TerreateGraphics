@@ -39,7 +39,7 @@ function(CloneFreetype)
   FetchContent_Declare(
     freetype
     GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype.git
-    GIT_TAG VER-2-13-1)
+    GIT_TAG VER-2-13-2)
   FetchContent_MakeAvailable(freetype)
   message(STATUS "Freetype cloned.")
 endfunction()
@@ -64,6 +64,7 @@ function(Build)
     TerreateGraphics.cpp
     buffer.cpp
     compute.cpp
+    converter.cpp
     event.cpp
     font.cpp
     gl.cpp

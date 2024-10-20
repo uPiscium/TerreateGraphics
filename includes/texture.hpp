@@ -4,6 +4,10 @@
 #include "defines.hpp"
 #include "globj.hpp"
 
+namespace TerreateGraphics::Compute {
+class ImageConverter;
+} // namespace TerreateGraphics::Compute
+
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 using namespace TerreateGraphics::GL;
@@ -37,6 +41,7 @@ private:
 
 private:
   friend class Screen;
+  friend class Compute::ImageConverter;
   /*
    * @brief: DO NOT USE THIS CONSTRUCTOR.
    * This constructor should only be called by Screen class.
@@ -48,6 +53,13 @@ private:
           Uint const &layers)
       : mTexture(texture), mSize(width, height), mLayers(layers) {}
 
+  void AddBinding(Str const &name) {
+    mTextures.insert({name, mTextures.size()});
+  }
+  void AddBinding(Str const &name, Uint const &index) {
+    mTextures.insert({name, index});
+  }
+
 public:
   /*
    * @brief: This function creates a opengl texture set.
@@ -58,17 +70,19 @@ public:
    * @param: width: width of texture
    * @param: height: height of texture
    * @param: layers: number of layers in texture
+   * @param: type: type of texture channel
    */
-  Texture(Uint const &width, Uint const &height, Uint const &layers = 32);
+  Texture(Uint const &width, Uint const &height, Uint const &layers = 1);
   /*
    * @brief: This function creates a opengl texture set.
    * @param: size: size of texture (width and height are the same and its a
    * power of 2)
    * @param: layers: number of layers in texture
    */
-  Texture(TextureSize const &size, Uint const &layers = 32);
+  Texture(TextureSize const &size, Uint const &layers = 1);
   ~Texture() override;
 
+  Uint const &GetGLIndex() const { return mTexture; }
   Uint const &GetTextureIndex(Str const &name) const {
     return mTextures.at(name);
   }
@@ -76,6 +90,7 @@ public:
   Uint const &GetWidth() const { return mSize.first; }
   Uint const &GetHeight() const { return mSize.second; }
   Uint const &GetLayers() const { return mLayers; }
+  Uint GetCurrentLayer() const { return mTextures.size(); }
 
   void SetFilter(FilterType const &min, FilterType const &mag);
   void SetWrapping(WrappingType const &s, WrappingType const &t);
