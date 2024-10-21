@@ -57,15 +57,16 @@ ImageConverter::~ImageConverter() {
   }
 }
 
-void ImageConverter::Convert(Str const &name, TextureData const &data,
-                             Texture &storage) {
+void ImageConverter::Convert(Str const &name, Uint const &width,
+                             Uint const &height, Uint const &channels,
+                             Ubyte const *pixels, Texture &storage) {
   Uint dispatchX =
       (storage.GetWidth() + (sKernelInputSize - 1)) / sKernelInputSize;
   Uint dispatchY =
       (storage.GetHeight() + (sKernelInputSize - 1)) / sKernelInputSize;
 
   Uint format;
-  switch (data.channels) {
+  switch (channels) {
   case 1:
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     format = GL_RED;
@@ -86,8 +87,8 @@ void ImageConverter::Convert(Str const &name, TextureData const &data,
   }
 
   glBindTexture(GL_TEXTURE_2D, mInputTexture);
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, data.width, data.height, format,
-                  GL_UNSIGNED_BYTE, (void const *)data.pixels.data());
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format,
+                  GL_UNSIGNED_BYTE, (void const *)pixels);
   glGenerateMipmap(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
   glBindTexture(GL_TEXTURE_2D, 0);
@@ -96,7 +97,7 @@ void ImageConverter::Convert(Str const &name, TextureData const &data,
 
   Shader::ActivateTexture(TextureTargets::TEX_0);
   mKernel.SetInt("inputTexture", 0);
-  mKernel.SetVec2("inputSize", vec2(data.width, data.height));
+  mKernel.SetVec2("inputSize", vec2(width, height));
   mKernel.SetVec2("outputSize", vec2(storage.GetWidth(), storage.GetHeight()));
   mKernel.SetInt("layer", storage.GetCurrentLayer());
   glBindTexture(GL_TEXTURE_2D, mInputTexture);
@@ -106,14 +107,16 @@ void ImageConverter::Convert(Str const &name, TextureData const &data,
 }
 
 void ImageConverter::Convert(Str const &name, Uint const &index,
-                             TextureData const &data, Texture &storage) {
+                             Uint const &width, Uint const &height,
+                             Uint const &channels, Ubyte const *pixels,
+                             Texture &storage) {
   Uint dispatchX =
       (storage.GetWidth() + (sKernelInputSize - 1)) / sKernelInputSize;
   Uint dispatchY =
       (storage.GetHeight() + (sKernelInputSize - 1)) / sKernelInputSize;
 
   Uint format;
-  switch (data.channels) {
+  switch (channels) {
   case 1:
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     format = GL_RED;
@@ -134,8 +137,8 @@ void ImageConverter::Convert(Str const &name, Uint const &index,
   }
 
   glBindTexture(GL_TEXTURE_2D, mInputTexture);
-  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, data.width, data.height, format,
-                  GL_UNSIGNED_BYTE, (void const *)data.pixels.data());
+  glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, format,
+                  GL_UNSIGNED_BYTE, (void const *)pixels);
   glGenerateMipmap(GL_TEXTURE_2D);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
   glBindTexture(GL_TEXTURE_2D, 0);
@@ -144,7 +147,7 @@ void ImageConverter::Convert(Str const &name, Uint const &index,
 
   Shader::ActivateTexture(TextureTargets::TEX_0);
   mKernel.SetInt("inputTexture", 0);
-  mKernel.SetVec2("inputSize", vec2(data.width, data.height));
+  mKernel.SetVec2("inputSize", vec2(width, height));
   mKernel.SetVec2("outputSize", vec2(storage.GetWidth(), storage.GetHeight()));
   mKernel.SetInt("layer", index);
   glBindTexture(GL_TEXTURE_2D, mInputTexture);

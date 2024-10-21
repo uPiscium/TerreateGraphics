@@ -243,9 +243,18 @@ private:
   void Unbind() const { glBindBuffer(GL_UNIFORM_BUFFER, 0); }
 
 public:
+  /*
+   * @brief: Construct a new UniformBuffer object
+   */
   UniformBuffer() { glGenBuffers(1, mUBO); }
   ~UniformBuffer() override;
 
+  /*
+   * @brief: Load data into the new uniform buffer
+   * @note: If you want to update the data, use ReloadData() instead
+   * @param: data: Data to load
+   * @param: usage: Buffer usage
+   */
   template <typename T>
   void LoadData(T const &data,
                 BufferUsage const &usage = BufferUsage::STATIC_DRAW) {
@@ -253,6 +262,12 @@ public:
     glBufferData(GL_UNIFORM_BUFFER, sizeof(T), &data, (GLenum)usage);
     this->Unbind();
   }
+  /*
+   * @brief: Load data array into the new uniform buffer
+   * @note: If you want to update the data, use ReloadData() instead
+   * @param: data: Data array to load
+   * @param: usage: Buffer usage
+   */
   template <typename T>
   void LoadData(Vec<T> const &data,
                 BufferUsage const &usage = BufferUsage::STATIC_DRAW) {
@@ -261,12 +276,24 @@ public:
                  (GLenum)usage);
     this->Unbind();
   }
+  /*
+   * @brief: Reload data into the uniform buffer
+   * @note: If this is first time to load the data, use LoadData() instead
+   * @param: data: Data to reload
+   * @param: offset: Offset to reload data
+   */
   template <typename T>
   void ReloadData(T const &data, Ulong const &offset = 0u) {
     this->Bind();
     glBufferSubData(GL_UNIFORM_BUFFER, offset, sizeof(T), &data);
     this->Unbind();
   }
+  /*
+   * @brief: Reload data array into the uniform buffer
+   * @note: If this is first time to load the data, use LoadData() instead
+   * @param: data: Data array to reload
+   * @param: offset: Offset to reload data
+   */
   template <typename T>
   void ReloadData(Vec<T> const &data, Ulong const &offset = 0u) {
     this->Bind();
@@ -274,9 +301,19 @@ public:
                     data.data());
     this->Unbind();
   }
+  /*
+   * @brief: Allocate the uniform buffer
+   * @param: size: Size to allocate
+   * @param: usage: Buffer usage
+   */
   void Allocate(Ulong const &size,
                 BufferUsage const &usage = BufferUsage::STATIC_DRAW);
 
+  /*
+   * @brief: Bind the uniform buffer
+   * @param: shader: Shader to bind
+   * @param: name: Name of the uniform buffer
+   */
   void Bind(Shader const &shader, Str const &name) const;
 };
 
@@ -290,10 +327,22 @@ private:
   void Unbind() const { glBindBuffer(GL_SHADER_STORAGE_BUFFER, 0); }
 
 public:
+  /*
+   * @brief: Construct a new ShaderStorageBuffer object
+   */
   ShaderStorageBuffer() { glGenBuffers(1, mSSBO); }
   ~ShaderStorageBuffer() override;
 
+  /*
+   * @brief: Get the size of the buffer
+   * @return: Size of the buffer
+   */
   Size const &GetSize() const { return mSize; }
+  /*
+   * @brief: Retrieve data from the buffer
+   * @param: data: Data to retrieve
+   * @param: offset: Offset to retrieve data
+   */
   template <typename T> void GetData(T &data, Ulong const &offset = 0u) const {
     if (mSize == 0u) {
       return;
@@ -307,6 +356,11 @@ public:
     glGetBufferSubData(GL_SHADER_STORAGE_BUFFER, offset, mSize, &data);
     this->Unbind();
   }
+  /*
+   * @brief: Retrieve data array from the buffer
+   * @param: data: Data array to retrieve
+   * @param: offset: Offset to retrieve data
+   */
   template <typename T>
   void GetData(Vec<T> &data, Ulong const &offset = 0u) const {
     if (mSize == 0u) {
@@ -323,6 +377,12 @@ public:
     this->Unbind();
   }
 
+  /*
+   * @brief: Load data into the new shader storage buffer
+   * @note: If you want to update the data, use ReloadData() instead
+   * @param: data: Data to load
+   * @param: usage: Buffer usage
+   */
   template <typename T>
   void LoadData(T const &data,
                 BufferUsage const &usage = BufferUsage::STATIC_DRAW) {
@@ -331,6 +391,12 @@ public:
     mSize = sizeof(T);
     this->Unbind();
   }
+  /*
+   * @brief: Load data array into the new shader storage buffer
+   * @note: If you want to update the data, use ReloadData() instead
+   * @param: data: Data array to load
+   * @param: usage: Buffer usage
+   */
   template <typename T>
   void LoadData(Vec<T> const &data,
                 BufferUsage const &usage = BufferUsage::STATIC_DRAW) {
@@ -340,6 +406,12 @@ public:
     mSize = data.size() * sizeof(T);
     this->Unbind();
   }
+  /*
+   * @brief: Reload data into the shader storage buffer
+   * @note: If this is first time to load the data, use LoadData() instead
+   * @param: data: Data to reload
+   * @param: offset: Offset to reload data
+   */
   template <typename T>
   void ReloadData(T const &data, Ulong const &offset = 0u) {
     this->Bind();
@@ -347,6 +419,12 @@ public:
     mSize = sizeof(T);
     this->Unbind();
   }
+  /*
+   * @brief: Reload data array into the shader storage buffer
+   * @note: If this is first time to load the data, use LoadData() instead
+   * @param: data: Data array to reload
+   * @param: offset: Offset to reload data
+   */
   template <typename T>
   void ReloadData(Vec<T> const &data, Ulong const &offset = 0u) {
     this->Bind();
@@ -356,9 +434,24 @@ public:
     this->Unbind();
   }
 
+  /*
+   * @brief: Allocate the shader storage buffer
+   * @param: size: Size to allocate
+   * @param: usage: Buffer usage
+   */
   void Allocate(Ulong const &size,
                 BufferUsage const &usage = BufferUsage::STATIC_DRAW);
+  /*
+   * @brief: Bind the shader storage buffer
+   * @param: shader: Shader to bind
+   * @param: name: Name of the shader storage buffer
+   */
   void Bind(Shader &shader, Str const &name) const;
+  /*
+   * @brief: Bind the shader storage buffer
+   * @param: kernel: Compute kernel to bind
+   * @param: name: Name of the shader storage buffer
+   */
   void Bind(ComputeKernel &kernel, Str const &name) const;
 };
 } // namespace TerreateGraphics::Core
