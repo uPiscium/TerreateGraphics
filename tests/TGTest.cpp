@@ -258,15 +258,11 @@ public:
     mTexture2 = Texture(800, 800, 2);
     ImageConverter converter;
     Int width = 0, height = 0, channels = 0;
-    TextureData data;
     stbi_set_flip_vertically_on_load(true);
     Ubyte *pixels = stbi_load("tests/resources/testImage2.png", &width, &height,
                               &channels, 4);
-    data.width = width;
-    data.height = height;
-    data.channels = channels;
-    data.pixels = Vec<Ubyte>(pixels, pixels + width * height * channels);
-    converter.Convert("testImage2", 1, data, mTexture2);
+    converter.Convert("testImage2", 1, width, height, channels, pixels,
+                      mTexture2);
     stbi_image_free(pixels);
   }
 

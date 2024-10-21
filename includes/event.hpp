@@ -54,10 +54,23 @@ private:
   Vec<Subscriber> mSubscribers;
 
 public:
+  /*
+   * @brief: Publisher is a class that allows
+   * for subscribers to be registered and for
+   * events to be published to all subscribers.
+   */
   Publisher() = default;
   ~Publisher() = default;
 
+  /*
+   * @brief: Subscribe a subscriber to the publisher
+   * @param: subscriber: the subscriber to subscribe
+   */
   void Subscribe(Subscriber subscriber) { mSubscribers.push_back(subscriber); }
+  /*
+   * @brief: Unsubscribe a subscriber from the publisher
+   * @param: subscriber: the subscriber to unsubscribe
+   */
   void Unsubscribe(Subscriber subscriber) {
     auto it = std::find(mSubscribers.begin(), mSubscribers.end(), subscriber);
     if (it != mSubscribers.end()) {
@@ -65,6 +78,10 @@ public:
     }
   }
 
+  /*
+   * @brief: Publish an event to all subscribers
+   * @param: args: the arguments to pass to the subscribers
+   */
   template <typename... Args> void Publish(Args... args) {
     for (auto &subscriber : mSubscribers) {
       subscriber(args...);
