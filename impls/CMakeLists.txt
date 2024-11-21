@@ -65,7 +65,6 @@ function(Build)
     buffer.cpp
     compute.cpp
     converter.cpp
-    event.cpp
     font.cpp
     gl.cpp
     globj.cpp

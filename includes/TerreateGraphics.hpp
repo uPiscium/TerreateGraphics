@@ -5,7 +5,6 @@
 #include "compute.hpp"
 #include "converter.hpp"
 #include "defines.hpp"
-#include "event.hpp"
 #include "font.hpp"
 #include "joystick.hpp"
 #include "screen.hpp"
