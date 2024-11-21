@@ -383,14 +383,15 @@ int main() {
     window.DisableVsync();
 
     TestApp app;
-    window.GetSizePublisher().Subscribe(
+    window.GetSizeEventHandler().Subscribe(
         [&app](Window *window, int const &width, int const &height) {
           app.SizeCallback(window, width, height);
         });
-    window.GetKeyPublisher().Subscribe([&app](Window *window, Key const &key) {
-      app.KeyCallback(window, key);
-    });
-    window.GetCharPublisher().Subscribe(
+    window.GetKeyEventHandler().Subscribe(
+        [&app](Window *window, Key const &key) {
+          app.KeyCallback(window, key);
+        });
+    window.GetCharEventHandler().Subscribe(
         [&app](Window *window, Uint const &codepoint) {
           app.CharCallback(window, codepoint);
         });
