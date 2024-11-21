@@ -34,6 +34,8 @@ typedef std::ifstream InputFileStream;
 typedef std::ofstream OutputFileStream;
 
 template <typename T> using Shared = std::shared_ptr<T>;
+template <typename... EventArgs>
+using Event = TerreateCore::Utils::Event<EventArgs...>;
 
 // Callbacks
 using ErrorCallback = std::function<void(int errorCode, char const *message)>;

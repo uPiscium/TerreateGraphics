@@ -2,44 +2,29 @@
 #define __TERREATE_GRAPHICS_WINDOW_HPP__
 
 #include "defines.hpp"
-#include "event.hpp"
 
 namespace TerreateGraphics::Core {
 using namespace TerreateGraphics::Defines;
 
 class Window;
 
-typedef Event::Publisher<Function<void(Window *, Uint const &, Uint const &)>>
-    WindowPositionPublisher;
-typedef Event::Publisher<Function<void(Window *, Uint const &, Uint const &)>>
-    WindowSizePublisher;
-typedef Event::Publisher<Function<void(Window *)>> WindowClosePublisher;
-typedef Event::Publisher<Function<void(Window *)>> WindowRefreshPublisher;
-typedef Event::Publisher<Function<void(Window *, Bool const &)>>
-    WindowFocusPublisher;
-typedef Event::Publisher<Function<void(Window *, Bool const &)>>
-    WindowIconifyPublisher;
-typedef Event::Publisher<Function<void(Window *, Bool const &)>>
-    WindowMaximizePublisher;
-typedef Event::Publisher<Function<void(Window *, Uint const &, Uint const &)>>
-    WindowFramebufferSizePublisher;
-typedef Event::Publisher<Function<void(Window *, Float const &, Float const &)>>
-    WindowContentScalePublisher;
-typedef Event::Publisher<
-    Function<void(Window *, Uint const &, Uint const &, Modifier const &)>>
-    MousebuttonPublisher;
-typedef Event::Publisher<
-    Function<void(Window *, Double const &, Double const &)>>
-    CursorPositionPublisher;
-typedef Event::Publisher<Function<void(Window *, Bool const &)>>
-    CursorEnterPublisher;
-typedef Event::Publisher<
-    Function<void(Window *, Double const &, Double const &)>>
-    ScrollPublisher;
-typedef Event::Publisher<Function<void(Window *, Key const &)>> KeyPublisher;
-typedef Event::Publisher<Function<void(Window *, Uint const &)>> CharPublisher;
-typedef Event::Publisher<Function<void(Window *, Vec<Str> const &)>>
-    DropPublisher;
+typedef Event<Window *, Uint const &, Uint const &> WindowPositionEvent;
+typedef Event<Window *, Uint const &, Uint const &> WindowSizeEvent;
+typedef Event<Window *> WindowCloseEvent;
+typedef Event<Window *> WindowRefreshEvent;
+typedef Event<Window *, Bool const &> WindowFocusEvent;
+typedef Event<Window *, Bool const &> WindowIconifyEvent;
+typedef Event<Window *, Bool const &> WindowMaximizeEvent;
+typedef Event<Window *, Uint const &, Uint const &> WindowFramebufferSizeEvent;
+typedef Event<Window *, Float const &, Float const &> WindowContentScaleEvent;
+typedef Event<Window *, Uint const &, Uint const &, Modifier const &>
+    MousebuttonEvent;
+typedef Event<Window *, Double const &, Double const &> CursorPositionEvent;
+typedef Event<Window *, Bool const &> CursorEnterEvent;
+typedef Event<Window *, Double const &, Double const &> ScrollEvent;
+typedef Event<Window *, Key const &> KeyEvent;
+typedef Event<Window *, Uint const &> CharEvent;
+typedef Event<Window *, Vec<Str> const &> FileDropEvent;
 
 class Icon final : public TerreateObjectBase {
 private:
@@ -254,22 +239,22 @@ private:
   GLFWwindow *mWindow = nullptr;
   WindowProperty mProperty;
 
-  WindowPositionPublisher mPositionPublisher;
-  WindowSizePublisher mSizePublisher;
-  WindowClosePublisher mClosePublisher;
-  WindowRefreshPublisher mRefreshPublisher;
-  WindowFocusPublisher mFocusPublisher;
-  WindowIconifyPublisher mIconifyPublisher;
-  WindowMaximizePublisher mMaximizePublisher;
-  WindowFramebufferSizePublisher mFramebufferSizePublisher;
-  WindowContentScalePublisher mContentScalePublisher;
-  MousebuttonPublisher mMousebuttonPublisher;
-  CursorPositionPublisher mCursorPositionPublisher;
-  CursorEnterPublisher mCursorEnterPublisher;
-  ScrollPublisher mScrollPublisher;
-  KeyPublisher mKeyPublisher;
-  CharPublisher mCharPublisher;
-  DropPublisher mDropPublisher;
+  WindowPositionEvent mPositionEvent;
+  WindowSizeEvent mSizeEvent;
+  WindowCloseEvent mCloseEvent;
+  WindowRefreshEvent mRefreshEvent;
+  WindowFocusEvent mFocusEvent;
+  WindowIconifyEvent mIconifyEvent;
+  WindowMaximizeEvent mMaximizeEvent;
+  WindowFramebufferSizeEvent mFramebufferSizeEvent;
+  WindowContentScaleEvent mContentScaleEvent;
+  MousebuttonEvent mMousebuttonEvent;
+  CursorPositionEvent mCursorPositionEvent;
+  CursorEnterEvent mCursorEnterEvent;
+  ScrollEvent mScrollEvent;
+  KeyEvent mKeyEvent;
+  CharEvent mCharEvent;
+  FileDropEvent mDropEvent;
 
 private:
   Window(Window const &) = delete;
@@ -298,197 +283,92 @@ public:
    */
   WindowProperty const &GetProperty() const { return mProperty; }
   /*
-   * @brief: This function returns window position publisher.
-   * @return: Window position publisher.
+   * @brief: This function returns window position event.
+   * @return: Window position event handler.
    */
-  WindowPositionPublisher &GetPositionPublisher() { return mPositionPublisher; }
+  WindowPositionEvent &GetPositionEventHandler() { return mPositionEvent; }
   /*
-   * @brief: This function returns window position publisher.
-   * @return: Window position publisher.
+   * @brief: This function returns window size event.
+   * @return: Window size event handler.
    */
-  WindowPositionPublisher const &GetPositionPublisher() const {
-    return mPositionPublisher;
+  WindowSizeEvent &GetSizeEventHandler() { return mSizeEvent; }
+  /*
+   * @brief: This function returns window close event.
+   * @return: Window close event handler.
+   */
+  WindowCloseEvent &GetCloseEventHandler() { return mCloseEvent; }
+  /*
+   * @brief: This function returns window refresh event.
+   * @return: Window refresh event handler.
+   */
+  WindowRefreshEvent &GetRefreshEventHandler() { return mRefreshEvent; }
+  /*
+   * @brief: This function returns window focus event.
+   * @return: Window focus event handler.
+   */
+  WindowFocusEvent &GetFocusEventHandler() { return mFocusEvent; }
+  /*
+   * @brief: This function returns window iconify event.
+   * @return: Window iconify event handler.
+   */
+  WindowIconifyEvent &GetIconifyEventHandler() { return mIconifyEvent; }
+  /*
+   * @brief: This function returns window maximize event.
+   * @return: Window maximize event handler.
+   */
+  WindowMaximizeEvent &GetMaximizeEventHandler() { return mMaximizeEvent; }
+  /*
+   * @brief: This function returns window framebuffer size event.
+   * @return: Window framebuffer size event handler.
+   */
+  WindowFramebufferSizeEvent &GetFramebufferSizeEventHandler() {
+    return mFramebufferSizeEvent;
   }
   /*
-   * @brief: This function returns window size publisher.
-   * @return: Window size publisher.
+   * @brief: This function returns window content scale event.
+   * @return: Window content scale event handler.
    */
-  WindowSizePublisher &GetSizePublisher() { return mSizePublisher; }
-  /*
-   * @brief: This function returns window size publisher.
-   * @return: Window size publisher.
-   */
-  WindowSizePublisher const &GetSizePublisher() const { return mSizePublisher; }
-  /*
-   * @brief: This function returns window close publisher.
-   * @return: Window close publisher.
-   */
-  WindowClosePublisher &GetClosePublisher() { return mClosePublisher; }
-  /*
-   * @brief: This function returns window close publisher.
-   * @return: Window close publisher.
-   */
-  WindowClosePublisher const &GetClosePublisher() const {
-    return mClosePublisher;
+  WindowContentScaleEvent &GetContentScaleEventHandler() {
+    return mContentScaleEvent;
   }
   /*
-   * @brief: This function returns window refresh publisher.
-   * @return: Window refresh publisher.
+   * @brief: This function returns mousebutton event.
+   * @return: Mousebutton event handler.
    */
-  WindowRefreshPublisher &GetRefreshPublisher() { return mRefreshPublisher; }
+  MousebuttonEvent &GetMousebuttonEventHandler() { return mMousebuttonEvent; }
   /*
-   * @brief: This function returns window refresh publisher.
-   * @return: Window refresh publisher.
+   * @brief: This function returns cursor position event.
+   * @return: Cursor position event handler.
    */
-  WindowRefreshPublisher const &GetRefreshPublisher() const {
-    return mRefreshPublisher;
+  CursorPositionEvent &GetCursorPositionEventHandler() {
+    return mCursorPositionEvent;
   }
   /*
-   * @brief: This function returns window focus publisher.
-   * @return: Window focus publisher.
+   * @brief: This function returns cursor enter event.
+   * @return: Cursor enter event handler.
    */
-  WindowFocusPublisher &GetFocusPublisher() { return mFocusPublisher; }
+  CursorEnterEvent &GetCursorEnterEventHandler() { return mCursorEnterEvent; }
   /*
-   * @brief: This function returns window focus publisher.
-   * @return: Window focus publisher.
+   * @brief: This function returns scroll event.
+   * @return: Scroll event handler.
    */
-  WindowFocusPublisher const &GetFocusPublisher() const {
-    return mFocusPublisher;
-  }
+  ScrollEvent &GetScrollEventHandler() { return mScrollEvent; }
   /*
-   * @brief: This function returns window iconify publisher.
-   * @return: Window iconify publisher.
+   * @brief: This function returns key event.
+   * @return: Key event handler.
    */
-  WindowIconifyPublisher &GetIconifyPublisher() { return mIconifyPublisher; }
+  KeyEvent &GetKeyEventHandler() { return mKeyEvent; }
   /*
-   * @brief: This function returns window iconify publisher.
-   * @return: Window iconify publisher.
+   * @brief: This function returns char event.
+   * @return: Char event handler.
    */
-  WindowIconifyPublisher const &GetIconifyPublisher() const {
-    return mIconifyPublisher;
-  }
+  CharEvent &GetCharEventHandler() { return mCharEvent; }
   /*
-   * @brief: This function returns window maximize publisher.
-   * @return: Window maximize publisher.
+   * @brief: This function returns drop event.
+   * @return: Drop event handler.
    */
-  WindowMaximizePublisher &GetMaximizePublisher() { return mMaximizePublisher; }
-  /*
-   * @brief: This function returns window maximize publisher.
-   * @return: Window maximize publisher.
-   */
-  WindowMaximizePublisher const &GetMaximizePublisher() const {
-    return mMaximizePublisher;
-  }
-  /*
-   * @brief: This function returns window framebuffer size publisher.
-   * @return: Window framebuffer size publisher.
-   */
-  WindowFramebufferSizePublisher &GetFramebufferSizePublisher() {
-    return mFramebufferSizePublisher;
-  }
-  /*
-   * @brief: This function returns window framebuffer size publisher.
-   * @return: Window framebuffer size publisher.
-   */
-  WindowFramebufferSizePublisher const &GetFramebufferSizePublisher() const {
-    return mFramebufferSizePublisher;
-  }
-  /*
-   * @brief: This function returns window content scale publisher.
-   * @return: Window content scale publisher.
-   */
-  WindowContentScalePublisher &GetContentScalePublisher() {
-    return mContentScalePublisher;
-  }
-  /*
-   * @brief: This function returns window content scale publisher.
-   * @return: Window content scale publisher.
-   */
-  WindowContentScalePublisher const &GetContentScalePublisher() const {
-    return mContentScalePublisher;
-  }
-  /*
-   * @brief: This function returns mousebutton publisher.
-   * @return: Mousebutton publisher.
-   */
-  MousebuttonPublisher &GetMousebuttonPublisher() {
-    return mMousebuttonPublisher;
-  }
-  /*
-   * @brief: This function returns mousebutton publisher.
-   * @return: Mousebutton publisher.
-   */
-  MousebuttonPublisher const &GetMousebuttonPublisher() const {
-    return mMousebuttonPublisher;
-  }
-  /*
-   * @brief: This function returns cursor position publisher.
-   * @return: Cursor position publisher.
-   */
-  CursorPositionPublisher &GetCursorPositionPublisher() {
-    return mCursorPositionPublisher;
-  }
-  /*
-   * @brief: This function returns cursor position publisher.
-   * @return: Cursor position publisher.
-   */
-  CursorPositionPublisher const &GetCursorPositionPublisher() const {
-    return mCursorPositionPublisher;
-  }
-  /*
-   * @brief: This function returns cursor enter publisher.
-   * @return: Cursor enter publisher.
-   */
-  CursorEnterPublisher &GetCursorEnterPublisher() {
-    return mCursorEnterPublisher;
-  }
-  /*
-   * @brief: This function returns cursor enter publisher.
-   * @return: Cursor enter publisher.
-   */
-  CursorEnterPublisher const &GetCursorEnterPublisher() const {
-    return mCursorEnterPublisher;
-  }
-  /*
-   * @brief: This function returns scroll publisher.
-   * @return: Scroll publisher.
-   */
-  ScrollPublisher &GetScrollPublisher() { return mScrollPublisher; }
-  /*
-   * @brief: This function returns scroll publisher.
-   * @return: Scroll publisher.
-   */
-  ScrollPublisher const &GetScrollPublisher() const { return mScrollPublisher; }
-  /*
-   * @brief: This function returns key publisher.
-   * @return: Key publisher.
-   */
-  KeyPublisher &GetKeyPublisher() { return mKeyPublisher; }
-  /*
-   * @brief: This function returns key publisher.
-   * @return: Key publisher.
-   */
-  KeyPublisher const &GetKeyPublisher() const { return mKeyPublisher; }
-  /*
-   * @brief: This function returns char publisher.
-   * @return: Char publisher.
-   */
-  CharPublisher &GetCharPublisher() { return mCharPublisher; }
-  /*
-   * @brief: This function returns char publisher.
-   * @return: Char publisher.
-   */
-  CharPublisher const &GetCharPublisher() const { return mCharPublisher; }
-  /*
-   * @brief: This function returns drop publisher.
-   * @return: Drop publisher.
-   */
-  DropPublisher &GetDropPublisher() { return mDropPublisher; }
-  /*
-   * @brief: This function returns drop publisher.
-   * @return: Drop publisher.
-   */
-  DropPublisher const &GetDropPublisher() const { return mDropPublisher; }
+  FileDropEvent &GetFileDropEventHandler() { return mDropEvent; }
+
   /*
    * @brief: This function returns window size.
    * @return: Window size.

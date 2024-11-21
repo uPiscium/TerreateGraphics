@@ -16,8 +16,9 @@ Joystick Joystick::sJoysticks[(Uint const)JoystickID::LAST + 1] = {
 };
 
 void JoystickCallback(int id, int event) {
-  JoystickID joyId = (JoystickID)id;
-  Joystick::SetJoystick(joyId);
+  JoystickID JID = (JoystickID)id;
+  Joystick *joystick = (Joystick *)glfwGetJoystickUserPointer(id);
+  joystick->GetJoystickEvent().Publish(JID, (JoystickEvent)event);
 }
 
 JoystickAxisState Joystick::AcquireAxisState() const {
@@ -185,4 +186,8 @@ JoystickHatState Joystick::AcquireHatState() const {
   return state;
 }
 
+Joystick &Joystick::operator=(Joystick const &joystick) {
+  mJoystickId = joystick.mJoystickId;
+  return *this;
+}
 } // namespace TerreateGraphics::Core
