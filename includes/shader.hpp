@@ -15,8 +15,8 @@ struct ShaderOption {
   Bool depth = true;
   Bool scissor = false;
   Bool stencil = false;
-  BlendingFuntion src = BlendingFuntion::SRC_ALPHA;
-  BlendingFuntion dst = BlendingFuntion::ONE_MINUS_SRC_ALPHA;
+  BlendingFunction src = BlendingFunction::SRC_ALPHA;
+  BlendingFunction dst = BlendingFunction::ONE_MINUS_SRC_ALPHA;
   CullingFace cullFace = CullingFace::BACK;
   CullingMode frontFace = CullingMode::CCW;
   DepthFunction depthFunc = DepthFunction::LESS;
@@ -201,7 +201,7 @@ public:
    * @param: src: source blending function
    * @param: dst: destination blending function
    */
-  void SetBlending(BlendingFuntion const &src, BlendingFuntion const &dst);
+  void SetBlending(BlendingFunction const &src, BlendingFunction const &dst);
   /*
    * @brief: Setter for culling face.
    * @param: face: face to cull
