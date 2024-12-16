@@ -106,7 +106,7 @@ enum class BufferType {
 };
 
 // Use to select blending function.
-enum class BlendingFuntion {
+enum class BlendingFunction {
   ZERO = GL_ZERO,
   ONE = GL_ONE,
   SRC_COLOR = GL_SRC_COLOR,

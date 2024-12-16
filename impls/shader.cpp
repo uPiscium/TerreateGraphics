@@ -58,8 +58,8 @@ Shader::~Shader() {
   }
 }
 
-void Shader::SetBlending(BlendingFuntion const &src,
-                         BlendingFuntion const &dst) {
+void Shader::SetBlending(BlendingFunction const &src,
+                         BlendingFunction const &dst) {
   mOption.src = src;
   mOption.dst = dst;
 }
