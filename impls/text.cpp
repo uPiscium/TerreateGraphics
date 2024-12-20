@@ -52,7 +52,7 @@ void Text::LoadText() {
     px += chr.advance >> 6;
   }
 
-  mBuffer.LoadData(mShader, mBuffer.Flatten(vertices), mAttributes);
+  mBuffer.LoadData(mBuffer.Flatten(vertices), mAttributes, mLocations);
   mBuffer.LoadIndices(indices);
   mLastText = mText;
 }

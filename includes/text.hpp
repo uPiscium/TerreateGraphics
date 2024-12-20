@@ -20,6 +20,7 @@ private:
   Map<Str, AttributeData> mAttributes = {
       {"iPosition", {0, 0, 3, 6 * sizeof(Float), 0}},
       {"iUV", {0, 1, 3, 6 * sizeof(Float), 3 * sizeof(Float)}}};
+  Map<Str, Uint> mLocations = {{"iPosition", 0}, {"iUV", 1}};
   Font *mFont = nullptr;
   Core::Shader mShader;
   vec3 mColor = vec3(1.0f, 1.0f, 1.0f);
