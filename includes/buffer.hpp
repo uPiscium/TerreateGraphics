@@ -116,22 +116,23 @@ public:
   }
 
   /*
-   * @brief: Load data into the new buffer
-   * @param: shader: Shader to use to draw the buffer
+   * @brief: Load data into the buffer
    * @param: raw: Raw data to load
    * @param: attrs: Attributes to load
+   * @param: locations: Locations to load
    * @param: usage: Buffer usage
    */
-  void LoadData(Shader &shader, Vec<Float> const &raw,
-                Map<Str, AttributeData> const &attrs,
+  void LoadData(Vec<Float> const &raw, Map<Str, AttributeData> const &attrs,
+                Map<Str, Uint> const &locations,
                 BufferUsage const &usage = BufferUsage::STATIC_DRAW);
   /*
-   * @brief: Load data into the new buffer
-   * @param: shader: Shader to use to draw the buffer
+   * @brief: Load data into the buffer
    * @param: bdc: Buffer data constructor object
+   * @param: locations: Locations to load
    * @param: usage: Buffer usage
    */
-  void LoadData(Shader &shader, BufferDataConstructor const &bdc,
+  void LoadData(BufferDataConstructor const &bdc,
+                Map<Str, Uint> const &locations,
                 BufferUsage const &usage = BufferUsage::STATIC_DRAW);
   /*
    * @brief: Reload data into the buffer
