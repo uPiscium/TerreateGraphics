@@ -1,7 +1,7 @@
 #version 430 core
-in vec3 iPosition;
-in vec2 iUV;
-in vec3 iColor;
+layout(location=0) in vec3 iPosition;
+layout(location=1) in vec2 iUV;
+layout(location=2) in vec3 iColor;
 
 out vec3 vNormal;
 out vec2 vUV;

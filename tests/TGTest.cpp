@@ -185,6 +185,7 @@ public:
     mScreenShader.Compile();
     mScreenShader.Link();
 
+    Map<Str, Uint> attrs = {{"iPosition", 0}, {"iUV", 1}, {"iColor", 2}};
     BufferDataConstructor bdc;
 
     bdc.AddVertexComponent("iPosition", {{-600.0f, -600.0f, 600.0f},
@@ -203,7 +204,7 @@ public:
         {3, 0}, {2, 1}, {1, 2}, {0, 3}, {4, 0}, {5, 1}, {6, 2}, {7, 3},
     });
     bdc.Construct();
-    mBuffer.LoadData(mShader, bdc);
+    mBuffer.LoadData(bdc, attrs);
 
     BufferDataConstructor screenBDC;
     screenBDC.AddVertexComponent("iPosition", {{-0.8f, -0.8f, 0.2f},
@@ -214,14 +215,14 @@ public:
         "iUV", {{0.0f, 0.0f}, {1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f}});
     screenBDC.SetVertexIndices({{0, 0}, {1, 1}, {2, 2}, {3, 3}});
     screenBDC.Construct();
-    mScreenBuffer.LoadData(mScreenShader, screenBDC);
+    mScreenBuffer.LoadData(screenBDC, attrs);
 
     mColorDataConstructor.AddVertexComponent("iColor", {{1, 0, 0}});
     mColorDataConstructor.SetVertexIndices(
         {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0},
          {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}});
     mColorDataConstructor.Construct();
-    mBuffer.LoadData(mShader, mColorDataConstructor);
+    mBuffer.LoadData(mColorDataConstructor, attrs);
 
     mBuffer.LoadIndices({{0, 1, 2, 2, 3, 0},
                          {4, 5, 6, 6, 7, 4},

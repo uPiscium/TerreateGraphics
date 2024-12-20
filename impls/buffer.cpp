@@ -86,11 +86,11 @@ void Buffer::SetAttributeDivisor(AttributeData const &attribute,
   this->Unbind();
 }
 
-void Buffer::LoadData(Shader &shader, Vec<Float> const &raw,
+void Buffer::LoadData(Vec<Float> const &raw,
                       Map<Str, AttributeData> const &attrs,
+                      Map<Str, Uint> const &locations,
                       BufferUsage const &usage) {
   Ulong size = raw.size() * sizeof(Float);
-  shader.Use();
   this->Bind();
   GLObject buffer = GLObject();
   glGenBuffers(1, buffer);
@@ -98,7 +98,10 @@ void Buffer::LoadData(Shader &shader, Vec<Float> const &raw,
   glBufferData(GL_ARRAY_BUFFER, size, raw.data(), (GLenum)usage);
 
   for (auto &[name, attr] : attrs) {
-    Uint index = shader.GetAttribute(name);
+    if (locations.find(name) == locations.end()) {
+      throw Exceptions::BufferError("Attribute location not found.");
+    }
+    Uint index = locations.at(name);
     glEnableVertexAttribArray(index);
     glVertexAttribPointer(index, attr.size, GL_FLOAT, GL_FALSE, attr.stride,
                           reinterpret_cast<void const *>(attr.offset));
@@ -107,17 +110,15 @@ void Buffer::LoadData(Shader &shader, Vec<Float> const &raw,
   }
   this->Unbind();
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  shader.Unuse();
-  shader.Link();
   mBuffers.push_back(buffer);
 }
 
-void Buffer::LoadData(Shader &shader, BufferDataConstructor const &bdc,
+void Buffer::LoadData(BufferDataConstructor const &bdc,
+                      Map<Str, Uint> const &locations,
                       BufferUsage const &usage) {
   Map<Str, AttributeData> const &attributes = bdc.GetAttributes();
   Vec<Float> data = bdc.GetVertexData();
   Ulong size = data.size() * sizeof(Float);
-  shader.Use();
   this->Bind();
   GLObject buffer = GLObject();
   glGenBuffers(1, buffer);
@@ -125,8 +126,11 @@ void Buffer::LoadData(Shader &shader, BufferDataConstructor const &bdc,
   glBufferData(GL_ARRAY_BUFFER, size, data.data(), (GLenum)usage);
 
   for (auto &name : bdc.GetAttributeNames()) {
+    if (locations.find(name) == locations.end()) {
+      throw Exceptions::BufferError("Attribute location not found.");
+    }
     AttributeData const &attr = attributes.at(name);
-    Uint index = shader.GetAttribute(name);
+    Uint index = locations.at(name);
     glEnableVertexAttribArray(index);
     glVertexAttribPointer(index, attr.size, GL_FLOAT, GL_FALSE, attr.stride,
                           reinterpret_cast<void const *>(attr.offset));
@@ -135,8 +139,6 @@ void Buffer::LoadData(Shader &shader, BufferDataConstructor const &bdc,
   }
   this->Unbind();
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-  shader.Unuse();
-  shader.Link();
   mBuffers.push_back(buffer);
 }
 
