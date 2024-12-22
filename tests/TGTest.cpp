@@ -19,6 +19,10 @@ struct Uniform {
   mat4 proj;
 };
 
+struct Settings {
+  vec4 setting;
+};
+
 void OutputJoystickData(Joystick const &joystick, Text &text, Uint const &width,
                         Uint const &height) {
   JoystickAxisState axisState = joystick.AcquireAxisState();
@@ -124,6 +128,9 @@ private:
   Uniform mScreenUniform;
   UniformBuffer mUBO;
   UniformBuffer mScreenUBO;
+
+  Settings mSettings;
+  ShaderStorageBuffer mSSBO;
 
 public:
   void SizeCallback(Window *window, int const &width, int const &height) {
@@ -245,6 +252,10 @@ public:
     mUBO.Bind(mShader, "Matrices");
     mScreenUBO.Bind(mScreenShader, "Matrices");
 
+    mSettings = {{1.0f, 1.0f, 1.0f, 0.5f}};
+    mSSBO.LoadData(mSettings);
+    mSSBO.Bind(mShader, "Settings");
+
     // Uncomment if you want to break your brain...
     /* mShader.UseDepth(false); */
 
@@ -302,6 +313,10 @@ public:
     mText.Render(500 - size.first / 2.0, 500 - size.second / 2.0,
                  mScreen.GetWidth(), mScreen.GetHeight());
     mScreen.Unbind();
+
+    mSettings = {
+        {(std::sin(angle) + 1) / 2.0, (std::cos(angle) + 1) / 2.0, 1.0f, 0.5f}};
+    mSSBO.ReloadData(mSettings);
 
     window->Bind();
     mShader.Use();
