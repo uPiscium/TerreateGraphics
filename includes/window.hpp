@@ -527,7 +527,9 @@ public:
    * @brief: This function sets window title.
    * @param: title: Window title.
    */
-  void SetTitle(Str const &title);
+  void SetTitle(Str const &title) {
+    glfwSetWindowTitle(mWindow, title.c_str());
+  }
   /*
    * @brief: This function sets window opacity.
    * @param: opacity: Window opacity.
