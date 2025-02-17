@@ -1,69 +1,54 @@
-#ifndef __TERREATE_GRAPHICS_EXCEPTIONS_HPP__
-#define __TERREATE_GRAPHICS_EXCEPTIONS_HPP__
+#ifndef __TERREATE_EXCEPTIONS_HPP__
+#define __TERREATE_EXCEPTIONS_HPP__
 
-#include <exception>
+#include <types.hpp>
 
-#include "defines.hpp"
+namespace Terreate::Exceptions {
+using namespace Terreate::Types;
 
-namespace TerreateGraphics::Exceptions {
-using namespace TerreateGraphics::Defines;
-
-class GraphicsException : public std::exception {
+class TerreateException : public std::exception {
 private:
   Str mMessage;
 
 public:
-  GraphicsException(Str const &message) : mMessage(message) {}
+  TerreateException(Str const &message) noexcept : mMessage(message) {}
+  virtual ~TerreateException() noexcept {}
 
   virtual const char *what() const noexcept override {
     return mMessage.c_str();
   }
 };
 
-class NullObjectException : public GraphicsException {
+/*
+ * Core system exceptions
+ */
+class CoreException : public TerreateException {
 public:
-  NullObjectException() : GraphicsException("Null object is accessed!") {}
+  CoreException(Str const &message) noexcept : TerreateException(message) {}
 };
 
-class BufferError : public GraphicsException {
+class ExecutorError : public CoreException {
 public:
-  BufferError(Str const &message) : GraphicsException(message) {}
+  ExecutorError(Str const &message) noexcept : CoreException(message) {}
 };
 
-class FontError : public GraphicsException {
+class TaskError : public CoreException {
 public:
-  FontError(Str const &message) : GraphicsException(message) {}
+  TaskError(Str const &message) noexcept : CoreException(message) {}
 };
 
-class JobError : public GraphicsException {
+class NullReferenceException : public CoreException {
 public:
-  JobError(Str const &message) : GraphicsException(message) {}
+  NullReferenceException(Str const &message) noexcept
+      : CoreException(message) {}
 };
 
-class ScreenError : public GraphicsException {
+class NotImplementedException : public CoreException {
 public:
-  ScreenError(Str const &message) : GraphicsException(message) {}
+  NotImplementedException() noexcept : CoreException("Not implemented") {}
+  NotImplementedException(Str const &message) noexcept
+      : CoreException(message) {}
 };
+} // namespace Terreate::Exceptions
 
-class ShaderError : public GraphicsException {
-public:
-  ShaderError(Str const &message) : GraphicsException(message) {}
-};
-
-class TextError : public GraphicsException {
-public:
-  TextError(Str const &message) : GraphicsException(message) {}
-};
-
-class TextureError : public GraphicsException {
-public:
-  TextureError(Str const &message) : GraphicsException(message) {}
-};
-
-class WindowError : public GraphicsException {
-public:
-  WindowError(Str const &message) : GraphicsException(message) {}
-};
-} // namespace TerreateGraphics::Exceptions
-
-#endif // __TERREATE_GRAPHICS_EXCEPTIONS_HPP__
+#endif // __TERREATE_EXCEPTIONS_HPP__
