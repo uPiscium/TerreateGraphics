@@ -43,12 +43,36 @@ public:
       : CoreException(message) {}
 };
 
+class NullObjectException : public CoreException {
+public:
+  NullObjectException() : CoreException("Null object") {}
+};
+
 class NotImplementedException : public CoreException {
 public:
   NotImplementedException() noexcept : CoreException("Not implemented") {}
   NotImplementedException(Str const &message) noexcept
       : CoreException(message) {}
 };
+
+/*
+ * Audio system exceptions
+ */
+class AudioException : public TerreateException {
+public:
+  AudioException(Str const &message) noexcept : TerreateException(message) {}
+};
+
+class OpenALException : public AudioException {
+public:
+  OpenALException(Str const &message) noexcept : AudioException(message) {}
+};
+
+class SourceError : public AudioException {
+public:
+  SourceError(Str const &message) noexcept : AudioException(message) {}
+};
+
 } // namespace Terreate::Exceptions
 
 #endif // __TERREATE_EXCEPTIONS_HPP__

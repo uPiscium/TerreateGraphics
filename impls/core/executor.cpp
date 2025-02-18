@@ -1,9 +1,6 @@
 #include <core/executor.hpp>
-#include <future>
 
 namespace Terreate::Core {
-using namespace Terreate::Types;
-
 void Executor::Worker() {
   while (true) {
     std::packaged_task<void()> task;

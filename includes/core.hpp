@@ -5,6 +5,7 @@
 #include <core/executor.hpp>
 #include <core/math.hpp>
 #include <core/nullable.hpp>
+#include <core/object.hpp>
 #include <core/property.hpp>
 #include <core/uuid.hpp>
 

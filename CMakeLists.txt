@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
+project(Terreate)
 option(TERREATE_BUILD_TEST "Build test" ON)
 
 add_subdirectory(impls)

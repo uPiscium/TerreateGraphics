@@ -17,6 +17,7 @@
           pkgs.libxkbcommon
         ];
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath (with pkgs; [
+          openal
           wayland
           libglvnd
           libxkbcommon

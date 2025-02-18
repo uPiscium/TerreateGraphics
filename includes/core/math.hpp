@@ -6,7 +6,7 @@
 
 #include <types.hpp>
 
-namespace Terreate::Core {
+namespace Terreate::Math {
 using namespace Terreate::Types;
 
 // glm constants
@@ -82,6 +82,6 @@ using glm::mix;
 using glm::normalize;
 using glm::slerp;
 
-} // namespace Terreate::Core
+} // namespace Terreate::Math
 
 #endif // __TERREATECORE_MATH_HPP__
