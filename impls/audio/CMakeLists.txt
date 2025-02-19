@@ -1,5 +1,5 @@
 project(AudioComponent)
-message(STATUS "Configuring AudioComponent...")
+message(STATUS "Configuring ${PROJECT_NAME}...")
 
 message(STATUS "Cloning OpenAL-Soft...")
 set(ALSOFT_DLOPEN OFF)
@@ -18,9 +18,9 @@ message(STATUS "OpenAL-Soft cloned.")
 add_library(${PROJECT_NAME} STATIC ALhelper.cpp buffer.cpp
                                      context.cpp source.cpp)
 target_link_libraries(${PROJECT_NAME} PUBLIC CoreComponent)
-target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/Deps/)
+target_include_directories(${PROJECT_NAME} PUBLIC ../../includes/Deps)
 target_include_directories(${PROJECT_NAME} PUBLIC ../../includes)
-message(STATUS "AudioComponent configured.")
 set_target_properties(
   ${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
   LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+message(STATUS "${PROJECT_NAME} configured.")

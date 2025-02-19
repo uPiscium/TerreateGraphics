@@ -1,12 +1,14 @@
 ﻿#include <audiotest.hpp>
 #include <coretest.hpp>
 #include <exceptions.hpp>
+#include <graphictest.hpp>
 
 namespace Core = Terreate::Test::Core;
 namespace Audio = Terreate::Test::Audio;
+namespace Graphic = Terreate::Test::Graphic;
 
 int main() {
-#ifdef BUILD_CORE_TESTS // This is defined in the CMakeLists.txt / Default: OFF
+#ifdef BUILD_CORE_TESTS // Default: OFF
   // Core tests
   Core::TestEvent();
   Core::TestExecutor();
@@ -16,8 +18,13 @@ int main() {
   Core::TestUUID();
 #endif // BUILD_CORE_TESTS
 
-#ifdef BUILD_AUDIO_TESTS // This is defined in the CMakeLists.txt / Default: OFF
+#ifdef BUILD_AUDIO_TESTS // Default: OFF
   // Audio tests
   Audio::TestAudio();
 #endif // BUILD_AUDIO_TESTS
+
+#ifdef BUILD_GRAPHIC_TESTS // Default: ON
+  // Graphic tests
+  Graphic::Run();
+#endif // BUILD_GRAPHIC_TESTS
 }

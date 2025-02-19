@@ -8,10 +8,10 @@ message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 
 add_subdirectory(core)
 add_subdirectory(audio)
+add_subdirectory(graphic)
 
 add_library(${PROJECT_NAME} STATIC dummy.cpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC ../includes/Deps/)
 target_include_directories(${PROJECT_NAME} PUBLIC ../includes)
-target_link_libraries(${PROJECT_NAME} CoreComponent)
-target_link_libraries(${PROJECT_NAME} AudioComponent)
+target_link_libraries(${PROJECT_NAME} CoreComponent AudioComponent GraphicComponent)

@@ -117,16 +117,16 @@ void TestNullable() {
 void TestProperty() {
   std::cout << ">>>>>>>>>>>>>>>>>>>> TestProperty\n";
   int a = 1;
-  auto setter = [&a](int value) {
-    a = value;
-    std::cout << "Set a = " << a << std::endl;
-  };
-  auto getter = [&a]() {
-    std::cout << "Get a = " << a << std::endl;
+  Property<int> prop(&a);
+  prop.getter = [&a]() -> int & {
+    std::cout << "Getter" << std::endl;
     return a;
   };
-  Property<int> prop(getter, setter);
-  prop = 2;
+  prop.setter = [&a](int const &value) {
+    std::cout << "Setter" << std::endl;
+    a = value;
+  };
+  std::cout << "a = " << a << std::endl;
   int b = prop;
   std::cout << "b = " << b << std::endl;
   std::cout << "<<Property test done>>" << std::endl;

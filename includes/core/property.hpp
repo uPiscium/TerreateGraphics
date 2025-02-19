@@ -10,36 +10,74 @@ using namespace Terreate::Types;
 template <typename T> class Property {
 public:
   using Type = T;
-  using Getter = Function<Type()>;
+  using CGetter = Function<Type const &()>;
+  using Getter = Function<Type &()>;
   using Setter = Function<void(Type const &)>;
 
 private:
-  Getter mGetter = nullptr;
-  Setter mSetter = nullptr;
+  Type *mValue = nullptr;
+
+public:
+  CGetter cgetter = [this]() -> Type const & {
+    if (mValue)
+      return *mValue;
+    throw Exceptions::NullReferenceException("Value is null");
+  };
+  Getter getter = [this]() -> Type & {
+    if (mValue)
+      return *mValue;
+    throw Exceptions::NullReferenceException("Value is null");
+  };
+  Setter setter = [this](Type const &value) {
+    if (mValue)
+      *mValue = value;
+    else
+      throw Exceptions::NullReferenceException("Value is null");
+  };
 
 public:
   Property() = default;
-  Property(Getter getter, Setter setter = nullptr)
-      : mGetter(getter), mSetter(setter) {}
+  explicit Property(Type *value) : mValue(value) {}
 
-  void SetGetter(Getter getter) { mGetter = getter; }
-  void SetSetter(Setter setter) { mSetter = setter; }
+  Type const &operator*() const {
+    if (cgetter)
+      return cgetter();
+    throw Exceptions::NotImplementedException();
+  }
 
-  Type operator*() const {
-    if (mGetter)
-      return mGetter();
+  Type &operator*() {
+    if (getter)
+      return getter();
+    throw Exceptions::NotImplementedException();
+  }
+
+  Type const &operator->() const {
+    if (cgetter)
+      return cgetter();
+    throw Exceptions::NotImplementedException();
+  }
+
+  Type &operator->() {
+    if (getter)
+      return getter();
     throw Exceptions::NotImplementedException();
   }
 
   operator Type() const {
-    if (mGetter)
-      return mGetter();
+    if (cgetter)
+      return cgetter();
+    throw Exceptions::NotImplementedException();
+  }
+
+  operator Type() {
+    if (getter)
+      return getter();
     throw Exceptions::NotImplementedException();
   }
 
   Property &operator=(T const &value) {
-    if (mSetter) {
-      mSetter(value);
+    if (setter) {
+      setter(value);
     } else {
       throw Exceptions::NotImplementedException();
     }
@@ -47,92 +85,13 @@ public:
   }
 };
 
-template <typename T> class Property<T const &> {
-public:
-  using Type = T;
-  using Getter = Function<Type()>;
-  using Setter = Function<void(Type const &)>;
-
-private:
-  Getter mGetter = nullptr;
-  Setter mSetter = nullptr;
-
-public:
-  Property() = default;
-  Property(Getter getter, Setter setter = nullptr)
-      : mGetter(getter), mSetter(setter) {}
-
-  void SetGetter(Getter getter) { mGetter = getter; }
-  void SetSetter(Setter setter) { mSetter = setter; }
-
-  Type operator*() const {
-    if (mGetter)
-      return mGetter();
-    throw Exceptions::NotImplementedException();
-  }
-
-  operator Type() const {
-    if (mGetter)
-      return mGetter();
-    throw Exceptions::NotImplementedException();
-  }
-
-  Property &operator=(T const &value) {
-    if (mSetter) {
-      mSetter(value);
-    } else {
-      throw Exceptions::NotImplementedException();
-    }
-    return *this;
-  }
-};
-
-template <typename T> class Property<T &> {
-public:
-  using Type = T;
-  using Getter = Function<Type()>;
-  using Setter = Function<void(Type const &)>;
-
-private:
-  Getter mGetter = nullptr;
-  Setter mSetter = nullptr;
-
-public:
-  Property() = default;
-  Property(Getter getter, Setter setter = nullptr)
-      : mGetter(getter), mSetter(setter) {}
-
-  void SetGetter(Getter getter) { mGetter = getter; }
-  void SetSetter(Setter setter) { mSetter = setter; }
-
-  Type operator*() const {
-    if (mGetter)
-      return mGetter();
-    throw Exceptions::NotImplementedException();
-  }
-
-  operator Type() const {
-    if (mGetter)
-      return mGetter();
-    throw Exceptions::NotImplementedException();
-  }
-
-  Property &operator=(T const &value) {
-    if (mSetter) {
-      mSetter(value);
-    } else {
-      throw Exceptions::NotImplementedException();
-    }
-    return *this;
-  }
-};
+} // namespace Terreate::Core
 
 template <typename T>
-std::ostream &operator<<(std::ostream &os, Property<T> const &prop) {
+std::ostream &operator<<(std::ostream &os,
+                         Terreate::Core::Property<T> const &prop) {
   os << *prop;
   return os;
 }
-
-} // namespace Terreate::Core
 
 #endif // __TERREATE_PROPERTY_HPP__

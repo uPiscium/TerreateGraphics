@@ -73,6 +73,62 @@ public:
   SourceError(Str const &message) noexcept : AudioException(message) {}
 };
 
+/*
+ * Graphics system exceptions
+ */
+
+class GraphicsException : public TerreateException {
+private:
+  Str mMessage;
+
+public:
+  GraphicsException(Str const &message) : TerreateException(message) {}
+
+  virtual const char *what() const noexcept override {
+    return mMessage.c_str();
+  }
+};
+
+class BufferError : public GraphicsException {
+public:
+  BufferError(Str const &message) : GraphicsException(message) {}
+};
+
+class FontError : public GraphicsException {
+public:
+  FontError(Str const &message) : GraphicsException(message) {}
+};
+
+class JobError : public GraphicsException {
+public:
+  JobError(Str const &message) : GraphicsException(message) {}
+};
+
+class ScreenError : public GraphicsException {
+public:
+  ScreenError(Str const &message) : GraphicsException(message) {}
+};
+
+class ShaderError : public GraphicsException {
+public:
+  ShaderError(Str const &message) : GraphicsException(message) {}
+};
+
+class TextError : public GraphicsException {
+public:
+  TextError(Str const &message) : GraphicsException(message) {}
+};
+
+class TextureError : public GraphicsException {
+public:
+  TextureError(Str const &message) : GraphicsException(message) {}
+};
+
+class WindowError : public GraphicsException {
+public:
+  WindowError(Str const &message) : GraphicsException(message) {}
+};
+
 } // namespace Terreate::Exceptions
 
 #endif // __TERREATE_EXCEPTIONS_HPP__
