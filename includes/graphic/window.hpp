@@ -1,7 +1,9 @@
 #ifndef __TERREATE_GRAPHICS_WINDOW_HPP__
 #define __TERREATE_GRAPHICS_WINDOW_HPP__
 
+#include <core/property.hpp>
 #include <graphic/GLdefs.hpp>
+#include <io/image.hpp>
 #include <types.hpp>
 
 namespace Terreate::Graphic {
@@ -40,8 +42,8 @@ public:
 
 class Window;
 
-typedef Event<Window *, Uint const &, Uint const &> WindowPositionEvent;
-typedef Event<Window *, Uint const &, Uint const &> WindowSizeEvent;
+typedef Event<Window *, Int const &, Int const &> WindowPositionEvent;
+typedef Event<Window *, Int const &, Int const &> WindowSizeEvent;
 typedef Event<Window *> WindowCloseEvent;
 typedef Event<Window *> WindowRefreshEvent;
 typedef Event<Window *, Bool const &> WindowFocusEvent;
@@ -86,6 +88,16 @@ public:
    * images.
    */
   void AddImage(Uint const &width, Uint const &height, Ubyte const *pixels);
+  /*
+   * @brief: This function adds an image to the icon.
+   * @param: texture: Image texture.
+   * @detail: Pixels are copied to new allocated array and set to "glfw image"
+   * instance. "glfw image" is used to render icon. Icon can have multiple of
+   * images.
+   */
+  void AddImage(IO::Texture const &texture) {
+    this->AddImage(texture.width, texture.height, texture.data.data());
+  }
 
   operator GLFWimage const *() const { return mImages.data(); }
   operator Bool() const { return mImages.size() > 0; }
@@ -187,106 +199,57 @@ public:
   Uint scaleToMonitor = GLFW_FALSE;
 };
 
-class WindowProperty {
+class Window {
 private:
+  GLFWwindow *mWindow = nullptr;
+
+  // Read-only properties
   Pair<Double> mScrollOffset;
   Vec<Uint> mCodePoints;
   Vec<Key> mKeys;
   Vec<Str> mDroppedFiles;
-  Pair<Uint> mSize;
+
+  // Read-write properties
+  Pair<Int> mSize;
   Pair<Int> mPosition;
   Pair<Double> mCursorPosition;
-
-  friend void Callbacks::ScrollCallbackWrapper(GLFWwindow *window,
-                                               double xoffset, double yoffset);
-  friend void Callbacks::CharCallbackWrapper(GLFWwindow *window,
-                                             Uint codepoint);
-  friend void Callbacks::KeyCallbackWrapper(GLFWwindow *window, int key,
-                                            int scancode, int action, int mods);
-  friend void Callbacks::DropCallbackWrapper(GLFWwindow *window, int count,
-                                             const char **paths);
-  friend void Callbacks::WindowSizeCallbackWrapper(GLFWwindow *window,
-                                                   int width, int height);
-  friend void Callbacks::WindowPositionCallbackWrapper(GLFWwindow *window,
-                                                       int xpos, int ypos);
-  friend void Callbacks::CursorPositionCallbackWrapper(GLFWwindow *window,
-                                                       double xpos,
-                                                       double ypos);
-  friend Window;
+  Str mClipboard;
+  Str mTitle;
+  Float mOpacity;
 
 public:
-  WindowProperty() = default;
-  ~WindowProperty() = default;
+  // Read-only properties
+  Property<Pair<Double>> scrollOffset;
+  Property<Vec<Uint>> codePoints;
+  Property<Vec<Key>> keys;
+  Property<Vec<Str>> droppedFiles;
+  Property<CursorMode> cursorMode;
 
-  /*
-   * @brief: This function returns scroll offset.
-   * @return: Scroll offset.
-   * @detail: Return format is (x, y).
-   */
-  Pair<Double> const &GetScrollOffset() const { return mScrollOffset; }
-  /*
-   * @brief: This function returns inputted code points.
-   * @return: Inputted code points.
-   * @detail: Code points are Unicode code points.
-   */
-  Vec<Uint> const &GetCodePoints() const { return mCodePoints; }
-  /*
-   * @brief: This function returns inputted keys.
-   * @return: Inputted keys.
-   */
-  Vec<Key> const &GetKeys() const { return mKeys; }
-  /*
-   * @brief: This function returns dropped files.
-   * @return: Dropped files.
-   */
-  Vec<Str> const &GetDroppedFiles() const { return mDroppedFiles; }
-  /*
-   * @brief: This function returns window size.
-   * @return: Window size.
-   * @detail: Return format is (width, height).
-   */
-  Pair<Uint> const &GetSize() const { return mSize; }
-  /*
-   * @brief: This function returns window position.
-   * @return: Window position.
-   * @detail: Return format is (x, y).
-   */
-  Pair<Int> const &GetPosition() const { return mPosition; }
-  /*
-   * @brief: This function returns cursor position.
-   * @return: Cursor position.
-   * @detail: Return format is (x, y).
-   */
-  Pair<Double> const &GetCursorPosition() const { return mCursorPosition; }
+  // Read-write properties
+  Property<Pair<Int>> size;
+  Property<Pair<Int>> position;
+  Property<Pair<Double>> cursorPosition;
+  Property<Str> clipboard;
+  Property<Str> title;
+  Property<Float> opacity;
 
-  /*
-   * @brief: This function clears inputted chars, inputted codepoints, and
-   * inputted keys.
-   */
-  void ClearInputs();
-};
-
-class Window {
-private:
-  GLFWwindow *mWindow = nullptr;
-  WindowProperty mProperty;
-
-  WindowPositionEvent mPositionEvent;
-  WindowSizeEvent mSizeEvent;
-  WindowCloseEvent mCloseEvent;
-  WindowRefreshEvent mRefreshEvent;
-  WindowFocusEvent mFocusEvent;
-  WindowIconifyEvent mIconifyEvent;
-  WindowMaximizeEvent mMaximizeEvent;
-  WindowFramebufferSizeEvent mFramebufferSizeEvent;
-  WindowContentScaleEvent mContentScaleEvent;
-  MousebuttonEvent mMousebuttonEvent;
-  CursorPositionEvent mCursorPositionEvent;
-  CursorEnterEvent mCursorEnterEvent;
-  ScrollEvent mScrollEvent;
-  KeyEvent mKeyEvent;
-  CharEvent mCharEvent;
-  FileDropEvent mDropEvent;
+  // Event handlers
+  WindowPositionEvent onPositionChange;
+  WindowSizeEvent onSizeChange;
+  WindowCloseEvent onClose;
+  WindowRefreshEvent onRefresh;
+  WindowFocusEvent onFocus;
+  WindowIconifyEvent onIconify;
+  WindowMaximizeEvent onMaximize;
+  WindowFramebufferSizeEvent onFramebufferSizeChange;
+  WindowContentScaleEvent onContentScaleChange;
+  MousebuttonEvent onMousebuttonInput;
+  CursorPositionEvent onCursorPositionChange;
+  CursorEnterEvent onCursorEnter;
+  ScrollEvent onScroll;
+  KeyEvent onKeyInput;
+  CharEvent onCharInput;
+  FileDropEvent onFileDrop;
 
 private:
   Window(Window const &) = delete;
@@ -305,174 +268,6 @@ public:
   ~Window() { this->Destroy(); }
 
   /*
-   * @brief: This function returns window property class.
-   * @return: Window property class.
-   */
-  WindowProperty &GetProperty() { return mProperty; }
-  /*
-   * @brief: This function returns window property class.
-   * @return: Window property class.
-   */
-  WindowProperty const &GetProperty() const { return mProperty; }
-  /*
-   * @brief: This function returns window position event.
-   * @return: Window position event handler.
-   */
-  WindowPositionEvent &GetPositionEventHandler() { return mPositionEvent; }
-  /*
-   * @brief: This function returns window size event.
-   * @return: Window size event handler.
-   */
-  WindowSizeEvent &GetSizeEventHandler() { return mSizeEvent; }
-  /*
-   * @brief: This function returns window close event.
-   * @return: Window close event handler.
-   */
-  WindowCloseEvent &GetCloseEventHandler() { return mCloseEvent; }
-  /*
-   * @brief: This function returns window refresh event.
-   * @return: Window refresh event handler.
-   */
-  WindowRefreshEvent &GetRefreshEventHandler() { return mRefreshEvent; }
-  /*
-   * @brief: This function returns window focus event.
-   * @return: Window focus event handler.
-   */
-  WindowFocusEvent &GetFocusEventHandler() { return mFocusEvent; }
-  /*
-   * @brief: This function returns window iconify event.
-   * @return: Window iconify event handler.
-   */
-  WindowIconifyEvent &GetIconifyEventHandler() { return mIconifyEvent; }
-  /*
-   * @brief: This function returns window maximize event.
-   * @return: Window maximize event handler.
-   */
-  WindowMaximizeEvent &GetMaximizeEventHandler() { return mMaximizeEvent; }
-  /*
-   * @brief: This function returns window framebuffer size event.
-   * @return: Window framebuffer size event handler.
-   */
-  WindowFramebufferSizeEvent &GetFramebufferSizeEventHandler() {
-    return mFramebufferSizeEvent;
-  }
-  /*
-   * @brief: This function returns window content scale event.
-   * @return: Window content scale event handler.
-   */
-  WindowContentScaleEvent &GetContentScaleEventHandler() {
-    return mContentScaleEvent;
-  }
-  /*
-   * @brief: This function returns mousebutton event.
-   * @return: Mousebutton event handler.
-   */
-  MousebuttonEvent &GetMousebuttonEventHandler() { return mMousebuttonEvent; }
-  /*
-   * @brief: This function returns cursor position event.
-   * @return: Cursor position event handler.
-   */
-  CursorPositionEvent &GetCursorPositionEventHandler() {
-    return mCursorPositionEvent;
-  }
-  /*
-   * @brief: This function returns cursor enter event.
-   * @return: Cursor enter event handler.
-   */
-  CursorEnterEvent &GetCursorEnterEventHandler() { return mCursorEnterEvent; }
-  /*
-   * @brief: This function returns scroll event.
-   * @return: Scroll event handler.
-   */
-  ScrollEvent &GetScrollEventHandler() { return mScrollEvent; }
-  /*
-   * @brief: This function returns key event.
-   * @return: Key event handler.
-   */
-  KeyEvent &GetKeyEventHandler() { return mKeyEvent; }
-  /*
-   * @brief: This function returns char event.
-   * @return: Char event handler.
-   */
-  CharEvent &GetCharEventHandler() { return mCharEvent; }
-  /*
-   * @brief: This function returns drop event.
-   * @return: Drop event handler.
-   */
-  FileDropEvent &GetFileDropEventHandler() { return mDropEvent; }
-
-  /*
-   * @brief: This function returns window size.
-   * @return: Window size.
-   * @detail: Return format is (width, height).
-   */
-  Pair<Uint> const &GetSize() const { return mProperty.GetSize(); }
-  /*
-   * @brief: This function returns window position.
-   * @return: Window position.
-   * @detail: Return format is (x, y).
-   */
-  Pair<Int> const &GetPosition() const { return mProperty.GetPosition(); }
-  /*
-   * @brief: This function returns cursor position.
-   * @return: Cursor position.
-   * @detail: Return format is (x, y)
-   */
-  Pair<Double> const &GetCursorPosition() const {
-    return mProperty.GetCursorPosition();
-  }
-  /*
-   * @brief: This function returns scroll offset.
-   * @return: Scroll offset.
-   * @detail: Return format is (x, y).
-   * @note: Scroll offset cannot be set.
-   */
-  Pair<Double> const &GetScrollOffset() const {
-    return mProperty.GetScrollOffset();
-  }
-  /*
-   * @brief: This function returns clipboard string.
-   * @return: Clipboard string.
-   */
-  Str GetClipboardString() const { return glfwGetClipboardString(mWindow); }
-  /*
-   * @brief: This function returns window title.
-   * @return: Window title.
-   */
-  Str GetTitle() const { return Str(glfwGetWindowTitle(mWindow)); }
-  /*
-   * @brief: This function returns inputted code points.
-   * @return: Inputted code points.
-   * @sa: ClearInputs()
-   * @detail: Code points are Unicode code points. This function doesn't clear
-   * inputted code points. If you want to clear inputted code points, use
-   * ClearInputs() function.
-   */
-  Vec<Uint> const &GetCodePoints() const { return mProperty.GetCodePoints(); }
-  /*
-   * @brief: This function returns inputted keys.
-   * @return: Inputted keys.
-   * @sa: ClearInputs()
-   * @detail: This function doesn't clear inputted keys. If you want to clear
-   * inputted keys, use ClearInputs() function.
-   */
-  Vec<Key> const &GetKeys() const { return mProperty.GetKeys(); }
-  /*
-   * @brief: This function returns dropped files.
-   * @return: Dropped files.
-   * @sa: ClearInputs()
-   * @detail: This function doesn't clear dropped files. If you want to clear
-   * dropped files, use ClearInputs() function.
-   */
-  Vec<Str> const &GetDroppedFiles() const {
-    return mProperty.GetDroppedFiles();
-  }
-  /*
-   * @brief: This function returns window opacity.
-   * @return: Window opacity.
-   */
-  Float GetOpacity() const { return glfwGetWindowOpacity(mWindow); }
-  /*
    * @brief: This function returns specified mouse button state.
    * @return: Mousebutton state [true(Pressed)/false(Released)].
    */
@@ -486,13 +281,6 @@ public:
    */
   Bool GetInputTypeState(InputType const &type) const {
     return Bool(glfwGetInputMode(mWindow, (Uint)type) == GLFW_TRUE);
-  }
-  /*
-   * @brief: This function returns specified input type state.
-   * @return: Current cursor state.
-   */
-  CursorMode GetCursorMode() const {
-    return static_cast<CursorMode>(glfwGetInputMode(mWindow, GLFW_CURSOR));
   }
 
   /*
@@ -525,64 +313,12 @@ public:
    */
   void SetDefaultCursor() { glfwSetCursor(mWindow, nullptr); }
   /*
-   * @brief: This function sets window size.
-   * @param: size: Window size.
-   * @detail: Size format is (width, height).
-   */
-  void SetSize(Pair<Uint> const &size) {
-    glfwSetWindowSize(mWindow, size.first, size.second);
-  }
-  /*
-   * @brief: This function sets window position.
-   * @param: position: Window position.
-   * @detail: Position format is (x, y).
-   */
-  void SetPosition(Pair<int> const &position) {
-    glfwSetWindowPos(mWindow, position.first, position.second);
-  }
-  /*
-   * @brief: This function sets cursor position.
-   * @param: position: Cursor position.
-   * @detail: Position format is (x, y).
-   */
-  void SetCursorPosition(Pair<Double> const &position) {
-    glfwSetCursorPos(mWindow, position.first, position.second);
-  }
-  /*
-   * @brief: This function sets clipboard string.
-   * @param: string: Clipboard string.
-   */
-  void SetClipboardString(Str const &string) {
-    glfwSetClipboardString(mWindow, string.c_str());
-  }
-  /*
-   * @brief: This function sets window title.
-   * @param: title: Window title.
-   */
-  void SetTitle(Str const &title) {
-    glfwSetWindowTitle(mWindow, title.c_str());
-  }
-  /*
-   * @brief: This function sets window opacity.
-   * @param: opacity: Window opacity.
-   */
-  void SetOpacity(float const &opacity) {
-    glfwSetWindowOpacity(mWindow, opacity);
-  }
-  /*
    * @brief: This function sets specified input type state.
    * @param: type: Input type.
    * @param: state: Input type state.
    */
   void SetInputTypeState(InputType const &type, Bool const &state) {
     glfwSetInputMode(mWindow, (int)type, state);
-  }
-  /*
-   * @brief: This function sets cursor mode.
-   * @param: mode: Cursor mode.
-   */
-  void SetCursorMode(CursorMode const &mode) {
-    glfwSetInputMode(mWindow, GLFW_CURSOR, (int)mode);
   }
   /*
    * @brief: This function sets window view port.
@@ -717,11 +453,11 @@ public:
   }
 
   /*
-   * @brief: This function enables window vsync.
+   * @brief: Enable vsync.
    */
   void EnableVsync() const { glfwSwapInterval(1); }
   /*
-   * @brief: This function disables window vsync.
+   * @brief: Disable vsync.
    */
   void DisableVsync() const { glfwSwapInterval(0); }
   /*

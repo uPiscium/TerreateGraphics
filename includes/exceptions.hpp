@@ -129,6 +129,18 @@ public:
   WindowError(Str const &message) : GraphicsException(message) {}
 };
 
+/*
+ * IO system exceptions
+ */
+class IOException : public TerreateException {
+public:
+  IOException(Str const &message) noexcept : TerreateException(message) {}
+};
+
+class FileException : public IOException {
+public:
+  FileException(Str const &message) noexcept : IOException(message) {}
+};
 } // namespace Terreate::Exceptions
 
 #endif // __TERREATE_EXCEPTIONS_HPP__

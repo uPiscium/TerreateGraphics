@@ -10,25 +10,21 @@ using namespace Terreate::Types;
 template <typename T> class Property {
 public:
   using Type = T;
-  using CGetter = Function<Type const &()>;
-  using Getter = Function<Type &()>;
-  using Setter = Function<void(Type const &)>;
+  using PointerGetter = Function<Type *()>;
+  using Getter = Function<Type()>;
+  using Setter = Function<void(Type)>;
 
 private:
   Type *mValue = nullptr;
 
 public:
-  CGetter cgetter = [this]() -> Type const & {
+  PointerGetter pgetter = [this]() -> Type * { return mValue; };
+  Getter getter = [this]() -> Type {
     if (mValue)
       return *mValue;
     throw Exceptions::NullReferenceException("Value is null");
   };
-  Getter getter = [this]() -> Type & {
-    if (mValue)
-      return *mValue;
-    throw Exceptions::NullReferenceException("Value is null");
-  };
-  Setter setter = [this](Type const &value) {
+  Setter setter = [this](Type value) {
     if (mValue)
       *mValue = value;
     else
@@ -38,10 +34,13 @@ public:
 public:
   Property() = default;
   explicit Property(Type *value) : mValue(value) {}
+  ~Property() = default;
+
+  void Set(Type *value) { mValue = value; }
 
   Type const &operator*() const {
-    if (cgetter)
-      return cgetter();
+    if (getter)
+      return getter();
     throw Exceptions::NotImplementedException();
   }
 
@@ -51,21 +50,15 @@ public:
     throw Exceptions::NotImplementedException();
   }
 
-  Type const &operator->() const {
-    if (cgetter)
-      return cgetter();
-    throw Exceptions::NotImplementedException();
-  }
-
-  Type &operator->() {
-    if (getter)
-      return getter();
+  Type *operator->() const {
+    if (pgetter)
+      return pgetter();
     throw Exceptions::NotImplementedException();
   }
 
   operator Type() const {
-    if (cgetter)
-      return cgetter();
+    if (getter)
+      return getter();
     throw Exceptions::NotImplementedException();
   }
 

@@ -346,14 +346,14 @@ void LaunchApp() {
   // TestCompute();
 
   TestApp app;
-  window.GetFramebufferSizeEventHandler() +=
+  window.onFramebufferSizeChange +=
       Subscriber<Window *, Uint const &, Uint const &>(
           [&app](Window *window, Uint const &width, Uint const &height) {
             app.SizeCallback(window, width, height);
           });
-  window.GetKeyEventHandler() += Subscriber<Window *, Key const &>(
+  window.onKeyInput += Subscriber<Window *, Key const &>(
       [&app](Window *window, Key const &key) { app.KeyCallback(window, key); });
-  window.GetCharEventHandler() += Subscriber<Window *, Uint const &>(
+  window.onCharInput += Subscriber<Window *, Uint const &>(
       [&app](Window *window, Uint const &codepoint) {
         app.CharCallback(window, codepoint);
       });

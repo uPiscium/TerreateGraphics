@@ -9,6 +9,7 @@ message(STATUS "C++ standard : " ${CMAKE_CXX_STANDARD})
 add_subdirectory(core)
 add_subdirectory(audio)
 add_subdirectory(graphic)
+add_subdirectory(io)
 
 add_library(${PROJECT_NAME} STATIC dummy.cpp)
 

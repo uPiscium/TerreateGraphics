@@ -3,7 +3,11 @@
 
 #include <graphic.hpp>
 
+#ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
+#else
+#undef STB_IMAGE_IMPLEMENTATION
+#endif
 #define STB_IMAGE_STATIC
 #include <stb/stb_image.h>
 

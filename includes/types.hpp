@@ -60,7 +60,7 @@ typedef std::ifstream InputFileStream;
 typedef std::ofstream OutputFileStream;
 
 template <typename S, typename T> using Map = std::unordered_map<S, T>;
-template <typename T> using Pair = std::pair<T, T>;
+template <typename S, typename T = S> using Pair = std::pair<S, T>;
 template <typename T> using Set = std::unordered_set<T>;
 template <typename T> using Vec = std::vector<T>;
 template <typename T> using Shared = std::shared_ptr<T>;
