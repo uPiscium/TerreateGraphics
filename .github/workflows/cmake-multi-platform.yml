@@ -48,7 +48,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Install dependencies (Linux only)
-      if: ${{ runner.os == 'ubuntu-latest' }}
+      if: runner.os == 'Linux'
       run: |
           sudo apt-get update
           sudo apt-get install -y wayland-protocols
